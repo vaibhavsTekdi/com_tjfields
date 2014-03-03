@@ -1,0 +1,20 @@
+.icon-48-fields {
+      background-image: url(../images/l_fields.png);
+      padding-left:60px!important;
+}
+
+.icon-48-field {
+      background-image: url(../images/l_fields.png);
+      padding-left:60px!important;
+}
+
+.com_tjfields_repeating_block
+{
+	margin:0px !important;
+}
+
+.techjoomla-bootstrap .displaynone
+{
+	display:none;
+}
+

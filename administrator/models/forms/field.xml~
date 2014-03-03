@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<fieldset  addfieldpath="/administrator/components/com_tjfields/models/fields">
+
+		<field name="id" type="text" default="0" label="COM_TJFIELDS_FORM_LBL_FIELD_ID"
+			readonly="true" class="readonly"
+			description="JGLOBAL_FIELD_ID_DESC" />
+
+		<field name="client_type" type="customfield"
+			label="COM_TJFIELDS_FORM_LBL_FIELD_CLIENT_TYPE"
+			description="COM_TJFIELDS_FORM_DESC_FIELD_CLIENT_TYPE"
+			required="false"
+			multiple="false" />
+
+
+		<field name="group_id" type="customfield"
+			label="COM_TJFIELDS_FORM_LBL_FIELD_GROUP_NAME"
+			description="COM_TJFIELDS_FORM_DESC_FIELD_GROUP_NAME"
+			required="true"
+			multiple="false" />
+
+		<field name="label" hint="adasdasdasd" type="text"
+			label="COM_TJFIELDS_FORM_LsdfsdfBL_FIELD_LABEL"
+			description="COM_TJFIELDS_FORM_DESC_FIELD_LABEL"
+			required="true"
+			filter="raw" />
+
+		<field name="name" type="text"
+			label="COM_TJFIELDS_FORM_LBL_FIELD_NAME"
+			description="COM_TJFIELDS_FORM_DESC_FIELD_NAME"
+			required="true" />
+
+	   <field name="field_type" type="list" onchange="show_option_div(this.value)"
+			label="COM_TJFIELDS_FORM_LBL_FIELD_FIELD_TYPE"
+			description="COM_TJFIELDS_FORM_DESC_FIELD_FIELD_TYPE"
+			default="text"
+			required="true"
+			multiple="false">
+				<option value="text">Text</option>
+				<option value="radio">Radio</option>
+				<option value="single_select">Single select</option>
+				<option value="multi_select">Multiple select</option>
+				<option value="hidden">Hidden</option>
+				<option value="textarea">Textarea</option>
+				<option value="checkbox">Checkbox</option>
+				<option value="calender">Calender</option>
+				<option value="editor">Editor</option>
+				<option value="email_field">Email</option>
+				<option value="password">Password</option>
+				<option value="file">File</option>
+		</field>
+
+
+		<field name="fieldoption" type="fieldoption"
+			label="COM_TJFIELDS_FORM_LBL_FIELD_OPTION"
+			description="COM_TJFIELDS_FORM_DESC_FIELD_OPTION"
+			required="false"  />
+
+
+		<field name="filter_field_type" type="list" onchange="this.form.submit();">
+			<option value="">COM_TJFIELDS_FIELDS_FIELD_TYPE_FILTER</option>
+			<option value="text">Text</option>
+			<option value="radio">Radio</option>
+			<option value="single_select">Single select</option>
+			<option value="multi_select">Multiple select</option>
+			<option value="hidden">Hidden</option>
+			<option value="textarea">Textarea</option>
+			<option value="checkbox">Checkbox</option>
+			<option value="calender">Calender</option>
+			<option value="editor">Editor</option>
+			<option value="email_field">Email</option>
+			<option value="password">Password</option>
+			<option value="file">File</option>
+		</field>
+
+	   <field name="required" type="radio"
+
+			label="COM_TJFIELDS_FORM_LBL_FIELD_REQUIRED"
+			description="COM_TJFIELDS_FORM_DESC_FIELD_REQUIRED"
+				 default="1"
+
+				 required="true" >
+				<option value="1">Yes</option>
+				<option value="0">No</option>
+		</field>
+
+	   <field name="placeholder" type="text"
+			label="COM_TJFIELDS_FORM_LBL_FIELD_PLACEHOLDER"
+			description="COM_TJFIELDS_FORM_DESC_FIELD_PLACEHOLDER" />
+
+	   <field name="created_by" type="createdby" default=""
+			label="COM_TJFIELDS_FORM_LBL_FIELD_CREATED_BY"
+			description="COM_TJFIELDS_FORM_DESC_FIELD_CREATED_BY"  />
+
+	   <field name="min" type="text"
+			label="COM_TJFIELDS_FORM_LBL_FIELD_MIN"
+			description="COM_TJFIELDS_FORM_DESC_FIELD_MIN"	/>
+
+	   <field name="max" type="text"
+
+			label="COM_TJFIELDS_FORM_LBL_FIELD_MAX"
+			description="COM_TJFIELDS_FORM_DESC_FIELD_MAX" 	 />
+
+	   <field name="tooltip" type="text"
+
+			label="COM_TJFIELDS_FORM_LBL_FIELD_TOOLTIP"
+			description="COM_TJFIELDS_FORM_DESC_FIELD_TOOLTIP" 	 />
+
+	   <field name="js_function" type="textarea"
+
+			label="COM_TJFIELDS_FORM_LBL_FIELD_JS_FUNCTION"
+			description="COM_TJFIELDS_FORM_DESC_FIELD_JS_FUNCTION"
+			cols="100"
+			rows="8" />
+
+	   <field name="validation_class" type="textarea"
+			label="COM_TJFIELDS_FORM_LBL_FIELD_VALIDATION_CLASS"
+			description="COM_TJFIELDS_FORM_DESC_FIELD_VALIDATION_CLASS"
+			cols="100"
+			rows="8" />
+
+	   <field name="client" type="text" size="40" class="inputbox"
+			label="COM_TJFIELDS_FORM_LBL_FIELD_CLIENT"
+			description="COM_TJFIELDS_FORM_DESC_FIELD_CLIENT"
+			default="1"
+			filter="safehtml" />
+
+		<field name="client_type" type="text" size="40" class="inputbox"
+			label="COM_TJFIELDS_FORM_LBL_FIELD_CLIENT_TYPE"
+			description="COM_TJFIELDS_FORM_DESC_FIELD_CLIENT_TYPE"
+			filter="safehtml" />
+
+	   <field name="group_id" type="text" size="40" class="inputbox"
+			label="COM_TJFIELDS_FORM_LBL_FIELD_GROUP_ID"
+			description="COM_TJFIELDS_FORM_DESC_FIELD_GROUP_ID"
+			filter="safehtml" />
+
+		<field
+			name="state"
+			type="list"
+			label="JSTATUS"
+			description="JFIELD_PUBLISHED_DESC"
+			class="inputbox"
+			size="1"
+			default="1">
+				<option value="1">JPUBLISHED</option>
+				<option value="0">JUNPUBLISHED</option>
+		</field>
+
+	</fieldset>
+
+</form>

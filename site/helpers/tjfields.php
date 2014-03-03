@@ -38,7 +38,7 @@ class TjfieldsHelper
 		$db=JFactory::getDbo();
 		$query	= $db->getQuery(true);
 		$query->select('field_id,value FROM #__tjfields_fields_value');
-		echo $query->where('content_id='.$content_id.' AND client="'.$client.'" '.$query_user_string);
+		$query->where('content_id='.$content_id.' AND client="'.$client.'" '.$query_user_string);
 		$db->setQuery($query);
 		$field_data_value = $db->loadObjectlist();
 

@@ -181,7 +181,7 @@ class TjfieldsHelper
 	 * Get universal attendee fields
 	 *
 	 */
-	public function getUniversalAttendeeFields($client)
+	public function getUniversalFields($client)
 	{
 		$db=JFactory::getDbo();
 		$query	= $db->getQuery(true);

@@ -83,18 +83,27 @@ class JFormFieldCustomfield extends JFormField
 	 */
 	function fetchClientType($name, $value, &$node, $control_name)
 	{
+		//print_r($value); die('asda');
 		$input = JFactory::getApplication()->input;
+
 		$full_client = $input->get('client','','STRING');
-		$client =  explode('.',$full_client);
-		$client = $client[0];
-		$client_type_default = $client[1];
-		$db=JFactory::getDbo();
-		$query	= $db->getQuery(true);
-		$query->select('client_type FROM `#__tjfields_client_type` as client_type');
-		$query->where('client_type.client="'.$client.'"');
-		$db->setQuery($query);
-		$client_type=$db->loadObjectList();
-		//print_r($client_type); die('asdasd');
+		$full_client =  explode('.',$full_client);
+
+		$client = $full_client[0];
+
+		if(empty($value))
+		{
+			$value = $full_client[1];
+		}
+
+					$db=JFactory::getDbo();
+					$query	= $db->getQuery(true);
+					$query->select('client_type FROM `#__tjfields_client_type` as client_type');
+					$query->where('client_type.client="'.$client.'"');
+					$db->setQuery($query);
+
+					$client_type=$db->loadObjectList();
+
 		$options = array();
 		foreach($client_type as $type){
 			$options[] = JHtml::_('select.option',$type->client_type, $type->client_type);

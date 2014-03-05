@@ -28,7 +28,10 @@ $input = JFactory::getApplication()->input;
 			//if edit ..make name field readonly
 			var field_id=techjoomla.jQuery('#jform_id').val();
 			if(field_id!=0)
-			techjoomla.jQuery('#jform_name').attr('readonly',true);
+			{
+				techjoomla.jQuery('#jform_name').attr('readonly',true);
+			}
+
 		});
 
 	Joomla.submitbutton = function(task)

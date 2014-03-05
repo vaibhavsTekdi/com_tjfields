@@ -143,10 +143,10 @@ class TjfieldsHelper
 		$app = JFactory::getApplication();
 		$db=JFactory::getDbo();
 		$query	= $db->getQuery(true);
-		$query->update('name');
+		$query->update('#__tjfields_fields');
 		$query->set('name="'.$data_same_name.'_'.$id.'"');
-		$query->from(' #__tjfields_fields');
-		$query->where('id='.$id);
+
+		 $query->where('id='.$id);
 		$db->setQuery($query);
 		if(!$db->execute())
 		{

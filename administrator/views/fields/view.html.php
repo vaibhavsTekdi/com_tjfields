@@ -39,7 +39,11 @@ class TjfieldsViewFields extends JViewLegacy
 
 		$this->addToolbar();
 
-        $this->sidebar = JHtmlSidebar::render();
+        if(JVERSION >= '3.0')
+		{
+			$this->sidebar = JHtmlSidebar::render();
+		}
+
 		parent::display($tpl);
 	}
 
@@ -106,9 +110,7 @@ class TjfieldsViewFields extends JViewLegacy
 			JToolBarHelper::preferences('com_tjfields');
 		}
 
-        //Set sidebar action - New in 3.0
         $input=jFactory::getApplication()->input;
-		JHtmlSidebar::setAction('index.php?option=com_tjfields&view=fields&client="'.$input->get('client','','STRING').'"');
 
         $this->extra_sidebar = '';
 
@@ -151,23 +153,24 @@ class TjfieldsViewFields extends JViewLegacy
 		$options[11] = new stdClass();
 		$options[11]->value = "file";
 		$options[11]->text = "File";
-		JHtmlSidebar::addFilter(
-			$select_label,
-			'filter_field_type',
-			JHtml::_('select.options', $options , "value", "text", $this->state->get('filter.type'), true)
-		);
 
-		JHtmlSidebar::addFilter(
+		if(JVERSION >= '3.0')
+		{
+			//Set sidebar action - New in 3.0
+			JHtmlSidebar::setAction('index.php?option=com_tjfields&view=fields&client="'.$input->get('client','','STRING').'"');
 
-			JText::_('JOPTION_SELECT_PUBLISHED'),
+			JHtmlSidebar::addFilter(
+				$select_label,
+				'filter_field_type',
+				JHtml::_('select.options', $options , "value", "text", $this->state->get('filter.type'), true)
+			);
 
-			'filter_published',
-
-			JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'), "value", "text", $this->state->get('filter.state'), true)
-
-		);
-
-
+			JHtmlSidebar::addFilter(
+				JText::_('JOPTION_SELECT_PUBLISHED'),
+				'filter_published',
+				JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'), "value", "text", $this->state->get('filter.state'), true)
+			);
+		}
 	}
 
 	protected function getSortFields()

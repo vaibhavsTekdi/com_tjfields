@@ -32,7 +32,6 @@
         <folder>helpers</folder>
     </files>
     <languages folder="site">
-        
 			<language tag="en-GB">language/en-GB.com_tjfields.ini</language>
     </languages>
     <administration>
@@ -57,7 +56,6 @@
             <folder>views</folder>
         </files>
         <languages folder="administrator">
-            
 			<language tag="en-GB">language/en-GB.com_tjfields.ini</language>
 			<language tag="en-GB">language/en-GB.com_tjfields.sys.ini</language>
         </languages>

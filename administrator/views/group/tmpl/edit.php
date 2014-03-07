@@ -12,8 +12,12 @@ defined('_JEXEC') or die;
 JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
-JHtml::_('formbehavior.chosen', 'select');
 JHtml::_('behavior.keepalive');
+
+if(JVERSION >= '3.0')
+{
+	JHtml::_('formbehavior.chosen', 'select');
+}
 
 // Import CSS
 $document = JFactory::getDocument();
@@ -44,38 +48,40 @@ $input = JFactory::getApplication()->input;
     }
 </script>
 
-<form action="<?php echo JRoute::_('index.php?option=com_tjfields&layout=edit&id=' . (int) $this->item->id).' &client='.$input->get('client','','STRING'); ?>" method="post" enctype="multipart/form-data" name="adminForm" id="group-form" class="form-validate">
-    <div class="row-fluid">
-        <div class="span10 form-horizontal">
-            <fieldset class="adminform">
+<div class="techjoomla-bootstrap">
+	<form action="<?php echo JRoute::_('index.php?option=com_tjfields&layout=edit&id=' . (int) $this->item->id).' &client='.$input->get('client','','STRING'); ?>" method="post" enctype="multipart/form-data" name="adminForm" id="group-form" class="form-validate">
+		<div class="row-fluid">
+			<div class="span10 form-horizontal">
+				<fieldset class="adminform">
 
-                			<div class="control-group">
-				<div class="control-label"><?php echo $this->form->getLabel('id'); ?></div>
-				<div class="controls"><?php echo $this->form->getInput('id'); ?></div>
+								<div class="control-group">
+					<div class="control-label"><?php echo $this->form->getLabel('id'); ?></div>
+					<div class="controls"><?php echo $this->form->getInput('id'); ?></div>
+				</div>
+				<div class="control-group">
+					<div class="control-label"><?php echo $this->form->getLabel('state'); ?></div>
+					<div class="controls"><?php echo $this->form->getInput('state'); ?></div>
+				</div>
+				<div class="control-group">
+					<div class="control-label"><?php echo $this->form->getLabel('created_by'); ?></div>
+					<div class="controls"><?php echo $this->form->getInput('created_by'); ?></div>
+				</div>
+				<div class="control-group">
+					<div class="control-label"><?php echo $this->form->getLabel('name'); ?></div>
+					<div class="controls"><?php echo $this->form->getInput('name'); ?></div>
+				</div>
+
+					<input type="hidden" name="jform[client]" value="<?php echo $input->get('client','','STRING'); ?>" />
+
+
+				</fieldset>
 			</div>
-			<div class="control-group">
-				<div class="control-label"><?php echo $this->form->getLabel('state'); ?></div>
-				<div class="controls"><?php echo $this->form->getInput('state'); ?></div>
-			</div>
-			<div class="control-group">
-				<div class="control-label"><?php echo $this->form->getLabel('created_by'); ?></div>
-				<div class="controls"><?php echo $this->form->getInput('created_by'); ?></div>
-			</div>
-			<div class="control-group">
-				<div class="control-label"><?php echo $this->form->getLabel('name'); ?></div>
-				<div class="controls"><?php echo $this->form->getInput('name'); ?></div>
-			</div>
-
-				<input type="hidden" name="jform[client]" value="<?php echo $input->get('client','','STRING'); ?>" />
-
-
-            </fieldset>
-        </div>
 
 
 
-        <input type="hidden" name="task" value="" />
-        <?php echo JHtml::_('form.token'); ?>
+			<input type="hidden" name="task" value="" />
+			<?php echo JHtml::_('form.token'); ?>
 
-    </div>
-</form>
+		</div>
+	</form>
+</div>

@@ -34,12 +34,16 @@ class TjfieldsViewGroups extends JViewLegacy
 		if (count($errors = $this->get('Errors'))) {
 			throw new Exception(implode("\n", $errors));
 		}
-        
+
 		TjfieldsHelper::addSubmenu('groups');
-        
+
 		$this->addToolbar();
-        
-        $this->sidebar = JHtmlSidebar::render();
+
+		if(JVERSION >= '3.0')
+		{
+			$this->sidebar = JHtmlSidebar::render();
+		}
+
 		parent::display($tpl);
 	}
 
@@ -90,7 +94,7 @@ class TjfieldsViewGroups extends JViewLegacy
             	JToolBarHelper::custom('groups.checkin', 'checkin.png', 'checkin_f2.png', 'JTOOLBAR_CHECKIN', true);
             }
 		}
-        
+
         //Show trash and delete for components that uses the state field
         if (isset($this->items[0]->state)) {
 		    if ($state->get('filter.state') == -2 && $canDo->get('core.delete')) {
@@ -105,25 +109,22 @@ class TjfieldsViewGroups extends JViewLegacy
 		if ($canDo->get('core.admin')) {
 			JToolBarHelper::preferences('com_tjfields');
 		}
-        
-        //Set sidebar action - New in 3.0
-		JHtmlSidebar::setAction('index.php?option=com_tjfields&view=groups');
-        
+
         $this->extra_sidebar = '';
-        
-		JHtmlSidebar::addFilter(
 
-			JText::_('JOPTION_SELECT_PUBLISHED'),
+		if(JVERSION >= '3.0')
+		{
+			//Set sidebar action - New in 3.0
+			JHtmlSidebar::setAction('index.php?option=com_tjfields&view=groups');
 
-			'filter_published',
-
-			JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'), "value", "text", $this->state->get('filter.state'), true)
-
-		);
-
-        
+			JHtmlSidebar::addFilter(
+				JText::_('JOPTION_SELECT_PUBLISHED'),
+				'filter_published',
+				JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'), "value", "text", $this->state->get('filter.state'), true)
+			);
+		}
 	}
-    
+
 	protected function getSortFields()
 	{
 		return array(
@@ -137,5 +138,5 @@ class TjfieldsViewGroups extends JViewLegacy
 		);
 	}
 
-    
+
 }

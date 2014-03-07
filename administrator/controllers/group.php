@@ -30,16 +30,17 @@ class TjfieldsControllerGroup extends JControllerForm
 		$post=$input->post;
 		$model = $this->getModel('group');
 		$if_saved=$model->save($post);
+
 		if($if_saved)
-			{
-				$msg='asdasdasdasdasdasdasd';
-				$link = JRoute::_('index.php?option=com_tjfields&view=groups&client='.$input->get('client','','STRING'),false);
-			}
+		{
+			$msg='Success';
+			$link = JRoute::_('index.php?option=com_tjfields&view=groups&client='.$input->get('client','','STRING'),false);
+		}
 		else
-			{
-				$msg=JText::_('TJFIELDS_ERROR_MSG');
-				$link = JRoute::_('index.php?option=com_tjfields&view=groups&client='.$input->get('client','','STRING'),false);
-			}
+		{
+			$msg=JText::_('TJFIELDS_ERROR_MSG');
+			$link = JRoute::_('index.php?option=com_tjfields&view=groups&client='.$input->get('client','','STRING'),false);
+		}
 
 		$this->setRedirect($link,$msg);
 	}
@@ -71,12 +72,13 @@ class TjfieldsControllerGroup extends JControllerForm
 		$this->setRedirect($link);
 	}
 
-function edit()
+	function edit()
 	{
-		$cid   = $this->input->post->get('cid', array(), 'array');
-		$recordId = (int) (count($cid) ? $cid[0] : $this->input->getInt('id'));
-		$input=JFactory::getApplication()->input;
-		$link = JRoute::_('index.php?option=com_tjfields&view=group&layout=edit&id='.$recordId.'&client='.$input->get('client','','STRING'),false);
+		$input    = JFactory::getApplication()->input;
+		$cid      = $input->post->get('cid', array(), 'array');
+		$recordId = (int) (count($cid) ? $cid[0] : $input->getInt('id'));
+
+		$link = JRoute::_('index.php?option=com_tjfields&view=group&layout=edit&id=' . $recordId . '&client=' . $input->get('client', '' ,'STRING'), false);
 		$this->setRedirect($link);
 	}
 

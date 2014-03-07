@@ -48,30 +48,34 @@ class TjfieldsControllerField extends JControllerForm
 		$data=$input->post;
 		$model = $this->getModel('field');
 		$field_id=$model->save_option($data);
+
 		if($field_id)
-			{
-				$msg='';
-				$link = JRoute::_('index.php?option=com_tjfields&view=field&layout=edit&id='.$field_id.'&client='.$input->get('client','','STRING'),false);
-			}
+		{
+			$msg='';
+			$link = JRoute::_('index.php?option=com_tjfields&view=field&layout=edit&id='.$field_id.'&client='.$input->get('client','','STRING'),false);
+		}
 		else
-			{
-				$msg=JText::_('TJFIELDS_ERROR_MSG');
-				$link = JRoute::_('index.php?option=com_tjfields&view=field&layout=edit&id='.$field_id.'&client='.$input->get('client','','STRING'),false);
-			}
+		{
+			$msg=JText::_('TJFIELDS_ERROR_MSG');
+			$link = JRoute::_('index.php?option=com_tjfields&view=field&layout=edit&id='.$field_id.'&client='.$input->get('client','','STRING'),false);
+		}
+
 		$this->setRedirect($link,$msg);
 	}
+
 	function add()
 	{
 		$input=JFactory::getApplication()->input;
 		$link = JRoute::_('index.php?option=com_tjfields&view=field&layout=edit&client='.$input->get('client','','STRING'),false);
 		$this->setRedirect($link);
 	}
+
 	function edit()
 	{
-		$cid   = $this->input->post->get('cid', array(), 'array');
-		$recordId = (int) (count($cid) ? $cid[0] : $this->input->getInt('id'));
-		$input=JFactory::getApplication()->input;
-		$link = JRoute::_('index.php?option=com_tjfields&view=field&layout=edit&id='.$recordId.'&client='.$input->get('client','','STRING'),false);
+		$input    = JFactory::getApplication()->input;
+		$cid      = $input->post->get('cid', array(), 'array');
+		$recordId = (int) (count($cid) ? $cid[0] : $input->getInt('id'));
+		$link     = JRoute::_('index.php?option=com_tjfields&view=field&layout=edit&id= ' . $recordId . '&client=' . $input->get('client', '', 'STRING'), false);
 		$this->setRedirect($link);
 	}
 

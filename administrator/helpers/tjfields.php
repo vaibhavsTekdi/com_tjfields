@@ -20,16 +20,32 @@ class TjfieldsHelper
 	 */
 	public static function addSubmenu($vName = '')
 	{
-		JHtmlSidebar::addEntry(
-			JText::_('COM_TJFIELDS_TITLE_FIELDS'),
-			'index.php?option=com_tjfields&view=fields',
-			$vName == 'fields'
-		);
-		JHtmlSidebar::addEntry(
-			JText::_('COM_TJFIELDS_TITLE_GROUPS'),
-			'index.php?option=com_tjfields&view=groups',
-			$vName == 'groups'
-		);
+		if(JVERSION >= '3.0')
+		{
+			JHtmlSidebar::addEntry(
+				JText::_('COM_TJFIELDS_TITLE_FIELDS'),
+				'index.php?option=com_tjfields&view=fields',
+				$vName == 'fields'
+			);
+			JHtmlSidebar::addEntry(
+				JText::_('COM_TJFIELDS_TITLE_GROUPS'),
+				'index.php?option=com_tjfields&view=groups',
+				$vName == 'groups'
+			);
+		}
+		else
+		{
+			JSubMenuHelper::addEntry(
+				JText::_('COM_TJFIELDS_TITLE_FIELDS'),
+				'index.php?option=com_tjfields&view=fields',
+				$vName == 'fields'
+			);
+			JSubMenuHelper::addEntry(
+				JText::_('COM_TJFIELDS_TITLE_GROUPS'),
+				'index.php?option=com_tjfields&view=groups',
+				$vName == 'groups'
+			);
+		}
 
 	}
 

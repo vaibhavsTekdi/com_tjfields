@@ -12,8 +12,12 @@ defined('_JEXEC') or die;
 JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
 JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
-JHtml::_('formbehavior.chosen', 'select');
 JHtml::_('behavior.keepalive');
+
+if(JVERSION >= '3.0')
+{
+	JHtml::_('formbehavior.chosen', 'select');
+}
 // Import CSS
 $document = JFactory::getDocument();
 $document->addStyleSheet('components/com_tjfields/assets/css/tjfields.css');
@@ -111,121 +115,118 @@ $input = JFactory::getApplication()->input;
 
 </script>
 
-<form action="<?php echo JRoute::_('index.php?option=com_tjfields&layout=edit&id='.(int) $this->item->id).'&client='.$input->get('client','','STRING'); ?>" method="post" enctype="multipart/form-data" name="adminForm" id="field-form" class="form-validate">
-	<div class="techjoomla-bootstrap">
-	<div class="row-fluid">
-		<fieldset class="adminform">
-		<div class="container1">
-			<div class="span6 form-horizontal">
+<div class="techjoomla-bootstrap">
+	<form action="<?php echo JRoute::_('index.php?option=com_tjfields&layout=edit&id='.(int) $this->item->id).'&client='.$input->get('client','','STRING'); ?>" method="post" enctype="multipart/form-data" name="adminForm" id="field-form" class="form-validate">
+		<div class="techjoomla-bootstrap">
+		<div class="row-fluid">
+			<fieldset class="adminform">
+			<div class="container1">
+				<div class="span6 form-horizontal">
 
 
-				<div class="control-group">
-					<div class="control-label"><?php echo $this->form->getLabel('id'); ?></div>
-					<div class="controls"><?php echo $this->form->getInput('id'); ?></div>
-				</div>
-				<div class="control-group">
-					<div class="control-label"><?php echo $this->form->getLabel('client_type'); ?></div>
-					<div class="controls"><?php echo $this->form->getInput('client_type'); ?></div>
-				</div>
-				<div class="control-group">
-					<div class="control-label"><?php echo $this->form->getLabel('label'); ?></div>
-					<div class="controls"><?php echo $this->form->getInput('label'); ?></div>
-				</div>
-				<div class="control-group">
-					<div class="control-label"><?php echo $this->form->getLabel('name'); ?></div>
-					<div class="controls"><?php echo $this->form->getInput('name'); ?></div>
-				</div>
-				<div class="control-group">
-					<div class="control-label"><?php echo $this->form->getLabel('type'); ?></div>
-					<div class="controls"><?php echo $this->form->getInput('type'); ?></div>
-				</div>
-				<div class="control-group displaynone" id="option_div" >
-					<div class="control-label"><?php echo $this->form->getLabel('fieldoption'); ?></div>
-					<div class="controls"><?php echo $this->form->getInput('fieldoption'); ?></div>
-				</div>
-				<div class="control-group displaynone" id="date_format" >
-					<div class="control-label"><?php echo $this->form->getLabel('format'); ?></div>
-					<div class="controls"><?php echo $this->form->getInput('format'); ?></div>
-				</div>
-				<div class="control-group displaynone" id="option_min_char">
-					<div class="control-label"><?php echo $this->form->getLabel('min'); ?></div>
-					<div class="controls"><?php echo $this->form->getInput('min'); ?></div>
-				</div>
-				<div class="control-group displaynone" id="option_max_char">
-					<div class="control-label"><?php echo $this->form->getLabel('max'); ?></div>
-					<div class="controls"><?php echo $this->form->getInput('max'); ?></div>
-				</div>
-				<div class="control-group displaynone" id="textarea_rows">
-					<div class="control-label"><?php echo $this->form->getLabel('rows'); ?></div>
-					<div class="controls textarea_inputs"><?php echo $this->form->getInput('rows'); ?></div>
-				</div>
-				<div class="control-group displaynone" id="textarea_cols">
-					<div class="control-label"><?php echo $this->form->getLabel('cols'); ?></div>
-					<div class="controls textarea_inputs"><?php echo $this->form->getInput('cols'); ?></div>
-				</div>
-				<div class="control-group displaynone" id="default_value_text">
-					<div class="control-label"><?php echo $this->form->getLabel('default_value'); ?></div>
-					<div class="controls"><?php echo $this->form->getInput('default_value'); ?></div>
-				</div>
+					<div class="control-group">
+						<div class="control-label"><?php echo $this->form->getLabel('id'); ?></div>
+						<div class="controls"><?php echo $this->form->getInput('id'); ?></div>
+					</div>
+					<div class="control-group">
+						<div class="control-label"><?php echo $this->form->getLabel('client_type'); ?></div>
+						<div class="controls"><?php echo $this->form->getInput('client_type'); ?></div>
+					</div>
+					<div class="control-group">
+						<div class="control-label"><?php echo $this->form->getLabel('label'); ?></div>
+						<div class="controls"><?php echo $this->form->getInput('label'); ?></div>
+					</div>
+					<div class="control-group">
+						<div class="control-label"><?php echo $this->form->getLabel('name'); ?></div>
+						<div class="controls"><?php echo $this->form->getInput('name'); ?></div>
+					</div>
+					<div class="control-group">
+						<div class="control-label"><?php echo $this->form->getLabel('type'); ?></div>
+						<div class="controls"><?php echo $this->form->getInput('type'); ?></div>
+					</div>
+					<div class="control-group displaynone" id="option_div" >
+						<div class="control-label"><?php echo $this->form->getLabel('fieldoption'); ?></div>
+						<div class="controls"><?php echo $this->form->getInput('fieldoption'); ?></div>
+					</div>
+					<div class="control-group displaynone" id="date_format" >
+						<div class="control-label"><?php echo $this->form->getLabel('format'); ?></div>
+						<div class="controls"><?php echo $this->form->getInput('format'); ?></div>
+					</div>
+					<div class="control-group displaynone" id="option_min_char">
+						<div class="control-label"><?php echo $this->form->getLabel('min'); ?></div>
+						<div class="controls"><?php echo $this->form->getInput('min'); ?></div>
+					</div>
+					<div class="control-group displaynone" id="option_max_char">
+						<div class="control-label"><?php echo $this->form->getLabel('max'); ?></div>
+						<div class="controls"><?php echo $this->form->getInput('max'); ?></div>
+					</div>
+					<div class="control-group displaynone" id="textarea_rows">
+						<div class="control-label"><?php echo $this->form->getLabel('rows'); ?></div>
+						<div class="controls textarea_inputs"><?php echo $this->form->getInput('rows'); ?></div>
+					</div>
+					<div class="control-group displaynone" id="textarea_cols">
+						<div class="control-label"><?php echo $this->form->getLabel('cols'); ?></div>
+						<div class="controls textarea_inputs"><?php echo $this->form->getInput('cols'); ?></div>
+					</div>
+					<div class="control-group displaynone" id="default_value_text">
+						<div class="control-label"><?php echo $this->form->getLabel('default_value'); ?></div>
+						<div class="controls"><?php echo $this->form->getInput('default_value'); ?></div>
+					</div>
 
 
-			<input type="hidden" name="jform[client]" value="<?php echo $input->get('client','','STRING'); ?>" />
+				<input type="hidden" name="jform[client]" value="<?php echo $input->get('client','','STRING'); ?>" />
+				</div>
+				<div class="span5 form-horizontal">
+
+
+					<div class="control-group">
+						<div class="control-label"><?php echo $this->form->getLabel('group_id'); ?></div>
+						<div class="controls"><?php echo $this->form->getInput('group_id'); ?></div>
+					</div>
+
+					<div class="control-group" >
+						<div class="control-label"><?php echo $this->form->getLabel('state'); ?></div>
+						<div class="controls"><?php echo $this->form->getInput('state'); ?></div>
+					</div>
+					<div class="control-group">
+						<div class="control-label"><?php echo $this->form->getLabel('required'); ?></div>
+						<div class="controls"><?php echo $this->form->getInput('required'); ?></div>
+					</div>
+					<div class="control-group">
+						<div class="control-label"><?php echo $this->form->getLabel('readonly'); ?></div>
+						<div class="controls"><?php echo $this->form->getInput('readonly'); ?></div>
+					</div>
+					<div class="control-group">
+						<div class="control-label"><?php echo $this->form->getLabel('placeholder'); ?></div>
+						<div class="controls"><?php echo $this->form->getInput('placeholder'); ?></div>
+					</div>
+					<div class="control-group">
+						<div class="control-label"><?php echo $this->form->getLabel('created_by'); ?></div>
+						<div class="controls"><?php echo $this->form->getInput('created_by'); ?></div>
+					</div>
+					<div class="control-group">
+						<div class="control-label"><?php echo $this->form->getLabel('description'); ?></div>
+						<div class="controls"><?php echo $this->form->getInput('description'); ?></div>
+					</div>
+					<div class="control-group">
+						<div class="control-label"><?php echo $this->form->getLabel('js_function'); ?></div>
+						<div class="controls"><?php echo $this->form->getInput('js_function'); ?></div>
+					</div>
+					<div class="control-group">
+						<div class="control-label"><?php echo $this->form->getLabel('validation_class'); ?></div>
+						<div class="controls"><?php echo $this->form->getInput('validation_class'); ?></div>
+					</div>
+				</div>
 			</div>
-			<div class="span5 form-horizontal">
+			</fieldset>
 
-
-				<div class="control-group">
-					<div class="control-label"><?php echo $this->form->getLabel('group_id'); ?></div>
-					<div class="controls"><?php echo $this->form->getInput('group_id'); ?></div>
-				</div>
-
-				<div class="control-group" >
-					<div class="control-label"><?php echo $this->form->getLabel('state'); ?></div>
-					<div class="controls"><?php echo $this->form->getInput('state'); ?></div>
-				</div>
-				<div class="control-group">
-					<div class="control-label"><?php echo $this->form->getLabel('required'); ?></div>
-					<div class="controls"><?php echo $this->form->getInput('required'); ?></div>
-				</div>
-				<div class="control-group">
-					<div class="control-label"><?php echo $this->form->getLabel('readonly'); ?></div>
-					<div class="controls"><?php echo $this->form->getInput('readonly'); ?></div>
-				</div>
-				<div class="control-group">
-					<div class="control-label"><?php echo $this->form->getLabel('placeholder'); ?></div>
-					<div class="controls"><?php echo $this->form->getInput('placeholder'); ?></div>
-				</div>
-				<div class="control-group">
-					<div class="control-label"><?php echo $this->form->getLabel('created_by'); ?></div>
-					<div class="controls"><?php echo $this->form->getInput('created_by'); ?></div>
-				</div>
-				<div class="control-group">
-					<div class="control-label"><?php echo $this->form->getLabel('description'); ?></div>
-					<div class="controls"><?php echo $this->form->getInput('description'); ?></div>
-				</div>
-				<div class="control-group">
-					<div class="control-label"><?php echo $this->form->getLabel('js_function'); ?></div>
-					<div class="controls"><?php echo $this->form->getInput('js_function'); ?></div>
-				</div>
-				<div class="control-group">
-					<div class="control-label"><?php echo $this->form->getLabel('validation_class'); ?></div>
-					<div class="controls"><?php echo $this->form->getInput('validation_class'); ?></div>
-				</div>
-			</div>
+			<!--</fieldset>-->
 		</div>
-		</fieldset>
 
+		<input type="hidden" name="task" value="" />
+		<?php echo JHtml::_('form.token'); ?>
 
-
-
-            <!--</fieldset>-->
-        </div>
-
-
-
-        <input type="hidden" name="task" value="" />
-        <?php echo JHtml::_('form.token'); ?>
-
-    </div><!--row fuild ends-->
-    </div><!--techjoomla ends-->
-</form>
+		</div><!--row fuild ends-->
+		</div><!--techjoomla ends-->
+	</form>
+</div>

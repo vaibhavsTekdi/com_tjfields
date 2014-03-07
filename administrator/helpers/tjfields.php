@@ -183,7 +183,7 @@ class TjfieldsHelper
 		$db     = JFactory::getDbo();
 		$query  = 'SELECT * FROM
 		#__tjfields_fields
-		WHERE client="'.$data['client'].' AND state=1"
+		WHERE client="'.$data['client'].'" AND state=1
 		';
 
 		$db->setQuery($query);

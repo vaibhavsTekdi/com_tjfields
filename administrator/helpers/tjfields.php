@@ -181,9 +181,9 @@ class TjfieldsHelper
 	{
 		//print_r($fields); die('asda');
 		$db     = JFactory::getDbo();
-		echo $query  = 'SELECT * FROM
+		$query  = 'SELECT * FROM
 		#__tjfields_fields
-		WHERE client="'.$data['client'].'"
+		WHERE client="'.$data['client'].' AND state=1"
 		';
 
 		$db->setQuery($query);

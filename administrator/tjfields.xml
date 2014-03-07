@@ -54,6 +54,7 @@
             <folder>sql</folder>
             <folder>tables</folder>
             <folder>views</folder>
+			<folder>image</folder>
         </files>
         <languages folder="administrator">
 			<language tag="en-GB">language/en-GB.com_tjfields.ini</language>

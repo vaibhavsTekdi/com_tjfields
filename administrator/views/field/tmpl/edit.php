@@ -70,6 +70,9 @@ $input = JFactory::getApplication()->input;
 							techjoomla.jQuery('#option_max_char').hide();
 							techjoomla.jQuery('#date_format').hide();
 							techjoomla.jQuery('#default_value_text').hide();
+							techjoomla.jQuery('.textarea_inputs').children().removeAttr('required');
+							techjoomla.jQuery('#textarea_rows').hide();
+							techjoomla.jQuery('#textarea_cols').hide();
 							break;
 				case	"text":
 				case	"textarea":
@@ -87,6 +90,12 @@ $input = JFactory::getApplication()->input;
 								//techjoomla.jQuery('#textarea_cols').addClass('required');
 								techjoomla.jQuery('.textarea_inputs').children().attr('required','required');
 							}
+							else
+							{
+								techjoomla.jQuery('.textarea_inputs').children().removeAttr('required');
+								techjoomla.jQuery('#textarea_rows').hide();
+								techjoomla.jQuery('#textarea_cols').hide();
+							}
 
 							break;
 				case	"calender":
@@ -98,6 +107,10 @@ $input = JFactory::getApplication()->input;
 							techjoomla.jQuery('#option_max_char').hide();
 							techjoomla.jQuery('#date_format').hide();
 							techjoomla.jQuery('#default_value_text').hide();
+							techjoomla.jQuery('.textarea_inputs').children().removeAttr('required');
+							techjoomla.jQuery('#textarea_rows').hide();
+							techjoomla.jQuery('#textarea_cols').hide();
+
 							if(field_value == "calender")
 							{
 								techjoomla.jQuery('#date_format').show();
@@ -106,6 +119,7 @@ $input = JFactory::getApplication()->input;
 							{
 								techjoomla.jQuery('#default_value_text').show();
 							}
+
 							break;
 
 			}

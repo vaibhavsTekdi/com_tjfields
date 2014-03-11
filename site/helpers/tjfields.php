@@ -172,12 +172,13 @@ class TjfieldsHelper
 		$query->select('options,default_option,value FROM #__tjfields_options');
 		$query->where('field_id='.$field_id);
 
-		if(!empty($option_value))
+		if ($option_value != '')
 		{
 			$option_value = json_decode($option_value);
-			if(is_array($option_value))
+
+			if (is_array($option_value))
 			{
-				$option_value_string = implode(',',$option_value);
+				$option_value_string = "'" . implode("','",$option_value) . "'";
 				$query->where('value IN ('.$option_value_string.')');
 			}
 			else
@@ -188,6 +189,7 @@ class TjfieldsHelper
 
 		$db->setQuery($query);
 		$extra_options = $db->loadObjectlist();
+
 		return $extra_options;
 	}
 

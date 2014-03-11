@@ -22,6 +22,15 @@ if(JVERSION >= '3.0')
 $document = JFactory::getDocument();
 $document->addStyleSheet('components/com_tjfields/assets/css/tjfields.css');
 $input = JFactory::getApplication()->input;
+
+		$full_client = $input->get('client','','STRING');
+		$full_client =  explode('.',$full_client);
+
+		$client = $full_client[0];
+		$client_type = $full_client[1];
+
+
+
 ?>
 <script type="text/javascript">
 
@@ -143,10 +152,6 @@ $input = JFactory::getApplication()->input;
 						<div class="controls"><?php echo $this->form->getInput('id'); ?></div>
 					</div>
 					<div class="control-group">
-						<div class="control-label"><?php echo $this->form->getLabel('client_type'); ?></div>
-						<div class="controls"><?php echo $this->form->getInput('client_type'); ?></div>
-					</div>
-					<div class="control-group">
 						<div class="control-label"><?php echo $this->form->getLabel('label'); ?></div>
 						<div class="controls"><?php echo $this->form->getInput('label'); ?></div>
 					</div>
@@ -237,6 +242,7 @@ $input = JFactory::getApplication()->input;
 			<!--</fieldset>-->
 		</div>
 
+		<input type="hidden" name="client_type" value="<?php	echo $client_type;	?>" />
 		<input type="hidden" name="task" value="" />
 		<?php echo JHtml::_('form.token'); ?>
 

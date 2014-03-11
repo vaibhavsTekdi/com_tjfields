@@ -42,16 +42,8 @@ class JFormFieldCustomfield extends JFormField
 				return $this->fetchGroupid($this->name,$this->value,$this->element,$this->options['control']);
 			break;
 
-			case 'jform[client_type]':
+			/*case 'jform[client_type]':
 				return $this->fetchClientType($this->name,$this->value,$this->element,$this->options['control']);
-			break;
-/*
-			case 'jform[alert_id]':
-				return $this->fetchAlerts($this->name,$this->value,$this->element,$this->options['control']);
-			break;
-
-			case 'jform[frequency]':
-				return $this->fetchDefaultFrequencies($this->name,$this->value,$this->element,$this->options['control']);
 			break;*/
 		}
 
@@ -81,6 +73,7 @@ class JFormFieldCustomfield extends JFormField
 	 * Method to genereate list of allowed frequencies
 	 * @return	list	The list of frequencies
 	 */
+	 /*
 	function fetchClientType($name, $value, &$node, $control_name)
 	{
 		//print_r($value); die('asda');
@@ -110,26 +103,6 @@ class JFormFieldCustomfield extends JFormField
 		}
 		return JHtml::_('select.genericlist',  $options, $name, 'class="inputbox required"', 'value', 'text', $value, $control_name.$name );
 		//return JHtml::_('select.genericlist', $options, $fieldName, 'class="inputbox required"', 'value', 'text', $value, $control_name.$name );
-	}
-	/**
-	 * Method to get the list of alerts
-	 * @return	list	The list of alerts
-	 */
-	/*
-	function fetchAlerts($name, $value, &$node, $control_name)
-	{
-			$db=JFactory::getDbo();
-			$query= $db->getQuery(true);
-			$query->select('id,title FROM `#__jma_alerts`');
-			$query->where('state=1');
-			$db->setQuery($query);
-			$alertnames= $db->loadObjectList();
-			$options=array();
-			foreach($alertnames as $alertname)
-			{
-				$options[]= JHtml::_('select.option', $alertname->id,$alertname->title);
-			}
-			return JHtml::_('select.genericlist',  $options, $name, 'class="inputbox required"', 'value', 'text', $value, $control_name.$name );
 	}
 	*/
 }

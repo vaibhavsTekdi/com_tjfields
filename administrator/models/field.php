@@ -138,8 +138,11 @@ class TjfieldsModelField extends JModelAdmin
 
 	public function save_option($post)
 	{
+
 		$table = $this->getTable();
 		$data=$post->get('jform','','ARRAY');
+		//add clint type in data as it is not present in jform
+		$data['client_type'] = $post->get('client_type','','STRING');
 		$data['saveOption']=0; // use later to store later.
 		//remove extra value which are not needed to save in the fields table
 		$TjfieldsHelper=new TjfieldsHelper();

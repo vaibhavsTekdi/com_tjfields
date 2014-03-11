@@ -179,7 +179,6 @@ class TjfieldsHelper
 	 */
 	public function generateXml($data)
 	{
-		//print_r($fields); die('asda');
 		$db     = JFactory::getDbo();
 		$query  = 'SELECT * FROM
 		#__tjfields_fields

@@ -6,12 +6,6 @@
 			readonly="true" class="readonly"
 			description="JGLOBAL_FIELD_ID_DESC" />
 
-		<field name="client_type" type="customfield"
-			label="COM_TJFIELDS_FORM_LBL_FIELD_CLIENT_TYPE"
-			description="COM_TJFIELDS_FORM_DESC_FIELD_CLIENT_TYPE"
-			required="false"
-			multiple="false" />
-
 
 		<field name="group_id" type="customfield"
 			label="COM_TJFIELDS_FORM_LBL_FIELD_GROUP_NAME"

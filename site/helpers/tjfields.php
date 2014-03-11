@@ -49,7 +49,7 @@ class TjfieldsHelper
 
 			if($field_data->type=='single_select' || $field_data->type=='multi_select' || $field_data->type=='radio' || $field_data->type=='checkbox')
 			{
-				$extra_options= $this->getOptions($fdata->field_id);
+				$extra_options= $this->getOptions($fdata->field_id,$fdata->value);
 				$fdata->value=$extra_options;
 			}
 
@@ -108,7 +108,6 @@ class TjfieldsHelper
 		// values array will contain manu fields value.
 		foreach($data['fieldsvalue'] as $fname=>$fvalue)
 		{
-
 			$field_data = $this->getFieldData($fname);
 			$insert_obj->field_id 	=$field_data->id;
 			//check for duplicate entry
@@ -156,7 +155,6 @@ class TjfieldsHelper
 		$query->where('content_id='.$content_id.' AND client="'.$client.'" AND user_id='.$user_id.' AND field_id='.$field_id);
 		$db->setQuery($query);
 		$is_edit = $db->loadresult();
-		//print_r($data); print_r($is_edit); die('asdasd');
 		return $is_edit;
 	}
 
@@ -165,15 +163,20 @@ class TjfieldsHelper
 	 *
 	 * @return array of option for the particular field
 	 */
-	public function getOptions($field_id)
+	public function getOptions($field_id,$option_value='')
 	{
 		$db=JFactory::getDbo();
 		$query	= $db->getQuery(true);
 		$query->select('options,default_option,value FROM #__tjfields_options');
 		$query->where('field_id='.$field_id);
+
+		if(!empty($option_value))
+		{
+			$query->where('value='.$option_value);
+		}
+
 		$db->setQuery($query);
 		$extra_options = $db->loadObjectlist();
-	//	print_r($extra_options); die('asdasd');
 		return $extra_options;
 	}
 

@@ -49,9 +49,10 @@ class TjfieldsHelper
 
 			if($field_data->type=='single_select' || $field_data->type=='multi_select' || $field_data->type=='radio' || $field_data->type=='checkbox')
 			{
-				$extra_options= $this->getOptions($fdata->field_id,$fdata->value);
-				$fdata->value=$extra_options;
+				$extra_options = $this->getOptions($fdata->field_id,$fdata->value);
+				$fdata->value = $extra_options;
 			}
+
 
 			$fdata->type=$field_data->type;
 			$fdata->name=$field_data->name;
@@ -112,9 +113,10 @@ class TjfieldsHelper
 			$insert_obj->field_id 	=$field_data->id;
 			//check for duplicate entry
 			$if_edit_id=$this->checkForAlreadyexitsDetails($data,$field_data->id);
+
 			if(!is_array($fvalue))
 			{
-				$insert_obj->value 		=$fvalue;
+				$insert_obj->value 		= $fvalue;
 			}
 			else
 			{
@@ -172,7 +174,16 @@ class TjfieldsHelper
 
 		if(!empty($option_value))
 		{
-			$query->where('value='.$option_value);
+			$option_value = json_decode($option_value);
+			if(is_array($option_value))
+			{
+				$option_value_string = implode(',',$option_value);
+				$query->where('value IN ('.$option_value_string.')');
+			}
+			else
+			{
+				$query->where('value = '.$option_value);
+			}
 		}
 
 		$db->setQuery($query);

@@ -333,10 +333,10 @@ class TjfieldsHelper
 	{
 		$db=JFactory::getDbo();
 		$query	= $db->getQuery(true);
-		$query->select('options,default_option,value FROM #__tjfields_options');
+		$query->select('id,options,default_option,value FROM #__tjfields_options');
 		$query->where('field_id='.$field_id);
 		$db->setQuery($query);
-		$extra_options = $db->loadObjectlist();
+		$extra_options = $db->loadObjectlist('id');
 	//	print_r($extra_options); die('asdasd');
 		return $extra_options;
 	}

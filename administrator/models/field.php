@@ -167,8 +167,41 @@ class TjfieldsModelField extends JModelAdmin
 			//print_r($options); die('asdasd11111');
 			if($data['saveOption']==1)
 			{
+						//Firstly Delete Fields Options That are Removed
+						$field_options = $TjfieldsHelper->getOptions($id);
 
-				if(!empty($options))
+						foreach($field_options as $fokey=>$fovalue)
+						{
+							if($fovalue->id)
+							{
+								$fields_in_DB[]=$fovalue->id;
+							}
+
+						}
+
+						foreach($options as $key=>$value)
+						{
+							if($value['hiddenoptionid'])
+							{
+								$options_filled[]=$value['hiddenoptionid'];
+							}
+
+						}
+
+						if($fields_in_DB)
+						{
+								$diff_ids=array_diff($fields_in_DB,$options_filled);
+								if(!empty($diff_ids))
+								{
+									$this->delete_option($diff_ids);
+								}
+						}
+
+				if(empty($options))
+				{
+					$this->delete_option($fields_in_DB);
+				}
+				else
 				{
 					//save option fields.
 					foreach($options as $option)
@@ -215,6 +248,26 @@ class TjfieldsModelField extends JModelAdmin
 		}
 		else
 		return false;
+
+	}
+
+
+
+	function delete_option($delete_ids)
+	{
+		$db = JFactory::getDBO();
+		foreach($delete_ids as $key=>$value)
+		{
+			//echo $value;
+			$query='DELETE FROM #__tjfields_options
+				WHERE id = "'.$value.'"';
+				$db->setQuery($query);
+				if(!$db->execute())
+				{
+					echo $db->stderr();
+					return false;
+				}
+		}
 
 	}
 

@@ -52,12 +52,22 @@ class TjfieldsHelper
 				$extra_options = $this->getOptions($fdata->field_id,$fdata->value);
 				$fdata->value = $extra_options;
 			}
+			else if($field_data->type=='calendar')
+			{
+				$format = $this->getDateFormat($field_data->format);
+//$fdata->value = DateTime::createFromFormat($format, $fdata->value)->format($format);
+//$fdata->value = strtotime($fdata->value);
+//var_dump($fdata->value); die('aa');
+				$fdata->value = date('Y-m-d',$fdata->value);
+				var_dump($fdata->value); die('aa');
+			}
 
 
 			$fdata->type=$field_data->type;
 			$fdata->name=$field_data->name;
 			$fdata->label=$field_data->label;
 		}
+
 		return $field_data_value;
 	}
 
@@ -70,7 +80,7 @@ class TjfieldsHelper
 	{
 		$db=JFactory::getDbo();
 		$query	= $db->getQuery(true);
-		$query->select('id,type,name,label FROM #__tjfields_fields');
+		$query->select('id,type,name,label,format FROM #__tjfields_fields');
 		if($fname)
 		{
 			$query->where('name="'.$fname.'"');
@@ -207,5 +217,32 @@ class TjfieldsHelper
 		$universalAttendeeFields = $db->loadObjectlist();
 		return $universalAttendeeFields;
 	}
+
+
+	/**
+	 *
+	 *
+	 */
+	public function getDateFormat($format)
+	{
+
+		if ($format == 1)
+		{
+			return "d/m/Y";
+		}
+		else if (($format == 2))
+		{
+			return "m/d/Y";
+		}
+		else if ($format == 3)
+		{
+			return "Y/d/m";
+		}
+		else
+		{
+			return "Y/m/d";
+		}
+	}
+
 }
 

@@ -107,7 +107,7 @@ $input = JFactory::getApplication()->input;
 							}
 
 							break;
-				case	"calender":
+				case	"calendar":
 				case	"editor":
 				case	"file":
 				case	"hidden":
@@ -120,7 +120,7 @@ $input = JFactory::getApplication()->input;
 							techjoomla.jQuery('#textarea_rows').hide();
 							techjoomla.jQuery('#textarea_cols').hide();
 
-							if(field_value == "calender")
+							if(field_value == "calendar")
 							{
 								techjoomla.jQuery('#date_format').show();
 							}

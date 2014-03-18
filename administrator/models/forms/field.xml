@@ -35,7 +35,7 @@
 				<option value="single_select">Single select</option>
 				<option value="multi_select">Multiple select</option>
 				<option value="textarea">Textarea</option>
-				<option value="calender">Calender</option>
+				<option value="calendar">calendar</option>
 				<option value="editor">Editor</option>
 				<option value="email_field">Email</option>
 				<option value="file">File</option>
@@ -57,7 +57,7 @@
 			<option value="hidden">Hidden</option>
 			<option value="textarea">Textarea</option>
 			<option value="checkbox">Checkbox</option>
-			<option value="calender">Calender</option>
+			<option value="calendar">Calendar</option>
 			<option value="editor">Editor</option>
 			<option value="email_field">Email</option>
 			<option value="password">Password</option>
@@ -126,6 +126,21 @@
 			description="COM_TJFIELDS_FORM_DESC_FIELD_VALIDATION_CLASS"
 			cols="100"
 			rows="8" />
+
+
+
+<field
+			name="format"
+			type="list"
+			label="COM_TJFIELDS_FORM_LBL_FIELD_FORMAT"
+			description="COM_TJFIELDS_FORM_DESC_FIELD_FORMAT"
+			default="1">
+				<option value="1">DD/MM/YYYY</option>
+				<option value="2">MM/DD/YYYY</option>
+				<option value="2">YYYY/DD/MM</option>
+				<option value="4">YYYY/MM/DD</option>
+		</field>
+
 
 		<field name="format" type="text"
 			default="%Y-%m-%d"

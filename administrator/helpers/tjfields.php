@@ -108,11 +108,12 @@ class TjfieldsHelper
 				case	"email_field":
 							$data['format']='';
 							break;
-				case	"calender":
+				case	"calendar":
 
 							$data['min']='';
 							$data['max']='';
 							$data['default_value']='';
+							$data['format'] = $this->getDateFormat($data['format']);
 							break;
 				case	"hidden":
 							$data['min']='';
@@ -248,6 +249,11 @@ class TjfieldsHelper
 					$field->addAttribute('rows',$f->rows);
 					$field->addAttribute('cols',$f->cols);
 				}
+
+				if($f->type == 'calendar')
+				{
+					$field->addAttribute('format',$f->format);
+				}
 		}
 
 		$filePath = JPATH_SITE . DS . 'components/com_jticketing/models/forms/'.$data['client_type'].'form_extra.xml';
@@ -309,7 +315,7 @@ class TjfieldsHelper
 						$extra_options= $this->getOptions($data->id);
 						$data->extra_options=$extra_options;
 						break;
-				case	"calender":
+				case	"calendar":
 						break;
 				case	"editor":
 						break;
@@ -341,7 +347,30 @@ class TjfieldsHelper
 		return $extra_options;
 	}
 
+	/**
+	 *
+	 *
+	 */
+	public function getDateFormat($format)
+	{
 
+		if ($format == 1)
+		{
+			return "%d/%m/%Y";
+		}
+		else if (($format == 2))
+		{
+			return "%m/%d/%Y";
+		}
+		else if ($format == 3)
+		{
+			return "%Y/%d/%m";
+		}
+		else
+		{
+			return "%Y-%m-%d";
+		}
+	}
 
 
 

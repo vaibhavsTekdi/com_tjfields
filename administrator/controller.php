@@ -34,28 +34,7 @@ class TjfieldsController extends JControllerLegacy
 		return $this;
 	}
 
-	function test()
-	{
-		$TjfieldsHelper=new TjfieldsHelper();
-		$data=array();
-		$data['client']='com_jticketing.event';
-		$data['content_id']=1;
-		$data['fieldsvalue']=array();
-			$data['fieldsvalue']['com_jticketing_Event_TestEvent']='aniket';
-			$data['fieldsvalue']['com_jticketing_event_singleselect']=2;
-		$data['user_id']=100;
-		$TjfieldsHelper->saveFieldsValue($data);
-	}
 
-	function test1()
-	{
-		$TjfieldsHelper=new TjfieldsHelper();
-		$data=array();
-		$data['client']='com_jticketing.event';
-		$data['content_id']=1;
-		$data['user_id']=100;
-		$TjfieldsHelper->FetchDatavalue($data);
-	}
 
 
 }

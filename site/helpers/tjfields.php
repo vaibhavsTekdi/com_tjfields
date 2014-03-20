@@ -59,7 +59,6 @@ class TjfieldsHelper
 //$fdata->value = strtotime($fdata->value);
 //var_dump($fdata->value); die('aa');
 				$fdata->value = date('Y-m-d',$fdata->value);
-				var_dump($fdata->value); die('aa');
 			}
 
 

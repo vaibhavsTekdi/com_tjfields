@@ -215,27 +215,44 @@ class TjfieldsHelper
 	public function generateXml($data)
 	{
 		$db     = JFactory::getDbo();
-		$query  = 'SELECT * FROM
-		#__tjfields_fields
-		WHERE client="'.$data['client'].'" AND state=1
+		$query  = 'SELECT f.*,g.name as group_name FROM
+		#__tjfields_fields as f
+		LEFT JOIN #__tjfields_groups as g
+		ON g.id = f.group_id
+		WHERE f.client="'.$data['client'].'" AND f.state=1 AND g.state = 1
+		ORDER BY g.ordering
 		';
 
 		$db->setQuery($query);
 		$fields = $db->loadObjectList();
 		$newXML = new SimpleXMLElement("<form></form>");
 		//$newXML->addAttribute('newsPagePrefix', 'value goes here');
-		$fieldset = $newXML->addChild('fieldset');
 
 
+		$current_group = $fields[0]->group_id;
+		$i = 0;
+		$new_fieldset = $newXML->addChild('fieldset');
+		$new_fieldset->addAttribute('name', $fields[0]->group_name);
 		foreach($fields as $f)
 		{
+			//add fieldset as per group id
+			if($current_group != $f->group_id)
+			{
+
+				$new_fieldset = $newXML->addChild('fieldset');
+				$new_fieldset->addAttribute('name', $f->group_name);
+
+				$current_group = $f->group_id;
+			}
+
 			$f = $this->SwitchCaseForExtraAttribute($f);
-			$field = $fieldset->addChild('field');
+			$field = $new_fieldset->addChild('field');
 			$field->addAttribute('name', $f->name);
 			//need to change...
 			$field->addAttribute('type', $f->type);
 			$field->addAttribute('label', $f->label);
 			$field->addAttribute('description', $f->description);
+
 			if($f->required==1)
 			{
 				$field->addAttribute('required','true');

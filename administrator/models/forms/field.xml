@@ -70,7 +70,7 @@
 			description="COM_TJFIELDS_FORM_DESC_FIELD_REQUIRED"
 				 default="0"
 
-				 required="true" >
+				 required="true" class="btn-group" >
 				<option value="1">Yes</option>
 				<option value="0">No</option>
 		</field>
@@ -79,7 +79,8 @@
 			label="COM_TJFIELDS_FORM_LBL_FIELD_READONLY"
 			description="COM_TJFIELDS_FORM_DESC_FIELD_READONLY"
 				 default="0"
-				 required="true" >
+				 required="true"
+				 class="btn-group">
 				<option value="1">Yes</option>
 				<option value="0">No</option>
 		</field>

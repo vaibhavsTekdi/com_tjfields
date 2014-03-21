@@ -8,9 +8,10 @@
       padding-left:60px!important;
 }
 
-.com_tjfields_repeating_block
+.com_tjfields_repeating_block , .tjfield_container .span9
 {
-	margin:0px !important;
+	margin-left:0px !important;
+	margin-bottom:5px !important;
 }
 
 .techjoomla-bootstrap .displaynone

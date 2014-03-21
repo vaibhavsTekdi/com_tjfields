@@ -65,7 +65,7 @@ class JFormFieldFieldoption extends JFormField
 			$html.='
 			<script>var field_lenght='.$countoption.'</script>
 			<div class="techjoomla-bootstrap">
-											<div id="tjfield_container" class="tjfield_container" >';
+				<div id="tjfield_container" class="tjfield_container" >';
 
 			if($this->value)
 			{
@@ -103,8 +103,15 @@ class JFormFieldFieldoption extends JFormField
 															<i class="icon-plus icon-white"></i>
 														</button>
 										</div>
-								</div>
-								</div>';//bootstrap div
+					<div style="clear:both"></div>
+					<div class="row-fluid">
+						<div class="span9 alert alert-help-inline">' ;
+					$html.= JText::sprintf("COM_TJFIELDS_MAKE_DEFAULT_MSG",' <i class="icon-unfeatured"></i> ');
+					$html.= '</div>
+					</div>
+				</div>
+				
+			</div>';//bootstrap div
 			return $html;
 	}
 

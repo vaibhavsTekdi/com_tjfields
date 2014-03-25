@@ -146,4 +146,58 @@ class TjfieldsModelGroups extends JModelList {
         return $items;
     }
 
+	/**
+	 * To plublish and unpublish groups.
+	 *
+	 */
+	function setItemState( $items, $state )
+	{
+		$db=JFactory::getDBO();
+
+		if(is_array($items))
+		{
+
+			foreach ($items as $id)
+			{
+				$db=JFactory::getDBO();
+				$query = "UPDATE  #__tjfields_groups SET state = $state where id=".$id;
+				$db->setQuery( $query );
+				if (!$db->execute()) {
+						$this->setError( $this->_db->getErrorMsg() );
+						return false;
+				}
+			}
+		}
+		// clean cache
+		return true;
+	}
+
+	function deletegroup($id)
+	{
+
+		if(count($id)>1)
+		{
+			$group_to_delet = implode(',',$id);
+			$db = JFactory::getDBO();
+			$query = "DELETE FROM #__tjfields_groups where id IN (".$group_to_delet.")";
+			$db->setQuery( $query );
+			if (!$db->execute()) {
+					$this->setError( $this->_db->getErrorMsg() );
+					return false;
+			}
+		}
+		else
+		{
+				$db=JFactory::getDBO();
+				$query = "DELETE FROM #__tjfields_groups where id =". $id[0];
+				$db->setQuery( $query );
+				if (!$db->execute()) {
+						$this->setError( $this->_db->getErrorMsg() );
+						return false;
+				}
+		}
+				return true;
+	}
+
+
 }

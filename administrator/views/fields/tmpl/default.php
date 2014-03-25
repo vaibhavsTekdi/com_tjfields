@@ -132,12 +132,7 @@ if (!empty($this->extra_sidebar)) {
 					<th class='left'>
 					<?php echo JHtml::_('grid.sort',  'COM_TJFIELDS_FIELDS_FIELD_TYPE', 'a.type', $listDirn, $listOrder); ?>
 					</th>
-					<th class='left'>
-					<?php echo JHtml::_('grid.sort',  'COM_TJFIELDS_FIELDS_PLACEHOLDER', 'a.placeholder', $listDirn, $listOrder); ?>
-					</th>
-					<th class='left'>
-					<?php echo JHtml::_('grid.sort',  'COM_TJFIELDS_FIELDS_TOOLTIP', 'a.description', $listDirn, $listOrder); ?>
-					</th>
+
 					<th class='left'>
 					<?php echo JHtml::_('grid.sort',  'COM_TJFIELDS_FIELDS_CLIENT', 'a.client', $listDirn, $listOrder); ?>
 					</th>
@@ -220,14 +215,7 @@ if (!empty($this->extra_sidebar)) {
 
 						<?php echo $item->type; ?>
 					</td>
-					<td>
 
-						<?php echo $item->placeholder; ?>
-					</td>
-					<td>
-
-						<?php echo $item->description; ?>
-					</td>
 					<td>
 
 						<?php echo $item->client; ?>

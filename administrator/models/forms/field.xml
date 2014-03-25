@@ -6,7 +6,6 @@
 			readonly="true" class="readonly"
 			description="JGLOBAL_FIELD_ID_DESC" />
 
-
 		<field name="group_id" type="customfield"
 			label="COM_TJFIELDS_FORM_LBL_FIELD_GROUP_NAME"
 			description="COM_TJFIELDS_FORM_DESC_FIELD_GROUP_NAME"
@@ -47,7 +46,6 @@
 			description="COM_TJFIELDS_FORM_DESC_FIELD_OPTION"
 			required="false"  />
 
-
 		<field name="filter_field_type" type="list" onchange="this.form.submit();">
 			<option value="">COM_TJFIELDS_FIELDS_FIELD_TYPE_FILTER</option>
 			<option value="text">Text</option>
@@ -65,24 +63,22 @@
 		</field>
 
 	   <field name="required" type="radio"
-
 			label="COM_TJFIELDS_FORM_LBL_FIELD_REQUIRED"
 			description="COM_TJFIELDS_FORM_DESC_FIELD_REQUIRED"
-				 default="0"
-
-				 required="true" class="btn-group" >
+			default="0"
+			required="true" class="btn-group" >
 				<option value="1">Yes</option>
 				<option value="0">No</option>
 		</field>
-		<field name="readonly" type="radio"
 
-			label="COM_TJFIELDS_FORM_LBL_FIELD_READONLY"
-			description="COM_TJFIELDS_FORM_DESC_FIELD_READONLY"
-				 default="0"
-				 required="true"
-				 class="btn-group">
-				<option value="1">Yes</option>
-				<option value="0">No</option>
+		<field name="readonly" type="radio"
+		label="COM_TJFIELDS_FORM_LBL_FIELD_READONLY"
+		description="COM_TJFIELDS_FORM_DESC_FIELD_READONLY"
+		default="0"
+		required="true"
+		class="btn-group">
+			<option value="1">Yes</option>
+			<option value="0">No</option>
 		</field>
 
 	   <field name="placeholder" type="text"
@@ -93,12 +89,11 @@
 			label="COM_TJFIELDS_FORM_LBL_FIELD_CREATED_BY"
 			description="COM_TJFIELDS_FORM_DESC_FIELD_CREATED_BY"  />
 
-	   <field name="min" type="text"
+	   <field name="min" type="text" class="validate-numeric"
 			label="COM_TJFIELDS_FORM_LBL_FIELD_MIN"
 			description="COM_TJFIELDS_FORM_DESC_FIELD_MIN"	/>
 
-	   <field name="max" type="text"
-
+	   <field name="max" type="text" class="validate-numeric"
 			label="COM_TJFIELDS_FORM_LBL_FIELD_MAX"
 			description="COM_TJFIELDS_FORM_DESC_FIELD_MAX" 	 />
 
@@ -115,14 +110,20 @@
 			label="COM_TJFIELDS_FORM_LBL_FIELD_TOOLTIP"
 			description="COM_TJFIELDS_FORM_DESC_FIELD_TOOLTIP" 	 />
 
-	   <field name="js_function" type="textarea"
+
+		<field name="js_function" type="jsfunction"
+			label="COM_TJFIELDS_FORM_LBL_FIELD_JS_FUNCTION"
+			description="COM_TJFIELDS_FORM_DESC_FIELD_VALIDATION_CLASS"
+			required="false"  />
+
+		<!--<field name="js_function" type="textarea"
 
 			label="COM_TJFIELDS_FORM_LBL_FIELD_JS_FUNCTION"
 			description="COM_TJFIELDS_FORM_DESC_FIELD_JS_FUNCTION"
 			cols="100"
-			rows="8" />
+			rows="8" />-->
 
-	   <field name="validation_class" type="textarea"
+		<field name="validation_class" type="text"
 			label="COM_TJFIELDS_FORM_LBL_FIELD_VALIDATION_CLASS"
 			description="COM_TJFIELDS_FORM_DESC_FIELD_VALIDATION_CLASS"
 			cols="100"
@@ -130,9 +131,7 @@
 
 
 
-<field
-			name="format"
-			type="list"
+		<field	name="format" 	type="list"
 			label="COM_TJFIELDS_FORM_LBL_FIELD_FORMAT"
 			description="COM_TJFIELDS_FORM_DESC_FIELD_FORMAT"
 			default="1">

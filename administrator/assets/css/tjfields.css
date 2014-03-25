@@ -14,8 +14,18 @@
 	margin-bottom:5px !important;
 }
 
+.com_tjfields_js_repeating_block , .tjfield_js_container .span9
+{
+	margin-left:0px !important;
+	margin-bottom:5px !important;
+}
+
 .techjoomla-bootstrap .displaynone
 {
 	display:none;
 }
 
+.alert_no_margin
+{
+	margin-left:0px !important;
+}

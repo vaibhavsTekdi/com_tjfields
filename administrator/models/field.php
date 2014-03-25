@@ -138,7 +138,6 @@ class TjfieldsModelField extends JModelAdmin
 
 	public function save_option($post)
 	{
-
 		$table = $this->getTable();
 		$data=$post->get('jform','','ARRAY');
 		//add clint type in data as it is not present in jform
@@ -159,6 +158,15 @@ class TjfieldsModelField extends JModelAdmin
 			//append id to the name
 			$change_name_if_same = $TjfieldsHelper->changeNameIfNotUnique($data['name'],$id);
 		}
+
+
+		//save javascript functions.
+			$js = $post->get('tjfieldsJs','','ARRAY');
+			if(!empty($js))
+			{
+				$jsfunctionSave = $this->jsfunctionSave($js,$id);
+			}
+		//end
 		// if the field is inserted.
 		if($id)
 		{
@@ -249,6 +257,33 @@ class TjfieldsModelField extends JModelAdmin
 		else
 		return false;
 
+	}
+
+	//save js functions
+	function jsfunctionSave($jsarray,$fieldid)
+	{
+					$obj = new stdClass();
+					$obj->js_function = '';
+					foreach($jsarray as $js)
+					{
+						if($js['jsoptions']!='' && $js['jsfunctionname']!='')
+						{
+							$obj->js_function .= $js['jsoptions'].'-'.$js['jsfunctionname'].'||';
+						}
+
+						$obj->id = $fieldid;
+						//if edit options
+					}
+
+					if(!empty($obj->js_function))
+						{
+
+							if(!$this->_db->updateObject('#__tjfields_fields',$obj,'id'))
+							{
+								echo $this->_db->stderr();
+								return false;
+							}
+						}
 	}
 
 

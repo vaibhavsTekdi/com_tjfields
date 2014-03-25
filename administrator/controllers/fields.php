@@ -26,8 +26,8 @@ class TjfieldsControllerFields extends JControllerAdmin
 		$model = parent::getModel($name, $prefix, array('ignore_request' => true));
 		return $model;
 	}
-    
-    
+
+
 	/**
 	 * Method to save the submitted ordering values for records via AJAX.
 	 *
@@ -60,7 +60,108 @@ class TjfieldsControllerFields extends JControllerAdmin
 		// Close the application
 		JFactory::getApplication()->close();
 	}
-    
-	
-    
+
+
+	public function publish()
+	{
+		$input =JFactory::getApplication()->input;
+		$post = $input->post;
+		$client = $input->get('client','','STRING');
+		$cid = JFactory::getApplication()->input->get('cid', array(), 'array');
+		$data = array('publish' => 1, 'unpublish' => 0, 'archive' => 2, 'trash' => -2, 'report' => -3);
+		$task = $this->getTask();
+		$value = JArrayHelper::getValue($data, $task, 0, 'int');
+		// Get some variables from the request
+
+
+		if (empty($cid))
+		{
+			JLog::add(JText::_($this->text_prefix . '_NO_ITEM_SELECTED'), JLog::WARNING, 'jerror');
+		}
+		else
+		{
+			// Get the model.
+			$model = $this->getModel( 'fields' );
+
+			// Make sure the item ids are integers
+			JArrayHelper::toInteger($cid);
+
+			// Publish the items.
+			try
+			{
+				$model->setItemState($cid, $value);
+
+				if ($value == 1)
+				{
+					$ntext = $this->text_prefix . '_N_ITEMS_PUBLISHED';
+				}
+				elseif ($value == 0)
+				{
+					$ntext = $this->text_prefix . '_N_ITEMS_UNPUBLISHED';
+				}
+				elseif ($value == 2)
+				{
+					$ntext = $this->text_prefix . '_N_ITEMS_ARCHIVED';
+				}
+				else
+				{
+					$ntext = $this->text_prefix . '_N_ITEMS_TRASHED';
+				}
+				//generate xml here
+				$TjfieldsHelper=new TjfieldsHelper();
+				$client_form = explode('.',$client);
+				$client_type = $client_form[1];
+
+					$data = array();
+					$data['client'] = $client;
+					$data['client_type'] = $client_type;
+					$TjfieldsHelper->generateXml($data);
+				//end xml
+				$this->setMessage(JText::plural($ntext, count($cid)));
+			}
+			catch (Exception $e)
+			{
+				$this->setMessage(JText::_('JLIB_DATABASE_ERROR_ANCESTOR_NODES_LOWER_STATE'), 'error');
+			}
+
+		}
+
+		$this->setRedirect('index.php?option=com_tjfields&view=fields&client='.$client, $msg);
+
+	}
+
+
+	public function delete()
+	{
+
+		$input =JFactory::getApplication()->input;
+		$post = $input->post;
+		$client = $input->get('client','','STRING');
+		$client_form = explode('.',$client);
+		$client_type = $client_form[1];
+		// Get some variables from the request
+
+		$cid	= $input->get('cid',array(), 'post', 'array');
+		JArrayHelper::toInteger($cid);
+
+		$model =$this->getModel( 'fields' );
+		if ($model->deletefield($cid))
+		{
+			$TjfieldsHelper = new TjfieldsHelper();
+			$data = array();
+			$data['client'] = $client;
+			$data['client_type'] = $client_type;
+			$TjfieldsHelper->generateXml($data);
+			$msg = JText::_( 'COM_TJFIELDS_GROUP_DELETED' );
+		}
+		else
+		{
+			$msg = $model->getError();
+		}
+
+		$this->setRedirect('index.php?option=com_tjfields&view=fields&client='.$client, $msg);
+	}
+
+
+
 }

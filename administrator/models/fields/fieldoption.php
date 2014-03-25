@@ -36,6 +36,7 @@ class JFormFieldFieldoption extends JFormField
 	{
 		parent::__construct();
 		$this->countoption=0;
+		$this->tjfield_icon_minus = "icon-minus-sign ";
 	}
 	/**
 	 * Method to get the field input markup.
@@ -54,11 +55,13 @@ class JFormFieldFieldoption extends JFormField
 
 		if(JVERSION>=3.0)
 			{
-				$tjfield_icon_plus="icon-plus-2 ";
+				$tjfield_icon_plus = "icon-plus-2 ";
+				$tjfield_icon_minus = "icon-minus-2 ";
 			}
 			else
 			{ // for joomla3.0
-				$tjfield_icon_plus="icon-plus-sign ";
+				$tjfield_icon_plus = "icon-plus-sign ";
+				$tjfield_icon_minus = "icon-minus-sign ";
 			}
 			$k=0;
 			$html='';
@@ -81,7 +84,7 @@ class JFormFieldFieldoption extends JFormField
 											$html.='<div id="remove_btn_div'.$k.'" class="com_tjfields_remove_button span3">
 												<div class="com_tjfields_remove_button">
 													<button class="btn btn-small btn-danger" type="button" id="remove'.$k.'" onclick="removeClone(\'com_tjfields_repeating_block'.$k.'\',\'remove_btn_div'.$k.'\');" >
-																	<i class="icon-minus icon-white"></i></button>
+																	<i class="icon-minus"></i></button>
 												</div>
 											</div>';
 											}
@@ -99,18 +102,18 @@ class JFormFieldFieldoption extends JFormField
 						$html.='<div class="com_tjfields_add_button span3">
 														<button class="btn btn-small btn-success" type="button" id="add"
 														onclick="addClone(\'com_tjfields_repeating_block\',\'com_tjlms_repeating_block\');"
-														title="<?php echo JText::_(\'add\');?>">
-															<i class="icon-plus icon-white"></i>
+														title='.JText::_("COM_TJFIELDS_ADD_BUTTON").'>
+															<i class="'.$tjfield_icon_plus.'"></i>
 														</button>
 										</div>
 					<div style="clear:both"></div>
 					<div class="row-fluid">
-						<div class="span9 alert alert-help-inline">' ;
+						<div class="span9 alert alert-info alert-help-inline">' ;
 					$html.= JText::sprintf("COM_TJFIELDS_MAKE_DEFAULT_MSG",' <i class="icon-unfeatured"></i> ');
 					$html.= '</div>
 					</div>
 				</div>
-				
+
 			</div>';//bootstrap div
 			return $html;
 	}
@@ -159,10 +162,12 @@ function addClone(rId,rClass)
 			//window.field_lenght=f_lenght;
 			var pre=field_lenght;
 			field_lenght++;
+
+
 				var removeButton="<div id='remove_btn_div"+pre+"' class='com_tjfields_remove_button span2'>";
 				removeButton+="<button class='btn btn-small btn-danger' type='button' id='remove"+pre+"'";
 				removeButton+="onclick=\"removeClone('com_tjfields_repeating_block"+pre+"','remove_btn_div"+pre+"');\" title=\"<?php echo JText::_('COM_TJFIELDS_REMOVE_TOOLTIP');?>\" >";
-				removeButton+="<i class=\"icon-minus icon-white\"></i></button>";
+				removeButton+="<i class=\"icon-minus\"></i></button>";
 				removeButton+="</div>";
 
 				var newElem=techjoomla.jQuery('#'+rId+pre).clone().attr('id',rId+field_lenght);

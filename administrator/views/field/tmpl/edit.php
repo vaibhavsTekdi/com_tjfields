@@ -91,7 +91,7 @@ $input = JFactory::getApplication()->input;
 							techjoomla.jQuery('#option_min_char').show();
 							techjoomla.jQuery('#option_max_char').show();
 							techjoomla.jQuery('#div_placeholder').show();
-							
+
 							techjoomla.jQuery('#date_format').hide();
 							techjoomla.jQuery('#default_value_text').show();
 
@@ -146,7 +146,7 @@ $input = JFactory::getApplication()->input;
 	<form action="<?php echo JRoute::_('index.php?option=com_tjfields&layout=edit&id='.(int) $this->item->id).'&client='.$input->get('client','','STRING'); ?>" method="post" enctype="multipart/form-data" name="adminForm" id="field-form" class="form-validate">
 		<div class="techjoomla-bootstrap">
 		<div class="row-fluid">
-			
+
 			<div class="container1">
 				<div class="span6 ">
 				<fieldset class="adminform form-horizontal">
@@ -162,7 +162,12 @@ $input = JFactory::getApplication()->input;
 							</div>
 							<div class="control-group">
 								<div class="control-label"><?php echo $this->form->getLabel('label'); ?></div>
-								<div class="controls"><?php echo $this->form->getInput('label'); ?></div>
+								<div class="controls"><?php echo $this->form->getInput('label'); ?>
+									<span class="alert alert-info alert-help-inline span9 alert_no_margin">
+										<?php echo JText::_('COM_TJFIELDS_LABEL_LANG_CONSTRAINT'); ?>
+									</span>
+								</div>
+
 							</div>
 							<div class="control-group">
 								<div class="control-label"><?php echo $this->form->getLabel('name'); ?></div>
@@ -204,8 +209,8 @@ $input = JFactory::getApplication()->input;
 					</fieldset>
 					<input type="hidden" name="jform[client]" value="<?php echo $input->get('client','','STRING'); ?>" />
 				</div>
-				
-				
+
+
 				<div class="span5 form-horizontal">
 				<fieldset class="adminform form-horizontal">
 				<legend>
@@ -245,17 +250,27 @@ $input = JFactory::getApplication()->input;
 					</div>
 					<div class="control-group">
 						<div class="control-label"><?php echo $this->form->getLabel('js_function'); ?></div>
-						<div class="controls"><?php echo $this->form->getInput('js_function'); ?></div>
+						<div class="controls">
+							<?php echo $this->form->getInput('js_function'); ?>
+
+						</div>
+
 					</div>
 					<div class="control-group">
 						<div class="control-label"><?php echo $this->form->getLabel('validation_class'); ?></div>
-						<div class="controls"><?php echo $this->form->getInput('validation_class'); ?></div>
+						<div class="controls">
+							<?php echo $this->form->getInput('validation_class'); ?>
+							<div style="clear:both" ></div>
+							<span class="alert alert-info alert-help-inline span9 alert_no_margin">
+								<?php echo JText::_('COM_TJFIELDS_VALIDATION_CLASS_NOTE'); ?>
+							</span>
+						</div>
 					</div>
 					</fieldset>
 				</div>
-				
+
 			</div>
-			
+
 
 			<!--</fieldset>-->
 		</div>

@@ -277,6 +277,16 @@ class TjfieldsHelper
 					}
 				}
 
+				//add javascript
+				if(isset($f->js_function))
+				{
+					$jsArray = $this->getJsArray($f->js_function);
+					foreach($jsArray as $js)
+					{
+						$field->addAttribute($js[0],$js[1]);
+					}
+				}
+
 				//Add multiple attribute for multilist.
 				if(isset($f->multiple))
 				{
@@ -426,7 +436,23 @@ class TjfieldsHelper
 
 
 
+	function getJsArray($jsarray)
+	{
 
+		//$jsarray contains --    onclick-getfunction()||onchange-getfunction2()||
+		$jsarray = explode('||', $jsarray);
+		//now we get array[0] = onclick-getfunction()
+		//array[1] = onchange-getfunction2()
+		//array[2] = '';
+		//remove the blank array element
+		$jsarray_removed_blank_element = array_filter($jsarray);
+
+		foreach($jsarray_removed_blank_element as $eachjs)
+		{
+			$jsarray_final[] = explode('-', $eachjs);
+		}
+		return $jsarray_final;
+	}
 
 
 

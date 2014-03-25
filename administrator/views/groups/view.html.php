@@ -69,9 +69,9 @@ class TjfieldsViewGroups extends JViewLegacy
 			    JToolBarHelper::addNew('group.add','JTOOLBAR_NEW');
 		    }
 
-		    if ($canDo->get('core.edit') && isset($this->items[0])) {
+		/*    if ($canDo->get('core.edit') && isset($this->items[0])) {
 			    JToolBarHelper::editList('group.edit','JTOOLBAR_EDIT');
-		    }
+		    }*/
 
         }
 
@@ -86,10 +86,10 @@ class TjfieldsViewGroups extends JViewLegacy
                 JToolBarHelper::deleteList('', 'groups.delete','JTOOLBAR_DELETE');
             }
 
-            if (isset($this->items[0]->state)) {
+          /*  if (isset($this->items[0]->state)) {
 			    JToolBarHelper::divider();
 			    JToolBarHelper::archiveList('groups.archive','JTOOLBAR_ARCHIVE');
-            }
+            }*/
             if (isset($this->items[0]->checked_out)) {
             	JToolBarHelper::custom('groups.checkin', 'checkin.png', 'checkin_f2.png', 'JTOOLBAR_CHECKIN', true);
             }

@@ -29,3 +29,10 @@
 {
 	margin-left:0px !important;
 }
+
+.tjfield_container .icon-unfeatured ,.tjfield_container .icon-featured
+{
+	cursor:pointer;
+}
+
+

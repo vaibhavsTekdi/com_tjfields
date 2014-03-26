@@ -36,7 +36,20 @@ class JFormFieldFieldoption extends JFormField
 	{
 		parent::__construct();
 		$this->countoption=0;
-		$this->tjfield_icon_minus = "icon-minus-sign ";
+		if(JVERSION>=3.0)
+			{
+				$this->tjfield_icon_plus = "icon-plus-2 ";
+				$this->tjfield_icon_minus = "icon-minus-2 ";
+				$this->tjfield_icon_star = "icon-featured";
+				$this->tjfield_icon_emptystar = "icon-unfeatured";
+			}
+			else
+			{ // for joomla3.0
+				$this->tjfield_icon_plus = "icon-plus-sign ";
+				$this->tjfield_icon_minus = "icon-minus-sign ";
+				$this->tjfield_icon_star = "icon-star";
+				$this->tjfield_icon_emptystar = "icon-star-empty";
+			}
 	}
 	/**
 	 * Method to get the field input markup.
@@ -53,20 +66,15 @@ class JFormFieldFieldoption extends JFormField
 		//$this->countoption=count($this->value);
 		//$this->countoption=count($this->value);
 
-		if(JVERSION>=3.0)
-			{
-				$tjfield_icon_plus = "icon-plus-2 ";
-				$tjfield_icon_minus = "icon-minus-2 ";
-			}
-			else
-			{ // for joomla3.0
-				$tjfield_icon_plus = "icon-plus-sign ";
-				$tjfield_icon_minus = "icon-minus-sign ";
-			}
+		
 			$k=0;
 			$html='';
 			$html.='
-			<script>var field_lenght='.$countoption.'</script>
+			<script>var field_lenght='.$countoption.'
+			var tjfield_icon_emptystar = "icon-unfeatured";
+			var tjfield_icon_star = "icon-featured";
+			var tjfield_icon_minus = "icon-minus-2 ";
+			</script>
 			<div class="techjoomla-bootstrap">
 				<div id="tjfield_container" class="tjfield_container" >';
 
@@ -84,7 +92,7 @@ class JFormFieldFieldoption extends JFormField
 											$html.='<div id="remove_btn_div'.$k.'" class="com_tjfields_remove_button span3">
 												<div class="com_tjfields_remove_button">
 													<button class="btn btn-small btn-danger" type="button" id="remove'.$k.'" onclick="removeClone(\'com_tjfields_repeating_block'.$k.'\',\'remove_btn_div'.$k.'\');" >
-																	<i class="icon-minus"></i></button>
+																	<i class="'.$this->tjfield_icon_minus.'"></i></button>
 												</div>
 											</div>';
 											}
@@ -103,13 +111,13 @@ class JFormFieldFieldoption extends JFormField
 														<button class="btn btn-small btn-success" type="button" id="add"
 														onclick="addClone(\'com_tjfields_repeating_block\',\'com_tjlms_repeating_block\');"
 														title='.JText::_("COM_TJFIELDS_ADD_BUTTON").'>
-															<i class="'.$tjfield_icon_plus.'"></i>
+															<i class="'.$this->tjfield_icon_plus.'"></i>
 														</button>
 										</div>
 					<div style="clear:both"></div>
 					<div class="row-fluid">
 						<div class="span9 alert alert-info alert-help-inline">' ;
-					$html.= JText::sprintf("COM_TJFIELDS_MAKE_DEFAULT_MSG",' <i class="icon-unfeatured"></i> ');
+					$html.= JText::sprintf("COM_TJFIELDS_MAKE_DEFAULT_MSG",' <i class="'.$this->tjfield_icon_emptystar.'"></i> ');
 					$html.= '</div>
 					</div>
 				</div>
@@ -132,9 +140,9 @@ class JFormFieldFieldoption extends JFormField
 	function fetchdedaultoption($fieldName, $value, &$node, $control_name,$k)
 	{
 		if($value==1)
-			$icon='class="icon-featured"';
+			$icon='class="'.$this->tjfield_icon_star.'"';
 		else
-			$icon='class="icon-unfeatured"';
+			$icon='class="'.$this->tjfield_icon_emptystar.'"';
 		return $dedaultoption='<span class=" tjfields_defaultoptionvalue " id="tjfields_defaultoptionvalue_'.$k.'" onclick="getdefaultimage(this.id)" name="tjfields['.$k.'][defaultoptionvalue]"   required=""><i '.$icon.' ></i></span>';
 
 		/*
@@ -167,7 +175,7 @@ function addClone(rId,rClass)
 				var removeButton="<div id='remove_btn_div"+pre+"' class='com_tjfields_remove_button span2'>";
 				removeButton+="<button class='btn btn-small btn-danger' type='button' id='remove"+pre+"'";
 				removeButton+="onclick=\"removeClone('com_tjfields_repeating_block"+pre+"','remove_btn_div"+pre+"');\" title=\"<?php echo JText::_('COM_TJFIELDS_REMOVE_TOOLTIP');?>\" >";
-				removeButton+="<i class=\"icon-minus\"></i></button>";
+				removeButton+="<i class=\""+tjfield_icon_minus+"\"></i></button>";
 				removeButton+="</div>";
 
 				var newElem=techjoomla.jQuery('#'+rId+pre).clone().attr('id',rId+field_lenght);
@@ -185,7 +193,7 @@ function addClone(rId,rClass)
 				newElem.find('span[id=\"tjfields_defaultoptionvalue_'+pre+'\"]').attr({'id': 'tjfields_defaultoptionvalue_'+field_lenght,'value':''});
 
 				techjoomla.jQuery('#'+rId+pre).after(newElem);
-				techjoomla.jQuery('#tjfields_defaultoptionvalue_'+field_lenght).html('<i class="icon-unfeatured"></i>');
+				techjoomla.jQuery('#tjfields_defaultoptionvalue_'+field_lenght).html('<i class="'+tjfield_icon_emptystar+'"></i>');
 				techjoomla.jQuery('#'+rId+pre).after(removeButton)
 			//	techjoomla.jQuery('#'+rId+pre).append(removeButton);
 		}
@@ -202,7 +210,7 @@ function addClone(rId,rClass)
 				{
 					techjoomla.jQuery('.tjfields_defaultoptionvalue').each(function(){
 
-							techjoomla.jQuery(this).html("<i class='icon-unfeatured'></i>");
+							techjoomla.jQuery(this).html("<i class='"+tjfield_icon_emptystar+"'></i>");
 							//techjoomla.jQuery(this).attr('src',"<?php echo JUri::root().'administrator'.DS.'components'.DS.'com_tjfields'.DS.'images'.DS.'nodefault.png' ?>");
 
 						});
@@ -214,14 +222,14 @@ function addClone(rId,rClass)
 				var req_id= str1.split('_');
 
 
-				if(techjoomla.jQuery('#'+span_id).children('i').hasClass( "icon-featured" ))
+				if(techjoomla.jQuery('#'+span_id).children('i').hasClass( tjfield_icon_star ))
 				{
-					techjoomla.jQuery('#'+span_id).html("<i class='icon-unfeatured'></i>");
+					techjoomla.jQuery('#'+span_id).html("<i class='"+tjfield_icon_emptystar+"'></i>");
 					techjoomla.jQuery('#tjfields_hiddenoption_'+req_id[2]).attr('value',0);
 				}
 				else
 				{
-					techjoomla.jQuery('#'+span_id).html("<i class='icon-featured'></i>");
+					techjoomla.jQuery('#'+span_id).html("<i class='"+tjfield_icon_star+"'></i>");
 					techjoomla.jQuery('#tjfields_hiddenoption_'+req_id[2]).attr('value',1);
 				}
 

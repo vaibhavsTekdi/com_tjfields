@@ -2,7 +2,7 @@
 <form>
 	<fieldset>
 
-              <field name="id" type="text" default="0" label="COM_TJFIELDS_FORM_LBL_GROUP_ID"
+           <field name="id" type="text" default="0" label="COM_TJFIELDS_FORM_LBL_GROUP_ID"
             readonly="true" class="readonly"
             description="JGLOBAL_FIELD_ID_DESC" /> 
 
@@ -10,7 +10,7 @@
             label="COM_TJFIELDS_FORM_LBL_GROUP_CREATED_BY"
             description="COM_TJFIELDS_FORM_DESC_GROUP_CREATED_BY"  /> 
 
-       <field name="name" type="text"
+       <field name="name" type="text" class="required"
                 
             label="COM_TJFIELDS_FORM_LBL_GROUP_NAME"
             description="COM_TJFIELDS_FORM_DESC_GROUP_NAME" 

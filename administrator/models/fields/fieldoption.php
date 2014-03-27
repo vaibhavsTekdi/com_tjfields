@@ -45,8 +45,8 @@ class JFormFieldFieldoption extends JFormField
 			}
 			else
 			{ // for joomla3.0
-				$this->tjfield_icon_plus = "icon-plus-sign ";
-				$this->tjfield_icon_minus = "icon-minus-sign ";
+				$this->tjfield_icon_plus = "icon-plus ";
+				$this->tjfield_icon_minus = "icon-minus ";
 				$this->tjfield_icon_star = "icon-star";
 				$this->tjfield_icon_emptystar = "icon-star-empty";
 			}
@@ -66,16 +66,30 @@ class JFormFieldFieldoption extends JFormField
 		//$this->countoption=count($this->value);
 		//$this->countoption=count($this->value);
 
-		
+
 			$k=0;
 			$html='';
-			$html.='
-			<script>var field_lenght='.$countoption.'
-			var tjfield_icon_emptystar = "icon-unfeatured";
-			var tjfield_icon_star = "icon-featured";
-			var tjfield_icon_minus = "icon-minus-2 ";
-			</script>
-			<div class="techjoomla-bootstrap">
+			if(JVERSION>=3.0)
+			{
+				$html.='
+
+				<script>var field_lenght='.$countoption.'
+					var tjfield_icon_emptystar = "icon-unfeatured";
+					var tjfield_icon_star = "icon-featured";
+					var tjfield_icon_minus = "icon-minus-2 ";
+				</script>';
+			}
+			else
+			{
+				$html.='
+
+				<script>var field_lenght='.$countoption.'
+					var tjfield_icon_emptystar = "icon-star-empty";
+					var tjfield_icon_star = "icon-star";
+					var tjfield_icon_minus = "icon-minus ";
+				</script>';
+			}
+			$html.='<div class="techjoomla-bootstrap">
 				<div id="tjfield_container" class="tjfield_container" >';
 
 			if($this->value)

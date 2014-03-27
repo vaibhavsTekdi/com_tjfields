@@ -30,7 +30,16 @@ class JFormFieldJsfunction extends JFormField
 	{
 		parent::__construct();
 		$this->countoption=0;
-		$this->tjfield_icon_minus = "icon-minus-sign ";
+		if(JVERSION>=3.0)
+			{
+				$this->tjfield_icon_plus = "icon-plus-2 ";
+				$this->tjfield_icon_minus = "icon-minus-2 ";
+			}
+			else
+			{ // for joomla3.0
+				$this->tjfield_icon_plus = "icon-plus ";
+				$this->tjfield_icon_minus = "icon-minus ";
+			}
 	}
 
 
@@ -56,22 +65,34 @@ class JFormFieldJsfunction extends JFormField
 		$countjs = 0;
 		//$this->countoption=count($this->value);
 		//$this->countoption=count($this->value);
-
-		if(JVERSION>=3.0)
-			{
-				$tjfield_icon_plus = "icon-plus-2 ";
-				$tjfield_icon_minus = "icon-minus-2 ";
-			}
-			else
-			{ // for joomla3.0
-				$tjfield_icon_plus = "icon-plus-sign ";
-				$tjfield_icon_minus = "icon-minus-sign ";
-			}
 			$j=0;
 			$html='';
-			$html.='
-			<script>var js_lenght='.$countjs.'</script>
-			<div class="techjoomla-bootstrap">
+
+
+
+
+
+			if(JVERSION>=3.0)
+			{
+				$html.='
+
+				<script>var js_lenght='.$countjs.'
+					var tjfield_icon_minus = "icon-minus-2 ";
+				</script>';
+			}
+			else
+			{
+				$html.='
+
+				<script>var js_lenght='.$countjs.'
+					var tjfield_icon_minus = "icon-minus ";
+				</script>';
+			}
+
+
+
+
+			$html.='<div class="techjoomla-bootstrap">
 				<div id="tjfield_js_container" class="tjfield_js_container" >';
 
 			if($this->value)
@@ -93,7 +114,7 @@ class JFormFieldJsfunction extends JFormField
 											$html.='<div id="remove_btn_js__div'.$j.'" class="com_tjfields_remove_button span2">
 												<div class="com_tjfields_remove_button">
 													<button class="btn btn-small btn-danger" type="button" id="remove_js'.$j.'" onclick="removeClone(\'com_tjfields_js__repeating_block'.$j.'\',\'remove_btn_js__div'.$j.'\');" >
-																	<i class="icon-minus"></i></button>
+																	<i class="'.$this->tjfield_icon_minus.'"></i></button>
 												</div>
 											</div>';
 											}
@@ -112,7 +133,7 @@ class JFormFieldJsfunction extends JFormField
 														<button class="btn btn-small btn-success" type="button" id="add_js"
 														onclick="addClonejsOption(\'com_tjfields_js__repeating_block\',\'com_tjfields_js__repeating_block\');"
 														title='.JText::_("COM_TJFIELDS_ADD_BUTTON").'>
-															<i class="'.$tjfield_icon_plus.'"></i>
+															<i class="'.$this->tjfield_icon_plus.'"></i>
 														</button>
 										</div>
 					<div style="clear:both"></div>
@@ -151,7 +172,7 @@ function addClonejsOption(rId,rClass)
 				var removeButton="<div id='remove_btn_js__div"+pre+"' class='com_tjfields_remove_button span2'>";
 				removeButton+="<button class='btn btn-small btn-danger' type='button' id='remove_js"+pre+"'";
 				removeButton+="onclick=\"removeClone('com_tjfields_js__repeating_block"+pre+"','remove_btn_js__div"+pre+"');\" title=\"<?php echo JText::_('COM_TJFIELDS_REMOVE_TOOLTIP');?>\" >";
-				removeButton+="<i class=\"icon-minus\"></i></button>";
+				removeButton+="<i class=\""+tjfield_icon_minus+"\"></i></button>";
 				removeButton+="</div>";
 
 				var newElem=techjoomla.jQuery('#'+rId+pre).clone().attr('id',rId+js_lenght);

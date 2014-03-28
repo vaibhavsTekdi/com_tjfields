@@ -418,15 +418,15 @@ class TjfieldsHelper
 
 		if ($format == 1)
 		{
-			return "%d/%m/%Y";
+			return "%d-%m-%Y";
 		}
 		else if (($format == 2))
 		{
-			return "%m/%d/%Y";
+			return "%m-%d-%Y";
 		}
 		else if ($format == 3)
 		{
-			return "%Y/%d/%m";
+			return "%Y-%d-%m";
 		}
 		else
 		{

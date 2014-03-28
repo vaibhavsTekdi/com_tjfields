@@ -54,11 +54,29 @@ class TjfieldsHelper
 			}
 			else if($field_data->type=='calendar')
 			{
-				$format = $this->getDateFormat($field_data->format);
-//$fdata->value = DateTime::createFromFormat($format, $fdata->value)->format($format);
-//$fdata->value = strtotime($fdata->value);
-//var_dump($fdata->value); die('aa');
-				$fdata->value = date('Y-m-d',$fdata->value);
+				//$format = $this->getDateFormat($field_data->format);
+				if ($field_data->format == 1)
+				{
+					$fdata->value = JFactory::getDate($fdata->value)->Format('d-m-Y');
+
+				}
+				else if (($field_data->format == 2))
+				{
+					$fdata->value = JFactory::getDate($fdata->value)->Format('m-d-Y');
+				}
+				else if ($field_data->format == 3)
+				{
+					$fdata->value = JFactory::getDate($fdata->value)->Format('Y-d-m');
+				}
+				else
+				{
+					$fdata->value = JFactory::getDate($fdata->value)->Format('Y-m-d');
+					//JFactory::getDate($this->item->startdate)->Format(JText::_('COM_JTICKETING_DATE_FORMAT_SHOW_SHORT'));
+				}
+				//echo $fdata->value; die('asd');
+				//$fdata->value = JFactory::getDate($fdata->value)->Format($format);
+
+
 			}
 
 

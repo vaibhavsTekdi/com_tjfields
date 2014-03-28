@@ -135,10 +135,10 @@
 			label="COM_TJFIELDS_FORM_LBL_FIELD_FORMAT"
 			description="COM_TJFIELDS_FORM_DESC_FIELD_FORMAT"
 			default="1">
-				<option value="1">DD/MM/YYYY</option>
-				<option value="2">MM/DD/YYYY</option>
-				<option value="2">YYYY/DD/MM</option>
-				<option value="4">YYYY/MM/DD</option>
+				<option value="1">DD-MM-YYYY</option>
+				<option value="2">MM-DD-YYYY</option>
+				<option value="2">YYYY-DD-MM</option>
+				<option value="4">YYYY-MM-DD</option>
 		</field>
 
 

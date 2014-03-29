@@ -130,7 +130,7 @@ class TjfieldsControllerFields extends JControllerAdmin
 
 	}
 
-
+/*
 	public function delete()
 	{
 
@@ -160,6 +160,51 @@ class TjfieldsControllerFields extends JControllerAdmin
 		}
 
 		$this->setRedirect('index.php?option=com_tjfields&view=fields&client='.$client, $msg);
+	}
+
+	*/
+	public function delete()
+	{
+	// Check for request forgeries
+		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		//GET CLIENT AND CLIENT TYPE
+		$input =JFactory::getApplication()->input;
+		$client = $input->get('client','','STRING');
+		$client_form = explode('.',$client);
+		$client_type = $client_form[1];
+		// Get items to remove from the request.
+		$cid = JFactory::getApplication()->input->get('cid', array(), 'array');
+
+		if (!is_array($cid) || count($cid) < 1)
+		{
+			JLog::add(JText::_($this->text_prefix . '_NO_ITEM_SELECTED'), JLog::WARNING, 'jerror');
+		}
+		else
+		{
+			// Get the model.
+			$model =$this->getModel( 'groups' );
+
+			// Make sure the item ids are integers
+			jimport('joomla.utilities.arrayhelper');
+			JArrayHelper::toInteger($cid);
+
+			// Remove the items.
+			if ($model->deletefield($cid))
+			{
+				$TjfieldsHelper = new TjfieldsHelper();
+				$data = array();
+				$data['client'] = $client;
+				$data['client_type'] = $client_type;
+				$TjfieldsHelper->generateXml($data);
+				$this->setMessage(JText::plural($this->text_prefix . '_N_ITEMS_DELETED', count($cid)));
+			}
+			else
+			{
+				$this->setMessage($model->getError());
+			}
+		}
+		$this->setRedirect('index.php?option=com_tjfields&view=groups&client='.$client, false);
+
 	}
 
 

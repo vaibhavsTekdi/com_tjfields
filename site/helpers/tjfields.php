@@ -201,16 +201,24 @@ class TjfieldsHelper
 
 		if ($option_value != '')
 		{
-			$option_value = json_decode($option_value);
+			$new_option_value = json_decode($option_value);
 
-			if (is_array($option_value))
+			if ($new_option_value != '')
 			{
-				$option_value_string = "'" . implode("','",$option_value) . "'";
-				$query->where('value IN ('.$option_value_string.')');
+				if (is_array($new_option_value))
+				{
+					$option_value_string = "'" . implode("','",$new_option_value) . "'";
+					$query->where('value IN ('.$option_value_string.')');
+				}
+				else
+				{
+					$query->where('value=' . $new_option_value);
+				}
 			}
+			// Radio.
 			else
 			{
-				$query->where('value = '.$option_value);
+				$query->where('value=' . $db->quote($option_value));
 			}
 		}
 

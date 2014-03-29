@@ -182,7 +182,7 @@ class TjfieldsControllerFields extends JControllerAdmin
 		else
 		{
 			// Get the model.
-			$model =$this->getModel( 'groups' );
+			$model =$this->getModel( 'fields' );
 
 			// Make sure the item ids are integers
 			jimport('joomla.utilities.arrayhelper');
@@ -196,13 +196,15 @@ class TjfieldsControllerFields extends JControllerAdmin
 				$data['client'] = $client;
 				$data['client_type'] = $client_type;
 				$TjfieldsHelper->generateXml($data);
-				$this->setMessage(JText::plural($this->text_prefix . '_N_ITEMS_DELETED', count($cid)));
+			//	$this->setMessage(JText::plural($this->text_prefix . '_N_ITEMS_DELETED', count($cid)));
+				$ntext = $this->text_prefix . '_N_ITEMS_DELETED';
 			}
 			else
 			{
 				$this->setMessage($model->getError());
 			}
 		}
+		$this->setMessage(JText::plural($ntext, count($cid)));
 		$this->setRedirect('index.php?option=com_tjfields&view=groups&client='.$client, false);
 
 	}

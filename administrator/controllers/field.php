@@ -31,12 +31,14 @@ class TjfieldsControllerField extends JControllerForm
 		$save_option=$model->save_option($post);
 		if($save_option)
 			{
-				$msg='';
+				$ntext = JText::_('COMTJFILEDS_FIELD_CREATED_SUCCESSFULLY');
+				$this->setMessage(JText::plural($ntext, 1));
 				$link = JRoute::_('index.php?option=com_tjfields&view=fields&client='.$input->get('client','','STRING'),false);
 			}
 		else
 			{
 				$msg=JText::_('TJFIELDS_ERROR_MSG');
+				$this->setMessage(JText::plural($msg, 1));
 				$link = JRoute::_('index.php?option=com_tjfields&view=fields&client='.$input->get('client','','STRING'),false);
 			}
 		$this->setRedirect($link,$msg);

@@ -33,12 +33,14 @@ class TjfieldsControllerGroup extends JControllerForm
 
 		if($if_saved)
 		{
-			$msg='Success';
+			$ntext = JText::_('COMTJFILEDS_GROUP_CREATED_SUCCESSFULLY');
+			$this->setMessage(JText::plural($ntext, 1));
 			$link = JRoute::_('index.php?option=com_tjfields&view=groups&client='.$input->get('client','','STRING'),false);
 		}
 		else
 		{
 			$msg=JText::_('TJFIELDS_ERROR_MSG');
+			$this->setMessage(JText::plural($msg, 1));
 			$link = JRoute::_('index.php?option=com_tjfields&view=groups&client='.$input->get('client','','STRING'),false);
 		}
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * @package		com_jmailalerts
+ * @package		com_tjfields
  * @version		$versionID$
  * @author		TechJoomla
  * @author mail	extensions@techjoomla.com
@@ -49,28 +49,14 @@ class JFormFieldJsfunction extends JFormField
 
 		$jsarray = explode('||', $this->value);
 		//now we get array[0] = onclick-getfunction()
-		//array[1] = onchange-getfunction2()
-		//array[2] = '';
 		//remove the blank array element
 		$jsarray_removed_blank_element = array_filter($jsarray);
-
-		/*foreach($jsarray_removed_blank_element as $eachjs)
-		{
-			$jsarray_final[] = explode('-', $eachjs);
-		}*/
-
 
 		$countjs = count($this->value);
 		if(empty($this->value))
 		$countjs = 0;
-		//$this->countoption=count($this->value);
-		//$this->countoption=count($this->value);
 			$j=0;
 			$html='';
-
-
-
-
 
 			if(JVERSION>=3.0)
 			{
@@ -88,9 +74,6 @@ class JFormFieldJsfunction extends JFormField
 					var tjfield_icon_minus = "icon-minus ";
 				</script>';
 			}
-
-
-
 
 			$html.='<div class="techjoomla-bootstrap">
 				<div id="tjfield_js_container" class="tjfield_js_container" >';
@@ -118,7 +101,6 @@ class JFormFieldJsfunction extends JFormField
 												</div>
 											</div>';
 											}
-
 				}
 			}
 			else
@@ -179,11 +161,9 @@ function addClonejsOption(rId,rClass)
 				newElem.find('input[name=\"tjfieldsJs[' + pre + '][jsoptions]\"]').attr({'name': 'tjfieldsJs[' + js_lenght + '][jsoptions]','value':''});
 				newElem.find('input[name=\"tjfieldsJs[' + pre + '][jsfunctionname]\"]').attr({'name': 'tjfieldsJs[' + js_lenght + '][jsfunctionname]','value':''});
 
-
 				/*incremnt id*/
 				newElem.find('input[id=\"tjfields_jsoptions_'+pre+'\"]').attr({'id': 'tjfields_jsoptions_'+js_lenght,'value':''});
 				newElem.find('input[id=\"tjfields_jsfunctionname_'+pre+'\"]').attr({'id': 'tjfields_jsfunctionname_'+js_lenght,'value':''});
-
 
 				techjoomla.jQuery('#'+rId+pre).after(newElem);
 				techjoomla.jQuery('#'+rId+pre).after(removeButton)

@@ -1,6 +1,6 @@
 <?php
 /**
- * @package		com_jmailalerts
+ * @package		com_tjfields
  * @version		$versionID$
  * @author		TechJoomla
  * @author mail	extensions@techjoomla.com

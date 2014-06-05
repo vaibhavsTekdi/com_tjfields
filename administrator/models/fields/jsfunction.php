@@ -132,12 +132,12 @@ class JFormFieldJsfunction extends JFormField
 	function fetchJsfunction($fieldName, $value, &$node, $control_name,$j)
 	{
 
-		return $Jsfunction = '<input type="text" id="tjfields_jsoptions_'.$j.'" name="tjfieldsJs['.$j.'][jsoptions]"  class="tjfields_jsoptions " required="" placeholder="Events"  value="'.$value.'">';
+		return $Jsfunction = '<input type="text" id="tjfields_jsoptions_'.$j.'" name="tjfieldsJs['.$j.'][jsoptions]"  class="tjfields_jsoptions "  placeholder="Events"  value="'.$value.'">';
 	}
 
 	function fetchJsfunctionName($fieldName, $value, &$node, $control_name,$j)
 	{
-		return $JsfunctionName = '<input type="text" id="tjfields_jsfunctionname_'.$j.'" name="tjfieldsJs['.$j.'][jsfunctionname]"  class="tjfields_jsfunctionname " required="" placeholder="Function name"  value="'.$value.'">';
+		return $JsfunctionName = '<input type="text" id="tjfields_jsfunctionname_'.$j.'" name="tjfieldsJs['.$j.'][jsfunctionname]"  class="tjfields_jsfunctionname "  placeholder="Function name"  value="'.$value.'">';
 	}
 
 }

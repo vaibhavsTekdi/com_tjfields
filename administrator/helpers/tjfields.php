@@ -318,22 +318,39 @@ class TjfieldsHelper
 				}
 		}
 
-		$filePath = JPATH_SITE . DS . 'components/com_jticketing/models/forms/'.$data['client_type'].'form_extra.xml';
+		$filePathFrontend = JPATH_SITE . DS . 'components/com_jticketing/models/forms/'.$data['client_type'].'form_extra.xml';
 		$content  = '';
 
-		if(!JFile::exists($filePath))
+		if(!JFile::exists($filePathFrontend))
 		{
-			JFile::write($filePath, $content);
+			JFile::write($filePathFrontend, $content);
 		}
-		$newXML->asXML($filePath);//->asXML();
-		$filePath = JPATH_SITE . DS . 'administrator/components/com_jticketing/models/forms/'.$data['client_type'].'_extra.xml';
+		$newXML->asXML($filePathFrontend);//->asXML();
+		$filePathBackend = JPATH_SITE . DS . 'administrator/components/com_jticketing/models/forms/'.$data['client_type'].'_extra.xml';
 		$content  = '';
 
-		if(!JFile::exists($filePath))
+		if(!JFile::exists($filePathBackend))
 		{
-			JFile::write($filePath, $content);
+			JFile::write($filePathBackend, $content);
 		}
-		$newXML->asXML($filePath);//->asXML();
+		$newXML->asXML($filePathBackend);//->asXML();
+
+
+
+
+		//delete xml if no field present
+		if(empty($fields))
+		{
+			if(JFile::exists($filePathFrontend))
+			{
+				JFile::delete($filePathFrontend);
+			}
+			if(JFile::exists($filePathBackend))
+			{
+				JFile::delete($filePathBackend);
+			}
+		}
+
 	}
 
 

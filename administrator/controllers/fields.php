@@ -130,39 +130,7 @@ class TjfieldsControllerFields extends JControllerAdmin
 
 	}
 
-/*
-	public function delete()
-	{
 
-		$input =JFactory::getApplication()->input;
-		$post = $input->post;
-		$client = $input->get('client','','STRING');
-		$client_form = explode('.',$client);
-		$client_type = $client_form[1];
-		// Get some variables from the request
-
-		$cid	= $input->get('cid',array(), 'post', 'array');
-		JArrayHelper::toInteger($cid);
-
-		$model =$this->getModel( 'fields' );
-		if ($model->deletefield($cid))
-		{
-			$TjfieldsHelper = new TjfieldsHelper();
-			$data = array();
-			$data['client'] = $client;
-			$data['client_type'] = $client_type;
-			$TjfieldsHelper->generateXml($data);
-			$msg = JText::_( 'COM_TJFIELDS_GROUP_DELETED' );
-		}
-		else
-		{
-			$msg = $model->getError();
-		}
-
-		$this->setRedirect('index.php?option=com_tjfields&view=fields&client='.$client, $msg);
-	}
-
-	*/
 	public function delete()
 	{
 	// Check for request forgeries
@@ -205,7 +173,7 @@ class TjfieldsControllerFields extends JControllerAdmin
 			}
 		}
 		$this->setMessage(JText::plural($ntext, count($cid)));
-		$this->setRedirect('index.php?option=com_tjfields&view=groups&client='.$client, false);
+		$this->setRedirect('index.php?option=com_tjfields&view=fields&client='.$client, false);
 
 	}
 

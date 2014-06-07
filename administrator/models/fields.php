@@ -207,11 +207,42 @@ class TjfieldsModelFields extends JModelList {
 					$this->setError( $this->_db->getErrorMsg() );
 					return false;
 			}
+
+			//Delete the fields value
+			$query = "DELETE FROM #__tjfields_fields_value where field_id IN (".$group_to_delet.")";
+			$db->setQuery( $query );
+			if (!$db->execute()) {
+					$this->setError( $this->_db->getErrorMsg() );
+					return false;
+			}
+			//Delete the fields option value
+			$query = "DELETE FROM #__tjfields_options where field_id IN (".$group_to_delet.")";
+			$db->setQuery( $query );
+			if (!$db->execute()) {
+					$this->setError( $this->_db->getErrorMsg() );
+					return false;
+			}
 		}
 		else
 		{
 				$db=JFactory::getDBO();
 				$query = "DELETE FROM #__tjfields_fields where id =". $id[0];
+				$db->setQuery( $query );
+				if (!$db->execute()) {
+						$this->setError( $this->_db->getErrorMsg() );
+						return false;
+				}
+
+				//Delete the fields value
+				$query = "DELETE FROM #__tjfields_fields_value where field_id =". $id[0];
+				$db->setQuery( $query );
+				if (!$db->execute()) {
+						$this->setError( $this->_db->getErrorMsg() );
+						return false;
+				}
+
+				//Delete the fields option value
+				$query = "DELETE FROM #__tjfields_options where field_id =". $id[0];
 				$db->setQuery( $query );
 				if (!$db->execute()) {
 						$this->setError( $this->_db->getErrorMsg() );

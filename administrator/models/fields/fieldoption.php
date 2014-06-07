@@ -144,12 +144,12 @@ class JFormFieldFieldoption extends JFormField
 	function fetchOptionName($fieldName, $value, &$node, $control_name,$k)
 	{
 
-		return $OptionName='<input type="text" id="tjfields_optionname_'.$k.'"	 name="tjfields['.$k.'][optionname]" class="tjfields_optionname " required="" placeholder="Name" value="'.$value.'">';
+		return $OptionName='<input type="text" id="tjfields_optionname_'.$k.'"	 name="tjfields['.$k.'][optionname]" class="tjfields_optionname "  placeholder="Name" value="'.$value.'">';
 	}
 
 	function fetchOptionValue($fieldName, $value, &$node, $control_name,$k)
 	{
-		return $OptionValue='<input type="text" id="tjfields_optionvalue_'.$k.'" name="tjfields['.$k.'][optionvalue]"  class="tjfields_optionvalue " required="" placeholder="Value"  value="'.$value.'">';
+		return $OptionValue='<input type="text" id="tjfields_optionvalue_'.$k.'" name="tjfields['.$k.'][optionvalue]"  class="tjfields_optionvalue "  placeholder="Value"  value="'.$value.'">';
 	}
 	function fetchdedaultoption($fieldName, $value, &$node, $control_name,$k)
 	{
@@ -157,19 +157,19 @@ class JFormFieldFieldoption extends JFormField
 			$icon='class="'.$this->tjfield_icon_star.'"';
 		else
 			$icon='class="'.$this->tjfield_icon_emptystar.'"';
-		return $dedaultoption='<span class=" tjfields_defaultoptionvalue " id="tjfields_defaultoptionvalue_'.$k.'" onclick="getdefaultimage(this.id)" name="tjfields['.$k.'][defaultoptionvalue]"   required=""><i '.$icon.' ></i></span>';
+		return $dedaultoption='<span class=" tjfields_defaultoptionvalue " id="tjfields_defaultoptionvalue_'.$k.'" onclick="getdefaultimage(this.id)" name="tjfields['.$k.'][defaultoptionvalue]"   ><i '.$icon.' ></i></span>';
 
 		/*
-		'<img src="'.JURI::root().'administrator'.DS.'components'.DS.'com_tjfields'.DS.'images'.DS.'nodefault.png" id="tjfields_defaultoptionvalue_0" onclick="getdefaultimage(this.id)" name="tjfields[0][defaultoptionvalue]"  class="tjfields_defaultoptionvalue featured " required="" />';
+		'<img src="'.JURI::root().'administrator'.DS.'components'.DS.'com_tjfields'.DS.'images'.DS.'nodefault.png" id="tjfields_defaultoptionvalue_0" onclick="getdefaultimage(this.id)" name="tjfields[0][defaultoptionvalue]"  class="tjfields_defaultoptionvalue featured " />';
 		*/
 	}
 	function fetchhiddenoption($fieldName, $value, &$node, $control_name,$k)
 	{
-		return $hiddenoption='<input type="hidden" id="tjfields_hiddenoption_'.$k.'" name="tjfields['.$k.'][hiddenoption]"  class="tjfields_hiddenoption " required="" placeholder="Value"  value="'.$value.'">';
+		return $hiddenoption='<input type="hidden" id="tjfields_hiddenoption_'.$k.'" name="tjfields['.$k.'][hiddenoption]"  class="tjfields_hiddenoption "  placeholder="Value"  value="'.$value.'">';
 	}
 	function fetchhiddenoptionid($fieldName, $value, &$node, $control_name,$k)
 	{
-		return $hiddenoptionid='<input type="hidden" id="tjfields_hiddenoptionid_'.$k.'" name="tjfields['.$k.'][hiddenoptionid]"  class="tjfields_hiddenoptionid " required="" placeholder="Value"  value="'.$value.'">';
+		return $hiddenoptionid='<input type="hidden" id="tjfields_hiddenoptionid_'.$k.'" name="tjfields['.$k.'][hiddenoptionid]"  class="tjfields_hiddenoptionid "  placeholder="Value"  value="'.$value.'">';
 	}
 }
 ?>

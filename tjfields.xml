@@ -12,7 +12,7 @@
 	<creationDate>9th Aug 2014</creationDate>
 	<version>1.1</version>
 
-	<description>TJFields - Common code for TJ Fields Manager and TJ Geo Manager! </description>
+	<description>TJFields - Common code for TJ Fields Manager and TJ Geo Manager!</description>
 
 	<install>
 		<sql>

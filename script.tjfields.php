@@ -691,6 +691,34 @@ class com_tjfieldsInstallerScript
 			// Lets create the table
 			$this->runSQL($parent, 'country.sql');
 		}
+		else
+		{
+			$newColumns = array('id', 'country', 'country_3_code', 'country_code', 'country_jtext', 'ordering');
+			$oldColumns = $this->getColumns('#__tj_country');
+
+			$dropTableFlag = 0;
+
+			foreach ($newColumns as $column)
+			{
+				if (! in_array($column, $oldColumns))
+				{
+					$dropTableFlag = 1;
+					break;
+				}
+			}
+
+			if ($dropTableFlag)
+			{
+				// Backup old table
+				$backup = $this->renameTable('#__tj_country', '#__backup_tj_country');
+
+				if ($backup)
+				{
+					// Lets create the table with new structure
+					$this->runSQL($parent, 'country.sql');
+				}
+			}
+		}
 
 		// Install region table(#__tj_region) if it does not exists
 		$check = $this->checkTableExists('tj_region');
@@ -699,6 +727,34 @@ class com_tjfieldsInstallerScript
 		{
 			// Lets create the table
 			$this->runSQL($parent, 'region.sql');
+		}
+		else
+		{
+			$newColumns = array('id', 'country_id', 'region_3_code', 'region_code', 'region', 'region_jtext', 'ordering');
+			$oldColumns = $this->getColumns('#__tj_region');
+
+			$dropTableFlag = 0;
+
+			foreach ($newColumns as $column)
+			{
+				if (! in_array($column, $oldColumns))
+				{
+					$dropTableFlag = 1;
+					break;
+				}
+			}
+
+			if ($dropTableFlag)
+			{
+				// Backup old table
+				$backup = $this->renameTable('#__tj_region', '#__backup_tj_region');
+
+				if ($backup)
+				{
+					// Lets create the table with new structure
+					$this->runSQL($parent, 'region.sql');
+				}
+			}
 		}
 
 		// Install city table(#__tj_city) if it does not exists
@@ -743,6 +799,37 @@ class com_tjfieldsInstallerScript
 		{
 			return false;
 		}
+	}
+
+	function getColumns($table)
+	{
+		$db = JFactory::getDBO();
+
+		$field_array = array();
+		$query = "SHOW COLUMNS FROM " . $table;
+		$db->setQuery($query);
+		$columns = $db->loadobjectlist();
+
+		for ($i = 0; $i < count($columns); $i++)
+		{
+			$columns_array[] = $columns[$i]->Field;
+		}
+
+		return $columns_array;
+	}
+
+	function renameTable($table, $newTable)
+	{
+		$db = JFactory::getDBO();
+		$query = "RENAME TABLE `" . $table . "` TO `" . $newTable . '_' . date('d-m-Y_H:m:s') . "`";
+		$db->setQuery($query);
+
+		if ($db->query())
+		{
+			return true;
+		}
+
+		return false;
 	}
 
 	function runSQL($parent,$sqlfile)

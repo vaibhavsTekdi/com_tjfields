@@ -47,7 +47,10 @@ class com_tjfieldsInstallerScript
 			'system'=>array(
 				'tjassetsloader'=>1
 			)
-		)
+		),
+
+		// libraries
+		'libraries'=>array()
 	);
 
 	private $uninstall_queue = array(
@@ -60,9 +63,11 @@ class com_tjfieldsInstallerScript
 		// plugins => { (folder) => { (element) => (published) }* }*
 		'plugins'=>array(
 			'system'=>array()
-		)
-	);
+		),
 
+		// libraries
+		'libraries'=>array()
+	);
 
 	/**
 	 * method to run before an install/update/uninstall method
@@ -88,9 +93,6 @@ class com_tjfieldsInstallerScript
 		// Install Techjoomla Straper
 		$straperStatus = $this->_installStraper($parent);
 
-		//ADD QUICK2CART MENUES IN JS TOOLBAR
-		$this->addDefaultToolbarMenus();
-
 		if (version_compare(JVERSION, '3.0', 'lt'))
 		{
 			$document = JFactory::getDocument();
@@ -98,13 +100,13 @@ class com_tjfieldsInstallerScript
 		}
 
 		// Show the post-installation page
-		$this->_renderPostInstallation($status, $fofStatus, $straperStatus, $parent, $msgBox);
+		$this->_renderPostInstallation($status, $straperStatus, $parent, $msgBox);
 	}
 
 	/**
 	 * Renders the post-installation message
 	 */
-	private function _renderPostInstallation($status, $fofStatus, $straperStatus, $parent, $msgBox=array())
+	private function _renderPostInstallation($status, $straperStatus, $parent, $msgBox=array())
 	{
 		if (version_compare(JVERSION, '3.0', 'lt'))
 		{
@@ -220,31 +222,6 @@ class com_tjfieldsInstallerScript
 							</tr>
 						<?php endforeach; ?>
 					<?php endif; ?>
-
-					<!-- LIB INSTALL-->
-					<?php if (count($status->libraries)) : ?>
-						<tr class="row1">
-							<th>Library</th>
-							<th></th>
-							<th></th>
-						</tr>
-
-						<?php foreach ($status->libraries as $libraries) : ?>
-						<tr class="row2 <?php //echo ($rows++ % 2); ?>">
-							<td class="key"><?php echo ucfirst($libraries['name']); ?></td>
-							<td class="key"></td>
-							<td>
-								<strong style="color: <?php echo ($libraries['result'])? "green" : "red"?>"><?php echo ($libraries['result'])?'Installed':'Not installed'; ?></strong>
-								<?php
-								if (!empty($libraries['result'])) // if installed then only show msg
-								{
-									//	echo $mstat=($libraries['status']? "<span class=\"label label-success\">Enabled</span>" : "<span class=\"label label-important\">Disabled</span>");
-								}
-								?>
-							</td>
-						</tr>
-						<?php endforeach;?>
-					<?php endif;?>
 				</tbody>
 			</table>
 		</div>
@@ -462,7 +439,7 @@ class com_tjfieldsInstallerScript
 		jimport('joomla.filesystem.folder');
 		jimport('joomla.filesystem.file');
 		jimport('joomla.utilities.date');
-		$source = $src.DS.'strapper';
+		$source = $src.DS.'tj_strapper';
 		$target = JPATH_ROOT.DS.'media'.DS.'techjoomla_strapper';
 
 		$haveToInstallStraper = false;

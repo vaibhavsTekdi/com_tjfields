@@ -18,7 +18,7 @@ class TjfieldsHelper
 	/**
 	 * Configure the Linkbar.
 	 */
-	public static function addSubmenu($client = '')
+	public static function addSubmenu($view = '')
 	{
 		/*
 		if(JVERSION >= '3.0')
@@ -75,7 +75,8 @@ class TjfieldsHelper
 					|| $lang->load($component, JPATH_BASE, $lang->getDefault(), false, false)
 					|| $lang->load($component, JPath::clean(JPATH_ADMINISTRATOR . '/components/' . $component), $lang->getDefault(), false, false);
 
-					call_user_func(array($cName, 'addSubmenu'), 'categories' . (isset($section) ? '.' . $section : ''));
+					//call_user_func(array($cName, 'addSubmenu'), 'categories' . (isset($section) ? '.' . $section : ''));
+					call_user_func(array($cName, 'addSubmenu'), $view . (isset($section) ? '.' . $section : ''));
 				}
 			}
 		}

@@ -1,41 +1,66 @@
 <?php
 /**
- * @version     1.0.0
- * @package     com_tjfields
- * @copyright   Copyright (C) 2014. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
- * @author      TechJoomla <extensions@techjoomla.com> - http://www.techjoomla.com
+ * @version    SVN: <svn_id>
+ * @package    Tjfields
+ * @author     Techjoomla <extensions@techjoomla.com>
+ * @copyright  Copyright (c) 2009-2015 TechJoomla. All rights reserved.
+ * @license    GNU General Public License version 2 or later.
  */
 
+// No direct access
+defined('_JEXEC') or die();
 
-// no direct access
-defined('_JEXEC') or die;
-if(!defined('DS'))
+if (!defined('DS'))
 {
 	define('DS',DIRECTORY_SEPARATOR);
-
 }
+
 // Access check.
 if (!JFactory::getUser()->authorise('core.manage', 'com_tjfields'))
 {
 	throw new Exception(JText::_('JERROR_ALERTNOAUTHOR'));
 }
 
-// Include dependancies
-jimport('joomla.application.component.controller');
+// Define constants
+if (JVERSION < '3.0')
+{
+	// Define wrapper class
+	define('TJFIELDS_WRAPPER_CLASS', "tjfields-wrapper techjoomla-bootstrap");
 
-$document=JFactory::getDocument();
-include_once JPATH_ROOT.DS.'media'.DS.'techjoomla_strapper'.DS.'strapper.php';
-TjAkeebaStrapper::bootstrap();
+	// Other
+	JHtml::_('behavior.tooltip');
+}
+else
+{
+	// Define wrapper class
+	define('TJFIELDS_WRAPPER_CLASS', "tjfields-wrapper");
 
+	// Tabstate
+	JHtml::_('behavior.tabstate');
 
-//include helper file
+	// Other
+	JHtml::_('behavior.tooltip');
+
+	// Bootstrap tooltip and chosen js
+	JHtml::_('bootstrap.tooltip');
+	JHtml::_('behavior.multiselect');
+	JHtml::_('formbehavior.chosen', 'select');
+}
+
+$document = JFactory::getDocument();
+$document->addStyleSheet(JUri::base().'components/com_tjfields/assets/css/tjfields.css');
+
+// Include helper file
 $helperPath= dirname(__FILE__).DS.'helpers'.DS.'tjfields.php';
-if(!class_exists('TjfieldsHelper'))
+
+if (!class_exists('TjfieldsHelper'))
 {
 	JLoader::register('TjfieldsHelper',$helperPath);
 	JLoader::load('TjfieldsHelper');
 }
+
+// Include dependancies
+jimport('joomla.application.component.controller');
 
 $controller	= JControllerLegacy::getInstance('Tjfields');
 $controller->execute(JFactory::getApplication()->input->get('task'));

@@ -1,67 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="component" version="3.0" method="upgrade">
-    <name>com_tjfields</name>
-    <creationDate>29th March 2014</creationDate>
-    <copyright>Copyright (C) 2014. All rights reserved.</copyright>
-    <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
-    <author>TechJoomla</author>
-    <authorEmail>extensions@techjoomla.com</authorEmail>
-    <authorUrl>www.techjoomla.com</authorUrl>
-    <version>1.0.0</version>
-    <description>tjfields</description>
 
-    <install> <!-- Runs on install -->
-        <sql>
-            <file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
-        </sql>
-    </install>
-    <uninstall> <!-- Runs on uninstall -->
-        <sql>
-            <file driver="mysql" charset="utf8">sql/uninstall.mysql.utf8.sql</file>
-        </sql>
-    </uninstall>
+	<name>com_tjfields</name>
 
-    <files folder="site">
-        <filename>index.html</filename>
-        <filename>tjfields.php</filename>
-        <filename>controller.php</filename>
-        <filename>router.php</filename>
-        <folder>views</folder>
-        <folder>models</folder>
-        <folder>controllers</folder>
-        <folder>helpers</folder>
-    </files>
-    <languages folder="site">
+	<author>TechJoomla</author>
+	<authorEmail>extensions@techjoomla.com</authorEmail>
+	<authorUrl>www.techjoomla.com</authorUrl>
+	<copyright>Copyright(C)2012-13 TechJoomla</copyright>
+	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 
-			<language tag="en-GB">language/en-GB.com_tjfields.ini</language>
-    </languages>
-    <administration>
-        <menu img="components/com_tjfields/assets/images/s_com_tjfields.png" >COM_TJFIELDS</menu>
-        <submenu>
+	<creationDate>9th Aug 2014</creationDate>
+	<version>1.1</version>
 
-			<menu link="option=com_tjfields&amp;view=groups" view="groups" img="components/com_tjfields/assets/images/s_groups.png" alt="Tjfields/Groups">COM_TJFIELDS_TITLE_GROUPS</menu>
+	<description>TJFields - Common code for TJ Fields Manager and TJ Geo Manager! </description>
 
-        </submenu>
-        <files folder="administrator">
-            <filename>access.xml</filename>
-            <filename>config.xml</filename>
-            <filename>controller.php</filename>
-            <filename>index.html</filename>
-            <filename>tjfields.php</filename>
-            <folder>controllers</folder>
-            <folder>assets</folder>
-            <folder>helpers</folder>
-            <folder>models</folder>
-            <folder>sql</folder>
-            <folder>tables</folder>
-            <folder>views</folder>
-        </files>
-        <languages folder="administrator">
+	<install>
+		<sql>
+			<file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
+		</sql>
+	</install>
 
-			<language tag="en-GB">language/en-GB.com_tjfields.ini</language>
-			<language tag="en-GB">language/en-GB.com_tjfields.sys.ini</language>
-        </languages>
-    </administration>
+	<uninstall>
+		<sql>
+			<file driver="mysql" charset="utf8">sql/uninstall.mysql.utf8.sql</file>
+		</sql>
+	</uninstall>
+
+	<scriptfile>script.tjfields.php</scriptfile>
+
+	<files folder="site">
+		<folder>controllers</folder>
+		<folder>helpers</folder>
+		<folder>models</folder>
+		<folder>views</folder>
+		<filename>controller.php</filename>
+
+		<filename>index.html</filename>
+		<filename>router.php</filename>
+		<filename>tjfields.php</filename>
+	</files>
+
+	<languages folder="site_language">
+		<language tag="en-GB">en-GB/en-GB.com_tjfields.ini</language>
+		<language tag="en-GB">en-GB/en-GB.tjgeo.countries.ini</language>
+		<language tag="en-GB">en-GB/en-GB.tjgeo.regions.ini</language>
+	</languages>
+
+	<administration>
+		<!--
+		<menu img="components/com_tjfields/assets/images/s_com_tjfields.png" >COM_TJFIELDS</menu>
+		<submenu>
+			<menu link="option=com_tjfields&amp;view=groups"
+				view="groups"
+				img="components/com_tjfields/assets/images/s_groups.png" alt="Tjfields/Groups">
+					COM_TJFIELDS_TITLE_GROUPS
+			</menu>
+		</submenu>
+		-->
+
+		<files folder="administrator">
+			<folder>assets</folder>
+			<folder>controllers</folder>
+			<folder>helpers</folder>
+			<folder>models</folder>
+			<folder>sql</folder>
+			<folder>tables</folder>
+			<folder>views</folder>
+
+			<filename>access.xml</filename>
+			<filename>config.xml</filename>
+			<filename>controller.php</filename>
+			<filename>index.html</filename>
+			<filename>router.php</filename>
+			<filename>tjfields.php</filename>
+		</files>
+
+		<languages folder="admin_language">
+			<language tag="en-GB">en-GB/en-GB.com_tjfields.ini</language>
+			<language tag="en-GB">en-GB/en-GB.com_tjfields.sys.ini</language>
+		</languages>
+	</administration>
 </extension>
-<!-- Component built by the Joomla Component Creator -->
-<!-- http://www.notwebdesign.com/joomla-component-creator/ -->

@@ -15,7 +15,7 @@ JFormHelper::loadFieldClass('list');
 /**
  * Supports an HTML select list of categories
  */
-class JFormFieldCountries extends JFormFieldList
+class JFormFieldRegions extends JFormFieldList
 {
 	/**
 	 * The form field type.
@@ -23,7 +23,7 @@ class JFormFieldCountries extends JFormFieldList
 	 * @var		string
 	 * @since	1.6
 	 */
-	protected $type = 'countries';
+	protected $type = 'regions';
 
 	/**
 	 * Fiedd to decide if options are being loaded externally and from xml
@@ -45,37 +45,47 @@ class JFormFieldCountries extends JFormFieldList
 		$db = JFactory::getDbo();
 		$query = $db->getQuery(true);
 		$client = JFactory::getApplication()->input->get('client', '', 'STRING');
+		$options = array();
 
 		// Select the required fields from the table.
-		$query->select('c.id, c.country, c.country_jtext');
-		$query->from('`#__tj_country` AS c');
+		$query->select('r.id, r.region, r.region_jtext');
+		$query->from('`#__tj_region` AS r');
 
 		if ($client)
 		{
-			$query->where('c.' . $client .' = 1');
+			$query->where('r.' . $client .' = 1');
 		}
 
-		$query->order($db->escape('c.ordering ASC'));
+		// @TODO - dirty thing starts
+		// @TODO - @manoj this might need change before World War - III. ;) LOL
+		require_once JPATH_ADMINISTRATOR . '/components/com_tjfields/models/cities.php';
+		$TjfieldsModelCities = new TjfieldsModelCities();
+		$country = $TjfieldsModelCities->getState('filter.country');
+		// @TODO - dirty thing ends
 
-		$db->setQuery($query);
-
-		// Get all countries.
-		$countries = $db->loadObjectList();
-
-		$options = array();
-
-		// Load lang file for countries
-		$lang = JFactory::getLanguage();
-		$lang->load('tjgeo.countries', JPATH_SITE, null, false, true);
-
-		foreach ($countries as $c)
+		if ($country)
 		{
-			if ($lang->hasKey(strtoupper($c->country_jtext)))
-			{
-				$c->country = JText::_($c->country_jtext);
-			}
+			$query->where('r.country_id = ' . $country);
+			$query->order($db->escape('r.ordering, r.region ASC'));
 
-			$options[] = JHtml::_('select.option', $c->id, $c->country);
+			$db->setQuery($query);
+
+			// Get all regions.
+			$regions = $db->loadObjectList();
+
+			// Load lang file for regions
+			$lang = JFactory::getLanguage();
+			$lang->load('tjgeo.regions', JPATH_SITE, null, false, true);
+
+			foreach ($regions as $c)
+			{
+				if ($lang->hasKey(strtoupper($c->region_jtext)))
+				{
+					$c->region = JText::_($c->region_jtext);
+				}
+
+				$options[] = JHtml::_('select.option', $c->id, $c->region);
+			}
 		}
 
 		if (!$this->loadExternally)

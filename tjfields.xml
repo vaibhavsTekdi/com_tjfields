@@ -44,6 +44,7 @@
 		<language tag="en-GB">en-GB/en-GB.com_tjfields.ini</language>
 		<language tag="en-GB">en-GB/en-GB.tjgeo.countries.ini</language>
 		<language tag="en-GB">en-GB/en-GB.tjgeo.regions.ini</language>
+		<language tag="en-GB">en-GB/en-GB.tjgeo.cities.ini</language>
 	</languages>
 
 	<administration>

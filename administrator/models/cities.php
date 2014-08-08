@@ -13,13 +13,13 @@ defined('_JEXEC') or die();
 jimport('joomla.application.component.modellist');
 
 /**
- * Methods supporting a list of regions records.
+ * Methods supporting a list of cities records.
  *
  * @package     Tjfields
  * @subpackage  com_tjfields
  * @since       2.2
  */
-class TjfieldsModelRegions extends JModelList
+class TjfieldsModelCities extends JModelList
 {
 	/**
 	 * Constructor.
@@ -36,11 +36,12 @@ class TjfieldsModelRegions extends JModelList
 			$config['filter_fields'] = array(
 				'id', 'a.id',
 				'state', 'state',
+				'city', 'a.city',
+				'country_id', 'a.country_id',
+				'region_id', 'a.region_id',
+				'city_jtext', 'a.city_jtext',
+				'country', 'a.country',
 				'region', 'a.region',
-				'region_3_code', 'a.region_3_code',
-				'region_code', 'a.region_code',
-				'region_jtext', 'a.region_jtext',
-				'country', 'c.country',
 				'state', 'a.state'
 			);
 		}
@@ -95,12 +96,16 @@ class TjfieldsModelRegions extends JModelList
 		$country = $app->getUserStateFromRequest($this->context . 'filter.country', 'filter_country', '', 'string');
 		$this->setState('filter.country', $country);
 
+		// Load the filter country
+		$region = $app->getUserStateFromRequest($this->context . 'filter.region', 'filter_region', '', 'string');
+		$this->setState('filter.region', $region);
+
 		// Load the parameters.
 		$params = JComponentHelper::getParams('com_tjfields');
 		$this->setState('params', $params);
 
 		// List state information.
-		parent::populateState('a.id', 'asc');
+		parent::populateState('a.country_id', 'asc');
 	}
 
 	/**
@@ -146,11 +151,16 @@ class TjfieldsModelRegions extends JModelList
 			)
 		);
 
-		$query->from('`#__tj_region` AS a');
+		$query->from('`#__tj_city` AS a');
 		$query->select('a.' . $client .' AS state');
+
 		$query->select('c.country');
 		$query->join('LEFT', '`#__tj_country` AS c ON c.id=a.country_id');
 		$query->where('c.' . $client .' = 1');
+
+		$query->select('r.region');
+		$query->join('LEFT', '`#__tj_region` AS r ON r.id=a.region_id');
+		//$query->where('r.' . $client .' = 1');
 
 		// Filter by search in title
 		$search = $this->getState('filter.search');
@@ -164,10 +174,8 @@ class TjfieldsModelRegions extends JModelList
 			else
 			{
 				$search = $db->Quote('%' . $db->escape($search, true) . '%');
-				$query->where('( a.region LIKE ' . $search .
-						'  OR  a.region_3_code LIKE ' . $search .
-						'  OR  a.region_code LIKE ' . $search .
-						'  OR  a.region_jtext LIKE ' . $search . ' )'
+				$query->where('( a.city LIKE ' . $search .
+					'  OR  a.city_jtext LIKE ' . $search . ' )'
 				);
 			}
 		}
@@ -190,7 +198,18 @@ class TjfieldsModelRegions extends JModelList
 		if (is_numeric($country))
 		{
 			$query->where('a.country_id = ' . (int) $country);
+
+			// Apply regions filter only when country is selected
+			// Filter by region
+			$region = $this->getState('filter.region');
+
+			if (is_numeric($region))
+			{
+				$query->where('a.region_id = ' . (int) $region);
+			}
 		}
+
+
 
 		// Add the list ordering clause.
 		$orderCol = $this->state->get('list.ordering');
@@ -198,14 +217,14 @@ class TjfieldsModelRegions extends JModelList
 
 		if ($orderCol && $orderDirn)
 		{
-			$query->order($db->escape($orderCol . ' ' . $orderDirn));
+			$query->order($db->escape($orderCol . ', a.city ' . $orderDirn));
 		}
 
 		return $query;
 	}
 
 	/**
-	 * Method to get a list of regions.
+	 * Method to get a list of cities.
 	 *
 	 * @return  mixed  An array of data items on success, false on failure.
 	 *

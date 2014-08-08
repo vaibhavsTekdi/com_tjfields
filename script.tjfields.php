@@ -710,7 +710,7 @@ class com_tjfieldsInstallerScript
 			if ($dropTableFlag)
 			{
 				// Backup old table
-				$backup = $this->renameTable('#__tj_country', '#__backup_tj_country');
+				$backup = $this->renameTable('#__tj_country', '#__tj_country_backup');
 
 				if ($backup)
 				{
@@ -747,7 +747,7 @@ class com_tjfieldsInstallerScript
 			if ($dropTableFlag)
 			{
 				// Backup old table
-				$backup = $this->renameTable('#__tj_region', '#__backup_tj_region');
+				$backup = $this->renameTable('#__tj_region', '#__tj_region_backup');
 
 				if ($backup)
 				{
@@ -764,6 +764,34 @@ class com_tjfieldsInstallerScript
 		{
 			// Lets create the table
 			$this->runSQL($parent, 'city.sql');
+		}
+		else
+		{
+			$newColumns = array('id', 'city', 'country_id', 'region_id', 'region_jtext', 'zip', 'ordering');
+			$oldColumns = $this->getColumns('#__tj_city');
+
+			$dropTableFlag = 0;
+
+			foreach ($newColumns as $column)
+			{
+				if (! in_array($column, $oldColumns))
+				{
+					$dropTableFlag = 1;
+					break;
+				}
+			}
+
+			if ($dropTableFlag)
+			{
+				// Backup old table
+				$backup = $this->renameTable('#__tj_city', '#__tj_city_backup');
+
+				if ($backup)
+				{
+					// Lets create the table with new structure
+					$this->runSQL($parent, 'city.sql');
+				}
+			}
 		}
 	}
 

@@ -40,6 +40,8 @@ class TjGeoHelper
 		// Load lang file for countries
 		$this->_country_lang = JFactory::getLanguage();
 		$this->_country_lang->load('tjgeo.countries', JPATH_SITE, null, false, true);
+		$this->_db = JFactory::getDbo();
+
 	}
 
 	/**
@@ -64,17 +66,16 @@ class TjGeoHelper
 
 	public function getCountryNameFromId($countryId)
 	{
-		$db = JFactory::getDbo();
 
-		$query = $db->getQuery(true);
+		$query = $this->_db->getQuery(true);
 
 		$query->select('country, country_jtext');
 		$query->from('#__tj_country');
 		$query->where('id = ' . $countryId);
 
-		$db->setQuery($query);
+		$this->_db->setQuery($query);
 
-		$country = $db->loadObject();
+		$country = $this->_db->loadObject();
 
 		$countryName = $this->getCountryJText($country->country_jtext);
 
@@ -99,4 +100,73 @@ class TjGeoHelper
 			return null;
 		}
 	}
+
+	/**
+	 * Gives country list.
+	 *
+	 * @since   2.2
+	 * @return   countryList
+	 */
+	public function getCountryList($component_nm="")
+	{
+		$query = $this->_db->getQuery(true);
+		$query->select("`id` AS country_id ,  `country`")
+		->from('#__tj_country');
+
+		if($component_nm)
+		$query->where("'".$component_nm."'=1");
+
+		$query->order($this->_db->escape('ordering ASC'));
+		$this->_db->setQuery((string) $query);
+		return $this->_db->loadAssocList();
+	}
+
+	function getRegionList($country_id,$component_nm="")
+	{
+		$this->_db = JFactory::getDBO();
+		$query = $this->_db->getQuery(true);
+		$query->select("id AS region_id, region");
+		$query->from('#__tj_region');
+		$query->where('country_id='.$this->_db->quote($country_id));
+
+		if($component_nm)
+		$query->where("'".$component_nm."'=1");
+
+		$this->_db->setQuery((string)$query);
+		return $this->_db->loadAssocList();
+	}
+
+
+	function getRegionNameFromId($stateId)
+	{
+
+		if (is_numeric($stateId))
+		{
+			$this->_db = JFactory::getDBO();
+			$query="SELECT `region` FROM `#__tj_region` where id=".$stateId;
+			$this->_db->setQuery($query);
+			$rows = $this->_db->loadResult();
+			return $rows;
+		}
+		return '';
+
+	}
+
+
+	function getRegionListFromCountryID($countryId)
+	{
+		if (is_numeric($countryId))
+		{
+			$query="SELECT r.id,r.region FROM #__tj_region AS r LEFT JOIN #__tj_country as c
+					ON r.country_id=c.id where c.id=\"".$countryId."\"";
+			$this->_db->setQuery($query);
+			$rows = $this->_db->loadAssocList();
+			return $rows;
+		}
+	}
+
+
+
+
+
 }

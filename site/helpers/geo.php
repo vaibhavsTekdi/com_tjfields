@@ -38,10 +38,10 @@ class TjGeoHelper
 		$this->_name = $name;
 
 		// Load lang file for countries
-		$this->_country_lang = JFactory::getLanguage();
-		$this->_country_lang->load('tjgeo.countries', JPATH_SITE, null, false, true);
+		$this->_tjlang = JFactory::getLanguage();
+		$this->_tjlang->load('tjgeo.countries', JPATH_SITE, null, false, true);
+		$this->_tjlang->load('tjgeo.regions', JPATH_SITE, null, false, true);
 		$this->_db = JFactory::getDbo();
-
 	}
 
 	/**
@@ -66,9 +66,7 @@ class TjGeoHelper
 
 	public function getCountryNameFromId($countryId)
 	{
-
 		$query = $this->_db->getQuery(true);
-
 		$query->select('country, country_jtext');
 		$query->from('#__tj_country');
 		$query->where('id = ' . $countryId);
@@ -91,7 +89,7 @@ class TjGeoHelper
 
 	public function getCountryJText($countryJtext)
 	{
-		if ($this->_country_lang->hasKey(strtoupper($countryJtext)))
+		if ($this->_tjlang->hasKey(strtoupper($countryJtext)))
 		{
 			return JText::_($countryJtext);
 		}
@@ -137,22 +135,6 @@ class TjGeoHelper
 	}
 
 
-	function getRegionNameFromId($stateId)
-	{
-
-		if (is_numeric($stateId))
-		{
-			$this->_db = JFactory::getDBO();
-			$query="SELECT `region` FROM `#__tj_region` where id=".$stateId;
-			$this->_db->setQuery($query);
-			$rows = $this->_db->loadResult();
-			return $rows;
-		}
-		return '';
-
-	}
-
-
 	function getRegionListFromCountryID($countryId)
 	{
 		if (is_numeric($countryId))
@@ -164,6 +146,57 @@ class TjGeoHelper
 			return $rows;
 		}
 	}
+	/**
+	 * Method gives region name ( for current language if exist) from  region Id.
+	 *
+	 * @param   string  $regionId .
+	 *
+	 * @since   1.1
+	 * @return   Region name;
+	 */
+	public function getRegionNameFromId($regionId)
+	{
+		$query = $this->_db->getQuery(true);
+	 	$query->select('region, region_jtext');
+		$query->from('#__tj_region');
+		$query->where('id = ' . $regionId);
+		$this->_db->setQuery($query);
+		$res = $this->_db->loadObject();
+
+		// Get jtext value.
+		$jtext = $this->getRegionJText($res->region_jtext);
+
+		if ($jtext)
+		{
+			return $jtext;
+		}
+		else
+		{
+			return $res->region;
+		}
+	}
+
+	/**
+	 * Method gives region name in current  language if exist.
+	 *
+	 * @param   string  $regionId .
+	 *
+	 * @since   1.1
+	 * @return   Region name;
+	 */
+	public function getRegionJText($jtext)
+	{
+		if ($this->_tjlang->hasKey(strtoupper($jtext)))
+		{
+			return JText::_($jtext);
+		}
+		else if ($jtext !== '')
+		{
+			return null;
+		}
+	}
+
+
 
 
 

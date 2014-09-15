@@ -767,7 +767,7 @@ class com_tjfieldsInstallerScript
 		}
 		else
 		{
-			$newColumns = array('id', 'city', 'country_id', 'region_id', 'region_jtext', 'zip', 'ordering');
+			$newColumns = array('id', 'city', 'country_id', 'region_id', 'city_jtext', 'zip', 'ordering');
 			$oldColumns = $this->getColumns('#__tj_city');
 
 			$dropTableFlag = 0;

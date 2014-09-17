@@ -603,7 +603,7 @@ class com_tjfieldsInstallerScript
 	{
 		?>
 		<?php $rows = 0;?>
-		<h2><?php echo JText::_('Quick2Cart Uninstallation Status'); ?></h2>
+		<h2><?php echo JText::_('TJ-Fields Uninstallation Status'); ?></h2>
 		<table class="adminlist">
 			<thead>
 				<tr>

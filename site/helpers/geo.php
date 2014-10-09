@@ -105,14 +105,16 @@ class TjGeoHelper
 	 * @since   2.2
 	 * @return   countryList
 	 */
-	public function getCountryList($component_nm="")
+	public function getCountryList($component_nm = "")
 	{
 		$query = $this->_db->getQuery(true);
-		$query->select("`id` AS country_id ,  `country`")
+		$query->select("`id`, `country`,`country_jtext`")
 		->from('#__tj_country');
 
-		if($component_nm)
-		$query->where("'".$component_nm."'=1");
+		if ($component_nm)
+		{
+			$query->where($component_nm . "=1");
+		}
 
 		$query->order($this->_db->escape('ordering ASC'));
 		$this->_db->setQuery((string) $query);
@@ -127,8 +129,10 @@ class TjGeoHelper
 		$query->from('#__tj_region');
 		$query->where('country_id='.$this->_db->quote($country_id));
 
-		if($component_nm)
-		$query->where("'".$component_nm."'=1");
+		if ($component_nm)
+		{
+			$query->where($component_nm . "=1");
+		}
 
 		$this->_db->setQuery((string)$query);
 		return $this->_db->loadAssocList();
@@ -195,11 +199,4 @@ class TjGeoHelper
 			return null;
 		}
 	}
-
-
-
-
-
-
-
 }

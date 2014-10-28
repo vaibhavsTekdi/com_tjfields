@@ -118,14 +118,35 @@ class TjGeoHelper
 
 		$query->order($this->_db->escape('ordering ASC'));
 		$this->_db->setQuery((string) $query);
-		return $this->_db->loadAssocList();
-	}
+		$countryList = $this->_db->loadAssocList();
 
-	function getRegionList($country_id,$component_nm="")
+		// Get jtext value.
+		foreach ($countryList as $key=>$country)
+		{
+			if ($country['country_jtext'])
+			{
+				$jtext = $this->getCountryJText($country['country_jtext']);
+
+				if ($jtext)
+				{
+					$countryList[$key]['country'] = $jtext;
+				}
+			}
+		}
+		// Get trasalated string.
+		return $countryList;
+	}
+	/**
+	 * Gives region list according.( field region gives you region name in current language) .
+	 *
+	 * @since    2.2
+	 * @return   regionList
+	 */
+	function getRegionList($country_id, $component_nm="")
 	{
 		$this->_db = JFactory::getDBO();
 		$query = $this->_db->getQuery(true);
-		$query->select("id AS region_id, region");
+		$query->select("id, region,region_jtext");
 		$query->from('#__tj_region');
 		$query->where('country_id='.$this->_db->quote($country_id));
 
@@ -135,7 +156,23 @@ class TjGeoHelper
 		}
 
 		$this->_db->setQuery((string)$query);
-		return $this->_db->loadAssocList();
+		$regionList =  $this->_db->loadAssocList();
+
+		// Get jtext value.
+		foreach ($regionList as $key=>$region)
+		{
+			if ($region['region_jtext'])
+			{
+				$jtext = $this->getRegionJText($region['region_jtext']);
+
+				if ($jtext)
+				{
+					$regionList[$key]['region'] = $jtext;
+				}
+			}
+		}
+		// Get trasalated string.
+		return $regionList;
 	}
 
 

@@ -91,7 +91,7 @@ class TjGeoHelper
 	{
 		if ($this->_tjlang->hasKey(strtoupper($countryJtext)))
 		{
-			return JText::_($countryJtext);
+			return JText::_($countryJtext, true);
 		}
 		else if ($countryJtext !== '')
 		{
@@ -220,7 +220,7 @@ class TjGeoHelper
 	/**
 	 * Method gives region name in current  language if exist.
 	 *
-	 * @param   string  $regionId .
+	 * @param   string  $jtext Jtext constant for region .
 	 *
 	 * @since   1.1
 	 * @return   Region name;
@@ -229,7 +229,7 @@ class TjGeoHelper
 	{
 		if ($this->_tjlang->hasKey(strtoupper($jtext)))
 		{
-			return JText::_($jtext);
+			return JText::_($jtext, true);
 		}
 		else if ($jtext !== '')
 		{

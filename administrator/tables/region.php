@@ -176,6 +176,8 @@ class TjfieldsTableRegion extends JTable
 	 */
 	public function publish ($pks = null, $state = 1, $userId = 0)
 	{
+		$client = JFactory::getApplication()->input->get('client', '', 'STRING');
+
 		// Initialise variables.
 		$k = $this->_tbl_key;
 
@@ -218,7 +220,7 @@ class TjfieldsTableRegion extends JTable
 
 		// Update the publishing state for rows with the given primary keys.
 		$this->_db->setQuery(
-				'UPDATE `' . $this->_tbl . '`' . ' SET `com_quick2cart` = ' . (int) $state . ' WHERE (' . $where . ')' . $checkin
+				'UPDATE `' . $this->_tbl . '`' . ' SET `' . $client . '` = ' . (int) $state . ' WHERE (' . $where . ')' . $checkin
 			);
 		$this->_db->query();
 

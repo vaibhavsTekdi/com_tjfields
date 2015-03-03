@@ -12,7 +12,7 @@ defined('_JEXEC') or die();
 
 if (!defined('DS'))
 {
-	define('DS',DIRECTORY_SEPARATOR);
+	define('DS', DIRECTORY_SEPARATOR);
 }
 
 // Access check.
@@ -47,15 +47,22 @@ else
 	JHtml::_('formbehavior.chosen', 'select');
 }
 
+// Load techjoomla strapper
+if (file_exists(JPATH_ROOT . '/media/techjoomla_strapper/tjstrapper.php'))
+{
+	require_once JPATH_ROOT . '/media/techjoomla_strapper/tjstrapper.php';
+	TjStrapper::loadTjAssets('com_tjfields');
+}
+
 $document = JFactory::getDocument();
-$document->addStyleSheet(JUri::base().'components/com_tjfields/assets/css/tjfields.css');
+$document->addStyleSheet(JUri::base() . 'components/com_tjfields/assets/css/tjfields.css');
 
 // Include helper file
-$helperPath= dirname(__FILE__).DS.'helpers'.DS.'tjfields.php';
+$helperPath = dirname(__FILE__) . '/helpers/tjfields.php';
 
 if (!class_exists('TjfieldsHelper'))
 {
-	JLoader::register('TjfieldsHelper',$helperPath);
+	JLoader::register('TjfieldsHelper', $helperPath);
 	JLoader::load('TjfieldsHelper');
 }
 

@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS `#__tj_region` (
 -- Dumping data for table `#__tj_region`
 --
 
-INSERT INTO `#__tj_region` (`id`, `country_id`, `region_3_code`, `region_code`, `region`, `region_jtext`, `ordering`, `com_jgive`, `com_jticketing`, `com_quick2cart`, `com_socialads`, `com_tjlms`) VALUES
+INSERT IGNORE INTO `#__tj_region` (`id`, `country_id`, `region_3_code`, `region_code`, `region`, `region_jtext`, `ordering`, `com_jgive`, `com_jticketing`, `com_quick2cart`, `com_socialads`, `com_tjlms`) VALUES
 (1, 1, '', '1', 'Badakhshan', '', 0, 1, 1, 1, 1, 1),
 (2, 1, '', '2', 'Badghis', '', 0, 1, 1, 1, 1, 1),
 (3, 1, '', '3', 'Baghlan', '', 0, 1, 1, 1, 1, 1),

@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS `#__tj_city` (
 -- Dumping data for table `#__tj_city`
 --
 
-INSERT INTO `#__tj_city` (`id`, `city`, `country_id`, `region_id`, `city_jtext`, `zip`, `ordering`, `com_jgive`, `com_jticketing`, `com_quick2cart`, `com_socialads`, `com_tjlms`) VALUES
+INSERT IGNORE INTO `#__tj_city` (`id`, `city`, `country_id`, `region_id`, `city_jtext`, `zip`, `ordering`, `com_jgive`, `com_jticketing`, `com_quick2cart`, `com_socialads`, `com_tjlms`) VALUES
 (2, 'les Escaldes', 5, 0, NULL, NULL, 0, 1, 1, 1, 1, 1),
 (3, 'Andorra la Vella', 5, 0, NULL, NULL, 0, 1, 1, 1, 1, 1),
 (4, 'Umm al Qaywayn', 221, 0, NULL, NULL, 0, 1, 1, 1, 1, 1),

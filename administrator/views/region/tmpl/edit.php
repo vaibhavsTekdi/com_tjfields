@@ -36,6 +36,11 @@ JHtml::_('behavior.keepalive');
 			}
 		}
 	}
+
+	techjoomla.jQuery(document).ready(function()
+	{
+		techjoomla.jQuery('#jform_country_id').attr('data-chosen', 'com_tjfields');
+	});
 </script>
 
 <div class="<?php echo TJFIELDS_WRAPPER_CLASS;?> tj-region">

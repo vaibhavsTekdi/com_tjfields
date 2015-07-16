@@ -1,14 +1,21 @@
 <?php
 /**
- * @version     1.0.0
- * @package     com_tjfields
- * @copyright   Copyright (C) 2014. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
- * @author      TechJoomla <extensions@techjoomla.com> - http://www.techjoomla.com
+ * @version    SVN: <svn_id>
+ * @package    Tjfields
+ * @author     Techjoomla <extensions@techjoomla.com>
+ * @copyright  Copyright (c) 2009-2015 TechJoomla. All rights reserved.
+ * @license    GNU General Public License version 2 or later.
  */
 
 defined('_JEXEC') or die;
 
+/**
+ * Class for Geo helper to get region and states
+ *
+ * @package     Tjfields
+ * @subpackage  component
+ * @since       1.0
+ */
 class TjGeoHelper
 {
 	/**
@@ -16,7 +23,7 @@ class TjGeoHelper
 	 *
 	 * @var    string
 	 */
-	protected $_name = array();
+	protected $name = array();
 
 	/**
 	 * Stores the singleton instances of various TjGeoHelper.
@@ -35,7 +42,7 @@ class TjGeoHelper
 	 */
 	public function __construct($name = 'TjGeoHelper')
 	{
-		$this->_name = $name;
+		$this->name = $name;
 
 		// Load lang file for countries
 		$this->_tjlang = JFactory::getLanguage();
@@ -64,15 +71,27 @@ class TjGeoHelper
 		return self::$instances[$name];
 	}
 
+	/**
+	 * Returns the country name fro ID
+	 *
+	 * @param   int  $countryId  The name of the TjGeoHelper.
+	 *
+	 * @return  text  $country  country name
+	 *
+	 * @since   1.5
+	 */
 	public function getCountryNameFromId($countryId)
 	{
 		$query = $this->_db->getQuery(true);
 		$query->select('country, country_jtext');
 		$query->from('#__tj_country');
-		$query->where('id = ' . $countryId);
+
+		if (!empty($countryId))
+		{
+			$query->where('id = ' . $countryId);
+		}
 
 		$this->_db->setQuery($query);
-
 		$country = $this->_db->loadObject();
 
 		$countryName = $this->getCountryJText($country->country_jtext);
@@ -87,29 +106,40 @@ class TjGeoHelper
 		}
 	}
 
+	/**
+	 * Returns the jtext for country
+	 *
+	 * @param   string  $countryJtext  jtext string
+	 *
+	 * @return  jtext  $countryJtext  value of country language string
+	 *
+	 * @since   1.5
+	 */
 	public function getCountryJText($countryJtext)
 	{
 		if ($this->_tjlang->hasKey(strtoupper($countryJtext)))
 		{
 			return JText::_($countryJtext, true);
 		}
-		else if ($countryJtext !== '')
+		elseif ($countryJtext !== '')
 		{
 			return null;
 		}
 	}
 
 	/**
-	 * Gives country list.
+	 * Returns the country list for partcular client like jgive
 	 *
-	 * @since   2.2
-	 * @return   countryList
+	 * @param   string  $component_nm  name of component
+	 *
+	 * @return  countrylist
+	 *
+	 * @since   1.5
 	 */
 	public function getCountryList($component_nm = "")
 	{
 		$query = $this->_db->getQuery(true);
-		$query->select("`id`, `country`,`country_jtext`")
-		->from('#__tj_country');
+		$query->select("`id`, `country`,`country_jtext`")->from('#__tj_country');
 
 		if ($component_nm)
 		{
@@ -121,7 +151,7 @@ class TjGeoHelper
 		$countryList = $this->_db->loadAssocList();
 
 		// Get jtext value.
-		foreach ($countryList as $key=>$country)
+		foreach ($countryList as $key => $country)
 		{
 			if ($country['country_jtext'])
 			{
@@ -136,30 +166,35 @@ class TjGeoHelper
 		// Get trasalated string.
 		return $countryList;
 	}
+
 	/**
 	 * Gives region list according.( field region gives you region name in current language) .
 	 *
-	 * @since    2.2
-	 * @return   regionList
+	 * @param   string  $country_id    id of country
+	 * @param   string  $component_nm  name of component
+	 *
+	 * @return  regionlist
+	 *
+	 * @since   1.5
 	 */
-	function getRegionList($country_id, $component_nm="")
+	public function getRegionList($country_id, $component_nm = "")
 	{
 		$this->_db = JFactory::getDBO();
-		$query = $this->_db->getQuery(true);
+		$query     = $this->_db->getQuery(true);
 		$query->select("id, region,region_jtext");
 		$query->from('#__tj_region');
-		$query->where('country_id='.$this->_db->quote($country_id));
+		$query->where('country_id=' . $this->_db->quote($country_id));
 
 		if ($component_nm)
 		{
 			$query->where($component_nm . "=1");
 		}
 
-		$this->_db->setQuery((string)$query);
-		$regionList =  $this->_db->loadAssocList();
+		$this->_db->setQuery((string) $query);
+		$regionList = $this->_db->loadAssocList();
 
 		// Get jtext value.
-		foreach ($regionList as $key=>$region)
+		foreach ($regionList as $key => $region)
 		{
 			if ($region['region_jtext'])
 			{
@@ -175,32 +210,48 @@ class TjGeoHelper
 		return $regionList;
 	}
 
-
-	function getRegionListFromCountryID($countryId)
+	/**
+	 * Gives region list according to country ID
+	 *
+	 * @param   string  $countryId  id of country
+	 *
+	 * @return  regionlist
+	 *
+	 * @since   1.5
+	 */
+	public function getRegionListFromCountryID($countryId)
 	{
 		if (is_numeric($countryId))
 		{
-			$query="SELECT r.id,r.region FROM #__tj_region AS r LEFT JOIN #__tj_country as c
-					ON r.country_id=c.id where c.id=\"".$countryId."\"";
+			$query = "SELECT r.id,r.region FROM #__tj_region AS r LEFT JOIN #__tj_country as c
+					ON r.country_id=c.id where c.id=\"" . $countryId . "\"";
 			$this->_db->setQuery($query);
 			$rows = $this->_db->loadAssocList();
+
 			return $rows;
 		}
 	}
+
 	/**
 	 * Method gives region name ( for current language if exist) from  region Id.
 	 *
-	 * @param   string  $regionId .
+	 * @param   string  $regionId  id of region
 	 *
-	 * @since   1.1
-	 * @return   Region name;
+	 * @return  regionlist
+	 *
+	 * @since   1.5
 	 */
 	public function getRegionNameFromId($regionId)
 	{
 		$query = $this->_db->getQuery(true);
-	 	$query->select('region, region_jtext');
+		$query->select('region, region_jtext');
 		$query->from('#__tj_region');
-		$query->where('id = ' . $regionId);
+
+		if ($regionId)
+		{
+			$query->where('id = ' . $regionId);
+		}
+
 		$this->_db->setQuery($query);
 		$res = $this->_db->loadObject();
 
@@ -220,7 +271,7 @@ class TjGeoHelper
 	/**
 	 * Method gives region name in current  language if exist.
 	 *
-	 * @param   string  $jtext Jtext constant for region .
+	 * @param   string  $jtext  Jtext constant for region .
 	 *
 	 * @since   1.1
 	 * @return   Region name;
@@ -231,7 +282,7 @@ class TjGeoHelper
 		{
 			return JText::_($jtext, true);
 		}
-		else if ($jtext !== '')
+		elseif ($jtext !== '')
 		{
 			return null;
 		}

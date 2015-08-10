@@ -34,7 +34,7 @@ class TjfieldsViewCity extends JViewLegacy
 	 *
 	 * @return  void
 	 */
-	public function display ($tpl = null)
+	public function display($tpl = null)
 	{
 		$this->state = $this->get('State');
 		$this->item = $this->get('Item');
@@ -59,7 +59,7 @@ class TjfieldsViewCity extends JViewLegacy
 	 *
 	 * @since   1.6
 	 */
-	protected function addToolbar ()
+	protected function addToolbar()
 	{
 		JFactory::getApplication()->input->set('hidemainmenu', true);
 

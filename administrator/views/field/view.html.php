@@ -55,7 +55,14 @@ class TjfieldsViewField extends JViewLegacy
         }
 		$canDo		= TjfieldsHelper::getActions();
 
-		JToolBarHelper::title(JText::_('COM_TJFIELDS_TITLE_FIELD'), 'field.png');
+		if (JVERSION >= '3.0')
+		{
+			JToolBarHelper::title( JText::_( 'COM_TJFIELDS_TITLE_FIELD' ), 'edit' );
+		}
+		else
+		{
+			JToolBarHelper::title(JText::_('COM_TJFIELDS_TITLE_FIELD'), 'field.png');
+		}
 
 		// If not checked out, can save the item.
 		if (!$checkedOut && ($canDo->get('core.edit')||($canDo->get('core.create'))))

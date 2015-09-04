@@ -140,6 +140,27 @@ class TjfieldsModelField extends JModelAdmin
 	{
 		$table = $this->getTable();
 		$data=$post->get('jform','','ARRAY');
+		$input=JFactory::getApplication()->input;
+
+		if ($input->get('task') == 'save2copy')
+		{
+			unset($data['id']);
+			$data['label'] = trim($data['label']);
+			$db = JFactory::getDBO();
+			$query = 'SELECT a.*'
+			. ' FROM #__tjfields_fields AS a'
+			. ' WHERE a.label LIKE ' . $db->quote($data['label'].'%')
+			. ' AND  a.client =' . $db->quote($data['client'].'%')
+			. ' AND  a.group_id =' . $db->quote($data['group_id'].'%');
+
+			$db->setQuery($query);
+			$posts = $db->loadAssocList();
+			$postsCount =JUserHelper::genRandomPassword($posts);
+			$data['label'] = $data['label']. ' Copy '.$postsCount;
+			$data['created_by'] =JFactory::getUser()->id;
+		}
+
+
 		//add clint type in data as it is not present in jform
 		$data['client_type'] = $post->get('client_type','','STRING');
 		$data['saveOption']=0; // use later to store later.

@@ -46,11 +46,6 @@ $input = JFactory::getApplication()->input;
             }
         }
     }
-
-	techjoomla.jQuery(document).ready(function()
-	{
-		techjoomla.jQuery('#jform_state').attr('data-chosen', 'com_tjfields');
-	});
 </script>
 
 <div class="techjoomla-bootstrap">
@@ -68,7 +63,6 @@ $input = JFactory::getApplication()->input;
 					<div class="controls"><?php echo $this->form->getInput('state'); ?></div>
 				</div>
 				<div class="control-group">
-					<div class="clearfix">&nbsp;</div>
 					<div class="control-label"><?php echo $this->form->getLabel('created_by'); ?></div>
 					<div class="controls"><?php echo $this->form->getInput('created_by'); ?></div>
 				</div>

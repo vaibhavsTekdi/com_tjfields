@@ -36,17 +36,16 @@ $input = JFactory::getApplication()->input;
 
 	techjoomla.jQuery( document ).ready(function(){
 
-		var field_type=techjoomla.jQuery('#jform_type').val();
-		show_option_div(field_type);
-		//if edit ..make name field readonly
-		var field_id=techjoomla.jQuery('#jform_id').val();
-		if(field_id!=0)
-		{
-			techjoomla.jQuery('#jform_name').attr('readonly',true);
-		}
+			var field_type=techjoomla.jQuery('#jform_type').val();
+			show_option_div(field_type);
+			//if edit ..make name field readonly
+			var field_id=techjoomla.jQuery('#jform_id').val();
+			if(field_id!=0)
+			{
+				techjoomla.jQuery('#jform_name').attr('readonly',true);
+			}
 
-		techjoomla.jQuery('select').attr('data-chosen', 'com_tjfields');
-	});
+		});
 
 	Joomla.submitbutton = function(task)
 	{
@@ -162,7 +161,6 @@ $input = JFactory::getApplication()->input;
 								<div class="controls"><?php echo $this->form->getInput('id'); ?></div>
 							</div>
 							<div class="control-group">
-								<div class="clearfix">&nbsp;</div>
 								<div class="control-label"><?php echo $this->form->getLabel('label'); ?></div>
 								<div class="controls"><?php echo $this->form->getInput('label'); ?>
 									<span class="alert alert-info alert-help-inline span9 alert_no_margin">
@@ -243,7 +241,6 @@ $input = JFactory::getApplication()->input;
 						<div class="controls"><?php echo $this->form->getInput('placeholder'); ?></div>
 					</div>
 					<div class="control-group">
-						<div class="clearfix">&nbsp;</div>
 						<div class="control-label"><?php echo $this->form->getLabel('created_by'); ?></div>
 						<div class="controls"><?php echo $this->form->getInput('created_by'); ?></div>
 					</div>
@@ -260,11 +257,10 @@ $input = JFactory::getApplication()->input;
 
 					</div>
 					<div class="control-group">
-						<div class="clearfix">&nbsp;</div>
 						<div class="control-label"><?php echo $this->form->getLabel('validation_class'); ?></div>
 						<div class="controls">
 							<?php echo $this->form->getInput('validation_class'); ?>
-
+							<div style="clear:both" ></div>
 							<span class="alert alert-info alert-help-inline span9 alert_no_margin">
 								<?php echo JText::_('COM_TJFIELDS_VALIDATION_CLASS_NOTE'); ?>
 							</span>

@@ -59,7 +59,14 @@ class TjfieldsViewFields extends JViewLegacy
 		$state	= $this->get('State');
 		$canDo	= TjfieldsHelper::getActions($state->get('filter.category_id'));
 
-		JToolBarHelper::title(JText::_('COM_TJFIELDS_TITLE_FIELDS'), 'fields.png');
+		if (JVERSION >= '3.0')
+		{
+			JToolBarHelper::title( JText::_( 'COM_TJFIELDS_TITLE_FIELDS' ), 'list' );
+		}
+		else
+		{
+			JToolBarHelper::title(JText::_('COM_TJFIELDS_TITLE_FIELDS'), 'fields.png');
+		}
 
         //Check if the form exists before showing the add/edit buttons
         $formPath = JPATH_COMPONENT_ADMINISTRATOR.'/views/field';

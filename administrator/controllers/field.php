@@ -9,7 +9,6 @@
 
 // No direct access
 defined('_JEXEC') or die;
-
 jimport('joomla.application.component.controllerform');
 
 /**
@@ -18,7 +17,8 @@ jimport('joomla.application.component.controllerform');
 class TjfieldsControllerField extends JControllerForm
 {
 
-	function __construct() {
+	function __construct()
+	{
 		$this->view_list = 'fields';
 		parent::__construct();
 	}
@@ -29,39 +29,55 @@ class TjfieldsControllerField extends JControllerForm
 		$post=$input->post;
 		$model = $this->getModel('field');
 		$save_option=$model->save_option($post);
-		if($save_option)
-			{
-				$ntext = JText::_('COMTJFILEDS_FIELD_CREATED_SUCCESSFULLY');
-				$this->setMessage(JText::plural($ntext, 1));
-				$link = JRoute::_('index.php?option=com_tjfields&view=field&layout=edit&client='.$input->get('client','','STRING'),false);
-			}
+
+		if ($save_option)
+		{
+			$msg = JText::_('COMTJFILEDS_FIELD_CREATED_SUCCESSFULLY');
+			$link = JRoute::_('index.php?option=com_tjfields&view=field&layout=edit&client='.$input->get('client','','STRING'),false);
+		}
 		else
-			{
-				$msg=JText::_('TJFIELDS_ERROR_MSG');
-				$this->setMessage(JText::plural($msg, 1));
-				$link = JRoute::_('index.php?option=com_tjfields&view=field&layout=edit&client='.$input->get('client','','STRING'),false);
-			}
+		{
+			$msg = JText::_('TJFIELDS_ERROR_MSG');
+			$this->setMessage(JText::plural($msg, 1));
+			$link = JRoute::_('index.php?option=com_tjfields&view=field&layout=edit&client='.$input->get('client','','STRING'),false);
+		}
+
 		$this->setRedirect($link,$msg);
 	}
 
 	function save()
 	{
-		$input=JFactory::getApplication()->input;
+		$input = JFactory::getApplication()->input;
+		$task = $input->get('task','','STRING');
+
+		if($task == 'apply' or $task == 'save2copy')
+		{
+			$this->apply();
+			return;
+		}
+
+		if($task == 'newsave')
+		{
+			$this->newsave();
+			return;
+		}
+
 		$post=$input->post;
 		$model = $this->getModel('field');
 		$save_option=$model->save_option($post);
-		if($save_option)
-			{
-				$ntext = JText::_('COMTJFILEDS_FIELD_CREATED_SUCCESSFULLY');
-				$this->setMessage(JText::plural($ntext, 1));
-				$link = JRoute::_('index.php?option=com_tjfields&view=fields&client='.$input->get('client','','STRING'),false);
-			}
+
+		if ($save_option)
+		{
+			$msg = JText::_('COMTJFILEDS_FIELD_CREATED_SUCCESSFULLY');
+			$link = JRoute::_('index.php?option=com_tjfields&view=fields&client='.$input->get('client','','STRING'),false);
+		}
 		else
-			{
-				$msg=JText::_('TJFIELDS_ERROR_MSG');
-				$this->setMessage(JText::plural($msg, 1));
-				$link = JRoute::_('index.php?option=com_tjfields&view=fields&client='.$input->get('client','','STRING'),false);
-			}
+		{
+			$msg=JText::_('TJFIELDS_ERROR_MSG');
+			$this->setMessage(JText::plural($msg, 1));
+			$link = JRoute::_('index.php?option=com_tjfields&view=fields&client='.$input->get('client','','STRING'),false);
+		}
+
 		$this->setRedirect($link,$msg);
 	}
 
@@ -74,7 +90,7 @@ class TjfieldsControllerField extends JControllerForm
 
 		if($field_id)
 		{
-			$msg='';
+			$msg = JText::_('COMTJFILEDS_FIELD_CREATED_SUCCESSFULLY');
 			$link = JRoute::_('index.php?option=com_tjfields&view=field&layout=edit&id='.$field_id.'&client='.$input->get('client','','STRING'),false);
 		}
 		else
@@ -105,7 +121,6 @@ class TjfieldsControllerField extends JControllerForm
 	function cancel()
 	{
 		$input=JFactory::getApplication()->input;
-		//print_r($input->get('client','','STRING')); die('asdasd');
 		$link = JRoute::_('index.php?option=com_tjfields&view=fields&client='.$input->get('client','','STRING'),false);
 		$this->setRedirect($link);
 	}

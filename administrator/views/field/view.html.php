@@ -65,7 +65,7 @@ class TjfieldsViewField extends JViewLegacy
 			JToolBarHelper::save('field.save', 'JTOOLBAR_SAVE');
 		}
 		if (!$checkedOut && ($canDo->get('core.create'))){
-			JToolBarHelper::custom('field.save2new', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
+			JToolBarHelper::custom('field.newsave', 'save-new.png', 'save-new_f2.png', 'JTOOLBAR_SAVE_AND_NEW', false);
 		}
 		// If an existing item, can save to a copy.
 		if (!$isNew && $canDo->get('core.create')) {

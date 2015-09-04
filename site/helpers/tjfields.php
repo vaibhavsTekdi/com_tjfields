@@ -181,7 +181,13 @@ class TjfieldsHelper
 		$db=JFactory::getDbo();
 		$query	= $db->getQuery(true);
 		$query->select('id FROM #__tjfields_fields_value');
-		$query->where('content_id='.$content_id.' AND client="'.$client.'" AND user_id='.$user_id.' AND field_id='.$field_id);
+		$query->where('content_id='.$content_id.' AND client="'.$client.'" AND user_id='.$user_id);
+
+		if ($field_id)
+		{
+			$query->where('field_id='.$field_id);
+		}
+
 		$db->setQuery($query);
 		$is_edit = $db->loadresult();
 		return $is_edit;

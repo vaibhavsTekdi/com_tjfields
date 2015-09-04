@@ -23,6 +23,27 @@ class TjfieldsControllerField extends JControllerForm
 		parent::__construct();
 	}
 
+	function newsave()
+	{
+		$input=JFactory::getApplication()->input;
+		$post=$input->post;
+		$model = $this->getModel('field');
+		$save_option=$model->save_option($post);
+		if($save_option)
+			{
+				$ntext = JText::_('COMTJFILEDS_FIELD_CREATED_SUCCESSFULLY');
+				$this->setMessage(JText::plural($ntext, 1));
+				$link = JRoute::_('index.php?option=com_tjfields&view=field&layout=edit&client='.$input->get('client','','STRING'),false);
+			}
+		else
+			{
+				$msg=JText::_('TJFIELDS_ERROR_MSG');
+				$this->setMessage(JText::plural($msg, 1));
+				$link = JRoute::_('index.php?option=com_tjfields&view=field&layout=edit&client='.$input->get('client','','STRING'),false);
+			}
+		$this->setRedirect($link,$msg);
+	}
+
 	function save()
 	{
 		$input=JFactory::getApplication()->input;

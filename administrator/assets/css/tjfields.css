@@ -36,6 +36,8 @@
 .alert_no_margin
 {
 	margin-left:0px !important;
+	margin-top:7px !important;
+
 }
 
 .tjfield_container .icon-unfeatured ,.tjfield_container .icon-featured

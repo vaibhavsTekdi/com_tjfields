@@ -146,17 +146,20 @@ class TjfieldsModelField extends JModelAdmin
 		{
 			unset($data['id']);
 			$data['label'] = trim($data['label']);
+			$name = explode("(",$data['label']);
+			$name =trim($name['0']);
+			$name = str_replace("`","",$name);
 			$db = JFactory::getDBO();
 			$query = 'SELECT a.*'
 			. ' FROM #__tjfields_fields AS a'
-			. ' WHERE a.label LIKE ' . $db->quote($data['label'].'%')
-			. ' AND  a.client =' . $db->quote($data['client'].'%')
+			. ' WHERE a.label LIKE ' . $db->quote($name.'%')
+			. ' AND  a.client LIKE' . $db->quote($data['client'])
 			. ' AND  a.group_id =' . $db->quote($data['group_id'].'%');
 
 			$db->setQuery($query);
 			$posts = $db->loadAssocList();
-			$postsCount =JUserHelper::genRandomPassword($posts);
-			$data['label'] = $data['label']. ' Copy '.$postsCount;
+			$postsCount =count($posts)+1;
+			$data['label'] = $name. ' ('.$postsCount.")";
 			$data['created_by'] =JFactory::getUser()->id;
 		}
 

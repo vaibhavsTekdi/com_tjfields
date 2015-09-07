@@ -135,15 +135,18 @@ class TjfieldsModelGroup extends JModelAdmin
 		if ($input->get('task') == 'save2copy')
 		{
 			unset($data['id']);
-			$db = JFactory::getDBO();
+			$name = explode("(",$data['name']);
+			$name =trim($name['0']);
+			$name = str_replace("`","",$name);
+			$db = JFactory::getDbo();
 			$query = 'SELECT a.*'
 			. ' FROM #__tjfields_groups AS a'
-			. ' WHERE a.name LIKE ' . $db->quote($data['name'].'%')
-			. ' AND  a.client =' . $db->quote($data['client'].'%');
+			. " WHERE  a.name LIKE '" .$db->escape($name)."%'"
+			. " AND  a.client LIKE '" . $db->escape($data['client'])."'";
 			$db->setQuery($query);
 			$posts = $db->loadAssocList();
-			$postsCount = count($posts);
-			$data['name'] = $data['name']. ' - Copy '.$postsCount;
+			$postsCount = count($posts)+1;
+			$data['name'] = $name. ' ('.$postsCount. ')';
 			$data['created_by'] =JFactory::getUser()->id;
 		}
 

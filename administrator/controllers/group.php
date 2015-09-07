@@ -55,13 +55,15 @@ class TjfieldsControllerGroup extends JControllerForm
 		$task = $input->get('task','','STRING');//die;
 		$post=$input->post;
 		$model = $this->getModel('group');
-		$if_saved=$model->save($post);
-
 		if($task == 'apply' or $task == 'save2copy')
 		{
 			$this->apply();
 			return;
 		}
+
+		$if_saved=$model->save($post);
+
+
 
 		if($task == 'newsave')
 		{

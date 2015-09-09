@@ -55,17 +55,31 @@ class TjfieldsViewFields extends JViewLegacy
 	protected function addToolbar()
 	{
 		require_once JPATH_COMPONENT.'/helpers/tjfields.php';
+		$input=jFactory::getApplication()->input;
+		$client= $input->get('client','','STRING');
+		$client = explode('.',$client);
+		$component_title = JText::_('COM_TJFIELDS_TITLE_COMPONENT');
+
+		if (!empty($client))
+		{
+			if ($client['0'] == 'com_jticketing')
+			{
+				$component_title = JText::_('COM_JTICKETING_COMPONENT');
+				JToolBarHelper::back('COM_JTICKETING_HOME', 'index.php?option=com_jticketing&view=cp');
+
+			}
+		}
 
 		$state	= $this->get('State');
 		$canDo	= TjfieldsHelper::getActions($state->get('filter.category_id'));
 
 		if (JVERSION >= '3.0')
 		{
-			JToolBarHelper::title( JText::_( 'COM_TJFIELDS_TITLE_FIELDS' ), 'list' );
+			JToolBarHelper::title( $component_title . JText::_('COM_TJFIELDS_TITLE_FIELDS'), 'list' );
 		}
 		else
 		{
-			JToolBarHelper::title(JText::_('COM_TJFIELDS_TITLE_FIELDS'), 'fields.png');
+			JToolBarHelper::title($component_title . JText::_('COM_TJFIELDS_TITLE_FIELDS'), 'fields.png');
 		}
 
         //Check if the form exists before showing the add/edit buttons
@@ -117,7 +131,6 @@ class TjfieldsViewFields extends JViewLegacy
 			JToolBarHelper::preferences('com_tjfields');
 		}
 
-        $input=jFactory::getApplication()->input;
 
         $this->extra_sidebar = '';
 

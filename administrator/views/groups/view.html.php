@@ -54,12 +54,33 @@ class TjfieldsViewGroups extends JViewLegacy
 	 */
 	protected function addToolbar()
 	{
+		$input=jFactory::getApplication()->input;
+
 		require_once JPATH_COMPONENT.'/helpers/tjfields.php';
+
+		$client= $input->get('client','','STRING');
+		$component_title = JText::_('COM_TJFIELDS_TITLE_COMPONENT');
+
+		if (!empty($client))
+		{
+			$client = explode('.', $client);
+
+			if ($client['0'] == 'com_jticketing')
+			{
+				$component_title = JText::_('COM_JTICKETING_COMPONENT');
+			}
+
+		}
+
+		if (!empty($client) and $client['0']=='com_jticketing')
+		{
+			JToolBarHelper::back('COM_JTICKETING_HOME', 'index.php?option=com_jticketing&view=cp');
+		}
 
 		$state	= $this->get('State');
 		$canDo	= TjfieldsHelper::getActions($state->get('filter.category_id'));
 
-		JToolBarHelper::title(JText::_('COM_TJFIELDS_TITLE_GROUPS'), 'groups.png');
+		JToolBarHelper::title($component_title . JText::_('COM_TJFIELDS_TITLE_GROUPS'), 'groups.png');
 
         //Check if the form exists before showing the add/edit buttons
         $formPath = JPATH_COMPONENT_ADMINISTRATOR.'/views/group';

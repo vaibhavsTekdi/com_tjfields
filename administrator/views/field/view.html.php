@@ -45,29 +45,55 @@ class TjfieldsViewField extends JViewLegacy
 	protected function addToolbar()
 	{
 		JFactory::getApplication()->input->set('hidemainmenu', true);
-
 		$user		= JFactory::getUser();
 		$isNew		= ($this->item->id == 0);
-        if (isset($this->item->checked_out)) {
+
+        if (isset($this->item->checked_out))
+        {
 		    $checkedOut	= !($this->item->checked_out == 0 || $this->item->checked_out == $user->get('id'));
-        } else {
+        }
+        else
+        {
             $checkedOut = false;
         }
-		$canDo		= TjfieldsHelper::getActions();
 
-		if (JVERSION >= '3.0')
+		$canDo		= TjfieldsHelper::getActions();
+		$input = JFactory::getApplication()->input;
+		$client = $input->get('client');
+		$component_title = JText::_('COM_TJFIELDS_TITLE_COMPONENT');
+
+		if (!empty($client))
 		{
-			JToolBarHelper::title( JText::_( 'COM_TJFIELDS_TITLE_FIELD' ), 'edit' );
+			$client = explode('.', $client);
+
+			if ($client['0'] == 'com_jticketing')
+			{
+				$component_title = JText::_('COM_JTICKETING_COMPONENT');
+			}
+
+		}
+
+		if ($isNew)
+		{
+			$viewTitle = JText::_('COM_TJFIELDS_ADD_FIELD');
 		}
 		else
 		{
-			JToolBarHelper::title(JText::_('COM_TJFIELDS_TITLE_FIELD'), 'field.png');
+			$viewTitle = JText::_('COM_TJFIELDS_EDIT_FIELD');
+		}
+
+		if (JVERSION >= '3.0')
+		{
+			JToolbarHelper::title($component_title. $viewTitle, 'pencil-2');
+		}
+		else
+		{
+			JToolbarHelper::title($component_title . $viewTitle, 'field.png');
 		}
 
 		// If not checked out, can save the item.
 		if (!$checkedOut && ($canDo->get('core.edit')||($canDo->get('core.create'))))
 		{
-
 			JToolBarHelper::apply('field.apply', 'JTOOLBAR_APPLY');
 			JToolBarHelper::save('field.save', 'JTOOLBAR_SAVE');
 		}

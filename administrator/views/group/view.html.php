@@ -54,8 +54,38 @@ class TjfieldsViewGroup extends JViewLegacy
             $checkedOut = false;
         }
 		$canDo		= TjfieldsHelper::getActions();
+		$input=JFactory::getApplication()->input;
+		$client=$input->get('client');
+		$component_title = JText::_('COM_TJFIELDS_TITLE_COMPONENT');
 
-		JToolBarHelper::title(JText::_('COM_TJFIELDS_TITLE_GROUP'), 'group.png');
+		if (!empty($client))
+		{
+			$client = explode('.', $client);
+
+			if ($client=='com_jticketing')
+			{
+				$component_title = JText::_('COM_JTICKETING_COMPONENT');
+			}
+
+		}
+
+		if ($isNew)
+		{
+			$viewTitle = JText::_('COM_TJFIELDS_ADD_GROUP');
+		}
+		else
+		{
+			$viewTitle = JText::_('COM_TJFIELDS_EDIT_GROUP');
+		}
+
+		if (JVERSION >= '3.0')
+		{
+			JToolbarHelper::title($component_title . $viewTitle, 'pencil-2');
+		}
+		else
+		{
+			JToolbarHelper::title($component_title . $viewTitle, 'group.png');
+		}
 
 		// If not checked out, can save the item.
 		if (!$checkedOut && ($canDo->get('core.edit')||($canDo->get('core.create'))))

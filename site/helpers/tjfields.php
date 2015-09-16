@@ -244,8 +244,10 @@ class TjfieldsHelper
 		$query	= $db->getQuery(true);
 		$query->select('* FROM #__tjfields_fields');
 		$query->where('client="'.$client.'"');
+		$query->where('state=1');
 		$db->setQuery($query);
 		$universalAttendeeFields = $db->loadObjectlist();
+
 		return $universalAttendeeFields;
 	}
 

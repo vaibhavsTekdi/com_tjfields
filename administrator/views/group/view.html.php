@@ -55,14 +55,14 @@ class TjfieldsViewGroup extends JViewLegacy
         }
 		$canDo		= TjfieldsHelper::getActions();
 		$input=JFactory::getApplication()->input;
-		$client=$input->get('client');
+		$client=$input->get('client','','STRING');
 		$component_title = JText::_('COM_TJFIELDS_TITLE_COMPONENT');
 
 		if (!empty($client))
 		{
 			$client = explode('.', $client);
 
-			if ($client=='com_jticketing')
+			if ($client['0']=='com_jticketing')
 			{
 				$component_title = JText::_('COM_JTICKETING_COMPONENT');
 			}

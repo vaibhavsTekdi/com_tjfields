@@ -146,11 +146,11 @@ class TjfieldsViewGroups extends JViewLegacy
 		if (JVERSION >= '3.0')
 		{
 			// Set sidebar action - New in 3.0
-			$publish_opt = JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'));
 			$filter_state = $this->state->get('filter.state');
 			$pub_text = JText::_('JOPTION_SELECT_PUBLISHED');
+			$publish_opt = JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'), "value", "text", $filter_state, true);
 			JHtmlSidebar::setAction('index.php?option=com_tjfields&view=groups');
-			JHtmlSidebar::addFilter($pub_text, 'filter_published', $publish_opt, "value", "text", $filter_state, true);
+			JHtmlSidebar::addFilter($pub_text, 'filter_published', $publish_opt);
 		}
 	}
 

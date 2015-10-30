@@ -29,7 +29,10 @@ $input = JFactory::getApplication()->input;
 		$client = $full_client[0];
 		$client_type = $full_client[1];
 
-
+// Import helper for declaring language constant
+JLoader::import('TjfieldsHelper', JUri::root().'administrator/components/com_tjfields/helpers/tjfields.php');
+// Call helper function
+TjfieldsHelper::getLanguageConstant();
 
 ?>
 <script type="text/javascript">
@@ -49,6 +52,7 @@ $input = JFactory::getApplication()->input;
 
 	Joomla.submitbutton = function(task)
 	{
+		whitespaces_not_llowed = Joomla.JText._('COM_TJFIELDS_LABEL_WHITESPACES_NOT_ALLOWED');
 		//alert(task);
 		if(task == 'field.cancel'){
 			Joomla.submitform(task, document.getElementById('field-form'));
@@ -56,6 +60,22 @@ $input = JFactory::getApplication()->input;
 		else{
 
 			if (task != 'field.cancel' && document.formvalidator.isValid(document.id('field-form'))) {
+
+				if (techjoomla.jQuery('#jform_label').val().trim() == '')
+				{
+					alert(whitespaces_not_llowed);
+					techjoomla.jQuery('#jform_label').val('');
+					techjoomla.jQuery('#jform_label').focus();
+					return false;
+				}
+
+				if (techjoomla.jQuery('#jform_name').val().trim() == '')
+				{
+					alert(whitespaces_not_llowed);
+					techjoomla.jQuery('#jform_name').val('');
+					techjoomla.jQuery('#jform_name').focus();
+					return false;
+				}
 
 				Joomla.submitform(task, document.getElementById('field-form'));
 			}
@@ -164,7 +184,10 @@ $input = JFactory::getApplication()->input;
 								<div class="control-label"><?php echo $this->form->getLabel('label'); ?></div>
 								<div class="controls"><?php echo $this->form->getInput('label'); ?>
 									<span class="alert alert-info alert-help-inline span9 alert_no_margin">
-										<?php echo JText::_('COM_TJFIELDS_LABEL_LANG_CONSTRAINT'); ?>
+										<?php echo JText::_('COM_TJFIELDS_LABEL_LANG_CONSTRAINT_ONE'); ?>
+										<span class="alert-text-change">
+											<?php echo JText::sprintf('COM_TJFIELDS_LABEL_LANG_CONSTRAINT_TWO', $client); ?>
+										</span>
 									</span>
 								</div>
 

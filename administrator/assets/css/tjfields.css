@@ -45,4 +45,8 @@
 	cursor:pointer;
 }
 
+.alert-text-change
+{
+	text-transform: uppercase;
+}
 

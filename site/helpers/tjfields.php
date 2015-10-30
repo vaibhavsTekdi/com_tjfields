@@ -148,7 +148,7 @@ class TjfieldsHelper
 		$insert_obj->email_id   = '';
 		$insert_obj->client     = $data['client'];
 
-		// Values array will contain manu fields value.
+		// Values array will contain menu fields value.
 		foreach ($data['fieldsvalue'] as $fname => $fvalue)
 		{
 			$field_data           = $this->getFieldData($fname);
@@ -157,24 +157,27 @@ class TjfieldsHelper
 			// Check for duplicate entry
 			$if_edit_id           = $this->checkForAlreadyexitsDetails($data, $field_data->id);
 
-			if (!is_array($fvalue))
+			if (!empty($fvalue))
 			{
-				$insert_obj->value = $fvalue;
-			}
-			else
-			{
-				$insert_obj->value = json_encode($fvalue);
-			}
+				if (!is_array($fvalue))
+				{
+					$insert_obj->value = $fvalue;
+				}
+				else
+				{
+					$insert_obj->value = json_encode($fvalue);
+				}
 
-			if ($if_edit_id)
-			{
-				$insert_obj->id = $if_edit_id;
-				$db->updateObject('#__tjfields_fields_value', $insert_obj, 'id');
-			}
-			else
-			{
-				$insert_obj->id = '';
-				$db->insertObject('#__tjfields_fields_value', $insert_obj, 'id');
+				if ($if_edit_id)
+				{
+					$insert_obj->id = $if_edit_id;
+					$db->updateObject('#__tjfields_fields_value', $insert_obj, 'id');
+				}
+				else
+				{
+					$insert_obj->id = '';
+					$db->insertObject('#__tjfields_fields_value', $insert_obj, 'id');
+				}
 			}
 		}
 	}

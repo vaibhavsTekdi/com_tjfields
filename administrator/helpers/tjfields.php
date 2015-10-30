@@ -539,4 +539,16 @@ class TjfieldsHelper
 
 		return $jsarray_final;
 	}
+
+	/**
+	 * Get all jtext for javascript
+	 *
+	 * @return   void
+	 *
+	 * @since   1.0
+	 */
+	public static function getLanguageConstant()
+	{
+		JText::script('COM_TJFIELDS_LABEL_WHITESPACES_NOT_ALLOWED');
+	}
 }

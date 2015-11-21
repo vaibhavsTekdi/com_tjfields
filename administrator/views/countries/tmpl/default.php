@@ -60,21 +60,19 @@ if (! empty($this->extra_sidebar))
 ?>
 
 <div class="<?php echo TJFIELDS_WRAPPER_CLASS;?> tj-countries">
+	<?php if (!empty($this->sidebar)): ?>
+	<div id="j-sidebar-container" class="span2">
+		<?php echo $this->sidebar; ?>
+	</div>
+	<div id="j-main-container" class="span10">
+
+	<?php else : ?>
+		<div id="j-main-container">
+		<?php endif; ?>
 	<form
 		action="<?php echo JRoute::_('index.php?option=com_tjfields&view=countries&client=' . $this->input->get('client', '', 'STRING')); ?>"
 		method="post" name="adminForm" id="adminForm">
-
-		<?php if (!empty($this->sidebar)): ?>
-		<div id="j-sidebar-container" class="span2">
-			<?php echo $this->sidebar; ?>
-		</div>
-		<div id="j-main-container" class="span10">
-
-		<?php else : ?>
-			<div id="j-main-container">
-			<?php endif; ?>
-
-			<div id="filter-bar" class="btn-toolbar">
+		<div id="filter-bar" class="btn-toolbar">
 				<div class="filter-search btn-group pull-left">
 					<input type="text" name="filter_search" id="filter_search"
 					placeholder="<?php echo JText::_('COM_TJFIELDS_FILTER_SEARCH_DESC_COUNTRIES'); ?>"

@@ -83,7 +83,8 @@ class TjfieldsViewFields extends JViewLegacy
 					break;
 				case 'com_tjlms':
 					$component_title = JText::_('COM_TJLMS_COMPONENT');
-					//JToolBarHelper::back('COM_TJLMS_HOME', 'index.php?option=com_tjlms&view=dashboard');
+
+					// JToolBarHelper::back('COM_TJLMS_HOME', 'index.php?option=com_tjlms&view=dashboard');
 					break;
 			}
 		}

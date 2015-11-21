@@ -61,6 +61,44 @@ TjfieldsHelper::getLanguageConstant();
 
 			if (task != 'field.cancel' && document.formvalidator.isValid(document.id('field-form'))) {
 
+				var isrequired = techjoomla.jQuery('input[name="jform[required]"]:checked', '#field-form').val();
+				var isreadonly = techjoomla.jQuery('input[name="jform[readonly]"]:checked', '#field-form').val();
+				var field_type = techjoomla.jQuery('#jform_type').val();
+
+				switch(field_type)
+				{
+					case 'multi_select':
+					case 'single_select':
+					case 'checkbox':
+					case 'radio':
+						if(isrequired == 1)
+						{
+							if(techjoomla.jQuery('.tjfields_optionname').val().trim() == '' && techjoomla.jQuery('.tjfields_optionvalue').val().trim() == '')
+							{
+								techjoomla.jQuery('.tjfields_optionname').val('');
+								techjoomla.jQuery('.tjfields_optionname').attr('required', 'required');
+								techjoomla.jQuery('.tjfields_optionvalue').attr('required', 'required');
+								techjoomla.jQuery('.tjfields_optionname').focus();
+								return false;
+							}
+						}
+						break;
+					case 'text':
+					case 'textarea':
+					case 'calendar':
+					case 'email_field':
+						if ((isrequired == 1 && isreadonly == 1) || isreadonly == 1)
+						{
+							if (techjoomla.jQuery('#jform_default_value').val().trim() == '')
+							{
+								techjoomla.jQuery('#jform_default_value').attr('required', 'required');
+								techjoomla.jQuery('#jform_default_value').focus();
+								return false;
+							}
+						}
+						break;
+				}
+
 				if (techjoomla.jQuery('#jform_label').val().trim() == '')
 				{
 					alert(whitespaces_not_llowed);
@@ -80,7 +118,7 @@ TjfieldsHelper::getLanguageConstant();
 				Joomla.submitform(task, document.getElementById('field-form'));
 			}
 			else {
-				alert('<?php echo $this->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED')); ?>');
+				alert('<?php echo $this->escape(JText::_('COM_TJFIELDS_INVALID_FORM')); ?>');
 			}
 		}
 	}
@@ -147,6 +185,7 @@ TjfieldsHelper::getLanguageConstant();
 							if(field_value == "calendar")
 							{
 								techjoomla.jQuery('#date_format').show();
+								techjoomla.jQuery('#default_value_text').show();
 							}
 							else if(field_value == "hidden")
 							{

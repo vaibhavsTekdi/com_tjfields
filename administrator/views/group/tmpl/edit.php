@@ -42,13 +42,11 @@ TjfieldsHelper::getLanguageConstant();
         }
         else{
 
-            if (task != 'group.cancel' && document.formvalidator.isValid(document.id('group-form'))) {
-
-				whitespaces_not_llowed = Joomla.JText._('COM_TJFIELDS_LABEL_WHITESPACES_NOT_ALLOWED');
-
+            if (task != 'group.cancel' && document.formvalidator.isValid(document.id('group-form')))
+            {
 				if (techjoomla.jQuery('#jform_name').val().trim() == '')
 				{
-					alert(whitespaces_not_llowed);
+					alert(Joomla.JText._('COM_TJFIELDS_LABEL_WHITESPACES_NOT_ALLOWED'));
 					techjoomla.jQuery('#jform_name').val('');
 					techjoomla.jQuery('#jform_name').focus();
 					return false;

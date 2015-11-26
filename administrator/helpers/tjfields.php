@@ -128,7 +128,6 @@ class TjfieldsHelper
 	 */
 	public function getFieldArrayFormatted($data)
 	{
-		// Print_r($data); die('asdasdasd2324234');
 		switch ($data['type'])
 		{
 				case	"radio":
@@ -258,8 +257,6 @@ class TjfieldsHelper
 		$fields = $db->loadObjectList();
 		$newXML = new SimpleXMLElement("<form></form>");
 
-		// $newXML->addAttribute('newsPagePrefix', 'value goes here');
-
 		$current_group = $fields[0]->group_id;
 		$i = 0;
 		$new_fieldset = $newXML->addChild('fieldset');
@@ -355,7 +352,7 @@ class TjfieldsHelper
 
 		$explodeForCom = explode(".", $data['client']);
 
-		$filePathFrontend = JPATH_SITE . DS . 'components/' . $explodeForCom[0] . '/models/forms/' . $data['client_type'] . 'form_extra.xml';
+		$filePathFrontend = JPATH_SITE . '/components/' . $explodeForCom[0] . '/models/forms/' . $data['client_type'] . 'form_extra.xml';
 		$content  = '';
 
 		if (!JFile::exists($filePathFrontend))
@@ -402,7 +399,6 @@ class TjfieldsHelper
 	 */
 	public function SwitchCaseForExtraAttribute($data)
 	{
-		// Print_r($data); die('asdasdasd');
 		switch ($data->type)
 		{
 				case	"text":

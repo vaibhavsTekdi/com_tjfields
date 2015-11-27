@@ -75,9 +75,14 @@ class TjfieldsViewGroups extends JViewLegacy
 		{
 			$client = explode('.', $client);
 
-			if ($client['0'] == 'com_jticketing')
+			switch ($client['0'])
 			{
-				$component_title = JText::_('COM_JTICKETING_COMPONENT');
+				case 'com_jticketing' :
+					$component_title = JText::_('COM_JTICKETING_COMPONENT');
+					break;
+				case 'com_tjlms':
+					$component_title = JText::_('COM_TJLMS_COMPONENT');
+					break;
 			}
 		}
 

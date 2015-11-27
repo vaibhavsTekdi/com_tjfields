@@ -23,6 +23,11 @@ if(JVERSION >= '3.0')
 $document = JFactory::getDocument();
 $document->addStyleSheet('components/com_tjfields/assets/css/tjfields.css');
 $input = JFactory::getApplication()->input;
+
+// Import helper for declaring language constant
+JLoader::import('TjfieldsHelper', JUri::root().'administrator/components/com_tjfields/helpers/tjfields.php');
+// Call helper function
+TjfieldsHelper::getLanguageConstant();
 ?>
 <script type="text/javascript">
     js = jQuery.noConflict();
@@ -37,7 +42,15 @@ $input = JFactory::getApplication()->input;
         }
         else{
 
-            if (task != 'group.cancel' && document.formvalidator.isValid(document.id('group-form'))) {
+            if (task != 'group.cancel' && document.formvalidator.isValid(document.id('group-form')))
+            {
+				if (techjoomla.jQuery('#jform_name').val().trim() == '')
+				{
+					alert(Joomla.JText._('COM_TJFIELDS_LABEL_WHITESPACES_NOT_ALLOWED'));
+					techjoomla.jQuery('#jform_name').val('');
+					techjoomla.jQuery('#jform_name').focus();
+					return false;
+				}
 
                 Joomla.submitform(task, document.getElementById('group-form'));
             }

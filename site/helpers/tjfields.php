@@ -60,38 +60,41 @@ class TjfieldsHelper
 		// Check if the field type is list or radio (fields which have option)
 		foreach ($field_data_value as $fdata)
 		{
-			$field_data = $this->getFieldData('', $fdata->field_id);
+			$fieldData = $this->getFieldData('', $fdata->field_id);
 
-			if ($field_data->type == 'single_select' || $field_data->type == 'multi_select' || $field_data->type == 'radio' || $field_data->type == 'checkbox')
+			if (!empty($fieldData))
 			{
-				$extra_options = $this->getOptions($fdata->field_id, $fdata->value);
-				$fdata->value  = $extra_options;
-			}
-			elseif ($field_data->type == 'calendar')
-			{
-				// $format = $this->getDateFormat($field_data->format);
+				if ($fieldData->type == 'single_select' || $fieldData->type == 'multi_select' || $fieldData->type == 'radio' || $fieldData->type == 'checkbox')
+				{
+					$extra_options = $this->getOptions($fdata->field_id, $fdata->value);
+					$fdata->value  = $extra_options;
+				}
+				elseif ($fieldData->type == 'calendar')
+				{
+					// $format = $this->getDateFormat($fieldData->format);
 
-				if ($field_data->format == 1)
-				{
-					$fdata->value = JFactory::getDate($fdata->value)->Format('d-m-Y');
+					if ($fieldData->format == 1)
+					{
+						$fdata->value = JFactory::getDate($fdata->value)->Format('d-m-Y');
+					}
+					elseif (($fieldData->format == 2))
+					{
+						$fdata->value = JFactory::getDate($fdata->value)->Format('m-d-Y');
+					}
+					elseif ($fieldData->format == 3)
+					{
+						$fdata->value = JFactory::getDate($fdata->value)->Format('Y-d-m');
+					}
+					else
+					{
+						$fdata->value = JFactory::getDate($fdata->value)->Format('Y-m-d');
+					}
 				}
-				elseif (($field_data->format == 2))
-				{
-					$fdata->value = JFactory::getDate($fdata->value)->Format('m-d-Y');
-				}
-				elseif ($field_data->format == 3)
-				{
-					$fdata->value = JFactory::getDate($fdata->value)->Format('Y-d-m');
-				}
-				else
-				{
-					$fdata->value = JFactory::getDate($fdata->value)->Format('Y-m-d');
-				}
-			}
 
-			$fdata->type  = $field_data->type;
-			$fdata->name  = $field_data->name;
-			$fdata->label = $field_data->label;
+				$fdata->type  = $fieldData->type;
+				$fdata->name  = $fieldData->name;
+				$fdata->label = $fieldData->label;
+			}
 		}
 
 		return $field_data_value;
@@ -148,7 +151,7 @@ class TjfieldsHelper
 		$insert_obj->email_id   = '';
 		$insert_obj->client     = $data['client'];
 
-		// Values array will contain manu fields value.
+		// Values array will contain menu fields value.
 		foreach ($data['fieldsvalue'] as $fname => $fvalue)
 		{
 			$field_data           = $this->getFieldData($fname);
@@ -157,24 +160,27 @@ class TjfieldsHelper
 			// Check for duplicate entry
 			$if_edit_id           = $this->checkForAlreadyexitsDetails($data, $field_data->id);
 
-			if (!is_array($fvalue))
+			if (!empty($fvalue))
 			{
-				$insert_obj->value = $fvalue;
-			}
-			else
-			{
-				$insert_obj->value = json_encode($fvalue);
-			}
+				if (!is_array($fvalue))
+				{
+					$insert_obj->value = $fvalue;
+				}
+				else
+				{
+					$insert_obj->value = json_encode($fvalue);
+				}
 
-			if ($if_edit_id)
-			{
-				$insert_obj->id = $if_edit_id;
-				$db->updateObject('#__tjfields_fields_value', $insert_obj, 'id');
-			}
-			else
-			{
-				$insert_obj->id = '';
-				$db->insertObject('#__tjfields_fields_value', $insert_obj, 'id');
+				if ($if_edit_id)
+				{
+					$insert_obj->id = $if_edit_id;
+					$db->updateObject('#__tjfields_fields_value', $insert_obj, 'id');
+				}
+				else
+				{
+					$insert_obj->id = '';
+					$db->insertObject('#__tjfields_fields_value', $insert_obj, 'id');
+				}
 			}
 		}
 	}

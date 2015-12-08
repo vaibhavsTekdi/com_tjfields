@@ -172,18 +172,20 @@ class TjGeoHelper
 	 *
 	 * @param   string  $country_id    id of country
 	 * @param   string  $component_nm  name of component
+	 * @param   string  $orderingCol   order by table column eg region
 	 *
 	 * @return  regionlist
 	 *
 	 * @since   1.5
 	 */
-	public function getRegionList($country_id, $component_nm = "")
+	public function getRegionList($country_id, $component_nm = "", $orderingCol = "region")
 	{
 		$this->_db = JFactory::getDBO();
 		$query     = $this->_db->getQuery(true);
 		$query->select("id, region,region_jtext");
 		$query->from('#__tj_region');
 		$query->where('country_id=' . $this->_db->quote($country_id));
+		$query->order($this->_db->escape($orderingCol . ' ASC'));
 
 		if ($component_nm)
 		{

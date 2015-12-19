@@ -52,8 +52,12 @@ class TjfieldsHelper
 
 		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true);
-		$query->select('field_id,value FROM #__tjfields_fields_value');
-		$query->where('content_id=' . $content_id . ' AND client="' . $client . '" ' . $query_user_string);
+		$query->select('fg.name as tabname, fg.id as tabid, fv.field_id, fv.value FROM #__tjfields_fields_value as fv');
+		$query->leftjoin('#__tjfields_fields as f ON f.id = fv.field_id');
+		$query->leftjoin('#__tjfields_groups as fg ON fg.id = f.group_id');
+		$query->where('f.state = 1');
+		$query->where('fg.state = 1');
+		$query->where('fv.content_id=' . $content_id . ' AND fv.client="' . $client . '" ' . $query_user_string);
 		$db->setQuery($query);
 		$field_data_value = $db->loadObjectlist();
 
@@ -160,8 +164,9 @@ class TjfieldsHelper
 			// Check for duplicate entry
 			$if_edit_id           = $this->checkForAlreadyexitsDetails($data, $field_data->id);
 
-			if (!empty($fvalue))
-			{
+			/* Commented for : deleting records if value is kept empty */
+			// #if (!empty($fvalue))
+			// {
 				if (!is_array($fvalue))
 				{
 					$insert_obj->value = $fvalue;
@@ -181,7 +186,27 @@ class TjfieldsHelper
 					$insert_obj->id = '';
 					$db->insertObject('#__tjfields_fields_value', $insert_obj, 'id');
 				}
-			}
+
+				if (empty($insert_obj->value))
+				{
+					// Delete data
+					$query = $db->getQuery(true);
+
+					// Delete all custom keys for user 1001.
+					$conditions = array(
+						$db->quoteName('content_id') . ' = ' . $db->quote($insert_obj->content_id),
+						$db->quoteName('field_id') . ' = ' . $db->quote($insert_obj->field_id),
+						$db->quoteName('value') . ' = ""'
+					);
+
+					$query->delete($db->quoteName('#__tjfields_fields_value'));
+					$query->where($conditions);
+
+					$db->setQuery($query);
+
+					$result = $db->execute();
+				}
+			// }
 		}
 	}
 

@@ -171,6 +171,7 @@ TjfieldsHelper::getLanguageConstant();
 				case	"calendar":
 				case	"editor":
 				case	"file":
+				case	"user":
 				case	"hidden":
 							techjoomla.jQuery('#option_div').hide();
 							techjoomla.jQuery('#option_min_char').hide();

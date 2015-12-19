@@ -53,52 +53,33 @@ TjfieldsHelper::getLanguageConstant();
 	Joomla.submitbutton = function(task)
 	{
 		whitespaces_not_llowed = Joomla.JText._('COM_TJFIELDS_LABEL_WHITESPACES_NOT_ALLOWED');
+		restricted_value_entry = Joomla.JText._('COM_TJFIELDS_LABEL_RESTRICTED_VALUE_ENTERED');
+		max_value_must_greater = Joomla.JText._('COM_TJFIELDS_LABEL_MAX_VALUE_SHOULD_GREATER');
+		using_star_must = Joomla.JText._('COM_TJFIELDS_LABEL_MAKE_USE_OF_STAR');
+
+		var isrequired = techjoomla.jQuery('input[name="jform[required]"]:checked', '#field-form').val();
+		var isreadonly = techjoomla.jQuery('input[name="jform[readonly]"]:checked', '#field-form').val();
+		var field_type = techjoomla.jQuery('#jform_type').val();
+
+		if (field_type == 'text' || field_type == 'textarea' || field_type == 'calendar' || field_type == 'email_field')
+		{
+			if (isreadonly != 1)
+			{
+				if (techjoomla.jQuery('#jform_default_value').hasClass('invalid'))
+				{
+					techjoomla.jQuery('#jform_default_value').removeAttr('required');
+				}
+			}
+		}
+
 		//alert(task);
 		if(task == 'field.cancel'){
 			Joomla.submitform(task, document.getElementById('field-form'));
 		}
 		else{
 
-			if (task != 'field.cancel' && document.formvalidator.isValid(document.id('field-form'))) {
-
-				var isrequired = techjoomla.jQuery('input[name="jform[required]"]:checked', '#field-form').val();
-				var isreadonly = techjoomla.jQuery('input[name="jform[readonly]"]:checked', '#field-form').val();
-				var field_type = techjoomla.jQuery('#jform_type').val();
-
-				switch(field_type)
-				{
-					case 'multi_select':
-					case 'single_select':
-					case 'checkbox':
-					case 'radio':
-						if(isrequired == 1)
-						{
-							if(techjoomla.jQuery('.tjfields_optionname').val().trim() == '' && techjoomla.jQuery('.tjfields_optionvalue').val().trim() == '')
-							{
-								techjoomla.jQuery('.tjfields_optionname').val('');
-								techjoomla.jQuery('.tjfields_optionname').attr('required', 'required');
-								techjoomla.jQuery('.tjfields_optionvalue').attr('required', 'required');
-								techjoomla.jQuery('.tjfields_optionname').focus();
-								return false;
-							}
-						}
-						break;
-					case 'text':
-					case 'textarea':
-					case 'calendar':
-					case 'email_field':
-						if ((isrequired == 1 && isreadonly == 1) || isreadonly == 1)
-						{
-							if (techjoomla.jQuery('#jform_default_value').val().trim() == '')
-							{
-								techjoomla.jQuery('#jform_default_value').attr('required', 'required');
-								techjoomla.jQuery('#jform_default_value').focus();
-								return false;
-							}
-						}
-						break;
-				}
-
+			if (task != 'field.cancel' && document.formvalidator.isValid(document.id('field-form')))
+			{
 				if (techjoomla.jQuery('#jform_label').val().trim() == '')
 				{
 					alert(whitespaces_not_llowed);
@@ -113,6 +94,82 @@ TjfieldsHelper::getLanguageConstant();
 					techjoomla.jQuery('#jform_name').val('');
 					techjoomla.jQuery('#jform_name').focus();
 					return false;
+				}
+
+				switch(field_type)
+				{
+					case 'multi_select':
+					case 'single_select':
+					case 'checkbox':
+					case 'radio':
+					
+						if(techjoomla.jQuery('.tjfields_optionname').val().trim() == '' && techjoomla.jQuery('.tjfields_optionvalue').val().trim() == '')
+						{
+							techjoomla.jQuery('.tjfields_optionname').val('');
+							techjoomla.jQuery('.tjfields_optionname').attr('required', 'required');
+							techjoomla.jQuery('.tjfields_optionvalue').attr('required', 'required');
+							techjoomla.jQuery('.tjfields_optionname').focus();
+							return false;
+						}
+						break;
+					case 'text':
+					case 'textarea':
+					case 'calendar':
+					case 'email_field':
+						if (isreadonly != 1 && isrequired == 1)
+						{
+							if (techjoomla.jQuery('#jform_default_value').hasClass('invalid'))
+							{
+								techjoomla.jQuery('#jform_default_value').removeAttr('required');
+							}
+						}
+
+						if ((isrequired == 1 && isreadonly == 1) || isreadonly == 1)
+						{
+							if (techjoomla.jQuery('#jform_default_value').val().trim() == '')
+							{
+								techjoomla.jQuery('#jform_default_value').attr('required', 'required');
+								techjoomla.jQuery('#jform_default_value').focus();
+								return false;
+							}
+						}
+						break;
+				}
+
+				var minValue = techjoomla.jQuery('#jform_min').val().trim();
+				var maxValue = techjoomla.jQuery('#jform_max').val().trim();
+
+				if (techjoomla.jQuery('#jform_min').val().trim() != '')
+				{
+
+					if (minValue == 0 || minValue < 0)
+					{
+						alert(restricted_value_entry);
+						techjoomla.jQuery('#jform_min').val('');
+						techjoomla.jQuery('#jform_min').focus();
+						return false;
+					}
+				}
+
+				if (techjoomla.jQuery('#jform_max').val().trim() != '')
+				{
+
+					if (maxValue == 0 || maxValue < 0)
+					{
+						alert(restricted_value_entry);
+						techjoomla.jQuery('#jform_max').val('');
+						techjoomla.jQuery('#jform_max').focus();
+						return false;
+					}
+				}
+
+				if (minValue != '' && maxValue != '')
+				{
+					if (minValue > maxValue)
+					{
+						alert(max_value_must_greater);
+						return false;
+					}
 				}
 
 				Joomla.submitform(task, document.getElementById('field-form'));

@@ -173,7 +173,69 @@ class TjfieldsHelper
 				}
 				else
 				{
-					$insert_obj->value = json_encode($fvalue);
+					if ($field_data->type == 'file' )
+					{
+						if ($if_edit_id)
+						{
+							// Get the field values
+							$field_data_details = $this->getFieldValue($if_edit_id);
+						}
+
+						jimport('joomla.filesystem.folder');
+						jimport('joomla.filesystem.file');
+
+						// Get Files
+						$input = JFactory::getApplication()->input;
+						$filedata = $input->post->files->get('jform', '', 'array');
+
+						// If any file exist in the post
+						if (empty($filedata[$fname]['name']))
+						{
+							if ($if_edit_id)
+							{
+								$insert_obj->value = $field_data_details->value;
+							}
+						}
+						else
+						{
+							$random_string = rand();
+							$filename = JFile::makeSafe($filedata[$fname]['name']);
+
+							// Cleans the name of the file by removing wierd characters
+							$filename = strtolower($filename);
+							$filename = preg_replace('/\s/', '_', $filename);
+							$filename = $random_string . '_' . $filename;
+
+							$folderpath = '/media/com_tjfields/';
+							$path = JPATH_SITE . $folderpath;
+							$src = $filedata[$fname]['tmp_name'];
+
+							$dest = $path . $filename;
+
+							// The file has successfully been uploaded :)
+							if (JFile::upload($src, $dest))
+							{
+								// Folderpath to be stored in DB
+								$fvalue = $folderpath . $filename;
+								$insert_obj->value = $fvalue;
+
+								// Check if file already exist
+								if (!empty($field_data_details->value))
+								{
+									// Delete Existing file
+									JFile::delete(JPATH_ROOT . $field_data_details->value);
+								}
+							}
+							else
+							{
+								return false;
+							}
+						}
+					}
+					else
+					{
+						$insert_obj->value = json_encode($fvalue);
+					}
 				}
 
 				if ($if_edit_id)
@@ -208,6 +270,29 @@ class TjfieldsHelper
 				}
 			// }
 		}
+	}
+
+	/**
+	 * Get field values
+	 *
+	 * @param   int  $fid  id of field
+	 *
+	 * @return  object
+	 */
+	public function getFieldValue($fid)
+	{
+		if (!empty($fid))
+		{
+			$db    = JFactory::getDbo();
+			$query = $db->getQuery(true);
+			$query->select('a.*');
+			$query->from('#__tjfields_fields_value as a');
+			$query->where('id=' . $fid);
+			$db->setQuery($query);
+			$field_data = $db->loadObject();
+		}
+
+		return $field_data;
 	}
 
 	/**

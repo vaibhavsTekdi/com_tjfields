@@ -348,6 +348,13 @@ class TjfieldsHelper
 				$f->format = $this->getDateFormat($f->format);
 				$field->addAttribute('format', $f->format);
 			}
+
+			/* Added for editor filter */
+			if ($f->type == 'editor')
+			{
+				$field->addAttribute('filter', 'safehtml');
+			}
+			/* Added for editor filter */
 		}
 
 		$explodeForCom = explode(".", $data['client']);

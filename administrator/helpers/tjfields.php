@@ -291,7 +291,7 @@ class TjfieldsHelper
 				$field->addAttribute('readonly', 'true');
 			}
 
-			if ($f->placeholder)
+			if (isset($f->placeholder))
 			{
 				$field->addAttribute('hint', $f->placeholder);
 			}

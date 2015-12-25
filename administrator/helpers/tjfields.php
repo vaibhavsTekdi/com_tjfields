@@ -291,6 +291,11 @@ class TjfieldsHelper
 				$field->addAttribute('readonly', 'true');
 			}
 
+			if (isset($f->placeholder))
+			{
+				$field->addAttribute('hint', $f->placeholder);
+			}
+
 			$field->addAttribute('class', $f->validation_class);
 
 			// ADD option if present.

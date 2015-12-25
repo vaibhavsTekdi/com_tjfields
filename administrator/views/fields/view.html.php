@@ -209,6 +209,10 @@ class TjfieldsViewFields extends JViewLegacy
 			$publish_opt = JHtml::_('select.options', JHtml::_('jgrid.publishedOptions'), "value", "text", $filter_state, true);
 			JHtmlSidebar::addFilter($pub_text, 'filter_published', $publish_opt);
 		}
+
+		// Filtering by groups
+			$this->groups = $this->get('Group');
+			$this->group_id = $this->state->get('filter.group', 'filter_group');
 	}
 
 	/**

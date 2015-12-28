@@ -335,7 +335,7 @@ class TjfieldsHelper
 					if (count($default_value) > 1)
 					{
 						// Convert values to string
-						$value_string = json_encode(',', $default_value);
+						$value_string = json_encode($default_value);
 						$field->addAttribute('default', $value_string);
 					}
 					else

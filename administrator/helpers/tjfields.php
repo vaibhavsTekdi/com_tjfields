@@ -250,7 +250,7 @@ class TjfieldsHelper
 		LEFT JOIN #__tjfields_groups as g
 		ON g.id = f.group_id
 		WHERE f.client="' . $data['client'] . '" AND f.state=1 AND g.state = 1
-		ORDER BY g.ordering
+		ORDER BY f.ordering
 		';
 
 		$db->setQuery($query);

@@ -34,11 +34,12 @@ class TjfieldsHelper
 	/**
 	 * Function used for renderring. fetching value
 	 *
-	 * @param   array  $data  get data
+	 * @param   array  $data     get data
+	 * @param   array  $user_id  value inserted user id
 	 *
 	 * @return  void
 	 */
-	public function FetchDatavalue($data)
+	public function FetchDatavalue($data, $user_id = '')
 	{
 		$content_id        = $data['content_id'];
 		$client            = $data['client'];
@@ -55,8 +56,16 @@ class TjfieldsHelper
 		$query->select('fg.name as tabname, fg.id as tabid, fv.field_id, fv.value FROM #__tjfields_fields_value as fv');
 		$query->leftjoin('#__tjfields_fields as f ON f.id = fv.field_id');
 		$query->leftjoin('#__tjfields_groups as fg ON fg.id = f.group_id');
+
+		// Fetch data inserted from a specific user for tjfield custom fields
+		if (!empty($user_id))
+		{
+			$query->where('fv.user_id = ' . $user_id);
+		}
+
 		$query->where('f.state = 1');
 		$query->where('fg.state = 1');
+		$query->order('f.ordering ASC');
 		$query->where('fv.content_id=' . $content_id . ' AND fv.client="' . $client . '" ' . $query_user_string);
 		$db->setQuery($query);
 		$field_data_value = $db->loadObjectlist();

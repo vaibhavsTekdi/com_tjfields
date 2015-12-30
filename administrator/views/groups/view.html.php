@@ -94,7 +94,7 @@ class TjfieldsViewGroups extends JViewLegacy
 
 		$state = $this->get('State');
 		$canDo = TjfieldsHelper::getActions($state->get('filter.category_id'));
-		JToolBarHelper::title($component_title . JText::_('COM_TJFIELDS_TITLE_GROUPS'), 'groups.png');
+		JToolBarHelper::title($component_title . JText::_('COM_TJFIELDS_TITLE_GROUPS'), 'list.png');
 
 		// Check if the form exists before showing the add/edit buttons
 		$formPath = JPATH_COMPONENT_ADMINISTRATOR . '/views/group';

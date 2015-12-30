@@ -83,12 +83,16 @@ class TjfieldsViewField extends JViewLegacy
 
 			if ($client['0'] == 'com_jticketing')
 			{
+				$lang = JFactory::getLanguage();
+				$lang->load('com_jticketing', JPATH_ADMINISTRATOR, 'en-GB', true);
 				$component_title = JText::_('COM_JTICKETING_COMPONENT');
 			}
 
 			if ($client['0'] == 'com_tjlms')
 			{
-				$component_title = JText::_('COM_TJLMS_COMPONENT');
+				$lang = JFactory::getLanguage();
+				$lang->load('com_tjlms', JPATH_ADMINISTRATOR, 'en-GB', true);
+				$component_title = JText::_('COM_TJLMS_COMPONENT_LABEL') . ' : ';
 			}
 		}
 

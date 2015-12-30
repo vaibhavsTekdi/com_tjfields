@@ -69,7 +69,6 @@ class TjfieldsViewGroups extends JViewLegacy
 		$input = jFactory::getApplication()->input;
 		require_once JPATH_COMPONENT . '/helpers/tjfields.php';
 		$client          = $input->get('client', '', 'STRING');
-		$component_title = JText::_('COM_TJFIELDS_TITLE_COMPONENT');
 
 		if (!empty($client))
 		{

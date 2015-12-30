@@ -70,6 +70,8 @@ class TjfieldsViewGroups extends JViewLegacy
 		require_once JPATH_COMPONENT . '/helpers/tjfields.php';
 		$client          = $input->get('client', '', 'STRING');
 
+		$component_title = '';
+
 		if (!empty($client))
 		{
 			$client = explode('.', $client);

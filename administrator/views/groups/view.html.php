@@ -70,26 +70,27 @@ class TjfieldsViewGroups extends JViewLegacy
 		require_once JPATH_COMPONENT . '/helpers/tjfields.php';
 		$client          = $input->get('client', '', 'STRING');
 
-		$component_title = '';
+		$component_title = JText::_('COM_TJFIELDS_TITLE_COMPONENT');
 
 		if (!empty($client))
 		{
 			$client = explode('.', $client);
 
+			$lang = JFactory::getLanguage();
+			$lang->load($client['0'], JPATH_ADMINISTRATOR, 'en-GB', true);
+			$title_text = strtoupper($client['0']) . '_' . strtoupper($client['1']) . '_TITLE';
+			$component_title = JText::_($title_text) . ' : ';
+
 			switch ($client['0'])
 			{
 				case 'com_jticketing' :
-					$component_title = JText::_('COM_JTICKETING_COMPONENT');
-					break;
-				case 'com_tjlms':
-					$component_title = JText::_('COM_TJLMS_COMPONENT');
-					break;
-			}
-		}
+				JToolBarHelper::back('COM_TJFIELD_HOME_BUTTON', 'index.php?option=com_jticketing&view=cp');
+				break;
 
-		if (!empty($client) and $client['0'] == 'com_jticketing')
-		{
-			JToolBarHelper::back('COM_JTICKETING_HOME', 'index.php?option=com_jticketing&view=cp');
+				case 'com_tjlms':
+				JToolBarHelper::back('COM_TJFIELD_HOME_BUTTON', 'index.php?option=com_tjlms&view=courses');
+				break;
+			}
 		}
 
 		$state = $this->get('State');

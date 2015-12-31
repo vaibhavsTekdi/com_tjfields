@@ -75,20 +75,20 @@ class TjfieldsViewFields extends JViewLegacy
 
 		if (!empty($client))
 		{
+			$lang = JFactory::getLanguage();
+			$lang->load($client['0'], JPATH_ADMINISTRATOR, 'en-GB', true);
+			$title_text = strtoupper($client['0']) . '_' . strtoupper($client['1']) . '_TITLE';
+			$component_title = JText::_($title_text) . ' : ';
+
 			switch ($client['0'])
 			{
 				case 'com_jticketing' :
-					$lang = JFactory::getLanguage();
-					$lang->load('com_jticketing', JPATH_ADMINISTRATOR, 'en-GB', true);
-					$component_title = JText::_('COM_JTICKETING_COMPONENT');
-					JToolBarHelper::back('COM_JTICKETING_HOME', 'index.php?option=com_jticketing&view=cp');
-					break;
+				JToolBarHelper::back('COM_TJFIELD_HOME_BUTTON', 'index.php?option=com_jticketing&view=cp');
+				break;
 
 				case 'com_tjlms':
-					$lang = JFactory::getLanguage();
-					$lang->load('com_tjlms', JPATH_ADMINISTRATOR, 'en-GB', true);
-					$component_title = JText::_('COM_TJLMS_COMPONENT_LABEL') . ' : ';
-					break;
+				JToolBarHelper::back('COM_TJFIELD_HOME_BUTTON', 'index.php?option=com_tjlms&view=courses');
+				break;
 			}
 		}
 

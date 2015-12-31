@@ -298,6 +298,9 @@ class TjfieldsHelper
 
 			$field->addAttribute('class', $f->validation_class);
 
+			$default_value = array();
+			$value_string = '';
+
 			// ADD option if present.
 			if (isset($f->extra_options))
 			{
@@ -308,7 +311,7 @@ class TjfieldsHelper
 
 					if ($f_option->default_option == 1)
 					{
-						$option->addAttribute('selected', 'selected');
+						$default_value[] = $f_option->value;
 					}
 				}
 			}
@@ -327,6 +330,21 @@ class TjfieldsHelper
 			// Add multiple attribute for multilist.
 			if (isset($f->multiple))
 			{
+				if (!empty($default_value))
+				{
+					if (count($default_value) > 1)
+					{
+						// Convert values to string
+						$value_string = json_encode($default_value);
+						$field->addAttribute('default', $value_string);
+					}
+					else
+					{
+						$field->addAttribute('default', $default_value[0]);
+					}
+				}
+
+				$field->addAttribute('filter', 'raw');
 				$field->addAttribute('multiple', $f->multiple);
 			}
 

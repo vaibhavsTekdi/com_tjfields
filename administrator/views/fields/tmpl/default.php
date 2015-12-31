@@ -62,20 +62,21 @@ if (!empty($this->extra_sidebar)) {
 ?>
 
 <div class="techjoomla-bootstrap">
-	<?php if(!empty($this->sidebar)): ?>
-	<div id="j-sidebar-container" class="span2">
-		<?php echo $this->sidebar; ?>
-	</div>
-	<div id="j-main-container" class="span10">
-	<?php else : ?>
-	<div id="j-main-container">
-	<?php endif;?>
 	<form action="<?php echo JRoute::_('index.php?option=com_tjfields&view=fields&client='.$input->get('client','','STRING')); ?>" method="post" name="adminForm" id="adminForm">
 
-				<div id="filter-bar" class="btn-toolbar">
-					<div class="filter-search btn-group pull-left">
-						<label for="filter_search" class="element-invisible"><?php echo JText::_('JSEARCH_FILTER');?></label>
-						<input type="text" name="filter_search" id="filter_search" placeholder="<?php echo JText::_('JSEARCH_FILTER'); ?>" value="<?php echo $this->escape($this->state->get('filter.search')); ?>" title="<?php echo JText::_('JSEARCH_FILTER'); ?>" />
+		<?php if(!empty($this->sidebar)): ?>
+			<div id="j-sidebar-container" class="span2">
+				<?php echo $this->sidebar; ?>
+			</div>
+			<div id="j-main-container" class="span10">
+		<?php else : ?>
+			<div id="j-main-container">
+		<?php endif;?>
+
+			<div id="filter-bar" class="btn-toolbar">
+				<div class="filter-search btn-group pull-left">
+					<label for="filter_search" class="element-invisible"><?php echo JText::_('JSEARCH_FILTER');?></label>
+					<input type="text" name="filter_search" id="filter_search" placeholder="<?php echo JText::_('JSEARCH_FILTER'); ?>" value="<?php echo $this->escape($this->state->get('filter.search')); ?>" title="<?php echo JText::_('JSEARCH_FILTER'); ?>" />
 				</div>
 
 				<div class="btn-group pull-left">

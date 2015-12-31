@@ -71,7 +71,7 @@ class TjfieldsViewFields extends JViewLegacy
 		$input           = jFactory::getApplication()->input;
 		$client          = $input->get('client', '', 'STRING');
 		$client          = explode('.', $client);
-		$component_title = JText::_('COM_TJFIELDS_TITLE_COMPONENT');
+		$component_title = '';
 
 		if (!empty($client))
 		{

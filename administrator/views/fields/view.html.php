@@ -211,8 +211,8 @@ class TjfieldsViewFields extends JViewLegacy
 		}
 
 		// Filtering by groups
-			$this->groups = $this->get('Group');
-			$this->group_id = $this->state->get('filter.group', 'filter_group');
+		$this->groups = $this->get('Group');
+		$this->group_id = $this->state->get('filter.group', 'filter_group');
 	}
 
 	/**

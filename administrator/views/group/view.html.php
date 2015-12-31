@@ -81,10 +81,12 @@ class TjfieldsViewGroup extends JViewLegacy
 		{
 			$client = explode('.', $client);
 
-			if ($client['0'] == 'com_jticketing')
-			{
-				$component_title = JText::_('COM_JTICKETING_COMPONENT');
-			}
+			$lang = JFactory::getLanguage();
+			$lang->load($client['0'], JPATH_ADMINISTRATOR, 'en-GB', true);
+			$title_text = strtoupper($client['0']) . '_' . strtoupper($client['1']) . '_TITLE';
+
+			// Syntax eg . COM_COMPONENT_VIEW_TITLE
+			$component_title = JText::_($title_text) . ' : ';
 		}
 
 		if ($isNew)

@@ -31,18 +31,32 @@ if (! empty($this->extra_sidebar))
 ?>
 
 <div class="<?php echo TJFIELDS_WRAPPER_CLASS;?> tj-regions">
-	<?php if (!empty($this->sidebar)): ?>
-	<div id="j-sidebar-container" class="span2">
-		<?php echo $this->sidebar; ?>
-	</div>
-	<div id="j-main-container" class="span10">
 
-	<?php else : ?>
-		<div id="j-main-container">
-		<?php endif; ?>
 	<form
 		action="<?php echo JRoute::_('index.php?option=com_tjfields&view=regions&client=' . $this->input->get('client', '', 'STRING')); ?>"
 		method="post" name="adminForm" id="adminForm">
+
+		<?php
+		// JHtmlsidebar for menu.
+		if (JVERSION >= '3.0'):
+			if (!empty( $this->sidebar)) : ?>
+				<div id="j-sidebar-container" class="span2">
+					<?php echo $this->sidebar; ?>
+				</div>
+				<div id="j-main-container" class="span10">
+					<?php
+						// Search tools bar
+						echo JLayoutHelper::render('joomla.searchtools.default', array('view' => $this));
+					?>
+			<?php else : ?>
+				<div id="j-main-container">
+					<?php
+						// Search tools bar
+						echo JLayoutHelper::render('joomla.searchtools.default', array('view' => $this));
+					?>
+			<?php endif;
+		endif;
+		?>
 
 		<?php if (JVERSION < '3.0'): ?>
 			<div id="filter-bar" class="btn-toolbar">

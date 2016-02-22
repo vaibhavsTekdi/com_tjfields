@@ -53,7 +53,12 @@ class TjfieldsHelper
 		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true);
 		$query->select('field_id,value FROM #__tjfields_fields_value');
-		$query->where('content_id=' . $content_id . ' AND client="' . $client . '" ' . $query_user_string);
+
+		$query->join('LEFT', $db->qn('#__tjfields_fields') . ' ON (' . $db->qn('#__tjfields_fields.id') . ' = ' . $db->qn('#__tjfields_fields_value.field_id') . ')');
+
+
+		$query->where('#__tjfields_fields_value.content_id=' . $content_id . ' AND #__tjfields_fields_value.client="' .$client . '" ' . $query_user_string);
+		$query->where('#__tjfields_fields.state=' . $db->quote("1"));
 		$db->setQuery($query);
 		$field_data_value = $db->loadObjectlist();
 

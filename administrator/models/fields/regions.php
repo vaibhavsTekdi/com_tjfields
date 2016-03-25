@@ -26,7 +26,7 @@ class JFormFieldRegions extends JFormFieldList
 	protected $type = 'regions';
 
 	/**
-	 * Fiedd to decide if options are being loaded externally and from xml
+	 * Field to decide if options are being loaded externally and from xml
 	 *
 	 * @var		integer
 	 * @since	2.2

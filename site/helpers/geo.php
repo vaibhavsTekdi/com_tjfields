@@ -289,4 +289,122 @@ class TjGeoHelper
 			return null;
 		}
 	}
+
+	/**
+	 * Returns the countryID from country code (2 digit country code like IN for india )
+	 *
+	 * @param   string  $country_code  2 digit country code like IN for india
+	 *
+	 * @return  object  country object which includes id, country name accourding to curren language && country_jtext, country_jtext;
+	 *
+	 * @since   1.1
+	 */
+	public function getCountryFromTwoDigitCountryCode($country_code)
+	{
+		if (empty($country_code))
+		{
+			return false;
+		}
+
+		$country_code = strtoupper($country_code);
+
+		try
+		{
+			$query = $this->_db->getQuery(true);
+			$query->select('id,country, country_jtext');
+			$query->from('#__tj_country');
+			$query->where("country_code = '" . $country_code . "'");
+			$this->_db->setQuery($query);
+			$country = $this->_db->loadObject();
+		}
+		catch (Exception $e)
+		{
+			echo $e->getMessage();
+
+			return false;
+		}
+
+
+
+		if ($country)
+		{
+			$countryName = "";
+
+			if (!empty($country->country_jtext))
+			{
+				$countryName = $this->getCountryJText($country->country_jtext);
+			}
+			else
+			{
+				$countryName = $country->country;
+			}
+
+			$country->country = $countryName;
+
+			return $country;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	/**
+	 * Returns the Region from region name
+	 *
+	 * @param   integer  $country_id  2 digit country code like IN for india
+	 * @param   string   $regionName  State/region name
+	 *
+	 * @return  object  country object which includes id, country name accourding to curren language && country_jtext, country_jtext;
+	 *
+	 * @since   1.1
+	 */
+	public function getRegionFromRegionName($country_id, $regionName)
+	{
+		if (empty($country_id) || empty($regionName))
+		{
+			return false;
+		}
+
+		$country_id = strtoupper($country_id);
+
+		try
+		{
+			$query = $this->_db->getQuery(true);
+			$query->select('id,region, region_jtext');
+			$query->from('#__tj_region');
+			$query->where("country_id = '" . $country_id . "'");
+			$query->where("LOWER(region) = '" . strtolower($regionName) . "'");
+			$this->_db->setQuery($query);
+			$region = $this->_db->loadObject();
+		}
+		catch (Exception $e)
+		{
+			echo $e->getMessage();
+
+			return false;
+		}
+
+		if ($region)
+		{
+			$regionName = "";
+
+			if (!empty($region->region_jtext))
+			{
+				$regionName = $this->getRegionJText($region->region_jtext);
+			}
+			else
+			{
+				$regionName = $region->region;
+			}
+
+			$region->region = $regionName;
+
+			return $region;
+		}
+		else
+		{
+			return false;
+		}
+	}
 }

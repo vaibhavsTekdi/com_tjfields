@@ -324,8 +324,6 @@ class TjGeoHelper
 			return false;
 		}
 
-
-
 		if ($country)
 		{
 			$countryName = "";

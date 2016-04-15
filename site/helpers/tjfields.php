@@ -44,11 +44,11 @@ class TjfieldsHelper
 		$client            = $data['client'];
 		$query_user_string = '';
 
-		if (isset($data['user_id']))
+		/*if (isset($data['user_id']))
 		{
 			$user_id           = $data['user_id'];
 			$query_user_string = " AND user_id=" . $user_id;
-		}
+		}*/
 
 		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true);
@@ -61,6 +61,7 @@ class TjfieldsHelper
 		$query->where('#__tjfields_fields_value.client="' . $client . '" ' . $query_user_string);
 		$query->where('#__tjfields_fields.state=' . $db->quote("1"));
 		$db->setQuery($query);
+
 		$field_data_value = $db->loadObjectlist();
 
 		// Check if the field type is list or radio (fields which have option)

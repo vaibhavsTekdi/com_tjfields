@@ -239,7 +239,7 @@ class TjfieldsHelper
 	{
 		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true);
-		$query->select('options,default_option,value FROM #__tjfields_options');
+		$query->select('id,options,default_option,value FROM #__tjfields_options');
 		$query->where('field_id=' . $field_id);
 
 		if ($option_value != '')
@@ -376,9 +376,16 @@ class TjfieldsHelper
 	public static function buildFilterModuleQuery()
 	{
 		$jinput  = JFactory::getApplication()->input;
-		$client = $jinput->get("client", "com_jgive.campaign");
-		$category_id = $jinput->get("category_id", 21);
-		$fields_value_str = $jinput->get("tj_fields_value", "19,14,17");
+		$client = $jinput->get("client");
+		$category_id = $jinput->get("category_id");
+		$fields_value_str = $jinput->get("tj_fields_value", '', "RAW");
+
+		if ($fields_value_str)
+		{
+			$fields_value_str = explode(',', $fields_value_str);
+			$fields_value_str = array_filter($fields_value_str, 'trim');
+			$fields_value_str = implode(',', $fields_value_str);
+		}
 
 		//$data['fields_value'] =  array(19,14,17);
 		$db    = JFactory::getDbo();
@@ -393,13 +400,13 @@ class TjfieldsHelper
 		// Selected field value
 		if (!empty($fields_value_str))
 		{
-			$query->select('#__tjfields_fields_value.id');
+			//$query->select('#__tjfields_fields_value.id');
 			$query->where('#__tjfields_fields_value.id IN (' . $fields_value_str . ')' );
 		}
 
 		if (!empty($category_id))
 		{
-			$query->select('#__tjfields_category_mapping.category_id');
+			//$query->select('#__tjfields_category_mapping.category_id');
 			$query->join('INNER', $db->qn('#__tjfields_category_mapping') . 'ON (' .
 			$db->qn('#__tjfields_fields_value.field_id') . ' = ' . $db->qn('#__tjfields_category_mapping.field_id') . ')');
 			$query->where('#__tjfields_category_mapping.category_id = ' . $category_id);

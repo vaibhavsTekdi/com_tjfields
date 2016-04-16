@@ -50,8 +50,8 @@ class JFormFieldGatewayplg extends JFormField
 				'text'        => $text,
 				'description' => $description,
 				'for'         => 'jformgateways',
+				'required'    => (bool) $this->required,
 				'classes'     => explode(' ', $this->labelclass),
-				'required'    => (bool) false,
 				'position'    => $position
 			);
 
@@ -90,7 +90,7 @@ class JFormFieldGatewayplg extends JFormField
 		$client = $ClientDetail[0];
 		$options         = array();
 
-		$options[]       = JHtml::_('select.option', '', JText::_('COM_TJFIELDS_FORM_SELECT_CLIENT_CATEGORY'));
+		// $options[]       = JHtml::_('select.option', '', JText::_('COM_TJFIELDS_FORM_SELECT_CLIENT_CATEGORY'));
 
 		// Fetch only published category. Static public function options($extension, $config = array('filter.published' => array(0,1)))
 		$categories = JHtml::_('category.options', $client, array('filter.published' => array(1)));

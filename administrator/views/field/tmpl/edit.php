@@ -329,6 +329,29 @@ TjfieldsHelper::getLanguageConstant();
 							</span>
 						</div>
 					</div>
+
+					<div class="control-group">
+						<div class="control-label"><?php echo $this->form->getLabel('filterable'); ?></div>
+						<div class="controls">
+							<?php echo $this->form->getInput('filterable'); ?>
+							<div style="clear:both" ></div>
+							<span class="alert alert-info alert-help-inline span9 alert_no_margin">
+								<?php echo JText::_('COM_TJFIELDS_FILTERABLE_NOTE'); ?>
+							</span>
+						</div>
+					</div>
+
+					<div class="control-group">
+						<div class="control-label"><?php echo $this->form->getLabel('category'); ?></div>
+						<div class="controls">
+							<?php echo $this->form->getInput('category'); ?>
+							<div style="clear:both" ></div>
+							<span class="alert alert-info alert-help-inline span9 alert_no_margin">
+								<?php echo JText::_('COM_TJFIELDS_CATEGORY_NOTE'); ?>
+							</span>
+						</div>
+					</div>
+
 					</fieldset>
 				</div>
 

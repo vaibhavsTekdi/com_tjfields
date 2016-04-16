@@ -170,10 +170,12 @@ class TjfieldsModelField extends JModelAdmin
 		//remove extra value which are not needed to save in the fields table
 		$TjfieldsHelper=new TjfieldsHelper();
 		$data=$TjfieldsHelper->getFieldArrayFormatted($data);
+
 		if ($table->save($data) === true)
 		{
 			$id=$table->id;
 		}
+
 		//check if name feild is unique
 		$is_unique= $TjfieldsHelper->checkIfUniqueName($data['name']);
 		//print_r($is_unique); die;
@@ -194,30 +196,27 @@ class TjfieldsModelField extends JModelAdmin
 		// if the field is inserted.
 		if($id)
 		{
-			//print_r($post); die('asd');
 			$options=$post->get('tjfields','','ARRAY');
-			//print_r($options); die('asdasd11111');
+
 			if($data['saveOption']==1)
 			{
-						//Firstly Delete Fields Options That are Removed
+						// Firstly Delete Fields Options That are Removed
 						$field_options = $TjfieldsHelper->getOptions($id);
 
-						foreach($field_options as $fokey=>$fovalue)
+						foreach ($field_options as $fokey=>$fovalue)
 						{
 							if($fovalue->id)
 							{
 								$fields_in_DB[]=$fovalue->id;
 							}
-
 						}
 
-						foreach($options as $key=>$value)
+						foreach ($options as $key=>$value)
 						{
 							if($value['hiddenoptionid'])
 							{
 								$options_filled[]=$value['hiddenoptionid'];
 							}
-
 						}
 
 						if($fields_in_DB)
@@ -235,8 +234,8 @@ class TjfieldsModelField extends JModelAdmin
 				}
 				else
 				{
-					//save option fields.
-					foreach($options as $option)
+					// save option fields.
+					foreach ($options as $option)
 					{
 						if(!isset($option['hiddenoption']))
 						$option['hiddenoption']=0;
@@ -272,9 +271,43 @@ class TjfieldsModelField extends JModelAdmin
 						}
 					}
 				}
-				//return true;
+
+				// Save/update field and category mapping
+				$selectedCategories = !empty($data['category']) ? $data['category'] : array();
+
+				if ($selectedCategories)
+				{
+					// 1 Fetch cat mapping for field from DB
+					$DBcat_maping = $TjfieldsHelper->getFieldCategoryMapping($id);
+					$newlyAddedCats = array_diff($selectedCategories, $DBcat_maping);
+					$deletedCats = array_diff($DBcat_maping, $selectedCategories);
+
+					if (!empty($deletedCats))
+					{
+						$this->deleteFieldCategoriesMapping($id, $deletedCats);
+					}
+
+					if (!empty($newlyAddedCats))
+					{
+						// Add newly added  category mapping
+						foreach ($newlyAddedCats as $cat)
+						{
+							$obj = new stdClass();
+							$obj->field_id = $id;
+							$obj->category_id = $cat;
+
+							if(!$this->_db->insertObject( '#__tjfields_category_mapping', $obj,'id'))
+							{
+								echo $this->_db->stderr();
+
+								return false;
+							}
+						}
+					}
+				}
 			}
-			//create XML for the current client.
+
+			// Create XML for the current client.
 			$TjfieldsHelper->generateXml($data);
 			return $id;
 		}
@@ -288,7 +321,7 @@ class TjfieldsModelField extends JModelAdmin
 	{
 					$obj = new stdClass();
 					$obj->js_function = '';
-					foreach($jsarray as $js)
+					foreach ($jsarray as $js)
 					{
 						if($js['jsoptions']!='' && $js['jsfunctionname']!='')
 						{
@@ -315,7 +348,7 @@ class TjfieldsModelField extends JModelAdmin
 	function delete_option($delete_ids)
 	{
 		$db = JFactory::getDBO();
-		foreach($delete_ids as $key=>$value)
+		foreach ($delete_ids as $key=>$value)
 		{
 			//echo $value;
 			$query='DELETE FROM #__tjfields_options
@@ -327,7 +360,35 @@ class TjfieldsModelField extends JModelAdmin
 					return false;
 				}
 		}
+	}
 
+	function deleteFieldCategoriesMapping($field_id, $cats)
+	{
+		$db = JFactory::getDBO();
+
+		foreach ($cats as $category_id)
+		{
+			try
+			{
+				$query = $db->getQuery(true);
+				$conditions = array(
+					$db->quoteName('field_id') . ' = ' . $field_id,
+					$db->quoteName('category_id') . ' = ' . $category_id
+				);
+
+				$query->delete($db->quoteName('#__tjfields_category_mapping'));
+				$query->where($conditions);
+				$db->setQuery($query);
+
+				$result = $db->execute();
+			}
+			catch (RuntimeException $e)
+			{
+				$this->setError($e->getMessage());
+
+				return 0;
+			}
+		}
 	}
 
 }

@@ -271,6 +271,8 @@ class TjfieldsModelField extends JModelAdmin
 						}
 					}
 				}
+			}
+
 
 				// Save/update field and category mapping
 				$selectedCategories = !empty($data['category']) ? $data['category'] : array();
@@ -305,7 +307,6 @@ class TjfieldsModelField extends JModelAdmin
 						}
 					}
 				}
-			}
 
 			// Create XML for the current client.
 			$TjfieldsHelper->generateXml($data);

@@ -50,12 +50,21 @@ class TjfieldsHelper
 			$query_user_string = " AND user_id=" . $user_id;
 		}
 
+
 		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true);
-		$query->select('field_id,value FROM #__tjfields_fields_value');
+		$query->select('#__tjfields_fields_value.field_id,value FROM #__tjfields_fields_value ');
 
 		$query->join('LEFT', $db->qn('#__tjfields_fields') . ' ON (' .
 		$db->qn('#__tjfields_fields.id') . ' = ' . $db->qn('#__tjfields_fields_value.field_id') . ')');
+
+
+		if (!empty($data['category_id']))
+		{
+			$query->join('LEFT', $db->qn('#__tjfields_category_mapping') . 'ON (' .
+			$db->qn('#__tjfields_category_mapping.field_id') . ' = ' . $db->qn('#__tjfields_fields.id') . ')');
+			$query->where('#__tjfields_category_mapping.category_id = ' . $data['category_id']);
+		}
 
 		$query->where('#__tjfields_fields_value.content_id=' . $content_id);
 		$query->where('#__tjfields_fields_value.client="' . $client . '" ' . $query_user_string);

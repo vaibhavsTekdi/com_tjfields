@@ -50,7 +50,6 @@ class JFormFieldGatewayplg extends JFormField
 				'text'        => $text,
 				'description' => $description,
 				'for'         => 'jformgateways',
-				'required'    => (bool) $this->required,
 				'classes'     => explode(' ', $this->labelclass),
 				'position'    => $position
 			);

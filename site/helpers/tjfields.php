@@ -54,7 +54,6 @@ class TjfieldsHelper
 		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true);
 		$query->select('#__tjfields_fields_value.field_id,value FROM #__tjfields_fields_value ');
-
 		$query->join('LEFT', $db->qn('#__tjfields_fields') . ' ON (' .
 		$db->qn('#__tjfields_fields.id') . ' = ' . $db->qn('#__tjfields_fields_value.field_id') . ')');
 

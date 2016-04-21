@@ -167,8 +167,6 @@ class TjfieldsHelper
 			// Check for duplicate entry
 			$if_edit_id           = $this->checkForAlreadyexitsDetails($data, $field_data->id);
 
-			if (!empty($fvalue))
-			{
 				if (!is_array($fvalue))
 				{
 					$insert_obj->value = $fvalue;
@@ -188,7 +186,6 @@ class TjfieldsHelper
 					$insert_obj->id = '';
 					$db->insertObject('#__tjfields_fields_value', $insert_obj, 'id');
 				}
-			}
 		}
 	}
 

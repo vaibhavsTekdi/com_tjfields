@@ -14,6 +14,8 @@ JFormHelper::loadFieldClass('list');
 
 /**
  * Supports an HTML select list of categories
+ *
+ * @since  1.0
  */
 class JFormFieldRegions extends JFormFieldList
 {
@@ -21,12 +23,13 @@ class JFormFieldRegions extends JFormFieldList
 	 * The form field type.
 	 *
 	 * @var		string
+	 *
 	 * @since	1.6
 	 */
 	protected $type = 'regions';
 
 	/**
-	 * Fiedd to decide if options are being loaded externally and from xml
+	 * Field to decide if options are being loaded externally and from xml
 	 *
 	 * @var		integer
 	 * @since	2.2
@@ -53,14 +56,15 @@ class JFormFieldRegions extends JFormFieldList
 
 		if ($client)
 		{
-			$query->where('r.' . $client .' = 1');
+			$query->where('r.' . $client . ' = 1');
 		}
 
 		// @TODO - dirty thing starts
 		// @TODO - @manoj this might need change before World War - III. ;) LOL
 		require_once JPATH_ADMINISTRATOR . '/components/com_tjfields/models/cities.php';
-		$TjfieldsModelCities = new TjfieldsModelCities();
+		$TjfieldsModelCities = new TjfieldsModelCities;
 		$country = $TjfieldsModelCities->getState('filter.country');
+
 		// @TODO - dirty thing ends
 
 		if ($country)

@@ -170,7 +170,7 @@ class TjGeoHelper
 	/**
 	 * Gives region list according.( field region gives you region name in current language) .
 	 *
-	 * @param   string  $countryId    id of country
+	 * @param   string  $countryId     id of country
 	 * @param   string  $component_nm  name of component
 	 * @param   string  $orderingCol   order by table column eg region
 	 *
@@ -350,7 +350,7 @@ class TjGeoHelper
 	/**
 	 * Returns the Region from region name
 	 *
-	 * @param   integer  $countryId  2 digit country code like IN for india
+	 * @param   integer  $countryId   2 digit country code like IN for india
 	 * @param   string   $regionName  State/region name
 	 *
 	 * @return  object  country object which includes id, country name accourding to curren language && country_jtext, country_jtext;

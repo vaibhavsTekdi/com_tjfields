@@ -495,6 +495,26 @@ class TjfieldsHelper
 	 *
 	 * @return array of option for the particular field
 	 */
+	public function getFieldCategoryMapping($field_id)
+	{
+		$db = JFactory::getDbo();
+		$query	= $db->getQuery(true);
+		$query->select('category_id');
+		$query->from('#__tjfields_category_mapping AS cm');
+		$query->where('field_id=' . $field_id);
+		$db->setQuery($query);
+		$mapping = $db->loadColumn();
+
+		return $mapping;
+	}
+
+	/**
+	 * Get option which are stored in field option table.
+	 *
+	 * @param   INT  $field_id  field id
+	 *
+	 * @return array of option for the particular field
+	 */
 	public function getOptions($field_id)
 	{
 		$db = JFactory::getDbo();

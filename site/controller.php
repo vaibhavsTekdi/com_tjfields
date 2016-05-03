@@ -6,7 +6,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  * @author      TechJoomla <extensions@techjoomla.com> - http://www.techjoomla.com
  */
- 
+
 // No direct access
 defined('_JEXEC') or die;
 

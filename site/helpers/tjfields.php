@@ -347,8 +347,6 @@ class TjfieldsHelper
 		return $coreFields;
 	}
 
-	// end - ankush
-
 	/**
 	 * Get dete format
 	 *
@@ -376,13 +374,11 @@ class TjfieldsHelper
 		}
 	}
 
-	/*
-	 * client = com_quick2cart.products
-	 * category_id =  0
-	 * fields_value[] = 21 (red), 22(green)
+	/**
+	 * Method buildFilterModuleQuery for client = com_quick2cart.products
 	 *
-	 * have to fetch fontent id
-	 * */
+	 * @return object
+	 */
 	public static function buildFilterModuleQuery()
 	{
 		$jinput  = JFactory::getApplication()->input;
@@ -397,7 +393,7 @@ class TjfieldsHelper
 			$fields_value_str = implode(',', $fields_value_str);
 		}
 
-		//$data['fields_value'] =  array(19,14,17);
+		/*$data['fields_value'] =  array(19,14,17);*/
 		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true);
 
@@ -410,50 +406,51 @@ class TjfieldsHelper
 		// Selected field value
 		if (!empty($fields_value_str))
 		{
-			//$query->select('#__tjfields_fields_value.id');
-			$query->where('#__tjfields_fields_value.id IN (' . $fields_value_str . ')' );
+			$query->where('#__tjfields_fields_value.id IN (' . $fields_value_str . ')');
 		}
 
 		if (!empty($category_id))
 		{
-			//$query->select('#__tjfields_category_mapping.category_id');
 			$query->join('INNER', $db->qn('#__tjfields_category_mapping') . 'ON (' .
 			$db->qn('#__tjfields_fields_value.field_id') . ' = ' . $db->qn('#__tjfields_category_mapping.field_id') . ')');
 			$query->where('#__tjfields_category_mapping.category_id = ' . $category_id);
 		}
 
-		$query->where('#__tjfields_fields_value.client="' . $client . '" ' );
+		$query->where('#__tjfields_fields_value.client="' . $client . '" ');
 		$query->where('#__tjfields_fields.state=' . $db->quote("1"));
 		$query->where('#__tjfields_fields.filterable=' . $db->quote("1"));
 
-return $query;
-
+		return $query;
 
 		$clientDetail = explode('.', $client);
 		$component = $clientDetail[0];
 
 		$this->mergeWithCompoentQuery($component, $query);
-
-		//$db->setQuery($query);
-		//$field_data_value = $db->loadObjectlist();
-
-		print"<pre> die in tjfield controller"; print_r($field_data_value); die;
 	}
 
-	function mergeWithCompoentQuery($component, $query)
+	/**
+	 * Method buildFilterModuleQuery for client = com_quick2cart.products
+	 *
+	 * @param   String  $component  Component name
+	 * @param   String  $query      Query
+	 *
+	 * @return object
+	 */
+	public function mergeWithCompoentQuery($component, $query)
 	{
 		// Load Quick2cart helper class for js files.
 		$path                = JPATH_SITE . "/components/com_quick2cart/helper.php";
 		$comquick2cartHelper = self::loadClass($path, 'comquick2cartHelper');
 		comquick2cartHelper::displayQuick2cartData($query);
 
-		//~ // Load Quick2cart helper class for js files.
-		//~ $path                = JPATH_SITE . "/components/com_jgive/helper.php";
-		//~ $JgiveFrontendHelper = self::loadClass($path, 'JgiveFrontendHelper');
-		//~ JgiveFrontendHelper::displayQuick2cartData($query);
+		// Load Quick2cart helper class for js files.
+
+		/*$path                = JPATH_SITE . "/components/com_jgive/helper.php";
+		$JgiveFrontendHelper = self::loadClass($path, 'JgiveFrontendHelper');
+		JgiveFrontendHelper::displayQuick2cartData($query);*/
 	}
 
-		/**
+	/**
 	 * This function to load class.
 	 *
 	 * @param   string  $path       Path of file.
@@ -480,5 +477,4 @@ return $query;
 			// JFactory::getApplication()->enqueueMessage(sprintf('Unable to load class: %s, $className), 'error');
 		}
 	}
-
 }

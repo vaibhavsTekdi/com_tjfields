@@ -68,7 +68,6 @@ class TjfieldsModelFields extends JModelList
 		parent::__construct($config);
 	}
 
-
 	/**
 	 * Method to auto-populate the model state.
 	 *
@@ -154,7 +153,6 @@ class TjfieldsModelFields extends JModelList
 		{
 			$query->where('(a.state IN (0, 1))');
 		}
-
 
 		// Filter by search in title
 		$search = $this->getState('filter.search');

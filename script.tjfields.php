@@ -228,6 +228,27 @@ class com_tjfieldsInstallerScript
 				}
 			}
 		}
+
+		// Create TJ Field related table if user upgrade with latest version.
+		$this->tjFieldRelatedTables();
+
+	}
+
+	function tjFieldRelatedTables()
+	{
+		// Add zone table
+		$db = JFactory::getDBO();
+		$field_array = array();
+		$query="CREATE TABLE IF NOT EXISTS `#__tjfields_category_mapping` (
+			  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+			  `field_id` int(11) NOT NULL,
+			  `category_id` int(11) NOT NULL COMMENT '',
+			  `methodId` int(11) NOT NULL COMMENT 'CATEGORY ID FROM JOOMLA CATEGORY TABLE FOR CLIENTS EG CLIENT=COM_QUICK2CART.PRODUCT',
+			  PRIMARY KEY (`id`)
+			) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1";
+
+		$db->setQuery($query);
+		$db->execute();
 	}
 
 	function checkTableExists($table)

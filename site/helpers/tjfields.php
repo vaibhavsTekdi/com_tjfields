@@ -78,7 +78,6 @@ class TjfieldsHelper
 				elseif ($fieldData->type == 'calendar')
 				{
 					// $format = $this->getDateFormat($fieldData->format);
-
 					if ($fieldData->format == 1)
 					{
 						$fdata->value = JFactory::getDate($fdata->value)->Format('d-m-Y');

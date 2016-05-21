@@ -420,7 +420,8 @@ class TjfieldsHelper
 
 				$explodeForCom = explode(".", $data['client']);
 
-				$filePathFrontend = JPATH_SITE . '/components/' . $explodeForCom[0] . '/models/forms/' . $category['category_id'] . $data['client_type'] . 'form_extra.xml';
+				$filePathFrontend = JPATH_SITE . '/components/' . $explodeForCom[0] . '/models/forms/' .
+				$category['category_id'] . $data['client_type'] . 'form_extra.xml';
 				$content  = '';
 
 				if (!JFile::exists($filePathFrontend))
@@ -430,7 +431,9 @@ class TjfieldsHelper
 
 				// ->asXML();
 				$newXML->asXML($filePathFrontend);
-				$filePathBackend = JPATH_SITE . DS . 'administrator/components/' . $explodeForCom[0] . '/models/forms/' . $category['category_id'] . $data['client_type'] . '_extra.xml';
+				$filePathBackend = JPATH_SITE . DS . 'administrator/components/' .
+				$explodeForCom[0] . '/models/forms/' . $category['category_id'] .
+				$data['client_type'] . '_extra.xml';
 				$content  = '';
 
 				if (!JFile::exists($filePathBackend))

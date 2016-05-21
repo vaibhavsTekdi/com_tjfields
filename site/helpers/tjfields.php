@@ -437,9 +437,8 @@ class TjfieldsHelper
 		$filterableFieldsStr = implode(",", $filterableFields);
 
 		$query->where("#__tjfields_fields.type IN (" . $filterableFieldsStr . ")");
+
 		return $query;
-
-
 
 		$clientDetail = explode('.', $client);
 		$component = $clientDetail[0];

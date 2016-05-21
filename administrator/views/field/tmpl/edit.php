@@ -342,7 +342,7 @@ TjfieldsHelper::getLanguageConstant();
 					</div>
 
 					<div class="control-group">
-						<div class="control-label"><?php echo $this->form->getLabel('category'); ?></div>
+						<div class="control-label"><?php echo $this->form->getLabel('category') . ' * '; ?></div>
 						<div class="controls">
 							<?php
 							echo $this->form->getInput('category'); ?>
@@ -352,13 +352,9 @@ TjfieldsHelper::getLanguageConstant();
 							</span>
 						</div>
 					</div>
-
 					</fieldset>
 				</div>
-
 			</div>
-
-
 			<!--</fieldset>-->
 		</div>
 

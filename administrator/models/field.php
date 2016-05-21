@@ -322,6 +322,7 @@ class TjfieldsModelField extends JModelAdmin
 	{
 					$obj = new stdClass();
 					$obj->js_function = '';
+
 					foreach ($jsarray as $js)
 					{
 						if($js['jsoptions']!='' && $js['jsfunctionname']!='')
@@ -349,6 +350,7 @@ class TjfieldsModelField extends JModelAdmin
 	function delete_option($delete_ids)
 	{
 		$db = JFactory::getDBO();
+
 		foreach ($delete_ids as $key=>$value)
 		{
 			//echo $value;

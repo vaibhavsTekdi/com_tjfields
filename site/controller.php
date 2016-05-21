@@ -1,10 +1,10 @@
 <?php
 /**
- * @version     1.0.0
- * @package     com_tjfields
- * @copyright   Copyright (C) 2014. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
- * @author      TechJoomla <extensions@techjoomla.com> - http://www.techjoomla.com
+ * @version    SVN: <svn_id>
+ * @package    Tjfields
+ * @author     Techjoomla <extensions@techjoomla.com>
+ * @copyright  Copyright (c) 2009-2015 TechJoomla. All rights reserved.
+ * @license    GNU General Public License version 2 or later.
  */
 
 // No direct access
@@ -12,7 +12,13 @@ defined('_JEXEC') or die;
 
 jimport('joomla.application.component.controller');
 
+/**
+ * TJField Controller class
+ *
+ * @package     Tjfields
+ * @subpackage  com_tjfields
+ * @since       2.2
+ */
 class TjfieldsController extends JControllerLegacy
 {
-
 }

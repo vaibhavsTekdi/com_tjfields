@@ -371,6 +371,11 @@ class TjfieldsHelper
 				$f->format = $this->getDateFormat($f->format);
 				$field->addAttribute('format', $f->format);
 			}
+
+			if ($f->type == 'editor')
+			{
+				$field->addAttribute('filter', "JComponentHelper::filterText");
+			}
 		}
 
 		$explodeForCom = explode(".", $data['client']);

@@ -443,7 +443,7 @@ class TjfieldsHelper
 		$clientDetail = explode('.', $client);
 		$component = $clientDetail[0];
 
-		$this->mergeWithCompoentQuery($component, $query);
+		$TjfieldsHelper::mergeWithCompoentQuery($component, $query);
 	}
 
 	/**
@@ -454,7 +454,7 @@ class TjfieldsHelper
 	 *
 	 * @return object
 	 */
-	public function mergeWithCompoentQuery($component, $query)
+	public static function mergeWithCompoentQuery($component, $query)
 	{
 		// Load Quick2cart helper class for js files.
 		$path                = JPATH_SITE . "/components/com_quick2cart/helper.php";

@@ -67,6 +67,8 @@ class JFormFieldGatewayplg extends JFormField
 	 */
 	public function getInput()
 	{
+		$this->value = $this->getSelectedCategories();
+
 		return $this->fetchElement($this->name, $this->value, $this->element, $this->options['control']);
 	}
 
@@ -135,5 +137,31 @@ class JFormFieldGatewayplg extends JFormField
 	public function fetchTooltip($label, $description, &$node, $control_name, $name)
 	{
 		return null;
+	}
+
+	/**
+	 * Fetch category list for field
+	 *
+	 * @return  category array
+	 *
+	 * @since  1.0.0
+	 */
+	public function getSelectedCategories()
+	{
+		$catList = array();
+		$jinput = JFactory::getApplication()->input;
+		$fieldId = $jinput->get("id");
+
+		if (!empty($fieldId))
+		{
+			$db    = JFactory::getDBO();
+			$query = $db->getQuery(true)
+						->select('category_id')
+						->from($db->quoteName('#__tjfields_category_mapping'))
+						->where('field_id=' . $fieldId);
+			$db->setQuery($query);
+
+			return $db->loadColumn();
+		}
 	}
 }

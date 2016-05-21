@@ -188,8 +188,8 @@
 				<option value="0">COM_TJFIELDS_NO</option>
 		</field>
 		<field name="category" type="gatewayplg"  multiple="multiple" label="COM_TJFIELDS_FORM_LBL_FIELD_CATEGORY"
-			class=""
-			description="COM_TJFIELDS_FORM_DESC_FIELD_CATEGORY" />
+			class="category"
+			description="COM_TJFIELDS_FORM_FIELD_CATEGORY_DESC" />
 	</fieldset>
 
 </form>

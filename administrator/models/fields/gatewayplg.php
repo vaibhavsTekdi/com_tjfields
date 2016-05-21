@@ -30,7 +30,7 @@ class JFormFieldGatewayplg extends JFormField
 	 *
 	 * @since   11.1
 	 */
-	public function getLabel()
+	/*public function getLabel()
 	{
 		if ($this->hidden)
 		{
@@ -49,15 +49,15 @@ class JFormFieldGatewayplg extends JFormField
 		$displayData = array(
 				'text'        => $text,
 				'description' => $description,
-				'for'         => 'jformgateways',
+				'for'         => 'jformcategory',
 				'classes'     => explode(' ', $this->labelclass),
-				'required'    => (bool) false,
+				'required'    => false,
 				'position'    => $position
 			);
 
 		return JLayoutHelper::render($this->renderLabelLayout, $displayData);
 	}
-
+*/
 	/**
 	 * Function to genarate html of custom element
 	 *
@@ -115,7 +115,7 @@ class JFormFieldGatewayplg extends JFormField
 		}
 
 		$html = JHtml::_('select.genericlist', $options, $fieldName,
-		'class="inputbox required"  multiple="multiple" size="5"', 'value', 'text', $value, $control_name . $name
+		'class="inputbox "  multiple="multiple" size="5"', 'value', 'text', $value, $control_name . $name
 		);
 
 		return $html;

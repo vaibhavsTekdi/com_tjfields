@@ -157,11 +157,19 @@ $mainframe =JFactory::getApplication();
 
 		var tjFieldCheckedFilters = "";
 
+		// Flag to add comma in filter fields
+		var flag = 0;
+
 		techjoomla.jQuery(".tjfieldCheck:checked").each(function()
 		{
-			tjFieldCheckedFilters += techjoomla.jQuery(this).val();
+			if (Number(flag) != 0)
+			{
+				tjFieldCheckedFilters += ",";
+			}
 
-			tjFieldCheckedFilters += ",";
+			flag++;
+
+			tjFieldCheckedFilters += techjoomla.jQuery(this).val();
 		});
 
 		if (tjFieldCheckedFilters != '')

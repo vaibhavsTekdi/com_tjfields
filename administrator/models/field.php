@@ -436,6 +436,7 @@ class TjfieldsModelField extends JModelAdmin
 	public function deleteFieldCategoriesMapping($field_id, $cats = array())
 	{
 		$db = JFactory::getDBO();
+
 		try
 		{
 			$query      = $db->getQuery(true);

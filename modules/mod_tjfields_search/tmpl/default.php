@@ -30,6 +30,7 @@ $selectedFilters = explode(',', $jinput->input->get('tj_fields_value', '', 'stri
 ?>
 <form method="post" name="tjfieldsSearchForm" id="tjfieldsSearchForm">
 <?php
+
 if (!empty($fieldsCategorys))
 {
 	?>

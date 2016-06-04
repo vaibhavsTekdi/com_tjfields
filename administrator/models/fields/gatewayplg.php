@@ -24,41 +24,6 @@ class JFormFieldGatewayplg extends JFormField
 	protected $name = 'Gatewayplg';
 
 	/**
-	 * Method to get the field label markup.
-	 *
-	 * @return  string  The field label markup.
-	 *
-	 * @since   11.1
-	 */
-	public function getLabel()
-	{
-		if ($this->hidden)
-		{
-			return '';
-		}
-
-		// Get the label text from the XML element, defaulting to the element name.
-		$text = $this->element['label'] ? (string) $this->element['label'] : (string) $this->element['name'];
-		$text = $this->translateLabel ? JText::_($text) : $text;
-
-		// Forcing the Alias field to display the tip below
-		$position = $this->element['name'] == 'alias' ? ' data-placement="bottom" ' : '';
-
-		$description = ($this->translateDescription && !empty($this->description)) ? JText::_($this->description) : $this->description;
-
-		$displayData = array(
-				'text'        => $text,
-				'description' => $description,
-				'for'         => 'jformgateways',
-				'classes'     => explode(' ', $this->labelclass),
-				'required'    => (bool) false,
-				'position'    => $position
-			);
-
-		return JLayoutHelper::render($this->renderLabelLayout, $displayData);
-	}
-
-	/**
 	 * Function to genarate html of custom element
 	 *
 	 * @return  HTML
@@ -115,7 +80,7 @@ class JFormFieldGatewayplg extends JFormField
 		}
 
 		$html = JHtml::_('select.genericlist', $options, $fieldName,
-		'class="inputbox required"  multiple="multiple" size="5"', 'value', 'text', $value, $control_name . $name
+		'class="inputbox "  multiple="multiple" size="5"', 'value', 'text', $value, $control_name . $name
 		);
 
 		return $html;

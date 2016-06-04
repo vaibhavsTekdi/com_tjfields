@@ -341,6 +341,11 @@ class TjfieldsModelField extends JModelAdmin
 						}
 					}
 				}
+				else
+				{
+					// Delete existing mapping
+					$this->deleteFieldCategoriesMapping($id);
+				}
 			}
 
 			// Create XML for the current client.
@@ -428,32 +433,33 @@ class TjfieldsModelField extends JModelAdmin
 	 *
 	 * @since	1.6
 	 */
-	public function deleteFieldCategoriesMapping($field_id, $cats)
+	public function deleteFieldCategoriesMapping($field_id, $cats = array())
 	{
 		$db = JFactory::getDBO();
 
-		foreach ($cats as $category_id)
+		try
 		{
-			try
+			$query      = $db->getQuery(true);
+			$conditions = array(
+				$db->quoteName('field_id') . ' = ' . $field_id
+			);
+
+			if (!empty($cats))
 			{
-				$query      = $db->getQuery(true);
-				$conditions = array(
-					$db->quoteName('field_id') . ' = ' . $field_id,
-					$db->quoteName('category_id') . ' = ' . $category_id
-				);
-
-				$query->delete($db->quoteName('#__tjfields_category_mapping'));
-				$query->where($conditions);
-				$db->setQuery($query);
-
-				$result = $db->execute();
+				$conditions[] = $db->quoteName('category_id') . ' IN (' . implode(",", $cats) . ")";
 			}
-			catch (RuntimeException $e)
-			{
-				$this->setError($e->getMessage());
 
-				return 0;
-			}
+			$query->delete($db->quoteName('#__tjfields_category_mapping'));
+			$query->where($conditions);
+			$db->setQuery($query);
+
+			$result = $db->execute();
+		}
+		catch (RuntimeException $e)
+		{
+			$this->setError($e->getMessage());
+
+			return 0;
 		}
 	}
 }

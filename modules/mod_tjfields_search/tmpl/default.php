@@ -11,6 +11,21 @@
 defined('_JEXEC') or die();
 $jinput = JFactory::getApplication();
 $baseurl = $jinput->input->server->get('REQUEST_URI', '', 'STRING');
+
+// Make base URL starts
+$urlArray = explode ('&',$baseurl);
+
+foreach ($urlArray as $key => $url)
+{
+	if (!empty(strstr($url, 'ModFilterCat=')) || !empty(strstr($url, 'prod_cat=')) || !empty(strstr($url, 'tj_fields_value=')) || !empty(strstr($url, 'client=')))
+	{
+		unset($urlArray[$key]);
+	}
+}
+
+$baseurl = implode('&', $urlArray);
+
+// Make base URL ends
 $selectedFilters = explode(',', $jinput->input->get('tj_fields_value', '', 'string'));
 ?>
 <form method="post" name="tjfieldsSearchForm" id="tjfieldsSearchForm">
@@ -30,44 +45,42 @@ foreach ($fieldsArray as $fieldstype => $fields)
 		?>
 		<div><h4><?php echo $fieldstype;?></h4></div>
 		<?php
-	}
-	?>
-	<?php
-	foreach ($fields as $field)
-	{
-		if (!empty($field->id))
+
+		foreach ($fields as $field)
 		{
-			$fieldOptions = $tjfieldsHelper->getOptions($field->id);
-		}
-		?>
-		<div>
-			<h5>
-			<?php
-			if (!empty($fieldOptions))
+			if (!empty($field->id))
 			{
-				echo $field->label;
+				$fieldOptions = $tjfieldsHelper->getOptions($field->id);
 			}
 			?>
-			</h5>
-		</div>
-		<?php
-		foreach ($fieldOptions as $option)
-		{
-		?>
-			<div class="tjfieldfilters-<?php echo $option->options;?>">
-				<input type="checkbox" class="tjfieldCheck" name="tj_fields_value[]" id="<?php echo $field->name . $option->options;?>" value="<?php echo $option->id;?>" <?php echo in_array($option->id, $selectedFilters)?'checked="checked"':'';?>/>
-				<span>&nbsp;&nbsp;</span>
-				<?php echo $option->options;?>
+			<div>
+				<h5>
+				<?php
+				if (!empty($fieldOptions))
+				{
+					echo $field->label;
+				}
+				?>
+				</h5>
 			</div>
 			<?php
+			foreach ($fieldOptions as $option)
+			{
+			?>
+				<div class="tjfieldfilters-<?php echo $option->options;?>">
+					<input type="checkbox" class="tjfieldCheck" name="tj_fields_value[]" id="<?php echo $field->name . $option->options;?>" value="<?php echo $option->id;?>" <?php echo in_array($option->id, $selectedFilters)?'checked="checked"':'';?>/>
+					<span>&nbsp;&nbsp;</span>
+					<?php echo $option->options;?>
+				</div>
+				<?php
+			}
 		}
 	}
 }
 
 $jinput = JFactory::getApplication();
 $mainframe =JFactory::getApplication();
-$baseurl = $jinput->input->server->get('REQUEST_URI', '', 'STRING');
-//$actionLink = JRoute::_('index.php?option=com_quick2cart&view=category&layout=default');
+
 ?>
 	<div class="center">
 		<a class="btn btn-small btn-info" onclick='tjfieldsapplyfilters()'><?php echo JText::_('APPLY');?></a>
@@ -81,8 +94,8 @@ $baseurl = $jinput->input->server->get('REQUEST_URI', '', 'STRING');
 
 	function tjfieldsapplyfilters()
 	{
-		//~ var redirectlink = '<?php echo $baseurl;?>';
-		var redirectlink = '<?php echo strtok($baseurl, '?'); ?>';
+		var redirectlink = '<?php echo $baseurl;?>';
+
 		var client = "com_quick2cart.products";
 		var optionStr = "";
 
@@ -97,10 +110,12 @@ $baseurl = $jinput->input->server->get('REQUEST_URI', '', 'STRING');
 				optionStr += '&client='+client;
 			}
 
-			//redirectlink = redirectlink+optionStr;
+			redirectlink += optionStr;
 		}
 
-		var urlValueName = "<?php echo $url_cat_param_name; ?>";
+		optionStr = "";
+
+		var urlValueName = "<?php echo $url_cat_param_name;?>";
 
 		if (urlValueName != 'undefined')
 		{
@@ -113,8 +128,10 @@ $baseurl = $jinput->input->server->get('REQUEST_URI', '', 'STRING');
 				optionStr += "&ModFilterCat="+urlValueName;
 			}
 
-			//redirectlink = redirectlink+optionStr;
+			redirectlink += optionStr;
 		}
+
+		optionStr = "";
 
 		// Variable to get current filter values
 		var category = techjoomla.jQuery('#category_id').val();
@@ -133,23 +150,34 @@ $baseurl = $jinput->input->server->get('REQUEST_URI', '', 'STRING');
 				}
 			}
 
-			redirectlink = redirectlink+optionStr;
+			redirectlink += optionStr;
 		}
 
-		optionStr += '&tj_fields_value=';
+		optionStr = "";
 
-		var i = 1;
+		var tjFieldCheckedFilters = "";
+
 		techjoomla.jQuery(".tjfieldCheck:checked").each(function()
 		{
-			if (i == 1)
-			{
-				optionStr += techjoomla.jQuery(this).val();
-			}
-			i++;
-			optionStr += ',' + techjoomla.jQuery(this).val();
+			tjFieldCheckedFilters += techjoomla.jQuery(this).val();
+
+			tjFieldCheckedFilters += ",";
 		});
 
-		console.log(redirectlink);
-		window.location = redirectlink+optionStr;
+		if (tjFieldCheckedFilters != '')
+		{
+			if (redirectlink.indexOf('?') === -1)
+			{
+				optionStr += "?tj_fields_value="+tjFieldCheckedFilters;
+			}
+			else
+			{
+				optionStr += "&tj_fields_value="+tjFieldCheckedFilters;
+			}
+
+			redirectlink += optionStr;
+		}
+
+		window.location = redirectlink;
 	}
 </script>

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="3.0" type="module" client ="site" method="upgrade">
-	<name>tjfields - Search</name>
+	<name>mod_tjfields_easrch_name</name>
 	<author>TechJoomla</author>
 	<authorEmail>extensions@techjoomla.com</authorEmail>
 	<authorUrl>www.techjoomla.com</authorUrl>
-	<copyright>Copyright(C)2012-15 TechJoomla</copyright>
+	<copyright>Copyright(C)2012-16 TechJoomla</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-	<creationDate>30 Dec 2015</creationDate>
+	<creationDate>3 June 2016</creationDate>
 	<version>2.5.5</version>
-	<description>Module to search</description>
+	<description>MOD_TJFIELDS_SEARCH_XML_DESCRIPTION</description>
 	<files>
 		<filename module="mod_tjfields_search">mod_tjfields_search.php</filename>
 		<filename>index.html</filename>

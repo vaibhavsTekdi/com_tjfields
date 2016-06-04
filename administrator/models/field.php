@@ -341,11 +341,6 @@ class TjfieldsModelField extends JModelAdmin
 						}
 					}
 				}
-				else
-				{
-					// Delete existing mapping
-					// $this->deleteFieldCategoriesMapping($id);
-				}
 			}
 
 			// Create XML for the current client.

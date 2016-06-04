@@ -346,6 +346,7 @@ class TjfieldsModelField extends JModelAdmin
 					// Delete existing mapping
 					$this->deleteFieldCategoriesMapping($id);
 				}
+			}
 
 			// Create XML for the current client.
 			$TjfieldsHelper->generateXml($data);

@@ -33,35 +33,30 @@ $selectedFilters = explode(',', $jinput->input->get('tj_fields_value', '', 'stri
 
 if (!empty($fieldsCategorys))
 {
-	echo JHtml::_('select.genericlist', $fieldsCategorys, 'category_id', 'class=""  size="1" title="' . JText::_('MOD_TJFIELDS_SEARCH_SELECT_CATEGORY') . '"', 'id', 'title', $selectedCategory, 'category_id');
+	?>
+	<div><h4><?php echo JText::_('MOD_TJFIELDS_SEARCH_SELECT_CATEGORY');?></h4></div>
+	<?php
+	echo JHtml::_('select.genericlist', $fieldsCategorys, 'category_id', 'class=""  size="1" onchange="submitCategory()" title="' . JText::_('MOD_TJFIELDS_SEARCH_SELECT_CATEGORY') . '"', 'id', 'title', $selectedCategory, 'category_id');
 }
 
 foreach ($fieldsArray as $fieldstype => $fields)
 {
 	if(!empty($fields))
 	{
-		?>
-		<div><h4><?php echo $fieldstype;?></h4></div>
-		<?php
-
 		foreach ($fields as $field)
 		{
 			if (!empty($field->id))
 			{
 				$fieldOptions = $tjfieldsHelper->getOptions($field->id);
 			}
+
+			if (!empty($fieldOptions))
+			{
 			?>
-			<div>
-				<h5>
-				<?php
-				if (!empty($fieldOptions))
-				{
-					echo $field->label;
-				}
-				?>
-				</h5>
-			</div>
+				<div><h5><?php echo $field->label;?></h5></div>
 			<?php
+			}
+
 			foreach ($fieldOptions as $option)
 			{
 			?>
@@ -74,6 +69,9 @@ foreach ($fieldsArray as $fieldstype => $fields)
 			}
 		}
 	}
+	?>
+	<br><br>
+	<?php
 }
 
 $jinput = JFactory::getApplication();
@@ -179,6 +177,70 @@ $mainframe =JFactory::getApplication();
 			else
 			{
 				optionStr += "&tj_fields_value="+tjFieldCheckedFilters;
+			}
+
+			redirectlink += optionStr;
+		}
+
+		window.location = redirectlink;
+	}
+
+	function submitCategory()
+	{
+		var redirectlink = '<?php echo $baseurl;?>';
+
+		var client = "com_quick2cart.products";
+		var optionStr = "";
+
+		if (typeof(client) != 'undefined')
+		{
+			if (redirectlink.indexOf('?') === -1)
+			{
+				optionStr += '?client='+client;
+			}
+			else
+			{
+				optionStr += '&client='+client;
+			}
+
+			redirectlink += optionStr;
+		}
+
+		optionStr = "";
+
+		var urlValueName = "<?php echo $url_cat_param_name;?>";
+
+		if (urlValueName != 'undefined')
+		{
+			if (redirectlink.indexOf('?') === -1)
+			{
+				optionStr += "?ModFilterCat="+urlValueName;
+			}
+			else
+			{
+				optionStr += "&ModFilterCat="+urlValueName;
+			}
+
+			redirectlink += optionStr;
+		}
+
+		optionStr = "";
+
+		// Variable to get current filter values
+		var category = techjoomla.jQuery('#category_id').val();
+
+		if (typeof(category) != 'undefined')
+		{
+			if (urlValueName != 'undefined')
+			{
+				if (redirectlink.indexOf('?') === -1)
+				{
+					optionStr += "?"+urlValueName+"="+category;
+				}
+				else
+				{
+					optionStr += "&"+urlValueName+"="+category;
+				}
 			}
 
 			redirectlink += optionStr;

@@ -43,28 +43,20 @@ foreach ($fieldsArray as $fieldstype => $fields)
 {
 	if(!empty($fields))
 	{
-		?>
-		<div><h4><?php echo $fieldstype;?></h4></div>
-		<?php
-
 		foreach ($fields as $field)
 		{
 			if (!empty($field->id))
 			{
 				$fieldOptions = $tjfieldsHelper->getOptions($field->id);
 			}
+
+			if (!empty($fieldOptions))
+			{
 			?>
-			<div>
-				<h5>
-				<?php
-				if (!empty($fieldOptions))
-				{
-					echo $field->label;
-				}
-				?>
-				</h5>
-			</div>
+				<div><h5><?php echo $field->label;?></h5></div>
 			<?php
+			}
+
 			foreach ($fieldOptions as $option)
 			{
 			?>
@@ -77,6 +69,9 @@ foreach ($fieldsArray as $fieldstype => $fields)
 			}
 		}
 	}
+	?>
+	<br><br>
+	<?php
 }
 
 $jinput = JFactory::getApplication();

@@ -42,7 +42,7 @@ if (JFile::exists(JPATH_SITE . '/components/com_tjfields/tjfields.php'))
 	$fieldsCategorys = array();
 	$defaultCategory = new stdclass;
 	$defaultCategory->id = '';
-	$defaultCategory->title = 'Select Category';
+	$defaultCategory->title = JText::_("MOD_TJFIELDS_SEARCH_SELECT_CATEGORY");
 	$fieldsCategorys[] = $defaultCategory;
 	$categoryList = $tjfieldsHelper->getCategorys($category_type);
 

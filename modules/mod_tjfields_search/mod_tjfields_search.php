@@ -39,7 +39,20 @@ if (JFile::exists(JPATH_SITE . '/components/com_tjfields/tjfields.php'))
 
 	$fieldsArray = array();
 
-	$fieldsCategorys = $tjfieldsHelper->getCategorys($category_type);
+	$fieldsCategorys = array();
+	$defaultCategory = new stdclass;
+	$defaultCategory->id = '';
+	$defaultCategory->title = JText::_("MOD_TJFIELDS_SEARCH_SELECT_CATEGORY");
+	$fieldsCategorys[] = $defaultCategory;
+	$categoryList = $tjfieldsHelper->getCategorys($category_type);
+
+	if (!empty($categoryList))
+	{
+		foreach ($categoryList as $category)
+		{
+			$fieldsCategorys[] = $category;
+		}
+	}
 
 	// Universal field- for client - those field who doesn't mapped agaist category
 	$fieldsArray['universal'] = $tjfieldsHelper->getUniversalFields($client_type);

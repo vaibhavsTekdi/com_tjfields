@@ -30,12 +30,10 @@ $selectedFilters = explode(',', $jinput->input->get('tj_fields_value', '', 'stri
 ?>
 <form method="post" name="tjfieldsSearchForm" id="tjfieldsSearchForm">
 <?php
+
 if (!empty($fieldsCategorys))
 {
-	?>
-	<div><h4><?php echo "categorys";?></h4></div>
-	<?php
-		echo JHtml::_('select.genericlist', $fieldsCategorys, 'category_id', 'class=""  size="1" title="' . JText::_('APP_Q2CMYPRODUCTS_SELECT_STORE_DESC') . '"', 'id', 'title', $selectedCategory, 'category_id');
+	echo JHtml::_('select.genericlist', $fieldsCategorys, 'category_id', 'class=""  size="1" title="' . JText::_('MOD_TJFIELDS_SEARCH_SELECT_CATEGORY') . '"', 'id', 'title', $selectedCategory, 'category_id');
 }
 
 foreach ($fieldsArray as $fieldstype => $fields)

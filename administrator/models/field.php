@@ -192,7 +192,7 @@ class TjfieldsModelField extends JModelAdmin
 		$data['client_type'] = $post->get('client_type', '', 'STRING');
 
 		// Use later to store later.
-		$data['saveOption']  = 0;
+		// $data['saveOption']  = 0;
 
 		// Remove extra value which are not needed to save in the fields table
 		$TjfieldsHelper      = new TjfieldsHelper;
@@ -344,7 +344,7 @@ class TjfieldsModelField extends JModelAdmin
 				else
 				{
 					// Delete existing mapping
-					$this->deleteFieldCategoriesMapping($id);
+					// $this->deleteFieldCategoriesMapping($id);
 				}
 			}
 

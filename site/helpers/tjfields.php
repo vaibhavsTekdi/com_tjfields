@@ -196,6 +196,8 @@ class TjfieldsHelper
 				}
 			}
 		}
+
+		return true;
 	}
 
 	/**

@@ -282,5 +282,4 @@ class TjfieldsModelFields extends JModelList
 			}
 		}
 	}
-
 }

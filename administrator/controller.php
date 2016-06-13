@@ -21,7 +21,7 @@ class TjfieldsController extends JControllerLegacy
 	 * Method to display a view.
 	 *
 	 * @param   Boolean  $cachable   If true, the view output will be cached
-	 * @param   Array    $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
+	 * @param   Array    $urlparams  An array of safe url parameters and their variable types, for valid values see
 	 *
 	 * @return	JController		This object to support chaining.
 	 *

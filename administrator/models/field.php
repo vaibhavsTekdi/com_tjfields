@@ -191,7 +191,7 @@ class TjfieldsModelField extends JModelAdmin
 		$data['client_type'] = $post->get('client_type', '', 'STRING');
 
 		// Use later to store later.
-		$data['saveOption']  = 0;
+		$data['saveOption'] = 0;
 
 		// Remove extra value which are not needed to save in the fields table
 		$TjfieldsHelper      = new TjfieldsHelper;
@@ -307,41 +307,6 @@ class TjfieldsModelField extends JModelAdmin
 					}
 				}
 			}
-
-			// Save/update field and category mapping
-			$selectedCategories = !empty($data['category']) ? $data['category'] : array();
-
-			if ($selectedCategories)
-			{
-				// 1 Fetch cat mapping for field from DB
-				$DBcat_maping   = $TjfieldsHelper->getFieldCategoryMapping($id);
-				$newlyAddedCats = array_diff($selectedCategories, $DBcat_maping);
-				$deletedCats    = array_diff($DBcat_maping, $selectedCategories);
-
-				if (!empty($deletedCats))
-				{
-					$this->deleteFieldCategoriesMapping($id, $deletedCats);
-				}
-
-				if (!empty($newlyAddedCats))
-				{
-					// Add newly added  category mapping
-					foreach ($newlyAddedCats as $cat)
-					{
-						$obj              = new stdClass;
-						$obj->field_id    = $id;
-						$obj->category_id = $cat;
-
-						if (!$this->_db->insertObject('#__tjfields_category_mapping', $obj, 'id'))
-						{
-							echo $this->_db->stderr();
-
-							return false;
-						}
-					}
-				}
-			}
-
 			// Create XML for the current client.
 			$TjfieldsHelper->generateXml($data);
 
@@ -413,45 +378,6 @@ class TjfieldsModelField extends JModelAdmin
 				echo $db->stderr();
 
 				return false;
-			}
-		}
-	}
-
-	/**
-	 * Method To Delete Field Category Mapping
-	 *
-	 * @param   Integer  $field_id  Field Id
-	 * @param   String   $cats      Category
-	 *
-	 * @return  Boolean
-	 *
-	 * @since  1.6
-	 */
-	public function deleteFieldCategoriesMapping($field_id, $cats)
-	{
-		$db = JFactory::getDBO();
-
-		foreach ($cats as $category_id)
-		{
-			try
-			{
-				$query      = $db->getQuery(true);
-				$conditions = array(
-					$db->quoteName('field_id') . ' = ' . $field_id,
-					$db->quoteName('category_id') . ' = ' . $category_id
-				);
-
-				$query->delete($db->quoteName('#__tjfields_category_mapping'));
-				$query->where($conditions);
-				$db->setQuery($query);
-
-				$result = $db->execute();
-			}
-			catch (RuntimeException $e)
-			{
-				$this->setError($e->getMessage());
-
-				return 0;
 			}
 		}
 	}

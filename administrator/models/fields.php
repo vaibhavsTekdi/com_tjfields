@@ -29,39 +29,22 @@ class TjfieldsModelFields extends JModelList
 		if (empty($config['filter_fields']))
 		{
 			$config['filter_fields'] = array(
-				'id',
-				'a.id',
-				'label',
-				'a.label',
-				'name',
-				'a.name',
-				'type',
-				'a.type',
-				'state',
-				'a.state',
-				'required',
-				'a.required',
-				'placeholder',
-				'a.placeholder',
-				'created_by',
-				'a.created_by',
-				'min',
-				'a.min',
-				'max',
-				'a.max',
-				'description',
-				'a.description',
-				'js_function',
-				'a.js_function',
-				'validation_class',
-				'a.validation_class',
-				'ordering',
-				'a.ordering',
-				'client',
-				'a.client',
-				'group_id',
-				'a.group_id'
-
+				'id', 'a.id',
+				'label', 'a.label',
+				'name', 'a.name',
+				'type', 'a.type',
+				'state', 'a.state',
+				'required', 'a.required',
+				'placeholder', 'a.placeholder',
+				'created_by', 'a.created_by',
+				'min', 'a.min',
+				'max', 'a.max',
+				'description', 'a.description',
+				'js_function', 'a.js_function',
+				'validation_class', 'a.validation_class',
+				'ordering', 'a.ordering',
+				'client', 'a.client',
+				'group_id', 'a.group_id',
 			);
 		}
 
@@ -214,7 +197,7 @@ class TjfieldsModelFields extends JModelList
 	 *
 	 * @since  1.6
 	 */
-	public function  setItemState($items, $state)
+	public function setItemState($items, $state)
 	{
 		$db = JFactory::getDBO();
 
@@ -297,30 +280,7 @@ class TjfieldsModelFields extends JModelList
 
 				return false;
 			}
-
-			// Delete the fields value
-			$query = "DELETE FROM #__tjfields_fields_value where field_id =" . $id[0];
-			$db->setQuery($query);
-
-			if (!$db->execute())
-			{
-				$this->setError($this->_db->getErrorMsg());
-
-				return false;
-			}
-
-			// Delete the fields option value
-			$query = "DELETE FROM #__tjfields_options where field_id =" . $id[0];
-			$db->setQuery($query);
-
-			if (!$db->execute())
-			{
-				$this->setError($this->_db->getErrorMsg());
-
-				return false;
-			}
 		}
-
-		return true;
 	}
+
 }

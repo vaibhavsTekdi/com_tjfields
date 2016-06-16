@@ -186,6 +186,8 @@ class TjfieldsHelper
 					$db->insertObject('#__tjfields_fields_value', $insert_obj, 'id');
 				}
 		}
+
+		return true;
 	}
 
 	/**

@@ -331,10 +331,7 @@ TjfieldsHelper::getLanguageConstant();
 					</div>
 					</fieldset>
 				</div>
-
 			</div>
-
-
 			<!--</fieldset>-->
 		</div>
 

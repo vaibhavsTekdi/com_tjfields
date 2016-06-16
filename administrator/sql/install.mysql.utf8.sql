@@ -19,7 +19,6 @@ CREATE TABLE IF NOT EXISTS `#__tjfields_fields` (
 	`validation_class` text NOT NULL,
 	`format` varchar(255) NOT NULL,
 	`ordering` int(11) NOT NULL,
-	`filterable` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0 - For not filterable field. 1 for filterable field',
 	`client` varchar(255) NOT NULL,
 	`group_id` int(11) NOT NULL,
 	PRIMARY KEY (`id`)
@@ -60,11 +59,4 @@ CREATE TABLE IF NOT EXISTS `#__tjfields_client_type` (
 	`client` varchar(255) NOT NULL,
 	`client_type` varchar(255) NOT NULL,
 	PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
-CREATE TABLE IF NOT EXISTS `#__tjfields_category_mapping` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `field_id` INT(11) NOT NULL,
-  `category_id` INT(11) NOT NULL COMMENT 'CATEGORY ID FROM JOOMLA CATEGORY TABLE FOR CLIENTS EG CLIENT=COM_QUICK2CART.PRODUCT',
-  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;

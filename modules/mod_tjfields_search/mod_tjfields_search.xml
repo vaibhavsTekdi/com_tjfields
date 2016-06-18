@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="3.0" type="module" client ="site" method="upgrade">
-	<name>mod_tjfields_easrch_name</name>
+	<name>mod_tjfields_search_name</name>
 	<author>TechJoomla</author>
 	<authorEmail>extensions@techjoomla.com</authorEmail>
 	<authorUrl>www.techjoomla.com</authorUrl>

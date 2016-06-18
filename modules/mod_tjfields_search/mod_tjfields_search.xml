@@ -22,7 +22,11 @@
 	<config name="params">
 		<fields name="params">
 			<fieldset name="basic">
-				<field name="client_type" type="text" default="" label="MOD_TJFIELDS_SEARCH_CLIENT_TYPE" description="MOD_TJFIELDS_SEARCH_CLIENT_TYPE_DESC"/>
+				<field name="client_type" type="list" default="" label="MOD_TJFIELDS_SEARCH_CLIENT_TYPE" description="MOD_TJFIELDS_SEARCH_CLIENT_TYPE_DESC">
+					<option value="com_quick2cart.products">MOD_TJFIELDS_CLIENT_QUICK2CART</option>
+					<option value="com_tjlms.course">MOD_TJFIELDS_CLIENT_SHIKA_COURSES</option>
+					<option value="com_tjlms.lesson">MOD_TJFIELDS_CLIENT_QUICK2CART</option>
+				</field>
 
 				<field name="category_type" type="text" default="" label="MOD_TJFIELDS_SEARCH_CATEGORY_TYPE" description="MOD_TJFIELDS_SEARCH_CATEGORY_TYPE_DESC"/>
 

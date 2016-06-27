@@ -60,6 +60,7 @@ class TjfieldsHelper
 		$query->where('#__tjfields_fields_value.content_id=' . $content_id);
 		$query->where('#__tjfields_fields_value.client="' . $client . '" ' . $query_user_string);
 		$query->where('#__tjfields_fields.state=' . $db->quote("1"));
+		$query->where('#__tjfields_fields.display_field=' . $db->quote("1"));
 		$db->setQuery($query);
 
 		$field_data_value = $db->loadObjectlist();

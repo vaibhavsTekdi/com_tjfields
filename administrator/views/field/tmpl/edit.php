@@ -293,8 +293,8 @@ TjfieldsHelper::getLanguageConstant();
 							<div class="controls"><?php echo $this->form->getInput('readonly'); ?></div>
 						</div>
 						<div class="control-group">
-							<div class="control-label"><?php echo $this->form->getLabel('field_display_on_frontend'); ?></div>
-							<div class="controls"><?php echo $this->form->getInput('field_display_on_frontend'); ?></div>
+							<div class="control-label"><?php echo $this->form->getLabel('display_field'); ?></div>
+							<div class="controls"><?php echo $this->form->getInput('display_field'); ?></div>
 						</div>
 						<div class="control-group" id="div_placeholder">
 							<div class="control-label"><?php echo $this->form->getLabel('placeholder'); ?></div>
@@ -330,7 +330,7 @@ TjfieldsHelper::getLanguageConstant();
 			<!--</fieldset>-->
 		</div>
 
-		<input type="hidden" name="client_type" value="<?php	echo $client_type;   ?>" />
+		<input type="hidden" name="client_type" value="<?php echo $client_type;?>" />
 		<input type="hidden" name="task" value="" />
 		<?php echo JHtml::_('form.token'); ?>
 

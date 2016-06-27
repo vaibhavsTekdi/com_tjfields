@@ -234,9 +234,6 @@ class com_tjfieldsInstallerScript
 		$check=$db->loadResult();
 		if(!$check)
 		{
-			`readonly` int(11) NOT NULL DEFAULT '0',
-
-
 			$query="ALTER TABLE  `#__tjfields_fields` ADD  `display_field` INT(11) NOT NULL DEFAULT '1' AFTER  `readonly`";
 			$db->setQuery($query);
 

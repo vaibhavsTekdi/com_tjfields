@@ -79,6 +79,16 @@
 			<option value="0">COM_TJFIELDS_NO</option>
 		</field>
 
+		<field name="field_display_on_frontend" type="radio"
+		label="COM_TJFIELDS_FORM_LBL_FIELD_DISPLAY_ON_FRONTEND"
+		description="COM_TJFIELDS_FORM_DESC_FIELD_DISPLAY_ON_FRONTEND"
+		default="1"
+		required="true"
+		class="btn-group">
+			<option value="1">COM_TJFIELDS_YES</option>
+			<option value="0">COM_TJFIELDS_NO</option>
+		</field>
+
 	   <field name="placeholder" type="text"
 			label="COM_TJFIELDS_FORM_LBL_FIELD_PLACEHOLDER"
 			description="COM_TJFIELDS_FORM_DESC_FIELD_PLACEHOLDER" />

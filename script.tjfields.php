@@ -228,6 +228,23 @@ class com_tjfieldsInstallerScript
 				}
 			}
 		}
+
+		$query="SHOW COLUMNS FROM #__tjfields_fields WHERE `Field` = 'display_field' ";
+		$db->setQuery($query);
+		$check=$db->loadResult();
+		if(!$check)
+		{
+			`readonly` int(11) NOT NULL DEFAULT '0',
+
+
+			$query="ALTER TABLE  `#__tjfields_fields` ADD  `display_field` int(11) NOT NULL DEFAULT '1' AFTER  `readonly`";
+			$db->setQuery($query);
+
+			if ( !$db->execute() ) {
+				JError::raiseError( 500, $db->stderr() );
+			}
+		}
+
 	}
 
 	function checkTableExists($table)

@@ -209,65 +209,61 @@ TjfieldsHelper::getLanguageConstant();
 
 			<div class="container1">
 				<div class="span6 ">
-				<fieldset class="adminform form-horizontal">
-				<legend>
-					<?php
-						echo JText::_('COM_TJFIELDS_BASIC_FIELDS_VALUES');
-					?>
-				</legend>
-
-							<div class="control-group">
-								<div class="control-label"><?php echo $this->form->getLabel('id'); ?></div>
-								<div class="controls"><?php echo $this->form->getInput('id'); ?></div>
-							</div>
-							<div class="control-group">
-								<div class="control-label"><?php echo $this->form->getLabel('label'); ?></div>
-								<div class="controls"><?php echo $this->form->getInput('label'); ?>
-									<span class="alert alert-info alert-help-inline span9 alert_no_margin">
-										<?php echo JText::_('COM_TJFIELDS_LABEL_LANG_CONSTRAINT_ONE'); ?>
-										<span class="alert-text-change">
-											<?php echo JText::sprintf('COM_TJFIELDS_LABEL_LANG_CONSTRAINT_TWO', $client); ?>
-										</span>
+					<fieldset class="adminform form-horizontal">
+						<legend>
+							<?php echo JText::_('COM_TJFIELDS_BASIC_FIELDS_VALUES');?>
+						</legend>
+						<div class="control-group">
+							<div class="control-label"><?php echo $this->form->getLabel('id'); ?></div>
+							<div class="controls"><?php echo $this->form->getInput('id'); ?></div>
+						</div>
+						<div class="control-group">
+							<div class="control-label"><?php echo $this->form->getLabel('label'); ?></div>
+							<div class="controls"><?php echo $this->form->getInput('label'); ?>
+								<span class="alert alert-info alert-help-inline span9 alert_no_margin">
+									<?php echo JText::_('COM_TJFIELDS_LABEL_LANG_CONSTRAINT_ONE'); ?>
+									<span class="alert-text-change">
+										<?php echo JText::sprintf('COM_TJFIELDS_LABEL_LANG_CONSTRAINT_TWO', $client); ?>
 									</span>
-								</div>
-
+								</span>
 							</div>
-							<div class="control-group">
-								<div class="control-label"><?php echo $this->form->getLabel('name'); ?></div>
-								<div class="controls"><?php echo $this->form->getInput('name'); ?></div>
-							</div>
-							<div class="control-group">
-								<div class="control-label"><?php echo $this->form->getLabel('type'); ?></div>
-								<div class="controls"><?php echo $this->form->getInput('type'); ?></div>
-							</div>
-							<div class="control-group displaynone" id="option_div" >
-								<div class="control-label"><?php echo $this->form->getLabel('fieldoption'); ?></div>
-								<div class="controls"><?php echo $this->form->getInput('fieldoption'); ?></div>
-							</div>
-							<div class="control-group displaynone" id="date_format" >
-								<div class="control-label"><?php echo $this->form->getLabel('format'); ?></div>
-								<div class="controls"><?php echo $this->form->getInput('format'); ?></div>
-							</div>
-							<div class="control-group displaynone" id="option_min_char">
-								<div class="control-label"><?php echo $this->form->getLabel('min'); ?></div>
-								<div class="controls"><?php echo $this->form->getInput('min'); ?></div>
-							</div>
-							<div class="control-group displaynone" id="option_max_char">
-								<div class="control-label"><?php echo $this->form->getLabel('max'); ?></div>
-								<div class="controls"><?php echo $this->form->getInput('max'); ?></div>
-							</div>
-							<div class="control-group displaynone" id="textarea_rows">
-								<div class="control-label"><?php echo $this->form->getLabel('rows'); ?></div>
-								<div class="controls textarea_inputs"><?php echo $this->form->getInput('rows'); ?></div>
-							</div>
-							<div class="control-group displaynone" id="textarea_cols">
-								<div class="control-label"><?php echo $this->form->getLabel('cols'); ?></div>
-								<div class="controls textarea_inputs"><?php echo $this->form->getInput('cols'); ?></div>
-							</div>
-							<div class="control-group displaynone" id="default_value_text">
-								<div class="control-label"><?php echo $this->form->getLabel('default_value'); ?></div>
-								<div class="controls"><?php echo $this->form->getInput('default_value'); ?></div>
-							</div>
+						</div>
+						<div class="control-group">
+							<div class="control-label"><?php echo $this->form->getLabel('name'); ?></div>
+							<div class="controls"><?php echo $this->form->getInput('name'); ?></div>
+						</div>
+						<div class="control-group">
+							<div class="control-label"><?php echo $this->form->getLabel('type'); ?></div>
+							<div class="controls"><?php echo $this->form->getInput('type'); ?></div>
+						</div>
+						<div class="control-group displaynone" id="option_div" >
+							<div class="control-label"><?php echo $this->form->getLabel('fieldoption'); ?></div>
+							<div class="controls"><?php echo $this->form->getInput('fieldoption'); ?></div>
+						</div>
+						<div class="control-group displaynone" id="date_format" >
+							<div class="control-label"><?php echo $this->form->getLabel('format'); ?></div>
+							<div class="controls"><?php echo $this->form->getInput('format'); ?></div>
+						</div>
+						<div class="control-group displaynone" id="option_min_char">
+							<div class="control-label"><?php echo $this->form->getLabel('min'); ?></div>
+							<div class="controls"><?php echo $this->form->getInput('min'); ?></div>
+						</div>
+						<div class="control-group displaynone" id="option_max_char">
+							<div class="control-label"><?php echo $this->form->getLabel('max'); ?></div>
+							<div class="controls"><?php echo $this->form->getInput('max'); ?></div>
+						</div>
+						<div class="control-group displaynone" id="textarea_rows">
+							<div class="control-label"><?php echo $this->form->getLabel('rows'); ?></div>
+							<div class="controls textarea_inputs"><?php echo $this->form->getInput('rows'); ?></div>
+						</div>
+						<div class="control-group displaynone" id="textarea_cols">
+							<div class="control-label"><?php echo $this->form->getLabel('cols'); ?></div>
+							<div class="controls textarea_inputs"><?php echo $this->form->getInput('cols'); ?></div>
+						</div>
+						<div class="control-group displaynone" id="default_value_text">
+							<div class="control-label"><?php echo $this->form->getLabel('default_value'); ?></div>
+							<div class="controls"><?php echo $this->form->getInput('default_value'); ?></div>
+						</div>
 
 					</fieldset>
 					<input type="hidden" name="jform[client]" value="<?php echo $input->get('client','','STRING'); ?>" />
@@ -275,67 +271,66 @@ TjfieldsHelper::getLanguageConstant();
 
 
 				<div class="span5 form-horizontal">
-				<fieldset class="adminform form-horizontal">
-				<legend>
-					<?php
-						echo JText::_('COM_TJFIELDS_EXTRA_FIELDS_VALUES');
-					?>
-				</legend>
+					<fieldset class="adminform form-horizontal">
+						<legend>
+							<?php echo JText::_('COM_TJFIELDS_EXTRA_FIELDS_VALUES');?>
+						</legend>
 
-					<div class="control-group">
-						<div class="control-label"><?php echo $this->form->getLabel('group_id'); ?></div>
-						<div class="controls"><?php echo $this->form->getInput('group_id'); ?></div>
-					</div>
-
-					<div class="control-group" >
-						<div class="control-label"><?php echo $this->form->getLabel('state'); ?></div>
-						<div class="controls"><?php echo $this->form->getInput('state'); ?></div>
-					</div>
-					<div class="control-group">
-						<div class="control-label"><?php echo $this->form->getLabel('required'); ?></div>
-						<div class="controls"><?php echo $this->form->getInput('required'); ?></div>
-					</div>
-					<div class="control-group">
-						<div class="control-label"><?php echo $this->form->getLabel('readonly'); ?></div>
-						<div class="controls"><?php echo $this->form->getInput('readonly'); ?></div>
-					</div>
-					<div class="control-group" id="div_placeholder">
-						<div class="control-label"><?php echo $this->form->getLabel('placeholder'); ?></div>
-						<div class="controls"><?php echo $this->form->getInput('placeholder'); ?></div>
-					</div>
-					<div class="control-group">
-						<div class="control-label"><?php echo $this->form->getLabel('created_by'); ?></div>
-						<div class="controls"><?php echo $this->form->getInput('created_by'); ?></div>
-					</div>
-					<div class="control-group">
-						<div class="control-label"><?php echo $this->form->getLabel('description'); ?></div>
-						<div class="controls"><?php echo $this->form->getInput('description'); ?></div>
-					</div>
-					<div class="control-group">
-						<div class="control-label"><?php echo $this->form->getLabel('js_function'); ?></div>
-						<div class="controls">
-							<?php echo $this->form->getInput('js_function'); ?>
-
+						<div class="control-group">
+							<div class="control-label"><?php echo $this->form->getLabel('group_id'); ?></div>
+							<div class="controls"><?php echo $this->form->getInput('group_id'); ?></div>
 						</div>
-
-					</div>
-					<div class="control-group">
-						<div class="control-label"><?php echo $this->form->getLabel('validation_class'); ?></div>
-						<div class="controls">
-							<?php echo $this->form->getInput('validation_class'); ?>
-							<div style="clear:both" ></div>
-							<span class="alert alert-info alert-help-inline span9 alert_no_margin">
-								<?php echo JText::_('COM_TJFIELDS_VALIDATION_CLASS_NOTE'); ?>
-							</span>
+						<div class="control-group" >
+							<div class="control-label"><?php echo $this->form->getLabel('state'); ?></div>
+							<div class="controls"><?php echo $this->form->getInput('state'); ?></div>
 						</div>
-					</div>
+						<div class="control-group">
+							<div class="control-label"><?php echo $this->form->getLabel('required'); ?></div>
+							<div class="controls"><?php echo $this->form->getInput('required'); ?></div>
+						</div>
+						<div class="control-group">
+							<div class="control-label"><?php echo $this->form->getLabel('readonly'); ?></div>
+							<div class="controls"><?php echo $this->form->getInput('readonly'); ?></div>
+						</div>
+						<div class="control-group">
+							<div class="control-label"><?php echo $this->form->getLabel('field_display_on_frontend'); ?></div>
+							<div class="controls"><?php echo $this->form->getInput('field_display_on_frontend'); ?></div>
+						</div>
+						<div class="control-group" id="div_placeholder">
+							<div class="control-label"><?php echo $this->form->getLabel('placeholder'); ?></div>
+							<div class="controls"><?php echo $this->form->getInput('placeholder'); ?></div>
+						</div>
+						<div class="control-group">
+							<div class="control-label"><?php echo $this->form->getLabel('created_by'); ?></div>
+							<div class="controls"><?php echo $this->form->getInput('created_by'); ?></div>
+						</div>
+						<div class="control-group">
+							<div class="control-label"><?php echo $this->form->getLabel('description'); ?></div>
+							<div class="controls"><?php echo $this->form->getInput('description'); ?></div>
+						</div>
+						<div class="control-group">
+							<div class="control-label"><?php echo $this->form->getLabel('js_function'); ?></div>
+							<div class="controls">
+								<?php echo $this->form->getInput('js_function'); ?>
+							</div>
+						</div>
+						<div class="control-group">
+							<div class="control-label"><?php echo $this->form->getLabel('validation_class'); ?></div>
+							<div class="controls">
+								<?php echo $this->form->getInput('validation_class'); ?>
+								<div style="clear:both" ></div>
+								<span class="alert alert-info alert-help-inline span9 alert_no_margin">
+									<?php echo JText::_('COM_TJFIELDS_VALIDATION_CLASS_NOTE'); ?>
+								</span>
+							</div>
+						</div>
 					</fieldset>
 				</div>
 			</div>
 			<!--</fieldset>-->
 		</div>
 
-		<input type="hidden" name="client_type" value="<?php	echo $client_type;	?>" />
+		<input type="hidden" name="client_type" value="<?php echo $client_type;?>" />
 		<input type="hidden" name="task" value="" />
 		<?php echo JHtml::_('form.token'); ?>
 

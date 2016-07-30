@@ -110,7 +110,11 @@ if (!empty($this->extra_sidebar)) {
 			<?php
 			if (empty($this->items))
 			{
-				echo JText::_('COM_TJFIELD_NO_GROUP_FOUND');
+			?>
+				<div class="alert alert-no-items">
+					<?php echo JText::_('COM_TJFIELD_NO_GROUP_FOUND');?>
+				</div>
+				<?php
 			}
 			else
 			{?>

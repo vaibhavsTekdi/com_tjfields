@@ -232,7 +232,7 @@ class TjfieldsModelFields extends JModelList
 	 */
 	public function  deletefield($id)
 	{
-		if (count($id) > 1)
+		if (count($id) >= 1)
 		{
 			$group_to_delet = implode(',', $id);
 			$db             = JFactory::getDBO();

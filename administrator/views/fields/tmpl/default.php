@@ -21,6 +21,9 @@ if(JVERSION >= '3.0')
 
 JHtml::_('behavior.multiselect');
 
+JText::script('COM_TJFIELD_CONFIRM_DELETE_FIELD', true);
+JText::script('COM_TJFIELD_CONFIRM_DELETE_REFRENCE_DATA', true);
+JHtml::script(JUri::root() . 'administrator/components/com_tjfields/assets/js/tjfields.js');
 
 // Import CSS
 $document = JFactory::getDocument();

@@ -44,11 +44,11 @@ class TjfieldsHelper
 		$client            = $data['client'];
 		$query_user_string = '';
 
-		if (isset($data['user_id']))
+		/*if (isset($data['user_id']))
 		{
 			$user_id           = $data['user_id'];
 			$query_user_string = " AND user_id=" . $user_id;
-		}
+		}*/
 
 		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true);
@@ -85,7 +85,6 @@ class TjfieldsHelper
 				elseif ($fieldData->type == 'calendar')
 				{
 					// $format = $this->getDateFormat($fieldData->format);
-
 					if ($fieldData->format == 1)
 					{
 						$fdata->value = JFactory::getDate($fdata->value)->Format('d-m-Y');
@@ -196,6 +195,8 @@ class TjfieldsHelper
 				}
 			}
 		}
+
+		return true;
 	}
 
 	/**

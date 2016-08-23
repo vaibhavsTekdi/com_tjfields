@@ -21,6 +21,9 @@ if(JVERSION >= '3.0')
 
 JHtml::_('behavior.multiselect');
 
+JText::script('COM_TJFIELD_CONFIRM_DELETE_FIELD', true);
+JText::script('COM_TJFIELD_CONFIRM_DELETE_REFRENCE_DATA', true);
+JHtml::script(JUri::root() . 'administrator/components/com_tjfields/assets/js/tjfields.js');
 
 // Import CSS
 $document = JFactory::getDocument();
@@ -109,6 +112,17 @@ if (!empty($this->extra_sidebar)) {
 			</div>
 
 			<div class="clearfix"> </div>
+		<?php
+		if (empty($this->items))
+		{
+			?>
+			<div class="alert alert-no-items">
+				<?php echo JText::_('COM_TJFIELD_NO_FIELD_FOUND');?>
+			</div>
+			<?php
+		}
+		else
+		{?>
 			<table class="table table-striped" id="fieldList">
 				<thead>
 					<tr>
@@ -232,7 +246,8 @@ if (!empty($this->extra_sidebar)) {
 					<?php endforeach; ?>
 				</tbody>
 			</table>
-
+		<?php
+		}?>
 			<input type="hidden" name="task" value="" />
 			<input type="hidden" name="boxchecked" value="0" />
 			<input type="hidden" name="filter_order" value="<?php echo $listOrder; ?>" />

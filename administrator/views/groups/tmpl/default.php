@@ -107,6 +107,17 @@ if (!empty($this->extra_sidebar)) {
 
 		</div>
 			<div class="clearfix"> </div>
+			<?php
+			if (empty($this->items))
+			{
+			?>
+				<div class="alert alert-no-items">
+					<?php echo JText::_('COM_TJFIELD_NO_GROUP_FOUND');?>
+				</div>
+				<?php
+			}
+			else
+			{?>
 			<table class="table table-striped" id="groupList">
 				<thead>
 					<tr>
@@ -228,7 +239,8 @@ if (!empty($this->extra_sidebar)) {
 					<?php endforeach; ?>
 				</tbody>
 			</table>
-
+			<?php
+			}?>
 			<input type="hidden" name="task" value="" />
 			<input type="hidden" name="boxchecked" value="0" />
 			<input type="hidden" name="filter_order" value="<?php echo $listOrder; ?>" />

@@ -1,9 +1,9 @@
 <?php
 /**
  * @version    SVN: <svn_id>
- * @package    Tjfields
+ * @package    TJField
  * @author     Techjoomla <extensions@techjoomla.com>
- * @copyright  Copyright (c) 2009-2016 TechJoomla. All rights reserved.
+ * @copyright  Copyright (c) 2014-2016 TechJoomla. All rights reserved.
  * @license    GNU General Public License version 2 or later.
  */
 
@@ -13,11 +13,9 @@ defined('_JEXEC') or die;
 jimport('joomla.application.component.modeladmin');
 
 /**
- * Tjfields model
+ * Tjfields model.
  *
- * @package     Tjfields
- * @subpackage  com_tjfields
- * @since       2.2
+ * @since  2.5
  */
 class TjfieldsModelField extends JModelAdmin
 {
@@ -30,13 +28,13 @@ class TjfieldsModelField extends JModelAdmin
 	/**
 	 * Returns a reference to the a Table object, always creating it.
 	 *
-	 * @param   type    $type    The table type to instantiate
-	 * @param   string  $prefix  A prefix for the table class name. Optional.
-	 * @param   array   $config  Configuration array for model. Optional.
+	 * @param   String  $type    Type
+	 * @param   String  $prefix  Prefix
+	 * @param   Array   $config  Config
 	 *
-	 * @return  JTable  A database object
+	 * @return	JTable	A database object
 	 *
-	 * @since	1.6
+	 * @since  1.6
 	 */
 	public function getTable($type = 'Field', $prefix = 'TjfieldsTable', $config = array())
 	{
@@ -46,12 +44,12 @@ class TjfieldsModelField extends JModelAdmin
 	/**
 	 * Method to get the record form.
 	 *
-	 * @param   Array    $data      Data An optional array of data for the form to interogate.
+	 * @param   Array    $data      An optional array of data for the form to interogate.
 	 * @param   Boolean  $loadData  True if the form is to load its own data (default case), false if not.
 	 *
-	 * @return	JForm	A JForm object on success, false on failure
+	 * @return  JForm  A JForm object on success, false on failure
 	 *
-	 * @since	1.6
+	 * @since  1.6
 	 */
 	public function getForm($data = array(), $loadData = true)
 	{
@@ -76,7 +74,7 @@ class TjfieldsModelField extends JModelAdmin
 	/**
 	 * Method to get the data that should be injected in the form.
 	 *
-	 * @return  mixed  The data for the form.
+	 * @return	mixed	The data for the form.
 	 *
 	 * @since	1.6
 	 */
@@ -96,11 +94,11 @@ class TjfieldsModelField extends JModelAdmin
 	/**
 	 * Method to get a single record.
 	 *
-	 * @param   Integer  $pk  Primary key.
+	 * @param   Integer  $pk  PK
 	 *
-	 * @return  Items
+	 * @return  mixed  Object on success, false on failure.
 	 *
-	 * @since	1.6
+	 * @since  1.6
 	 */
 	public function getItem($pk = null)
 	{
@@ -131,11 +129,11 @@ class TjfieldsModelField extends JModelAdmin
 	/**
 	 * Method Prepare and sanitise the table prior to saving.
 	 *
-	 * @param   Array  $table  Table
+	 * @param   Array  $table  table
 	 *
-	 * @return  Boolean
+	 * @return  void
 	 *
-	 * @since	1.6
+	 * @since  1.6
 	 */
 	protected function prepareTable($table)
 	{
@@ -159,9 +157,9 @@ class TjfieldsModelField extends JModelAdmin
 	 *
 	 * @param   Array  $post  Post
 	 *
-	 * @return  Boolean
+	 * @return  flag
 	 *
-	 * @since	1.6
+	 * @since  1.6
 	 */
 	public function save_option($post)
 	{
@@ -178,7 +176,8 @@ class TjfieldsModelField extends JModelAdmin
 			$name          = str_replace("`", "", $name);
 			$db            = JFactory::getDBO();
 			$query         = 'SELECT a.*' . ' FROM #__tjfields_fields AS a' . ' WHERE a.label LIKE ' .
-			$db->quote($name . '%') . ' AND  a.client LIKE' . $db->quote($data['client']) . ' AND  a.group_id =' .
+			$db->quote($name . '%') . ' AND  a.client LIKE' .
+			$db->quote($data['client']) . ' AND  a.group_id =' .
 			$db->quote($data['group_id'] . '%');
 
 			$db->setQuery($query);
@@ -355,18 +354,18 @@ class TjfieldsModelField extends JModelAdmin
 	}
 
 	/**
-	 * Method jsfunctionSave
+	 * Method Save JS FUnction
 	 *
-	 * @param   Array    $jsarray  Array
-	 * @param   Integer  $fieldid  Id
+	 * @param   Array    $jsarray  JSArray
+	 * @param   Integer  $fieldid  Field Id
 	 *
-	 * @return	JObject
+	 * @return  flag
 	 *
-	 * @since	1.6
+	 * @since  1.6
 	 */
 	public function jsfunctionSave($jsarray, $fieldid)
 	{
-		$obj = new stdClass;
+		$obj              = new stdClass;
 		$obj->js_function = '';
 
 		foreach ($jsarray as $js)
@@ -391,13 +390,13 @@ class TjfieldsModelField extends JModelAdmin
 	}
 
 	/**
-	 * Method for Delete Field Option
+	 * Method To Delete Option
 	 *
-	 * @param   Integer  $delete_ids  Id
+	 * @param   Integer  $delete_ids  Id for delete record
 	 *
-	 * @return	JObject
+	 * @return  flag
 	 *
-	 * @since	1.6
+	 * @since  1.6
 	 */
 	public function delete_option($delete_ids)
 	{

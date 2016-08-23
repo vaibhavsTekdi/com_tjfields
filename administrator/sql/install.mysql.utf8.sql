@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS `#__tjfields_fields` (
 	`client` varchar(255) NOT NULL,
 	`group_id` int(11) NOT NULL,
 	PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+)   DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `#__tjfields_fields_value` (
 	`id` int(11) NOT NULL AUTO_INCREMENT,
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `#__tjfields_fields_value` (
 	`email_id` varchar(255) NOT NULL,
 	`client` varchar(255) NOT NULL COMMENT 'client(eg com_jticketing.event)',
 	PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+)   DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `#__tjfields_groups` (
 	`id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS `#__tjfields_groups` (
 	`name` varchar(255) NOT NULL,
 	`client` varchar(255) NOT NULL,
 	PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+)   DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `#__tjfields_options` (
 	`id` int(11) NOT NULL AUTO_INCREMENT,
@@ -53,18 +53,18 @@ CREATE TABLE IF NOT EXISTS `#__tjfields_options` (
 	`default_option` varchar(255) NOT NULL,
 	`value` varchar(255) NOT NULL,
 	PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+)   DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `#__tjfields_client_type` (
 	`id` int(11) NOT NULL AUTO_INCREMENT,
 	`client` varchar(255) NOT NULL,
 	`client_type` varchar(255) NOT NULL,
 	PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+)   DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `#__tjfields_category_mapping` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `field_id` INT(11) NOT NULL,
   `category_id` INT(11) NOT NULL COMMENT 'CATEGORY ID FROM JOOMLA CATEGORY TABLE FOR CLIENTS EG CLIENT=COM_QUICK2CART.PRODUCT',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+)   DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;

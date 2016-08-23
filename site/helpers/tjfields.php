@@ -433,10 +433,10 @@ class TjfieldsHelper
 		$query->where('#__tjfields_fields.state=' . $db->quote("1"));
 		$query->where('#__tjfields_fields.filterable=' . $db->quote("1"));
 
-		$filterableFields = array("'single_select'", "'radio'", "'multi_select'");
-		$filterableFieldsStr = implode(",", $filterableFields);
+		// $filterableFields = array("'single_select'", "'radio'", "'multi_select'");
+		// $filterableFieldsStr = implode(",", $filterableFields);
 
-		$query->where("#__tjfields_fields.type IN (" . $filterableFieldsStr . ")");
+		// $query->where("#__tjfields_fields.type IN (" . $filterableFieldsStr . ")");
 
 		return $query;
 

@@ -42,6 +42,7 @@ class com_tjfieldsInstallerScript
 	 */
 	function preflight($type, $parent)
 	{
+
 	}
 
 	/**

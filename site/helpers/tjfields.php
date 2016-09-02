@@ -56,12 +56,13 @@ class TjfieldsHelper
 		$query->join('INNER', $db->qn('#__tjfields_fields') . ' ON (' .
 		$db->qn('#__tjfields_fields.id') . ' = ' . $db->qn('#__tjfields_fields_value.field_id') . ')');
 
-		if (!empty($data['category_id']))
+		/*if (!empty($data['category_id']))
 		{
-			$query->join('INNER', $db->qn('#__tjfields_category_mapping') . 'ON (' .
+			$query->join('Left', $db->qn('#__tjfields_category_mapping') . 'ON (' .
 			$db->qn('#__tjfields_category_mapping.field_id') . ' = ' . $db->qn('#__tjfields_fields.id') . ')');
 			$query->where('#__tjfields_category_mapping.category_id = ' . $data['category_id']);
 		}
+		*/
 
 		$query->where('#__tjfields_fields_value.content_id=' . $content_id);
 		$query->where('#__tjfields_fields_value.client="' . $client . '" ' . $query_user_string);
@@ -396,11 +397,12 @@ class TjfieldsHelper
 		$tj_mod_filter_cat = $jinput->get("tj_mod_filter_cat", "prod_cat");
 		$category_id = $jinput->get($tj_mod_filter_cat);
 		$fields_value_str = $jinput->get("tj_fields_value", '', "RAW");
+		$fieldOptions = array();
 
 		if ($fields_value_str)
 		{
 			$fields_value_str = explode(',', $fields_value_str);
-			$fields_value_str = array_filter($fields_value_str, 'trim');
+			$fieldOptions = $fields_value_str = array_filter($fields_value_str, 'trim');
 			$fields_value_str = implode(',', $fields_value_str);
 		}
 
@@ -409,35 +411,81 @@ class TjfieldsHelper
 		$query = $db->getQuery(true);
 
 		// Content id : clent specific id; eg  Quick2cart's product id
-		$query->select('#__tjfields_fields_value.content_id');
-		$query->from('#__tjfields_fields_value');
-		$query->join('INNER', $db->qn('#__tjfields_fields') . ' ON (' .
-		$db->qn('#__tjfields_fields.id') . ' = ' . $db->qn('#__tjfields_fields_value.field_id') . ')');
+		$query->select('fv.content_id');
+		$query->from('#__tjfields_fields_value AS fv');
+		$query->join('INNER', $db->qn('#__tjfields_fields') . ' AS f ON (' .
+		$db->qn('f.id') . ' = ' . $db->qn('fv.field_id') . ')');
 
 		// Selected field value
 		if (!empty($fields_value_str))
 		{
-			$query->join('INNER', $db->qn('#__tjfields_options') . 'ON (' .
-			$db->qn('#__tjfields_options.field_id') . ' = ' . $db->qn('#__tjfields_fields_value.field_id') . ')');
-			$query->where('#__tjfields_options.id IN (' . $fields_value_str . ')');
-			$query->where('#__tjfields_options.value  = #__tjfields_fields_value.value ');
+			$TjfieldsHelper = new TjfieldsHelper;
+			$fFieldAndFieldOptionsList = $TjfieldsHelper->getFieldAndFieldOptionsList($fields_value_str);
+
+
+			$i = 1;
+					//~ $query->join('INNER', $db->qn('#__tjfields_options') . ' AS fo' . $i . ' ON (' .
+					//~ $db->qn('fo' . $i . '.field_id') . ' = ' . $db->qn('fv.field_id') . ')');
+//~
+//~ $query->join('INNER', $db->qn('#__tjfields_options') . ' AS fo ON (' .
+//~ $db->qn('fo.field_id') . ' = ' . $db->qn('fv.field_id') . ')');
+			$conditions = array();
+			foreach ($fFieldAndFieldOptionsList as $fieldId => $fFieldAndFieldOptions)
+			{
+				if (!empty($fFieldAndFieldOptions))
+				{
+
+					//~ $query->join('INNER', $db->qn('#__tjfields_options') . ' AS fo' . $i . ' ON (' .
+					//~ $db->qn('fo' . $i . '.field_id') . ' = ' . $db->qn('fv.field_id') . ')');
+					//~ $query->where('fo' . $i . '.id IN (' . $fFieldAndFieldOptions->optionsStr . ')');
+					//~ $query->where('fo' . $i . '.value  = fv.value ');
+
+
+					 //$conditions[] = " (fo1.field_id = " . $fieldId . " AND   fo1.id IN (" . $fFieldAndFieldOptions->optionsStr . ')) ';
+	//				 $conditions[] = " (   fo.id IN (" . $fFieldAndFieldOptions->optionsStr . ')) ';
+
+
+
+					//~ $query->where('fo' . $i . '.id IN (' . $fFieldAndFieldOptions->optionsStr . ')');
+					//~ $query->where('fo' . $i . '.value  = fv.value ');
+					 $i++;
+				}
+			}
+
+			if (!empty($conditions))
+			{
+				//~ $conditionStr = "(" . implode(' AND ', $conditions) . ")";
+				//~ $query->where($conditionStr);
+				//~ //$query->where('fo' . $i . '.value  = fv.value ');
+				//~ $query->where('fo.value  = fv.value ');
+			}
+
+			//$query->where('fo.value  = fv.value ');
+
+			//print"<pre>"; print_r($fFieldAndFieldOptionsList);
+			//~ die;
+
+
+			$query->join('INNER', $db->qn('#__tjfields_options') . ' AS fo ON (' .
+			$db->qn('fo.field_id') . ' = ' . $db->qn('fv.field_id') . ')');
+			$query->where('fo.id IN (' . $fields_value_str . ')');
+			$query->where('fo.value  = fv.value ');
 		}
 
 		if (!empty($category_id))
 		{
-			$query->join('INNER', $db->qn('#__tjfields_category_mapping') . 'ON (' .
-			$db->qn('#__tjfields_fields_value.field_id') . ' = ' . $db->qn('#__tjfields_category_mapping.field_id') . ')');
-			$query->where('#__tjfields_category_mapping.category_id = ' . $category_id);
+			$query->join('INNER', $db->qn('#__tjfields_category_mapping') . ' AS fcm ON fv.field_id = fcm .field_id');
+			$query->where('fcm .category_id = ' . $category_id);
 		}
 
-		$query->where('#__tjfields_fields_value.client="' . $client . '" ');
-		$query->where('#__tjfields_fields.state=' . $db->quote("1"));
-		$query->where('#__tjfields_fields.filterable=' . $db->quote("1"));
+		$query->where('fv.client="' . $client . '" ');
+		$query->where('f.filterable=' . $db->quote("1"));
+		$query->where('f.state=' . $db->quote("1"));
 
 		// $filterableFields = array("'single_select'", "'radio'", "'multi_select'");
 		// $filterableFieldsStr = implode(",", $filterableFields);
 
-		// $query->where("#__tjfields_fields.type IN (" . $filterableFieldsStr . ")");
+		// $query->where("f.type IN (" . $filterableFieldsStr . ")");
 
 		return $query;
 
@@ -496,4 +544,33 @@ class TjfieldsHelper
 			// JFactory::getApplication()->enqueueMessage(sprintf('Unable to load class: %s, $className), 'error');
 		}
 	}
+
+
+	/**
+	 * Get option which are stored in field option table.
+	 *
+	 * @param   STRING  $options  Field's Option id's string
+	 *
+	 * @return object
+	 */
+	public function getFieldAndFieldOptionsList($options)
+	{
+		$fieldAndFieldOptionsList = array();
+
+		if (!empty($options))
+		{
+			$db    = JFactory::getDbo();
+			$query = $db->getQuery(true);
+			$query->select('field_id, GROUP_CONCAT( id ) AS optionsStr ');
+			$query->FROM('#__tjfields_options as fo');
+			$query->where('fo.id  IN  (' . $options . ')');
+			$query->group('fo.field_id');
+
+			$db->setQuery($query);
+			$fieldAndFieldOptionsList = $db->loadObjectlist('field_id');
+		}
+
+		return $fieldAndFieldOptionsList;
+	}
+
 }

@@ -246,14 +246,14 @@ class TjfieldsHelper
 	{
 		$client = $data['client'];
 		$client = explode(".", $client);
-		$client = $client[0];
+		$component = $client[0];
 
-		switch ($client)
+		switch ($component)
 		{
 			case 'com_quick2cart':
 					require_once JPATH_SITE . '/components/com_quick2cart/helper.php';
 					$comquick2cartHelper = new Comquick2cartHelper;
-					$extension = $comquick2cartHelper->getExtensionName($client);
+					$extension = $comquick2cartHelper->getExtensionNameFromCategoryTable($client);
 
 				break;
 		}

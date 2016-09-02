@@ -17,6 +17,7 @@ $urlArray = explode ('&',$baseurl);
 
 foreach ($urlArray as $key => $url)
 {
+	// Unset Not required parameter from array
 	if (!empty(strstr($url, 'ModFilterCat=')) || !empty(strstr($url, 'prod_cat=')) || !empty(strstr($url, 'tj_fields_value=')) || !empty(strstr($url, 'client=')))
 	{
 		unset($urlArray[$key]);
@@ -36,7 +37,7 @@ if (!empty($fieldsCategorys))
 	?>
 	<div><h4><?php echo JText::_('MOD_TJFIELDS_SEARCH_SELECT_CATEGORY');?></h4></div>
 	<?php
-	echo JHtml::_('select.genericlist', $fieldsCategorys, 'category_id', 'class=""  size="1" onchange="submitCategory()" title="' . JText::_('MOD_TJFIELDS_SEARCH_SELECT_CATEGORY') . '"', 'id', 'title', $selectedCategory, 'category_id');
+	echo JHtml::_('select.genericlist', $fieldsCategorys, 'category_id', 'class="form-control"  size="1" onchange="submitCategory()" title="' . JText::_('MOD_TJFIELDS_SEARCH_SELECT_CATEGORY') . '"', 'id', 'title', $selectedCategory, 'category_id');
 }
 
 foreach ($fieldsArray as $fieldstype => $fields)
@@ -70,13 +71,16 @@ foreach ($fieldsArray as $fieldstype => $fields)
 		}
 	}
 	?>
-	<br><br>
+
 	<?php
 }
 
 $jinput = JFactory::getApplication();
 $mainframe =JFactory::getApplication();
 
+		//~ jimport('joomla.application.module.helper');
+		//~ $module = JModuleHelper::getModule('mod_q2cfilters');
+		//~ echo JModuleHelper::renderModule($module);
 ?>
 	<div class="center">
 		<a class="btn btn-small btn-info" onclick='tjfieldsapplyfilters()'><?php echo JText::_('APPLY');?></a>

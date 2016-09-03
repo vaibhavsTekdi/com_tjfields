@@ -229,13 +229,13 @@ class TjfieldsHelper
 	 */
 	public function getOptions($field_id, $option_value = '')
 	{
-		$db    = JFactory::getDbo();
-		$query = $db->getQuery(true);
-		$query->select('options,default_option,value FROM #__tjfields_options');
-		$query->where('field_id=' . $field_id);
-
 		if ($option_value != '')
 		{
+			$db    = JFactory::getDbo();
+			$query = $db->getQuery(true);
+			$query->select('options,default_option,value FROM #__tjfields_options');
+			$query->where('field_id=' . $field_id);
+
 			$new_option_value = json_decode($option_value);
 
 			if ($new_option_value != '')
@@ -255,10 +255,21 @@ class TjfieldsHelper
 				// Radio.
 				$query->where('value=' . $db->quote($option_value));
 			}
-		}
 
-		$db->setQuery($query);
-		$extra_options = $db->loadObjectlist();
+			$db->setQuery($query);
+			$extra_options = $db->loadObjectlist();
+		}
+		else
+		{
+			$extra_options = array();
+			$obj = new stdclass;
+			$obj->id = '';
+			$obj->options = '';
+			$obj->default_option = '';
+			$obj->value = '';
+
+			$extra_options[] = $obj;
+		}
 
 		return $extra_options;
 	}

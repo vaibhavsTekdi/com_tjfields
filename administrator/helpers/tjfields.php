@@ -304,6 +304,10 @@ class TjfieldsHelper
 			// ADD option if present.
 			if (isset($f->extra_options))
 			{
+				// Set Default blank Option
+				$option = $field->addChild('option', '- Select ' . $f->label . '-');
+				$option->addAttribute('value', '');
+
 				foreach ($f->extra_options as $f_option)
 				{
 					$option = $field->addChild('option', $f_option->options);

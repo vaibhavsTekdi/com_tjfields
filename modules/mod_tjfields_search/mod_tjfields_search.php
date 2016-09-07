@@ -31,34 +31,42 @@ if (JFile::exists(JPATH_SITE . '/components/com_tjfields/tjfields.php'))
 		JLoader::load('tjfieldsHelper');
 	}
 
+	$tjfieldsHelper = new tjfieldsHelper;
+
 	// Selected category
 	$clientCatUrlParam = $params->get("url_cat_param_name", "prod_cat");
 	$selectedCategory = $input->get($clientCatUrlParam, '');
 
-	$tjfieldsHelper = new tjfieldsHelper;
+	$options         = array();
+	$options[]       = JHtml::_('select.option', '', JText::_('MOD_TJFIELDS_SEARCH_SELECT_CATEGORY'));
+
+	// Static public function options($extension, $config = array('filter.published' => array(0,1)))
+	$cats = JHtml::_('category.options', $category_type, array('filter.published' => array(1)));
+	$fieldsCategorys               = array_merge($options, $cats);
 
 	$fieldsArray = array();
-
-	$fieldsCategorys = array();
-	$defaultCategory = new stdclass;
-	$defaultCategory->id = '';
-	$defaultCategory->title = JText::_("MOD_TJFIELDS_SEARCH_SELECT_CATEGORY");
-	$fieldsCategorys[] = $defaultCategory;
-	$categoryList = $tjfieldsHelper->getCategorys($category_type);
-
-	if (!empty($categoryList))
-	{
-		foreach ($categoryList as $category)
-		{
-			$fieldsCategorys[] = $category;
-		}
-	}
-
 	// Universal field- for client - those field who doesn't mapped agaist category
-	$fieldsArray['universal'] = $tjfieldsHelper->getUniversalFields($client_type);
+	// $fieldsArray['universal'] = $tjfieldsHelper->getUniversalFields($client_type);
 
 	// Get client categorySpecific fields
-	$fieldsArray['core'] = $tjfieldsHelper->getClientsCategoryFields($client_type, $selectedCategory);
+	$rawtjFilterableData = $tjfieldsHelper->getFilterableFields($client_type, $selectedCategory);
+
+	// Formate field detail. Make the array index as field id and add the option in the field index
+	if (!empty($rawtjFilterableData))
+	{
+		foreach ($rawtjFilterableData as $field)
+		{
+			if (array_key_exists($field->id, $fieldsArray))
+			{
+				$fieldsArray[$field->id][] = $field;
+			}
+			else
+			{
+				$fieldsArray[$field->id] = array();
+				$fieldsArray[$field->id][] = $field;
+			}
+		}
+	}
 
 	require JModuleHelper::getLayoutPath('mod_tjfields_search');
 }

@@ -330,7 +330,7 @@ class TjfieldsHelper
 	 *
 	 * @return object
 	 */
-	public function getClientsCategoryFields($client, $category_id = '')
+	public function getFilterableFields($client, $category_id = '')
 	{
 		$coreFields = '';
 
@@ -338,17 +338,28 @@ class TjfieldsHelper
 		{
 			$db    = JFactory::getDbo();
 			$query = $db->getQuery(true);
-			$query->select('DISTINCT f.id,f.label,f.name FROM #__tjfields_fields AS f');
-			$query->JOIN('INNER', '`#__tjfields_category_mapping` AS cm ON f.id=cm.field_id');
+			$query->select('DISTINCT f.id,f.name, f.label,fv.value,fv.option_id');
+			$query->FROM("#__tjfields_fields AS f");
+			$query->JOIN('INNER', '#__tjfields_fields_value AS fv ON fv.field_id = f.id');
+			//$query->JOIN('INNER', '#__tjfields_options AS fo ON fo.field_id = fv.field_id');
+
 			$query->where('f.client="' . $client . '"');
-			$query->where('f.state=1');
 			$query->where('f.filterable=1');
+			$query->where('f.state=1');
+			$query->where('fv.option_id IS NOT NULL');
+			$query->where("f.type IN ('single_select','multi_select', 'radio')");
 
 			if (!empty($category_id))
 			{
-				$query->where('cm.category_id=' . $category_id);
+				$query->JOIN('INNER', '#__tjfields_category_mapping AS fcm ON fcm.field_id = f.id');
+				$query->where('fcm.category_id=' . $category_id);
+			}
+			else
+			{
+				$query->where('NOT EXISTS (select * FROM #__tjfields_category_mapping AS cm where f.id=cm.field_id)');
 			}
 
+			$query->order('f.ordering');
 			$db->setQuery($query);
 			$coreFields = $db->loadObjectlist();
 		}
@@ -410,89 +421,68 @@ class TjfieldsHelper
 		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true);
 
-		// Content id : clent specific id; eg  Quick2cart's product id
-		$query->select('fv.content_id');
-		$query->from('#__tjfields_fields_value AS fv');
-		$query->join('INNER', $db->qn('#__tjfields_fields') . ' AS f ON (' .
-		$db->qn('f.id') . ' = ' . $db->qn('fv.field_id') . ')');
 
 		// Selected field value
 		if (!empty($fields_value_str))
 		{
 			$TjfieldsHelper = new TjfieldsHelper;
-			$fFieldAndFieldOptionsList = $TjfieldsHelper->getFieldAndFieldOptionsList($fields_value_str);
+			$fieldAndFieldOptionsList = $TjfieldsHelper->getFieldAndFieldOptionsList($fields_value_str);
 
-
-			$i = 1;
-					//~ $query->join('INNER', $db->qn('#__tjfields_options') . ' AS fo' . $i . ' ON (' .
-					//~ $db->qn('fo' . $i . '.field_id') . ' = ' . $db->qn('fv.field_id') . ')');
-//~
-//~ $query->join('INNER', $db->qn('#__tjfields_options') . ' AS fo ON (' .
-//~ $db->qn('fo.field_id') . ' = ' . $db->qn('fv.field_id') . ')');
-			$conditions = array();
-			foreach ($fFieldAndFieldOptionsList as $fieldId => $fFieldAndFieldOptions)
+			// If only one fields options are there then no need to join
+			if (count($fieldAndFieldOptionsList) == 1)
 			{
-				if (!empty($fFieldAndFieldOptions))
+				foreach ($fieldAndFieldOptionsList as $fieldId => $fFieldAndFieldOptions)
 				{
+					if (!empty($fFieldAndFieldOptions))
+					{
+						$query->select('DISTINCT fv1.content_id');
+						$query->from('#__tjfields_fields_value AS fv1');
+						$query->where("fv1.option_id IN (" . $fFieldAndFieldOptions->optionsStr . ")");
 
-					//~ $query->join('INNER', $db->qn('#__tjfields_options') . ' AS fo' . $i . ' ON (' .
-					//~ $db->qn('fo' . $i . '.field_id') . ' = ' . $db->qn('fv.field_id') . ')');
-					//~ $query->where('fo' . $i . '.id IN (' . $fFieldAndFieldOptions->optionsStr . ')');
-					//~ $query->where('fo' . $i . '.value  = fv.value ');
+						return $query;
+					}
+				}
 
+			}
+			else
+			{
+				/*
+				 * SELECT fv1. *
+					FROM  `xcqpa_tjfields_fields_value` AS fv1
+					INNER JOIN  `xcqpa_tjfields_fields_value` AS fv2 ON fv2.`content_id` = fv1.content_id
+					WHERE fv1.option_id
+					IN ( 18 ) AND
+					WHERE fv2.option_id
+					IN ( 13,14 )
+				 * */
+				$query->select('DISTINCT fv1.content_id');
+				$fromFlag = 0;
+				$i = 1;
 
-					 //$conditions[] = " (fo1.field_id = " . $fieldId . " AND   fo1.id IN (" . $fFieldAndFieldOptions->optionsStr . ')) ';
-	//				 $conditions[] = " (   fo.id IN (" . $fFieldAndFieldOptions->optionsStr . ')) ';
+				foreach ($fieldAndFieldOptionsList as $fieldId => $fFieldAndFieldOptions)
+				{
+					if (empty($fromFlag))
+					{
+						$query->from('#__tjfields_fields_value AS fv' . $i);
+						$query->where("fv" . $i . ".option_id IN (" . $fFieldAndFieldOptions->optionsStr . ")");
 
+						$fromFlag = 1;
+					}
+					else
+					{
+						$query->join('INNER', $db->qn('#__tjfields_fields_value') . ' AS fv' . $i . ' ON (' .
+						$db->qn('fv' . $i . '.content_id') . ' = ' . $db->qn('fv' . ($i - 1 ) . '.content_id') . ')');
+						$query->where("fv" . $i . ".option_id IN (" . $fFieldAndFieldOptions->optionsStr . ")");
+					}
 
-
-					//~ $query->where('fo' . $i . '.id IN (' . $fFieldAndFieldOptions->optionsStr . ')');
-					//~ $query->where('fo' . $i . '.value  = fv.value ');
-					 $i++;
+					$i++;
 				}
 			}
 
-			if (!empty($conditions))
-			{
-				//~ $conditionStr = "(" . implode(' AND ', $conditions) . ")";
-				//~ $query->where($conditionStr);
-				//~ //$query->where('fo' . $i . '.value  = fv.value ');
-				//~ $query->where('fo.value  = fv.value ');
-			}
+			$query->where('fv1.client="' . $client . '" ');
 
-			//$query->where('fo.value  = fv.value ');
-
-			//print"<pre>"; print_r($fFieldAndFieldOptionsList);
-			//~ die;
-
-
-			$query->join('INNER', $db->qn('#__tjfields_options') . ' AS fo ON (' .
-			$db->qn('fo.field_id') . ' = ' . $db->qn('fv.field_id') . ')');
-			$query->where('fo.id IN (' . $fields_value_str . ')');
-			$query->where('fo.value  = fv.value ');
+			return $query;
 		}
-
-		if (!empty($category_id))
-		{
-			$query->join('INNER', $db->qn('#__tjfields_category_mapping') . ' AS fcm ON fv.field_id = fcm .field_id');
-			$query->where('fcm .category_id = ' . $category_id);
-		}
-
-		$query->where('fv.client="' . $client . '" ');
-		$query->where('f.filterable=' . $db->quote("1"));
-		$query->where('f.state=' . $db->quote("1"));
-
-		// $filterableFields = array("'single_select'", "'radio'", "'multi_select'");
-		// $filterableFieldsStr = implode(",", $filterableFields);
-
-		// $query->where("f.type IN (" . $filterableFieldsStr . ")");
-
-		return $query;
-
-		$clientDetail = explode('.', $client);
-		$component = $clientDetail[0];
-
-		$TjfieldsHelper::mergeWithCompoentQuery($component, $query);
 	}
 
 	/**
@@ -572,5 +562,4 @@ class TjfieldsHelper
 
 		return $fieldAndFieldOptionsList;
 	}
-
 }

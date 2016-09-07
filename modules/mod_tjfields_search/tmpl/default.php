@@ -37,42 +37,38 @@ if (!empty($fieldsCategorys))
 	?>
 	<div><h4><?php echo JText::_('MOD_TJFIELDS_SEARCH_SELECT_CATEGORY');?></h4></div>
 	<?php
-	echo JHtml::_('select.genericlist', $fieldsCategorys, 'category_id', 'class="form-control"  size="1" onchange="submitCategory()" title="' . JText::_('MOD_TJFIELDS_SEARCH_SELECT_CATEGORY') . '"', 'id', 'title', $selectedCategory, 'category_id');
+	//echo JHtml::_('select.genericlist', $fieldsCategorys, 'category_id', 'class="form-control"  size="1" onchange="submitCategory()" title="' . JText::_('MOD_TJFIELDS_SEARCH_SELECT_CATEGORY') . '"', 'id', 'title', $selectedCategory, 'category_id');
+	echo JHtml::_('select.genericlist', $fieldsCategorys, "category_id", 'class="form-control"  size="1" onchange="submitCategory()" title="' . JText::_('MOD_TJFIELDS_SEARCH_SELECT_CATEGORY') . '"', 'value', 'text', $selectedCategory, 'category_id');
+
 }
-
-foreach ($fieldsArray as $fieldstype => $fields)
+foreach ($fieldsArray as $key => $fieldOptions)
 {
-	if(!empty($fields))
+	$i = 0;
+	$fieldName = '';
+
+	//~ if (!empty($field->id))
+	//~ {
+		//~ $fieldOptions = $tjfieldsHelper->getOptions($field->id);
+	//~ }
+
+	if (!empty($fieldOptions))
 	{
-		foreach ($fields as $field)
-		{
-			if (!empty($field->id))
-			{
-				$fieldOptions = $tjfieldsHelper->getOptions($field->id);
-			}
-
-			if (!empty($fieldOptions))
-			{
-			?>
-				<div><h5><?php echo $field->label;?></h5></div>
-			<?php
-			}
-
-			foreach ($fieldOptions as $option)
-			{
-			?>
-				<div class="tjfieldfilters-<?php echo $option->options;?>">
-					<input type="checkbox" class="tjfieldCheck" name="tj_fields_value[]" id="<?php echo $field->name . $option->options;?>" value="<?php echo $option->id;?>" <?php echo in_array($option->id, $selectedFilters)?'checked="checked"':'';?>/>
-					<span>&nbsp;&nbsp;</span>
-					<?php echo $option->options;?>
-				</div>
-				<?php
-			}
-		}
-	}
 	?>
-
+		<div><h5><?php echo $fieldOptions[0]->label;?></h5></div>
 	<?php
+
+	}
+
+	foreach ($fieldOptions as $option)
+	{
+	?>
+		<div class="tjfieldfilters-<?php echo $option->options;?>">
+			<input type="checkbox" class="tjfieldCheck" name="tj_fields_value[]" id="<?php echo $option->name .'||'.  $option->option_id;?>" value="<?php echo $option->option_id;?>" <?php echo in_array($option->option_id, $selectedFilters)?'checked="checked"':'';?>/>
+			<span>&nbsp;&nbsp;</span>
+			<?php echo ucfirst($option->value);?>
+		</div>
+		<?php
+	}
 }
 
 $jinput = JFactory::getApplication();
@@ -82,6 +78,7 @@ $mainframe =JFactory::getApplication();
 		//~ $module = JModuleHelper::getModule('mod_q2cfilters');
 		//~ echo JModuleHelper::renderModule($module);
 ?>
+<p></p>
 	<div class="center">
 		<a class="btn btn-small btn-info" onclick='tjfieldsapplyfilters()'><?php echo JText::_('APPLY');?></a>
 		<a class="btn btn-small btn-info" onclick='clearfilters()'><?php echo JText::_('CLEAR');?></a>

@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS `#__tjfields_fields_value` (
 	`field_id` int(11) NOT NULL COMMENT 'Field table ID',
 	`content_id` int(11) NOT NULL COMMENT 'client specific id',
 	`value` text NOT NULL,
+	`option_id` int(11) DEFAULT NULL,
 	`user_id` int(11) NOT NULL,
 	`email_id` varchar(255) NOT NULL,
 	`client` varchar(255) NOT NULL COMMENT 'client(eg com_jticketing.event)',

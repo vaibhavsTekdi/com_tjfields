@@ -164,6 +164,9 @@ class TjfieldsHelper
 		$insert_obj->email_id   = '';
 		$insert_obj->client     = $data['client'];
 
+		$singleSelectionFields = array("single_select", "radio");
+		$multipleSelectionFields = array("multi_select");
+
 		// Values array will contain menu fields value.
 		foreach ($data['fieldsvalue'] as $fname => $fvalue)
 		{
@@ -175,29 +178,219 @@ class TjfieldsHelper
 
 			if (!empty($fvalue))
 			{
-				if (!is_array($fvalue))
+				if (in_array($field_data->type, $multipleSelectionFields))
+				{
+					$this->saveMultiselectOptions($data, $fname, $field_data);
+				}
+				elseif (in_array($field_data->type, $singleSelectionFields))
+				{
+					$this->saveSingleSelectFieldValue($data, $fname, $field_data, $if_edit_id);
+				}
+				else
 				{
 					$insert_obj->value = $fvalue;
-				}
-				else
-				{
-					$insert_obj->value = json_encode($fvalue);
-				}
 
-				if ($if_edit_id)
-				{
-					$insert_obj->id = $if_edit_id;
-					$db->updateObject('#__tjfields_fields_value', $insert_obj, 'id');
-				}
-				else
-				{
-					$insert_obj->id = '';
-					$db->insertObject('#__tjfields_fields_value', $insert_obj, 'id');
+					if ($if_edit_id)
+					{
+						$insert_obj->id = $if_edit_id;
+						$db->updateObject('#__tjfields_fields_value', $insert_obj, 'id');
+					}
+					else
+					{
+						$insert_obj->id = '';
+						$db->insertObject('#__tjfields_fields_value', $insert_obj, 'id');
+					}
 				}
 			}
 		}
 
 		return true;
+	}
+
+	/**
+	 * check if the fields values are already store. so it means we need to edit the entry
+	 *
+	 * @param   array  $postFieldData  Post array which content (client, content_id, Fname, Fvalue, u_id)
+	 * @param   array  $fieldName      Current multiselect field name
+	 * @param   array  $field_data     field data
+	 * @param   array  $updateId       Previous record id
+	 *
+	 * @return  array
+	 */
+	public function saveSingleSelectFieldValue($postFieldData, $fieldName, $field_data, $updateId = 0)
+	{
+		$currentFieldValue = $postFieldData['fieldsvalue'][$fieldName];
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+		$conditions = array($db->quoteName('id') . ' IN (' . $fieldValueEntryId . ') ');
+
+		$query->select("id")
+		->from("#__tjfields_options")
+		->where("field_id = " . $field_data->id)
+		->where("value = '" . $currentFieldValue . "'");
+		$db->setQuery($query);
+
+		$option_id = $db->loadResult();
+
+		// Save field value
+		$insert_obj = new stdClass;
+		$insert_obj->field_id = $field_data->id;
+
+		$insert_obj->content_id = $postFieldData['content_id'];
+		$insert_obj->user_id    = $postFieldData['user_id'];
+		$insert_obj->email_id   = '';
+		$insert_obj->client     = $postFieldData['client'];
+		$insert_obj->value = $currentFieldValue;
+		$insert_obj->option_id = $option_id;
+
+		if ($updateId)
+		{
+			$insert_obj->id = $updateId;
+			$db->updateObject('#__tjfields_fields_value', $insert_obj, 'id');
+		}
+		else
+		{
+			$insert_obj->id = '';
+			$db->insertObject('#__tjfields_fields_value', $insert_obj, 'id');
+		}
+	}
+
+	/**
+	 * check if the fields values are already store. so it means we need to edit the entry
+	 *
+	 * @param   array  $postFieldData     Post array which content (client, content_id, Fname, Fvalue, u_id)
+	 * @param   array  $multiselectFname  Current multiselect field name
+	 * @param   array  $field_data        field data
+	 *
+	 * @return  array
+	 */
+	public function saveMultiselectOptions($postFieldData, $multiselectFname, $field_data)
+	{
+		// Select all entries for __tjfields_fields_value
+		$db    = JFactory::getDbo();
+		$query = $db->getQuery(true);
+		$query->select('*');
+		$query->from('#__tjfields_fields_value');
+		$query->where('content_id=' . $postFieldData['content_id']);
+		$query->where('field_id=' . $field_data->id);
+		$query->where('client="' . $postFieldData['client'] . '"');
+		$db->setQuery($query);
+		$dbFieldValue = $db->loadObjectList("id");
+
+		$newFields = $postFieldData['fieldsvalue'];
+		$multiselectField = $newFields[$multiselectFname];
+
+		if (!empty($dbFieldValue))
+		{
+			// Check for update
+			foreach ($dbFieldValue as $key => $dbField)
+			{
+				// Current field is present then remove from both list
+				if (in_array($dbField->value, $multiselectField))
+				{
+					unset($dbFieldValue[$key]);
+					$multiselectField = array_diff($multiselectField, array($dbField->value));
+				}
+			}
+
+			// Now $dbFieldValue contains fields to delete. newField contain field to insert
+			if (!empty($dbFieldValue))
+			{
+				$delFieldValueIdsArray = array_keys($dbFieldValue);
+				$delFieldValueIds = implode(',', $delFieldValueIdsArray);
+
+				$this->deleteFieldValueEntry($delFieldValueIds);
+			}
+
+			if (!empty($multiselectField))
+			{
+				foreach ($multiselectField as $fieldValue)
+				{
+					$obj = new stdClass;
+					$obj->field_id = $field_data->id;
+					$obj->content_id = $postFieldData['content_id'];
+					$obj->value = $fieldValue;
+					$obj->client = $postFieldData['client'];
+					$obj->user_id = JFactory::getUser()->id;
+
+					$this->addFieldValueEntry($obj);
+				}
+			}
+		}
+		else
+		{
+			// New: add all options
+			foreach ($multiselectField as $fieldValue)
+			{
+				$obj = new stdClass;
+				$obj->field_id = $field_data->id;
+				$obj->content_id = $postFieldData['content_id'];
+				$obj->value = $fieldValue;
+				$obj->client = $postFieldData['client'];
+				$obj->user_id = JFactory::getUser()->id;
+
+				$this->addFieldValueEntry($obj);
+			}
+		}
+	}
+
+	/**
+	 * check if the fields values are already store. so it means we need to edit the entry
+	 *
+	 * @param   object  $insert_obj  Partially created object.
+	 *
+	 * @return  array
+	 */
+	public function addFieldValueEntry($insert_obj)
+	{
+		if (!empty($insert_obj))
+		{
+			$db = JFactory::getDbo();
+			$query = $db->getQuery(true);
+			$conditions = array($db->quoteName('id') . ' IN (' . $fieldValueEntryId . ') ');
+
+			$query->select("id")
+			->from("#__tjfields_options")
+			->where("field_id = " . $insert_obj->field_id)
+			->where("value = '" . $insert_obj->value . "'");
+			$db->setQuery($query);
+
+			$insert_obj->option_id = $db->loadResult();
+
+			if (!empty($insert_obj->option_id))
+			{
+				// Insert into db
+				$db = JFactory::getDbo();
+				$db->insertObject('#__tjfields_fields_value', $insert_obj, 'id');
+			}
+		}
+	}
+
+	/**
+	 * check if the fields values are already store. so it means we need to edit the entry
+	 *
+	 * @param   array  $fieldValueEntryId  Ids to delete the entries from table #__tjfields_fields_value
+	 *
+	 * @return  array
+	 */
+	public function deleteFieldValueEntry($fieldValueEntryId)
+	{
+		if (!empty($fieldValueEntryId))
+		{
+			$db = JFactory::getDbo();
+
+			$query = $db->getQuery(true);
+
+			// Delete all custom keys for user 1001.
+			$conditions = array(
+				$db->quoteName('id') . ' IN (' . $fieldValueEntryId . ') '
+			);
+
+			$query->delete($db->quoteName('#__tjfields_fields_value'));
+			$query->where($conditions);
+			$db->setQuery($query);
+			$result = $db->execute();
+		}
 	}
 
 	/**
@@ -216,7 +409,9 @@ class TjfieldsHelper
 		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true);
 		$query->select('id FROM #__tjfields_fields_value');
-		$query->where('content_id=' . $content_id . ' AND client="' . $client . '" AND user_id=' . $user_id);
+		$query->where('content_id=' . $content_id . ' AND client="' . $client . '"');
+
+		// $query->where('content_id=' . $content_id . ' AND client="' . $client . '" AND user_id=' . $user_id);
 
 		if ($field_id)
 		{
@@ -341,7 +536,8 @@ class TjfieldsHelper
 			$query->select('DISTINCT f.id,f.name, f.label,fv.value,fv.option_id');
 			$query->FROM("#__tjfields_fields AS f");
 			$query->JOIN('INNER', '#__tjfields_fields_value AS fv ON fv.field_id = f.id');
-			//$query->JOIN('INNER', '#__tjfields_options AS fo ON fo.field_id = fv.field_id');
+
+			// $query->JOIN('INNER', '#__tjfields_options AS fo ON fo.field_id = fv.field_id');
 
 			$query->where('f.client="' . $client . '"');
 			$query->where('f.filterable=1');
@@ -421,7 +617,6 @@ class TjfieldsHelper
 		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true);
 
-
 		// Selected field value
 		if (!empty($fields_value_str))
 		{
@@ -442,7 +637,6 @@ class TjfieldsHelper
 						return $query;
 					}
 				}
-
 			}
 			else
 			{
@@ -534,7 +728,6 @@ class TjfieldsHelper
 			// JFactory::getApplication()->enqueueMessage(sprintf('Unable to load class: %s, $className), 'error');
 		}
 	}
-
 
 	/**
 	 * Get option which are stored in field option table.

@@ -151,8 +151,29 @@ class com_tjfieldsInstallerScript
 		$db->setQuery($query);
 		$db->execute();
 
-		// Check for table
+		// Check for table//////////////////////////////////////////////////////////////////////////////
+		$db =  JFactory::getDBO();
 
+		$field_array = array();
+		$query = "SHOW COLUMNS FROM `#__tjfields_fields_value`";
+		$db->setQuery($query);
+		$columns = $db->loadobjectlist();
+
+		for ($i = 0; $i < count($columns); $i++) {
+			$field_array[] = $columns[$i]->Field;
+		}
+
+		if (!in_array('option_id', $field_array)) {
+			$query = "ALTER TABLE `#__tjfields_fields_value`
+						ADD COLUMN `option_id` int(11) DEFAULT NULL";
+			$db->setQuery($query);
+			if (!$db->execute() )
+			{
+				echo $img_ERROR.JText::_('Unable to Alter #__tjfields_fields_value table. (While adding option_id column )').$BR;
+				echo $db->getErrorMsg();
+				return false;
+			}
+		}
 	}
 	function installSqlFiles($parent)
 	{

@@ -54,7 +54,7 @@ foreach ($fieldsArray as $key => $fieldOptions)
 	if (!empty($fieldOptions))
 	{
 	?>
-		<div><h5><?php echo $fieldOptions[0]->label;?></h5></div>
+		<div><h5><?php echo ucfirst($fieldOptions[0]->label);?></h5></div>
 	<?php
 
 	}

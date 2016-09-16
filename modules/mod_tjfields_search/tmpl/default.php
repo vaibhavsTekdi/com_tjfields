@@ -62,7 +62,7 @@ foreach ($fieldsArray as $key => $fieldOptions)
 	foreach ($fieldOptions as $option)
 	{
 	?>
-		<div class="tjfieldfilters-<?php echo $option->options;?>">
+		<div class="tjfieldfilters-<?php echo $option->name;?>">
 			<input type="checkbox" class="tjfieldCheck" name="tj_fields_value[]" id="<?php echo $option->name .'||'.  $option->option_id;?>" value="<?php echo $option->option_id;?>" <?php echo in_array($option->option_id, $selectedFilters)?'checked="checked"':'';?>/>
 			<span>&nbsp;&nbsp;</span>
 			<?php echo ucfirst($option->value);?>

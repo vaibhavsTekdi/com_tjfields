@@ -15,11 +15,15 @@ $input = JFactory::getApplication()->input;
 $doc = JFactory::getDocument();
 $lang = JFactory::getLanguage();
 $lang->load('mod_tjfields_search', JPATH_SITE);
+$currentComponent = $input->get("option");
 
 // GETTING MODULE PARAMS
 $url_cat_param_name       = $params->get('url_cat_param_name', '');
 $client_type               = $params->get('client_type', '');
 $category_type               = $params->get('category_type', '');
+
+$tmp = explode(".", $client_type);
+$configuredComp = $tmp[0];
 
 if (JFile::exists(JPATH_SITE . '/components/com_tjfields/tjfields.php'))
 {

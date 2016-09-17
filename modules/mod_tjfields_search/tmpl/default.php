@@ -29,18 +29,26 @@ $baseurl = implode('&', $urlArray);
 // Make base URL ends
 $selectedFilters = explode(',', $jinput->input->get('tj_fields_value', '', 'string'));
 ?>
+<!--
 <form method="post" name="tjfieldsSearchForm" id="tjfieldsSearchForm">
-<?php
+-->
 
+<?php
 if (!empty($fieldsCategorys))
 {
 	?>
-	<div><h4><?php echo JText::_('MOD_TJFIELDS_SEARCH_SELECT_CATEGORY');?></h4></div>
+	<div><b><?php echo JText::_('MOD_TJFIELDS_SEARCH_SELECT_CATEGORY');?></b></div>
 	<?php
 	//echo JHtml::_('select.genericlist', $fieldsCategorys, 'category_id', 'class="form-control"  size="1" onchange="submitCategory()" title="' . JText::_('MOD_TJFIELDS_SEARCH_SELECT_CATEGORY') . '"', 'id', 'title', $selectedCategory, 'category_id');
 	echo JHtml::_('select.genericlist', $fieldsCategorys, "category_id", 'class="form-control"  size="1" onchange="submitCategory()" title="' . JText::_('MOD_TJFIELDS_SEARCH_SELECT_CATEGORY') . '"', 'value', 'text', $selectedCategory, 'category_id');
 
 }
+/*
+jimport('joomla.application.module.helper');
+	$module = JModuleHelper::getModule('mod_q2cfilters');
+	echo JModuleHelper::renderModule($module);
+	//print"<pre>"; print_r($fieldsArray); die;
+*/
 foreach ($fieldsArray as $key => $fieldOptions)
 {
 	$i = 0;
@@ -54,18 +62,24 @@ foreach ($fieldsArray as $key => $fieldOptions)
 	if (!empty($fieldOptions))
 	{
 	?>
-		<div><h5><?php echo ucfirst($fieldOptions[0]->label);?></h5></div>
-	<?php
+		<div class="tj-filterwrapper filterwrapper<?php echo $fieldOptions[0]->id; ?>">
+			<div class="qtcfiltername filtername<?php echo $fieldOptions[0]->id; ?>">
+				<b><?php echo ucfirst($fieldOptions[0]->label);?></b>
+			</div>
+		<?php
 
-	}
+		foreach ($fieldOptions as $option)
+		{
+		?>
+			<div class="tj-filteritem tjfieldfilters-<?php echo $option->name;?>">
+				<input type="checkbox" class="tjfieldCheck" name="tj_fields_value[]" id="<?php echo $option->name .'||'.  $option->option_id;?>" value="<?php echo $option->option_id;?>" <?php echo in_array($option->option_id, $selectedFilters)?'checked="checked"':'';?>  onclick='tjfieldsapplyfilters()' />
+				<span>&nbsp;&nbsp;</span>
+				<?php echo ucfirst($option->value);?>
+			</div>
 
-	foreach ($fieldOptions as $option)
-	{
-	?>
-		<div class="tjfieldfilters-<?php echo $option->name;?>">
-			<input type="checkbox" class="tjfieldCheck" name="tj_fields_value[]" id="<?php echo $option->name .'||'.  $option->option_id;?>" value="<?php echo $option->option_id;?>" <?php echo in_array($option->option_id, $selectedFilters)?'checked="checked"':'';?>/>
-			<span>&nbsp;&nbsp;</span>
-			<?php echo ucfirst($option->value);?>
+			<?php
+		}
+		?>
 		</div>
 		<?php
 	}
@@ -74,16 +88,15 @@ foreach ($fieldsArray as $key => $fieldOptions)
 $jinput = JFactory::getApplication();
 $mainframe =JFactory::getApplication();
 
-		//~ jimport('joomla.application.module.helper');
-		//~ $module = JModuleHelper::getModule('mod_q2cfilters');
-		//~ echo JModuleHelper::renderModule($module);
 ?>
 <p></p>
 	<div class="center">
 		<a class="btn btn-small btn-info" onclick='tjfieldsapplyfilters()'><?php echo JText::_('APPLY');?></a>
 		<a class="btn btn-small btn-info" onclick='clearfilters()'><?php echo JText::_('CLEAR');?></a>
 	</div>
+<!--
 </form>
+-->
 
 <script>
 

@@ -545,22 +545,63 @@ class TjfieldsHelper
 			$query->where('fv.option_id IS NOT NULL');
 			$query->where("f.type IN ('single_select','multi_select', 'radio')");
 
-			if (!empty($category_id))
+			/*if (!empty($category_id))
 			{
 				$query->JOIN('INNER', '#__tjfields_category_mapping AS fcm ON fcm.field_id = f.id');
 				$query->where('fcm.category_id=' . $category_id);
 			}
-			else
+			else*/
+
 			{
+				// Doesn't have mapped any category
 				$query->where('NOT EXISTS (select * FROM #__tjfields_category_mapping AS cm where f.id=cm.field_id)');
 			}
 
 			$query->order('f.ordering');
 			$db->setQuery($query);
-			$coreFields = $db->loadObjectlist();
+			$coreFields = $db->loadObjectlist("id");
+			$allFields = $coreFields;
+
+			// If category related field present
+			if (!empty($category_id))
+			{
+				$db    = JFactory::getDbo();
+				$queryCat = $db->getQuery(true);
+				$queryCat->select('DISTINCT f.id,f.name, f.label,fv.value,fv.option_id');
+				$queryCat->FROM("#__tjfields_fields AS f");
+				$queryCat->JOIN('INNER', '#__tjfields_fields_value AS fv ON fv.field_id = f.id');
+
+				// $queryCat->JOIN('INNER', '#__tjfields_options AS fo ON fo.field_id = fv.field_id');
+
+				$queryCat->where('f.client="' . $client . '"');
+				$queryCat->where('f.filterable=1');
+				$queryCat->where('f.state=1');
+				$queryCat->where('fv.option_id IS NOT NULL');
+				$queryCat->where("f.type IN ('single_select','multi_select', 'radio')");
+
+				$queryCat->JOIN('INNER', '#__tjfields_category_mapping AS fcm ON fcm.field_id = f.id');
+				$queryCat->where('fcm.category_id=' . $category_id);
+
+				$queryCat->order('f.ordering');
+				$db->setQuery($queryCat);
+				$catFields = $db->loadObjectlist("id");
+
+				// Check for duplication for worse
+				if (!empty($catFields))
+				{
+					foreach ($catFields as $key => $cfield)
+					{
+						// Add element if not exist
+						if (!array_key_exists($key, $allFields))
+						{
+							$allFields[$key] = $cfield;
+						}
+					}
+				}
+			}
 		}
 
-		return $coreFields;
+		return $allFields;
 	}
 
 	/**

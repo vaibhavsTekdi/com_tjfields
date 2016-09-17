@@ -29,6 +29,18 @@ $baseurl = implode('&', $urlArray);
 // Make base URL ends
 $selectedFilters = explode(',', $jinput->input->get('tj_fields_value', '', 'string'));
 ?>
+<?php
+	$buttons = $params->get('apply_clear_buttons','');
+	if($buttons == "above" || $buttons == "both")
+	{ ?>
+	<div class="center">
+		<a class="btn btn-small btn-info" onclick='tjfieldsapplyfilters()'><?php echo JText::_('APPLY');?></a>
+		<a class="btn btn-small btn-info" onclick='clearfilters()'><?php echo JText::_('CLEAR');?></a>
+	</div>
+	<?php
+	}
+?>
+
 <!--
 <form method="post" name="tjfieldsSearchForm" id="tjfieldsSearchForm">
 -->
@@ -90,10 +102,19 @@ $mainframe =JFactory::getApplication();
 
 ?>
 <p></p>
-	<div class="center">
-		<a class="btn btn-small btn-info" onclick='tjfieldsapplyfilters()'><?php echo JText::_('APPLY');?></a>
-		<a class="btn btn-small btn-info" onclick='clearfilters()'><?php echo JText::_('CLEAR');?></a>
-	</div>
+	<?php
+	if($buttons == "below" || $buttons == "both")
+	{
+		?>
+		<div class="center">
+			<a class="btn btn-small btn-info" onclick='tjfieldsapplyfilters()'><?php echo JText::_('APPLY');?></a>
+			<a class="btn btn-small btn-info" onclick='clearfilters()'><?php echo JText::_('CLEAR');?></a>
+		</div>
+
+		<?php
+	}
+	?>
+
 <!--
 </form>
 -->

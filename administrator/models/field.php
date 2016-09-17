@@ -311,16 +311,18 @@ class TjfieldsModelField extends JModelAdmin
 			// Save/update field and category mapping
 			$selectedCategories = !empty($data['category']) ? $data['category'] : array();
 
+			// 1 Fetch cat mapping for field from DB
+			$DBcat_maping   = $TjfieldsHelper->getFieldCategoryMapping($id);
+
 			if ($selectedCategories)
 			{
-				// 1 Fetch cat mapping for field from DB
-				$DBcat_maping   = $TjfieldsHelper->getFieldCategoryMapping($id);
 				$newlyAddedCats = array_diff($selectedCategories, $DBcat_maping);
 				$deletedCats    = array_diff($DBcat_maping, $selectedCategories);
 
 				if (!empty($deletedCats))
 				{
-					$this->deleteFieldCategoriesMapping($id, $deletedCats);
+					$arrayId = array($id);
+					$this->deleteFieldCategoriesMapping($arrayId, $deletedCats);
 				}
 
 				if (!empty($newlyAddedCats))
@@ -340,6 +342,11 @@ class TjfieldsModelField extends JModelAdmin
 						}
 					}
 				}
+			}
+			else
+			{
+				$arrayId = array($id);
+				$this->deleteFieldCategoriesMapping($arrayId, array());
 			}
 
 			// Create XML for the current client.
@@ -427,27 +434,31 @@ class TjfieldsModelField extends JModelAdmin
 	 *
 	 * @since	1.6
 	 */
-	public function deleteFieldCategoriesMapping($field_id, $cats = array())
+	public function deleteFieldCategoriesMapping($field_id = array(), $cats = array())
 	{
 		$db = JFactory::getDBO();
 
 		try
 		{
 			$query      = $db->getQuery(true);
-			$conditions = array(
-				$db->quoteName('field_id') . ' = ' . $field_id
-			);
 
-			if (!empty($cats))
+			if (!empty($field_id))
 			{
-				$conditions[] = $db->quoteName('category_id') . ' IN (' . implode(",", $cats) . ")";
+				$conditions = array(
+					$db->quoteName('field_id') . ' IN (' . implode(",", $field_id) . ")"
+				);
+
+				if (!empty($cats))
+				{
+					$conditions[] = $db->quoteName('category_id') . ' IN (' . implode(",", $cats) . ")";
+				}
+
+				$query->delete($db->quoteName('#__tjfields_category_mapping'));
+				$query->where($conditions);
+				$db->setQuery($query);
+
+				$result = $db->execute();
 			}
-
-			$query->delete($db->quoteName('#__tjfields_category_mapping'));
-			$query->where($conditions);
-			$db->setQuery($query);
-
-			$result = $db->execute();
 		}
 		catch (RuntimeException $e)
 		{

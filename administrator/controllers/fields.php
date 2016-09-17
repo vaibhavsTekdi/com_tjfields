@@ -159,6 +159,8 @@ class TjfieldsControllerFields extends JControllerAdmin
 			// Remove the items.
 			if ($model->deletefield($cid))
 			{
+				$model_field =$this->getModel( 'field' );
+				$model_field->deleteFieldCategoriesMapping($cid);
 				$TjfieldsHelper = new TjfieldsHelper();
 				$data = array();
 				$data['client'] = $client;

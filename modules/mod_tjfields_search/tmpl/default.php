@@ -30,7 +30,7 @@ $baseurl = implode('&', $urlArray);
 $selectedFilters = explode(',', $jinput->input->get('tj_fields_value', '', 'string'));
 ?>
 <?php
-	$buttons = $params->get('apply_clear_buttons','');
+	$buttons = $params->get('apply_clear_buttons', '');
 	if($buttons == "above" || $buttons == "both")
 	{ ?>
 	<div class="center">
@@ -58,6 +58,11 @@ if (!empty($fieldsCategorys))
 /*
 jimport('joomla.application.module.helper');
 	$module = JModuleHelper::getModule('mod_q2cfilters');
+	$attribs['style'] = "xhtml";
+
+	//echo $module->content;
+	//echo JModuleHelper::renderModule($module, $attribs, null);
+
 	echo JModuleHelper::renderModule($module);
 	//print"<pre>"; print_r($fieldsArray); die;
 */
@@ -281,6 +286,46 @@ $mainframe =JFactory::getApplication();
 			redirectlink += optionStr;
 		}
 
+		/* Comma seperated parameters to be removed on change of category */
+		var removeParamList = "<?php echo $removeParamOnchangeCat; ?>";
+
+		if (removeParamList.trim())
+		{
+			var params_arr = removeParamList.split(",");
+
+			for (var i = 0; i < params_arr.length; i += 1)
+			{
+				redirectlink = tj_removeParam(params_arr[i], redirectlink);
+			}
+		}
+
 		window.location = redirectlink;
 	}
+
+	function tj_removeParam(key, sourceURL)
+	{
+		var rtn = sourceURL.split("?")[0],
+			param,
+			params_arr = [],
+			queryString = (sourceURL.indexOf("?") !== -1) ? sourceURL.split("?")[1] : "";
+
+		if (queryString !== "")
+		{
+			params_arr = queryString.split("&");
+
+			for (var i = params_arr.length - 1; i >= 0; i -= 1)
+			{
+				param = params_arr[i].split("=")[0];
+
+				if (param === key)
+				{
+					params_arr.splice(i, 1);
+				}
+			}
+
+			rtn = rtn + "?" + params_arr.join("&");
+		}
+    return rtn;
+}
+
 </script>

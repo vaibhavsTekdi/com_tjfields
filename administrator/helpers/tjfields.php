@@ -255,7 +255,7 @@ class TjfieldsHelper
 					$comquick2cartHelper = new Comquick2cartHelper;
 					$extension = $comquick2cartHelper->getExtensionNameFromCategoryTable($client);
 
-				break;
+			break;
 		}
 
 		if (!empty($extension))

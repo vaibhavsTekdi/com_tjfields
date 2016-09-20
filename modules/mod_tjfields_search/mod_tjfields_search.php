@@ -37,6 +37,19 @@ if (JFile::exists(JPATH_SITE . '/components/com_tjfields/tjfields.php'))
 
 	$tjfieldsHelper = new tjfieldsHelper;
 
+	// Get comma seperated parameters to removed on change of category
+	$removeParamOnchangeCat = '';
+
+	switch ($configuredComp)
+	{
+		case 'com_quick2cart':
+				require_once JPATH_SITE . '/components/com_quick2cart/helper.php';
+				$comquick2cartHelper = new Comquick2cartHelper;
+				$removeParamOnchangeCat = $comquick2cartHelper->getParameterToRemoveOnChangeOfCategory();
+
+		break;
+	}
+
 	// Selected category
 	$clientCatUrlParam = $params->get("url_cat_param_name", "prod_cat");
 	$selectedCategory = $input->get($clientCatUrlParam, '');

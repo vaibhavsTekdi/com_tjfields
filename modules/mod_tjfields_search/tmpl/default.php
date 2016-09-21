@@ -48,8 +48,10 @@ $selectedFilters = explode(',', $jinput->input->get('tj_fields_value', '', 'stri
 	if($buttons == "above" || $buttons == "both")
 	{ ?>
 	<div class="center">
-		<a class="btn btn-small btn-info" onclick='tjfieldsapplyfilters()'><?php echo JText::_('APPLY');?></a>
-		<a class="btn btn-small btn-info" onclick='clearfilters()'><?php echo JText::_('CLEAR');?></a>
+<!--
+		<a class="btn btn-small btn-info" onclick='tjfieldsapplyfilters()'><?php echo JText::_('MOD_TJFIELDS_SEARCH_APPLY_BTN');?></a>
+-->
+		<a class="btn btn-small btn-info" onclick='clearfilters()'><?php echo JText::_('MOD_TJFIELDS_SEARCH_CLEAR_BTN');?></a>
 	</div>
 	<?php
 	}
@@ -60,26 +62,18 @@ $selectedFilters = explode(',', $jinput->input->get('tj_fields_value', '', 'stri
 -->
 
 <?php
-if (!empty($fieldsCategorys))
+$showCategoryFilter = $params->get('showCategoryFilter', 0);
+
+if ($showCategoryFilter && !empty($fieldsCategorys))
 {
 	?>
 	<div><b><?php echo JText::_('MOD_TJFIELDS_SEARCH_SELECT_CATEGORY');?></b></div>
 	<?php
-	//echo JHtml::_('select.genericlist', $fieldsCategorys, 'category_id', 'class="form-control"  size="1" onchange="submitCategory()" title="' . JText::_('MOD_TJFIELDS_SEARCH_SELECT_CATEGORY') . '"', 'id', 'title', $selectedCategory, 'category_id');
 	echo JHtml::_('select.genericlist', $fieldsCategorys, "category_id", 'class="form-control"  size="1" onchange="submitCategory()" title="' . JText::_('MOD_TJFIELDS_SEARCH_SELECT_CATEGORY') . '"', 'value', 'text', $selectedCategory, 'category_id');
 
 }
-/*
-jimport('joomla.application.module.helper');
-	$module = JModuleHelper::getModule('mod_q2cfilters');
-	$attribs['style'] = "xhtml";
+	echo $compSpecificFilterHtml;
 
-	//echo $module->content;
-	//echo JModuleHelper::renderModule($module, $attribs, null);
-
-	echo JModuleHelper::renderModule($module);
-	//print"<pre>"; print_r($fieldsArray); die;
-*/
 foreach ($fieldsArray as $key => $fieldOptions)
 {
 	$i = 0;
@@ -126,8 +120,10 @@ $mainframe =JFactory::getApplication();
 	{
 		?>
 		<div class="center">
-			<a class="btn btn-small btn-info" onclick='tjfieldsapplyfilters()'><?php echo JText::_('APPLY');?></a>
-			<a class="btn btn-small btn-info" onclick='clearfilters()'><?php echo JText::_('CLEAR');?></a>
+<!--
+			<a class="btn btn-small btn-info" onclick='tjfieldsapplyfilters()'><?php //echo JText::_('MOD_TJFIELDS_SEARCH_APPLY_BTN');?></a>
+-->
+			<a class="btn btn-small btn-info" onclick='clearfilters()'><?php echo JText::_('MOD_TJFIELDS_SEARCH_CLEAR_BTN');?></a>
 		</div>
 
 		<?php

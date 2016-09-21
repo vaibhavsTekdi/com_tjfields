@@ -39,6 +39,7 @@ if (JFile::exists(JPATH_SITE . '/components/com_tjfields/tjfields.php'))
 
 	// Get comma seperated parameters to removed on change of category
 	$removeParamOnchangeCat = '';
+	$compSpecificFilterHtml = '';
 
 	switch ($configuredComp)
 	{
@@ -46,6 +47,7 @@ if (JFile::exists(JPATH_SITE . '/components/com_tjfields/tjfields.php'))
 				require_once JPATH_SITE . '/components/com_quick2cart/helper.php';
 				$comquick2cartHelper = new Comquick2cartHelper;
 				$removeParamOnchangeCat = $comquick2cartHelper->getParameterToRemoveOnChangeOfCategory();
+				$compSpecificFilterHtml = $comquick2cartHelper->getComponentSpecificFilterHtml();
 
 		break;
 	}

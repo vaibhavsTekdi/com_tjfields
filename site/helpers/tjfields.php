@@ -533,7 +533,7 @@ class TjfieldsHelper
 		{
 			$db    = JFactory::getDbo();
 			$query = $db->getQuery(true);
-			$query->select('DISTINCT f.id,f.name, f.label,fv.value,fv.option_id');
+			$query->select('DISTINCT fv.option_id, f.id,f.name, f.label,fv.value');
 			$query->FROM("#__tjfields_fields AS f");
 			$query->JOIN('INNER', '#__tjfields_fields_value AS fv ON fv.field_id = f.id');
 
@@ -559,7 +559,7 @@ class TjfieldsHelper
 
 			$query->order('f.ordering');
 			$db->setQuery($query);
-			$coreFields = $db->loadObjectlist("id");
+			$coreFields = $db->loadObjectlist("option_id");
 			$allFields = $coreFields;
 
 			// If category related field present
@@ -567,7 +567,7 @@ class TjfieldsHelper
 			{
 				$db    = JFactory::getDbo();
 				$queryCat = $db->getQuery(true);
-				$queryCat->select('DISTINCT f.id,f.name, f.label,fv.value,fv.option_id');
+				$queryCat->select('DISTINCT fv.option_id, f.id,f.name, f.label,fv.value');
 				$queryCat->FROM("#__tjfields_fields AS f");
 				$queryCat->JOIN('INNER', '#__tjfields_fields_value AS fv ON fv.field_id = f.id');
 
@@ -584,7 +584,7 @@ class TjfieldsHelper
 
 				$queryCat->order('f.ordering');
 				$db->setQuery($queryCat);
-				$catFields = $db->loadObjectlist("id");
+				$catFields = $db->loadObjectlist("option_id");
 
 				// Check for duplication for worse
 				if (!empty($catFields))

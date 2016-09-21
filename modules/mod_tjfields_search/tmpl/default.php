@@ -12,19 +12,33 @@ defined('_JEXEC') or die();
 $jinput = JFactory::getApplication();
 $baseurl = $jinput->input->server->get('REQUEST_URI', '', 'STRING');
 
-// Make base URL starts
-$urlArray = explode ('&',$baseurl);
 
-foreach ($urlArray as $key => $url)
+// Get uRL base part and parameter part
+$temp =  explode ('?', $baseurl);
+$siteBase =  $temp[0];
+$urlArray = array();
+
+if (!empty($temp[1]))
 {
-	// Unset Not required parameter from array
-	if (!empty(strstr($url, 'ModFilterCat=')) || !empty(strstr($url, 'prod_cat=')) || !empty(strstr($url, 'tj_fields_value=')) || !empty(strstr($url, 'client=')))
+	$urlArray = explode ('&',$temp[1]);
+}
+
+
+if (!empty($urlArray))
+{
+	foreach ($urlArray as $key => $url)
 	{
-		unset($urlArray[$key]);
+		// Unset Not required parameter from array
+		if (!empty(strstr($url, 'ModFilterCat=')) || !empty(strstr($url, 'prod_cat=')) || !empty(strstr($url, 'tj_fields_value=')) || !empty(strstr($url, 'client=')))
+		{
+			unset($urlArray[$key]);
+		}
 	}
 }
 
-$baseurl = implode('&', $urlArray);
+//$baseurl = implode('&', $urlArray);
+$baseurl = $siteBase  . "?" . implode('&', $urlArray);
+
 
 // Make base URL ends
 $selectedFilters = explode(',', $jinput->input->get('tj_fields_value', '', 'string'));
@@ -131,7 +145,6 @@ $mainframe =JFactory::getApplication();
 	function tjfieldsapplyfilters()
 	{
 		var redirectlink = '<?php echo $baseurl;?>';
-
 		var client = "com_quick2cart.products";
 		var optionStr = "";
 

@@ -12,6 +12,7 @@
 	<files>
 		<filename module="mod_tjfields_search">mod_tjfields_search.php</filename>
 		<filename>index.html</filename>
+		<folder>assets</folder>
 		<folder>tmpl</folder>
 	</files>
 	<languages folder="language">

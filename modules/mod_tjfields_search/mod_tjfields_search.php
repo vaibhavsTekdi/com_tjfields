@@ -8,7 +8,6 @@
  */
 // No direct access.
 defined('_JEXEC') or die();
-
 $input = JFactory::getApplication()->input;
 
 // LOAD LANGUAGE FILES

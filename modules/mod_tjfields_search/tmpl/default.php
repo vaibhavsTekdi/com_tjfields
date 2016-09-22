@@ -9,6 +9,14 @@
 
 // No direct access.
 defined('_JEXEC') or die();
+$document = JFactory::getDocument();
+$path = JUri::base() . 'modules/mod_tjfields_search/assets/css/tjfilters.css';
+$document->addStyleSheet($path);
+?>
+
+<div class="tjfield-wrapper <?php  echo $params->get('moduleclass_sfx');?>">
+
+<?php
 $jinput = JFactory::getApplication();
 $baseurl = $jinput->input->server->get('REQUEST_URI', '', 'STRING');
 
@@ -23,13 +31,14 @@ if (!empty($temp[1]))
 	$urlArray = explode ('&',$temp[1]);
 }
 
+$clientCatId = $jinput->input->get($url_cat_param_name, '');
 
 if (!empty($urlArray))
 {
 	foreach ($urlArray as $key => $url)
 	{
 		// Unset Not required parameter from array
-		if (!empty(strstr($url, 'ModFilterCat=')) || !empty(strstr($url, 'prod_cat=')) || !empty(strstr($url, 'tj_fields_value=')) || !empty(strstr($url, 'client=')))
+		if (!empty(strstr($url, 'ModFilterCat=')) || !empty(strstr($url, $url_cat_param_name)) || !empty(strstr($url, 'tj_fields_value=')) || !empty(strstr($url, 'client=')))
 		{
 			unset($urlArray[$key]);
 		}
@@ -49,9 +58,9 @@ $selectedFilters = explode(',', $jinput->input->get('tj_fields_value', '', 'stri
 	{ ?>
 	<div class="center">
 <!--
-		<a class="btn btn-small btn-info" onclick='tjfieldsapplyfilters()'><?php echo JText::_('MOD_TJFIELDS_SEARCH_APPLY_BTN');?></a>
+		<a class="btn btn-small btn-info" onclick='tj_clearfilters()'><?php echo JText::_('MOD_TJFIELDS_SEARCH_APPLY_BTN');?></a>
 -->
-		<a class="btn btn-small btn-info" onclick='clearfilters()'><?php echo JText::_('MOD_TJFIELDS_SEARCH_CLEAR_BTN');?></a>
+		<a class="btn btn-small btn-info" onclick='tj_clearfilters()'><?php echo JText::_('MOD_TJFIELDS_SEARCH_CLEAR_BTN');?></a>
 	</div>
 	<?php
 	}
@@ -64,14 +73,22 @@ $selectedFilters = explode(',', $jinput->input->get('tj_fields_value', '', 'stri
 <?php
 $showCategoryFilter = $params->get('showCategoryFilter', 0);
 
+$categoryFilterStyle = 'display:none;';
+
 if ($showCategoryFilter && !empty($fieldsCategorys))
 {
-	?>
-	<div><b><?php echo JText::_('MOD_TJFIELDS_SEARCH_SELECT_CATEGORY');?></b></div>
-	<?php
-	echo JHtml::_('select.genericlist', $fieldsCategorys, "category_id", 'class="form-control"  size="1" onchange="submitCategory()" title="' . JText::_('MOD_TJFIELDS_SEARCH_SELECT_CATEGORY') . '"', 'value', 'text', $selectedCategory, 'category_id');
-
+	$categoryFilterStyle = '';
 }
+	?>
+	<div class="tj_categoryFilter" style="<?php echo $categoryFilterStyle; ?>">
+		<div><b><?php echo JText::_('MOD_TJFIELDS_SEARCH_SELECT_CATEGORY');?></b></div>
+		<?php
+		echo JHtml::_('select.genericlist', $fieldsCategorys, "category_id", 'class="form-control"  size="1" onchange="submitCategory()" title="' . JText::_('MOD_TJFIELDS_SEARCH_SELECT_CATEGORY') . '"', 'value', 'text', $selectedCategory, 'category_id');
+		?>
+	</div>
+
+	<?php
+
 	echo $compSpecificFilterHtml;
 
 foreach ($fieldsArray as $key => $fieldOptions)
@@ -79,32 +96,27 @@ foreach ($fieldsArray as $key => $fieldOptions)
 	$i = 0;
 	$fieldName = '';
 
-	//~ if (!empty($field->id))
-	//~ {
-		//~ $fieldOptions = $tjfieldsHelper->getOptions($field->id);
-	//~ }
-
 	if (!empty($fieldOptions))
 	{
 	?>
-		<div class="tj-filterwrapper filterwrapper<?php echo $fieldOptions[0]->id; ?>">
+		<div class="tj-filterwrapper filterwrapper<?php echo $fieldOptions[0]->id; ?>" >
 			<div class="qtcfiltername filtername<?php echo $fieldOptions[0]->id; ?>">
 				<b><?php echo ucfirst($fieldOptions[0]->label);?></b>
 			</div>
-		<?php
+			<div class="tj-filterlistwrapper">
+				<?php
+				foreach ($fieldOptions as $option)
+				{
+				?>
+					<div class="tj-filteritem tjfieldfilters-<?php echo $option->name;?>" >
+						<input type="checkbox" class="tjfieldCheck" name="tj_fields_value[]" id="<?php echo $option->name .'||'.  $option->option_id;?>" value="<?php echo $option->option_id;?>" <?php echo in_array($option->option_id, $selectedFilters)?'checked="checked"':'';?>  onclick='tjfieldsapplyfilters()' />
+						<label> <?php echo ucfirst($option->value);?></label>
+					</div>
 
-		foreach ($fieldOptions as $option)
-		{
-		?>
-			<div class="tj-filteritem tjfieldfilters-<?php echo $option->name;?>">
-				<input type="checkbox" class="tjfieldCheck" name="tj_fields_value[]" id="<?php echo $option->name .'||'.  $option->option_id;?>" value="<?php echo $option->option_id;?>" <?php echo in_array($option->option_id, $selectedFilters)?'checked="checked"':'';?>  onclick='tjfieldsapplyfilters()' />
-				<span>&nbsp;&nbsp;</span>
-				<?php echo ucfirst($option->value);?>
+					<?php
+				}
+				?>
 			</div>
-
-			<?php
-		}
-		?>
 		</div>
 		<?php
 	}
@@ -121,9 +133,9 @@ $mainframe =JFactory::getApplication();
 		?>
 		<div class="center">
 <!--
-			<a class="btn btn-small btn-info" onclick='tjfieldsapplyfilters()'><?php //echo JText::_('MOD_TJFIELDS_SEARCH_APPLY_BTN');?></a>
+			<a class="btn btn-small btn-info" onclick='tj_clearfilters()'><?php //echo JText::_('MOD_TJFIELDS_SEARCH_APPLY_BTN');?></a>
 -->
-			<a class="btn btn-small btn-info" onclick='clearfilters()'><?php echo JText::_('MOD_TJFIELDS_SEARCH_CLEAR_BTN');?></a>
+			<a class="btn btn-small btn-info" onclick='tj_clearfilters()'><?php echo JText::_('MOD_TJFIELDS_SEARCH_CLEAR_BTN');?></a>
 		</div>
 
 		<?php
@@ -133,7 +145,7 @@ $mainframe =JFactory::getApplication();
 <!--
 </form>
 -->
-
+</div> <!--End of wrapper-->
 <script>
 
 	techjoomla.jquery = jQuery.noConflict();
@@ -334,7 +346,32 @@ $mainframe =JFactory::getApplication();
 
 			rtn = rtn + "?" + params_arr.join("&");
 		}
-    return rtn;
-}
+		return rtn;
+	}
+
+	function tj_clearfilters()
+	{
+		var redirectlink = '<?php echo $baseurl;?>';
+
+			/* Comma seperated parameters to be removed on change of category */
+		var removeParamList = "<?php echo $removeParamOnchangeCat; ?>";
+
+		if (removeParamList.trim())
+		{
+			var params_arr = removeParamList.split(",");
+
+			for (var i = 0; i < params_arr.length; i += 1)
+			{
+				redirectlink = tj_removeParam(params_arr[i], redirectlink);
+			}
+		}
+
+		techjoomla.jQuery(".filter-fieldCheckbox:checked").each(function()
+		{
+			techjoomla.jQuery(this).attr('checked', false);
+		});
+
+		window.location = redirectlink;
+	}
 
 </script>

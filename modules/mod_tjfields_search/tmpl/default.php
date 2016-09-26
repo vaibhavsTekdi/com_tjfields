@@ -9,6 +9,12 @@
 
 // No direct access.
 defined('_JEXEC') or die();
+
+if (empty($fieldsArray))
+{
+	return '';
+}
+
 $document = JFactory::getDocument();
 $path = JUri::base() . 'modules/mod_tjfields_search/assets/css/tjfilters.css';
 $document->addStyleSheet($path);
@@ -38,7 +44,7 @@ if (!empty($urlArray))
 	foreach ($urlArray as $key => $url)
 	{
 		// Unset Not required parameter from array
-		if (!empty(strstr($url, 'ModFilterCat=')) || !empty(strstr($url, $url_cat_param_name)) || !empty(strstr($url, 'tj_fields_value=')) || !empty(strstr($url, 'client=')))
+		if (!empty(strstr($url, 'ModFilterCat=')) || ($url_cat_param_name &&  !empty(strstr($url, $url_cat_param_name))) || !empty(strstr($url, 'tj_fields_value=')) || !empty(strstr($url, 'client=')))
 		{
 			unset($urlArray[$key]);
 		}
@@ -105,12 +111,14 @@ foreach ($fieldsArray as $key => $fieldOptions)
 			</div>
 			<div class="tj-filterlistwrapper">
 				<?php
+
 				foreach ($fieldOptions as $option)
 				{
+
 				?>
 					<div class="tj-filteritem tjfieldfilters-<?php echo $option->name;?>" >
 						<input type="checkbox" class="tjfieldCheck" name="tj_fields_value[]" id="<?php echo $option->name .'||'.  $option->option_id;?>" value="<?php echo $option->option_id;?>" <?php echo in_array($option->option_id, $selectedFilters)?'checked="checked"':'';?>  onclick='tjfieldsapplyfilters()' />
-						<label> <?php echo ucfirst($option->value);?></label>
+						<label> <?php echo ucfirst($option->options);?></label>
 					</div>
 
 					<?php

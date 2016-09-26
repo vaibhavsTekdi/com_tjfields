@@ -9,6 +9,7 @@
 
 // No direct access.
 defined('_JEXEC') or die();
+$jinput = JFactory::getApplication()->input;
 
 if (empty($fieldsArray))
 {
@@ -23,8 +24,8 @@ $document->addStyleSheet($path);
 <div class="tjfield-wrapper <?php  echo $params->get('moduleclass_sfx');?>">
 
 <?php
-$jinput = JFactory::getApplication();
-$baseurl = $jinput->input->server->get('REQUEST_URI', '', 'STRING');
+
+$baseurl = $jinput->server->get('REQUEST_URI', '', 'STRING');
 
 
 // Get uRL base part and parameter part
@@ -37,7 +38,7 @@ if (!empty($temp[1]))
 	$urlArray = explode ('&',$temp[1]);
 }
 
-$clientCatId = $jinput->input->get($url_cat_param_name, '');
+$clientCatId = $jinput->get($url_cat_param_name, '');
 
 if (!empty($urlArray))
 {
@@ -56,7 +57,7 @@ $baseurl = $siteBase  . "?" . implode('&', $urlArray);
 
 
 // Make base URL ends
-$selectedFilters = explode(',', $jinput->input->get('tj_fields_value', '', 'string'));
+$selectedFilters = explode(',', $jinput->get('tj_fields_value', '', 'string'));
 ?>
 <?php
 	$buttons = $params->get('apply_clear_buttons', '');
@@ -130,8 +131,6 @@ foreach ($fieldsArray as $key => $fieldOptions)
 	}
 }
 
-$jinput = JFactory::getApplication();
-$mainframe =JFactory::getApplication();
 
 ?>
 <p></p>

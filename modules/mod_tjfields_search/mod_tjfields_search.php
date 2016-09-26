@@ -20,6 +20,8 @@ $currentComponent = $input->get("option");
 $url_cat_param_name       = $params->get('url_cat_param_name', '');
 $client_type               = $params->get('client_type', '');
 $category_type               = $params->get('category_type', '');
+$URLParamConditions               = $params->get('URLParamConditions', '');
+$URLParamConditions = trim($URLParamConditions);
 
 $tmp = explode(".", $client_type);
 $configuredComp = $tmp[0];
@@ -35,6 +37,49 @@ if (JFile::exists(JPATH_SITE . '/components/com_tjfields/tjfields.php'))
 	}
 
 	$tjfieldsHelper = new tjfieldsHelper;
+
+	if (!empty($URLParamConditions))
+	{
+		parse_str($URLParamConditions, $conditionList);
+
+		$url = JFactory::getApplication()->input->server->get('REQUEST_URI', '', 'STRING');
+
+		// Get uRL base part and parameter part
+		$temp =  explode ('?', $url);
+		$urlArray = array();
+
+		if (!empty($temp[1]))
+		{
+			parse_str($temp[1], $urlArray);
+		}
+
+		$urlArray['option'] = $input->get("option");
+		$urlArray['view'] = $input->get("view");
+		$urlArray['layout'] = $input->get("layout");
+		$showHtml = 1;
+
+		if (!empty($conditionList))
+		{
+			foreach ($conditionList as $urlParam => $urlValue)
+			{
+				// Condition not math
+				if (!in_array($urlValue, $urlArray))
+				{
+
+				}
+
+				if (empty($urlArray[$urlParam]) || $urlArray[$urlParam] != $urlValue)
+				{
+					$showHtml = 0;
+				}
+			}
+		}
+
+		if ($showHtml == 0)
+		{
+			return '';
+		}
+	}
 
 	// Get comma seperated parameters to removed on change of category
 	$removeParamOnchangeCat = '';

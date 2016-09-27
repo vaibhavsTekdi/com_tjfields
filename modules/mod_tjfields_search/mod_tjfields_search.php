@@ -71,6 +71,7 @@ if (JFile::exists(JPATH_SITE . '/components/com_tjfields/tjfields.php'))
 				if (empty($urlArray[$urlParam]) || $urlArray[$urlParam] != $urlValue)
 				{
 					$showHtml = 0;
+					break;
 				}
 			}
 		}

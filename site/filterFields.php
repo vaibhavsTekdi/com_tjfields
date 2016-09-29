@@ -145,8 +145,7 @@ trait TjfieldsFilterField
 
 		if (empty($id))
 		{
-			// TODO :- need to find fix for this - use global param instead of component specific param
-			$id = $input->get('item_id', '', 'INT');
+			$id = $input->get('content_id', '', 'INT');
 		}
 
 		if (empty($id))
@@ -252,7 +251,7 @@ trait TjfieldsFilterField
 		if (empty($id))
 		{
 			$input = JFactory::getApplication()->input;
-			$id = $input->get('item_id', '', 'INT');
+			$id = $input->get('content_id', '', 'INT');
 		}
 
 		if (empty($id))

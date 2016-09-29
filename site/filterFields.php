@@ -76,7 +76,7 @@ trait TjfieldsFilterField
 	 *
 	 * @since	1.6
 	 */
-	public function getFormExtra($data = array(), $loadData = false)
+	public function getFormObject($data = array(), $loadData = false)
 	{
 		// Check if form file is present.
 		$category = !empty($data['category']) ? $data['category'] : '';
@@ -106,6 +106,54 @@ trait TjfieldsFilterField
 		$form->bind($dataExtra);
 
 		return $form;
+	}
+
+	/**
+	 * Method to get the form for extra fields.
+	 * This form file will be created by field manager.
+	 *
+	 * The base form is loaded from XML
+	 *
+	 * @param   Array    $data      An optional array of data for the form to interogate.
+	 * @param   Boolean  $loadData  True if the form is to load its own data (default case), false if not.
+	 *
+	 * @return  JForm    A JForm    object on success, false on failure
+	 *
+	 * @since	1.6
+	 */
+	public function getFormExtra($data = array(), $loadData = false)
+	{
+		$formExtra = array();
+		$form = new stdclass;
+
+		// Call to extra fields
+		if (!empty($data['category']))
+		{
+			$form = $this->getFormObject($data, $loadData);
+			unset($data['category']);
+		}
+
+		$tempForm = (array) $form;
+
+		if (!empty($tempForm))
+		{
+			$formExtra[] = $form;
+		}
+
+		$form = new stdclass;
+
+		// Call to global extra fields
+		$form = $this->getFormObject($data, $loadData);
+
+		$tempForm = (array) $form;
+
+		if (!empty($tempForm))
+		{
+			$formExtra[] = $form;
+		}
+
+		return $formExtra;
+		// Code to get TJ-fileds filed form - end
 	}
 
 	/**

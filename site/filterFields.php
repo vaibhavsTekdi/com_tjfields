@@ -153,7 +153,6 @@ trait TjfieldsFilterField
 		}
 
 		return $formExtra;
-		// Code to get TJ-fileds filed form - end
 	}
 
 	/**

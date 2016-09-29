@@ -80,7 +80,7 @@ trait TjfieldsFilterField
 	{
 		// Check if form file is present.
 		$category = !empty($data['category']) ? $data['category'] : '';
-		$filePath = JPATH_SITE . '/components/'. $data['clientComponent'] .'/models/forms/' . $category . $data['view'] .'form_extra.xml';
+		$filePath = JPATH_SITE . '/components/' . $data['clientComponent'] . '/models/forms/' . $category . $data['view'] . 'form_extra.xml';
 
 		if (!JFile::exists($filePath))
 		{
@@ -114,6 +114,8 @@ trait TjfieldsFilterField
 	 *
 	 * The base form is loaded from XML
 	 *
+	 * @param   ATTAY  $data  data
+	 *
 	 * @return  JForm    A JForm    object on success, false on failure
 	 *
 	 * @since	1.6
@@ -129,7 +131,8 @@ trait TjfieldsFilterField
 	 * Method to get the data of extra form fields
 	 * This form file will be created by field manager.
 	 *
-	 * @param   INT  $id  Id of record
+	 * @param   ATTAY  $data  data
+	 * @param   INT    $id    Id of record
 	 *
 	 * @return  JForm    A JForm    object on success, false on failure
 	 *
@@ -237,7 +240,8 @@ trait TjfieldsFilterField
 	/**
 	 * Method to get the extra fields information
 	 *
-	 * @param   array  $id  Id of the record
+	 * @param   array  $data  data
+	 * @param   array  $id    Id of the record
 	 *
 	 * @return	Extra field data
 	 *
@@ -275,6 +279,7 @@ trait TjfieldsFilterField
 	/**
 	 * Method to save the extra fields data.
 	 *
+	 * @param   array  $data              data
 	 * @param   array  $extra_jform_data  Extra fields data
 	 * @param   INT    $id                Id of the record
 	 *

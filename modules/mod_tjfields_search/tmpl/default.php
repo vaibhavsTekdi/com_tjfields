@@ -9,6 +9,13 @@
 
 // No direct access.
 defined('_JEXEC') or die();
+$jinput = JFactory::getApplication()->input;
+
+if (empty($fieldsArray))
+{
+	return '';
+}
+
 $document = JFactory::getDocument();
 $path = JUri::base() . 'modules/mod_tjfields_search/assets/css/tjfilters.css';
 $document->addStyleSheet($path);
@@ -17,8 +24,8 @@ $document->addStyleSheet($path);
 <div class="tjfield-wrapper <?php  echo $params->get('moduleclass_sfx');?>">
 
 <?php
-$jinput = JFactory::getApplication();
-$baseurl = $jinput->input->server->get('REQUEST_URI', '', 'STRING');
+
+$baseurl = $jinput->server->get('REQUEST_URI', '', 'STRING');
 
 
 // Get uRL base part and parameter part
@@ -31,14 +38,14 @@ if (!empty($temp[1]))
 	$urlArray = explode ('&',$temp[1]);
 }
 
-$clientCatId = $jinput->input->get($url_cat_param_name, '');
+$clientCatId = $jinput->get($url_cat_param_name, '');
 
 if (!empty($urlArray))
 {
 	foreach ($urlArray as $key => $url)
 	{
 		// Unset Not required parameter from array
-		if (!empty(strstr($url, 'ModFilterCat=')) || !empty(strstr($url, $url_cat_param_name)) || !empty(strstr($url, 'tj_fields_value=')) || !empty(strstr($url, 'client=')))
+		if (!empty(strstr($url, 'ModFilterCat=')) || ($url_cat_param_name &&  !empty(strstr($url, $url_cat_param_name))) || !empty(strstr($url, 'tj_fields_value=')) || !empty(strstr($url, 'client=')))
 		{
 			unset($urlArray[$key]);
 		}
@@ -50,7 +57,7 @@ $baseurl = $siteBase  . "?" . implode('&', $urlArray);
 
 
 // Make base URL ends
-$selectedFilters = explode(',', $jinput->input->get('tj_fields_value', '', 'string'));
+$selectedFilters = explode(',', $jinput->get('tj_fields_value', '', 'string'));
 ?>
 <?php
 	$buttons = $params->get('apply_clear_buttons', '');
@@ -105,12 +112,14 @@ foreach ($fieldsArray as $key => $fieldOptions)
 			</div>
 			<div class="tj-filterlistwrapper">
 				<?php
+
 				foreach ($fieldOptions as $option)
 				{
+
 				?>
 					<div class="tj-filteritem tjfieldfilters-<?php echo $option->name;?>" >
 						<input type="checkbox" class="tjfieldCheck" name="tj_fields_value[]" id="<?php echo $option->name .'||'.  $option->option_id;?>" value="<?php echo $option->option_id;?>" <?php echo in_array($option->option_id, $selectedFilters)?'checked="checked"':'';?>  onclick='tjfieldsapplyfilters()' />
-						<label> <?php echo ucfirst($option->value);?></label>
+						<label> <?php echo ucfirst($option->options);?></label>
 					</div>
 
 					<?php
@@ -122,8 +131,6 @@ foreach ($fieldsArray as $key => $fieldOptions)
 	}
 }
 
-$jinput = JFactory::getApplication();
-$mainframe =JFactory::getApplication();
 
 ?>
 <p></p>

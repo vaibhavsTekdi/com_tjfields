@@ -533,11 +533,10 @@ class TjfieldsHelper
 		{
 			$db    = JFactory::getDbo();
 			$query = $db->getQuery(true);
-			$query->select('DISTINCT fv.option_id, f.id,f.name, f.label,fv.value');
+			$query->select('DISTINCT fv.option_id, f.id,f.name, f.label,fv.value,fo.options');
 			$query->FROM("#__tjfields_fields AS f");
 			$query->JOIN('INNER', '#__tjfields_fields_value AS fv ON fv.field_id = f.id');
-
-			// $query->JOIN('INNER', '#__tjfields_options AS fo ON fo.field_id = fv.field_id');
+			$query->JOIN('INNER', '#__tjfields_options AS fo ON fo.id = fv.option_id');
 
 			$query->where('f.client="' . $client . '"');
 			$query->where('f.filterable=1');
@@ -567,11 +566,10 @@ class TjfieldsHelper
 			{
 				$db    = JFactory::getDbo();
 				$queryCat = $db->getQuery(true);
-				$queryCat->select('DISTINCT fv.option_id, f.id,f.name, f.label,fv.value');
+				$queryCat->select('DISTINCT fv.option_id, f.id,f.name, f.label,fv.value,fo.options');
 				$queryCat->FROM("#__tjfields_fields AS f");
 				$queryCat->JOIN('INNER', '#__tjfields_fields_value AS fv ON fv.field_id = f.id');
-
-				// $queryCat->JOIN('INNER', '#__tjfields_options AS fo ON fo.field_id = fv.field_id');
+				$queryCat->JOIN('INNER', '#__tjfields_options AS fo ON fo.id = fv.option_id');
 
 				$queryCat->where('f.client="' . $client . '"');
 				$queryCat->where('f.filterable=1');

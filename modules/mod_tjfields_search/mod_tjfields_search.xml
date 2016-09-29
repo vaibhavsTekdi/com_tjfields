@@ -33,6 +33,8 @@
 
 				<field name="url_cat_param_name" type="text" default="" label="MOD_TJFIELDS_SEARCH_URL_CATEGORY_PARAM_NAME" description="MOD_TJFIELDS_SEARCH_URL_CATEGORY_PARAM_NAME_DESC"/>
 
+				<field name="URLParamConditions" type="text" default="" label="MOD_TJFIELDS_SEARCH_CONDITIONS_TO_DISPLAY_FILTER_DATA" description="MOD_TJFIELDS_SEARCH_CONDITIONS_TO_DISPLAY_FILTER_DATA_DESC"/>
+
 				<field name="showCategoryFilter" class="btn-group" type="radio" default="0" description="MOD_TJFIELDS_SEARCH_SHOW_SEARCH_FILTER" label="MOD_TJFIELDS_SEARCH_SHOW_SEARCH_FILTER" >
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>

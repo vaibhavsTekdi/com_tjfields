@@ -333,7 +333,7 @@ trait TjfieldsFilterField
 	 *
 	 * @since  1.6
 	 */
-	public function saveExtraFields($data, $extra_jform_data, $id)
+	public function saveExtraFields($data)
 	{
 		$TjfieldsHelperPath = JPATH_SITE . '/components/com_tjfields/helpers/tjfields.php';
 
@@ -345,9 +345,6 @@ trait TjfieldsFilterField
 
 		$tjFieldsHelper = new TjfieldsHelper;
 
-		$data['content_id']  = $id;
-		$data['fieldsvalue'] = array();
-		$data['fieldsvalue'] = $extra_jform_data;
 		$data['user_id']     = JFactory::getUser()->id;
 
 		$result = $tjFieldsHelper->saveFieldsValue($data);

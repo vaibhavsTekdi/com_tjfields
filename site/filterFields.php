@@ -325,9 +325,7 @@ trait TjfieldsFilterField
 	/**
 	 * Method to save the extra fields data.
 	 *
-	 * @param   array  $data              data
-	 * @param   array  $extra_jform_data  Extra fields data
-	 * @param   INT    $id                Id of the record
+	 * @param   array  $data  data
 	 *
 	 * @return  JForm  A JForm object on success, false on failure
 	 *

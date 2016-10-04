@@ -1,10 +1,10 @@
 <?php
 /**
- * @version     1.0.0
- * @package     com_tjfields
- * @copyright   Copyright (C) 2014. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
- * @author      TechJoomla <extensions@techjoomla.com> - www.techjoomla.com
+ * @version    SVN: <svn_id>
+ * @package    Tjfields
+ * @author     Techjoomla <extensions@techjoomla.com>
+ * @copyright  Copyright (c) 2009-2016 TechJoomla. All rights reserved.
+ * @license    GNU General Public License version 2 or later.
  */
 
 // No direct access
@@ -14,120 +14,215 @@ jimport('joomla.application.component.controllerform');
 
 /**
  * Group controller class.
+ *
+ * @since  1.0
  */
 class TjfieldsControllerGroup extends JControllerForm
 {
-
-    function __construct() {
-        $this->view_list = 'groups';
-        parent::__construct();
-
-    }
-
-	function apply()
+	/**
+	 * Constructor
+	 *
+	 */
+	public function __construct()
 	{
-		$input=JFactory::getApplication()->input;
+		$this->view_list = 'groups';
+		parent::__construct();
+	}
+
+	/**
+	 * Method to apply changes group details
+	 *
+	 * @return  null
+	 */
+	public function apply()
+	{
+		$input = JFactory::getApplication()->input;
+		$extension = $input->get('extension', '', 'STRING');
 		$post = $input->post;
 		$model = $this->getModel('group');
-		$if_saved=$model->save($post);
+		$if_saved = $model->save($post);
 
-		if($if_saved)
+		if ($if_saved)
 		{
 			$msg = JText::_('COMTJFILEDS_GROUP_CREATED_SUCCESSFULLY');
-			$link = JRoute::_('index.php?option=com_tjfields&view=group&layout=edit&client='.$input->get('client','','STRING').'&id='.$if_saved,false);
+			$link = JRoute::_('index.php?option=com_tjfields&view=group&layout=edit', false);
+
+			$link .= '&client=' . $input->get('client', '', 'STRING') . '&id=' . $if_saved, false);
+
+			if (!empty($extension))
+			{
+				$link .= "&extension=" . $extension;
+			}
 		}
 		else
 		{
-			$msg=JText::_('TJFIELDS_ERROR_MSG');
+			$msg = JText::_('TJFIELDS_ERROR_MSG');
 			$this->setMessage(JText::plural($msg, 1));
-			$link = JRoute::_('index.php?option=com_tjfields&view=group&layout=edit&client='.$input->get('client','','STRING').'&id='.$input->get('id'),false);
+			$link = JRoute::_('index.php?option=com_tjfields&view=group&layout=edit', false);
+			$link .= '&client=' . $input->get('client', '', 'STRING') . '&id=' . $input->get('id');
+
+			if (!empty($extension))
+			{
+				$link .= "&extension=" . $extension;
+			}
 		}
 
-		$this->setRedirect($link,$msg);
-
-
+		$this->setRedirect($link, $msg);
 	}
 
-	function save()
+	/**
+	 * Method to save group details
+	 *
+	 * @return  null
+	 */
+	public function save()
 	{
-
-		$input=JFactory::getApplication()->input;
-		$task = $input->get('task','','STRING');//die;
-		$post=$input->post;
+		$input = JFactory::getApplication()->input;
+		$extension = $input->get('extension', '', 'STRING');
+		$task = $input->get('task', '', 'STRING');
+		$post = $input->post;
 		$model = $this->getModel('group');
-		if($task == 'apply' or $task == 'save2copy')
+
+		if ($task == 'apply' or $task == 'save2copy')
 		{
 			$this->apply();
+
 			return;
 		}
 
-		$if_saved=$model->save($post);
+		$if_saved = $model->save($post);
 
-
-
-		if($task == 'newsave')
+		if ($task == 'newsave')
 		{
 			$this->newsave();
+
 			return;
 		}
 
-
-		if($if_saved)
+		if ($if_saved)
 		{
 			$msg = JText::_('COMTJFILEDS_GROUP_CREATED_SUCCESSFULLY');
-			$link = JRoute::_('index.php?option=com_tjfields&view=groups&client='.$input->get('client','','STRING'),false);
+			$link = JRoute::_('index.php?option=com_tjfields&view=groups&client=' . $input->get('client', '', 'STRING'), false);
+
+			if (!empty($extension))
+			{
+				$link .= "&extension=" . $extension;
+			}
 		}
 		else
 		{
-			$msg=JText::_('TJFIELDS_ERROR_MSG');
-			$link = JRoute::_('index.php?option=com_tjfields&view=groups&client='.$input->get('client','','STRING'),false);
+			$msg = JText::_('TJFIELDS_ERROR_MSG');
+			$link = JRoute::_('index.php?option=com_tjfields&view=groups&client=' . $input->get('client', '', 'STRING'), false);
+
+			if (!empty($extension))
+			{
+				$link .= "&extension=" . $extension;
+			}
 		}
 
-		$this->setRedirect($link,$msg);
+		$this->setRedirect($link, $msg);
 	}
 
-	function newsave()
+	/**
+	 * Method to save group details
+	 *
+	 * @return  null
+	 */
+	public function newsave()
 	{
-		$input=JFactory::getApplication()->input;
-		$data=$input->post;
+		$input = JFactory::getApplication()->input;
+		$extension = $input->get('extension', '', 'STRING');
+		$data = $input->post;
 		$model = $this->getModel('group');
-		$group_id=$model->save($data);
-		if($group_id)
+		$group_id = $model->save($data);
+
+		if ($group_id)
+		{
+			$msg = JText::_('COMTJFILEDS_GROUP_CREATED_SUCCESSFULLY');
+			$link = JRoute::_('index.php?option=com_tjfields&view=group&layout=edit&client=' . $input->get('client', '', 'STRING'), false);
+
+			if (!empty($extension))
 			{
-				$msg= JText::_('COMTJFILEDS_GROUP_CREATED_SUCCESSFULLY');
-				$link = JRoute::_('index.php?option=com_tjfields&view=group&layout=edit&client='.$input->get('client','','STRING'),false);
+				$link .= "&extension=" . $extension;
 			}
+		}
 		else
+		{
+			$msg = JText::_('TJFIELDS_ERROR_MSG');
+			$link = JRoute::_('index.php?option=com_tjfields&view=group&layout=edit&client=' . $input->get('client', '', 'STRING'), false);
+
+			if (!empty($extension))
 			{
-				$msg=JText::_('TJFIELDS_ERROR_MSG');
-				$link = JRoute::_('index.php?option=com_tjfields&view=group&layout=edit&client='.$input->get('client','','STRING'),false);
+				$link .= "&extension=" . $extension;
 			}
-		$this->setRedirect($link,$msg);
+		}
+
+		$this->setRedirect($link, $msg);
 	}
 
-	function add()
+	/**
+	 * Method to add group
+	 *
+	 * @return  null
+	 */
+	public function add()
 	{
-		$input=JFactory::getApplication()->input;
-		$link = JRoute::_('index.php?option=com_tjfields&view=group&layout=edit&client='.$input->get('client','','STRING'),false);
+		$input = JFactory::getApplication()->input;
+
+		$extension = $input->get('extension', '', 'STRING');
+
+		$link = JRoute::_('index.php?option=com_tjfields&view=group&layout=edit&client=' . $input->get('client', '', 'STRING'), false);
+
+		if (!empty($extension))
+		{
+			$link .= "&extension=" . $extension;
+		}
+
 		$this->setRedirect($link);
 	}
 
-	function edit()
+	/**
+	 * Method to edit group details
+	 *
+	 * @return  null
+	 */
+	public function edit()
 	{
 		$input    = JFactory::getApplication()->input;
 		$cid      = $input->post->get('cid', array(), 'array');
 		$recordId = (int) (count($cid) ? $cid[0] : $input->getInt('id'));
 
-		$link = JRoute::_('index.php?option=com_tjfields&view=group&layout=edit&id=' . $recordId . '&client=' . $input->get('client', '' ,'STRING'), false);
-		$this->setRedirect($link,$msg);
+		$link = JRoute::_('index.php?option=com_tjfields&view=group&layout=edit&id=' . $recordId, false);
+
+		$link .= '&client=' . $input->get('client', '', 'STRING');
+
+		$extension = $input->get('extension', '', 'STRING');
+
+		if (!empty($extension))
+		{
+			$link .= "&extension=" . $extension;
+		}
+
+		$this->setRedirect($link, $msg);
 	}
 
-	function cancel()
+	/**
+	 * Method to cancel group creation
+	 *
+	 * @return  null
+	 */
+	public function cancel()
 	{
+		$input = JFactory::getApplication()->input;
+		$link = JRoute::_('index.php?option=com_tjfields&view=groups&client=' . $input->get('client', '', 'STRING'), false);
 
-		$input=JFactory::getApplication()->input;
-		$link = JRoute::_('index.php?option=com_tjfields&view=groups&client='.$input->get('client','','STRING'),false);
-		$this->setRedirect($link,$msg);
+		$extension = $input->get('extension', '', 'STRING');
+
+		if (!empty($extension))
+		{
+			$link .= "&extension=" . $extension;
+		}
+
+		$this->setRedirect($link, $msg);
 	}
-
 }

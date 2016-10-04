@@ -332,6 +332,8 @@ class TjfieldsHelper
 				$this->addFieldValueEntry($obj);
 			}
 		}
+
+		return true;
 	}
 
 	/**

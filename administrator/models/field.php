@@ -191,7 +191,11 @@ class TjfieldsModelField extends JModelAdmin
 		$data['client_type'] = $post->get('client_type', '', 'STRING');
 
 		// Use later to store later.
+<<<<<<< HEAD
+		$data['saveOption'] = 0;
+=======
 		// $data['saveOption']  = 0;
+>>>>>>> vidyasagar/master
 
 		// Remove extra value which are not needed to save in the fields table
 		$TjfieldsHelper      = new TjfieldsHelper;
@@ -248,6 +252,7 @@ class TjfieldsModelField extends JModelAdmin
 				if ($fields_in_DB)
 				{
 					$diff_ids = array_diff($fields_in_DB, $options_filled);
+<<<<<<< HEAD
 
 					if (!empty($diff_ids))
 					{
@@ -255,6 +260,15 @@ class TjfieldsModelField extends JModelAdmin
 					}
 				}
 
+=======
+
+					if (!empty($diff_ids))
+					{
+						$this->delete_option($diff_ids);
+					}
+				}
+
+>>>>>>> vidyasagar/master
 				if (empty($options))
 				{
 					$this->delete_option($fields_in_DB);
@@ -265,6 +279,7 @@ class TjfieldsModelField extends JModelAdmin
 					foreach ($options as $option)
 					{
 						if (!isset($option['hiddenoption']))
+<<<<<<< HEAD
 						{
 							$option['hiddenoption'] = 0;
 						}
@@ -278,6 +293,21 @@ class TjfieldsModelField extends JModelAdmin
 						// If edit options
 						if (isset($option['hiddenoptionid']) && !empty($option['hiddenoptionid']))
 						{
+=======
+						{
+							$option['hiddenoption'] = 0;
+						}
+
+						$obj                 = new stdClass;
+						$obj->options        = $option['optionname'];
+						$obj->value          = $option['optionvalue'];
+						$obj->default_option = $option['hiddenoption'];
+						$obj->field_id       = $id;
+
+						// If edit options
+						if (isset($option['hiddenoptionid']) && !empty($option['hiddenoptionid']))
+						{
+>>>>>>> vidyasagar/master
 							if ($option['optionname'] != '' && $option['optionvalue'] != '')
 							{
 								$obj->id = $option['hiddenoptionid'];
@@ -307,6 +337,8 @@ class TjfieldsModelField extends JModelAdmin
 					}
 				}
 			}
+<<<<<<< HEAD
+=======
 
 			// Save/update field and category mapping
 			$selectedCategories = !empty($data['category']) ? $data['category'] : array();
@@ -349,6 +381,7 @@ class TjfieldsModelField extends JModelAdmin
 				$this->deleteFieldCategoriesMapping($arrayId, array());
 			}
 
+>>>>>>> vidyasagar/master
 			// Create XML for the current client.
 			$TjfieldsHelper->generateXml($data);
 
@@ -374,6 +407,55 @@ class TjfieldsModelField extends JModelAdmin
 	{
 		$obj              = new stdClass;
 		$obj->js_function = '';
+<<<<<<< HEAD
+
+		foreach ($jsarray as $js)
+		{
+			if ($js['jsoptions'] != '' && $js['jsfunctionname'] != '')
+			{
+				$obj->js_function .= $js['jsoptions'] . '-' . $js['jsfunctionname'] . '||';
+			}
+
+			$obj->id = $fieldid;
+		}
+
+		if (!empty($obj->js_function))
+		{
+			if (!$this->_db->updateObject('#__tjfields_fields', $obj, 'id'))
+			{
+				echo $this->_db->stderr();
+
+				return false;
+			}
+		}
+	}
+
+	/**
+	 * Method To Delete Option
+	 *
+	 * @param   Integer  $delete_ids  Id for delete record
+	 *
+	 * @return  flag
+	 *
+	 * @since  1.6
+	 */
+	public function delete_option($delete_ids)
+	{
+		$db = JFactory::getDBO();
+
+		foreach ($delete_ids as $key => $value)
+		{
+			$query = 'DELETE FROM #__tjfields_options
+				WHERE id = "' . $value . '"';
+			$db->setQuery($query);
+
+			if (!$db->execute())
+			{
+				echo $db->stderr();
+
+				return false;
+			}
+=======
 
 		foreach ($jsarray as $js)
 		{
@@ -465,6 +547,7 @@ class TjfieldsModelField extends JModelAdmin
 			$this->setError($e->getMessage());
 
 			return 0;
+>>>>>>> vidyasagar/master
 		}
 	}
 }

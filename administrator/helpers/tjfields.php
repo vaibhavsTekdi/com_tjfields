@@ -245,17 +245,13 @@ class TjfieldsHelper
 	public function generateXml($data)
 	{
 		$client = $data['client'];
-		$client = explode(".", $client);
-		$component = $client[0];
+		$input = JFactory::getApplication()->input;
+		$extension = $input->get('extension', '', 'STRING');
 
-		switch ($component)
+		if (empty($extension))
 		{
-			case 'com_quick2cart':
-					require_once JPATH_SITE . '/components/com_quick2cart/helper.php';
-					$comquick2cartHelper = new Comquick2cartHelper;
-					$extension = $comquick2cartHelper->getExtensionNameFromCategoryTable($client);
-
-				break;
+			$client = explode(".", $client);
+			$extension = $client[0];
 		}
 
 		if (!empty($extension))

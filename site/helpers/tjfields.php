@@ -794,4 +794,37 @@ class TjfieldsHelper
 
 		return $fieldAndFieldOptionsList;
 	}
+
+	/**
+	 * Get filter results.
+	 *
+	 * @return string
+	 */
+	public function getFilterResults()
+	{
+		$db = JFactory::getDbo();
+		$jinput  = JFactory::getApplication()->input;
+		$tjfieldIitem_ids = "0";
+		$tj_mod_filter_cat = $jinput->get("ModFilterCat", "prod_cat");
+		$category_id = $jinput->get($tj_mod_filter_cat);
+		$fields_value_str = $jinput->get("tj_fields_value", '', "RAW");
+
+		if (!empty($fields_value_str))
+		{
+			$tjquery = $this->buildFilterModuleQuery();
+			$db->setQuery($tjquery);
+			$client_ids = $db->loadColumn();
+
+			if (!empty($client_ids))
+			{
+				$tjfieldIitem_ids = implode(",", $client_ids);
+			}
+
+			return $tjfieldIitem_ids;
+		}
+		else
+		{
+			return false;
+		}
+	}
 }

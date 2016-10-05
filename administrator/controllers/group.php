@@ -47,7 +47,7 @@ class TjfieldsControllerGroup extends JControllerForm
 			$msg = JText::_('COMTJFILEDS_GROUP_CREATED_SUCCESSFULLY');
 			$link = JRoute::_('index.php?option=com_tjfields&view=group&layout=edit', false);
 
-			$link .= '&client=' . $input->get('client', '', 'STRING') . '&id=' . $if_saved, false);
+			$link .= '&client=' . $input->get('client', '', 'STRING') . '&id=' . $if_saved;
 
 			if (!empty($extension))
 			{

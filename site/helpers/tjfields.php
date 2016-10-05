@@ -564,7 +564,7 @@ class TjfieldsHelper
 			$allFields = $coreFields;
 
 			// If category related field present
-			if (!empty($category_id))
+			if (!empty($category_id) && is_int($category_id))
 			{
 				$db    = JFactory::getDbo();
 				$queryCat = $db->getQuery(true);

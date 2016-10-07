@@ -112,8 +112,69 @@ class com_tjfieldsInstallerScript
 	{
 		$this->componentStatus = "update";
 		$this->installSqlFiles($parent);
+		$this->fix_db_on_update();
 	}
 
+	//since version 2.0
+	function fix_db_on_update()
+	{
+		$db =  JFactory::getDBO();
+
+		$field_array = array();
+		$query = "SHOW COLUMNS FROM `#__tjfields_fields`";
+		$db->setQuery($query);
+		$columns = $db->loadobjectlist();
+
+		for ($i = 0; $i < count($columns); $i++) {
+			$field_array[] = $columns[$i]->Field;
+		}
+
+		if (!in_array('filterable', $field_array)) {
+			$query = "ALTER TABLE `#__tjfields_fields`
+						ADD COLUMN `filterable` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0 - For not filterable field. 1 for filterable field'";
+			$db->setQuery($query);
+			if (!$db->execute() )
+			{
+				echo $img_ERROR.JText::_('Unable to Alter #__tjfields_fields table. (While adding filterable column )').$BR;
+				echo $db->getErrorMsg();
+				return false;
+			}
+		}
+
+		$query="
+				CREATE TABLE IF NOT EXISTS `#__tjfields_category_mapping` (
+				  `id` INT(11) NOT NULL AUTO_INCREMENT,
+				  `field_id` INT(11) NOT NULL,
+				  `category_id` INT(11) NOT NULL COMMENT 'CATEGORY ID FROM JOOMLA CATEGORY TABLE FOR CLIENTS EG CLIENT=COM_QUICK2CART.PRODUCT',
+				  PRIMARY KEY (`id`)
+				)DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+		$db->setQuery($query);
+		$db->execute();
+
+		// Check for table//////////////////////////////////////////////////////////////////////////////
+		$db =  JFactory::getDBO();
+
+		$field_array = array();
+		$query = "SHOW COLUMNS FROM `#__tjfields_fields_value`";
+		$db->setQuery($query);
+		$columns = $db->loadobjectlist();
+
+		for ($i = 0; $i < count($columns); $i++) {
+			$field_array[] = $columns[$i]->Field;
+		}
+
+		if (!in_array('option_id', $field_array)) {
+			$query = "ALTER TABLE `#__tjfields_fields_value`
+						ADD COLUMN `option_id` int(11) DEFAULT NULL";
+			$db->setQuery($query);
+			if (!$db->execute() )
+			{
+				echo $img_ERROR.JText::_('Unable to Alter #__tjfields_fields_value table. (While adding option_id column )').$BR;
+				echo $db->getErrorMsg();
+				return false;
+			}
+		}
+	}
 	function installSqlFiles($parent)
 	{
 		$db = JFactory::getDBO();

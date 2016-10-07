@@ -35,6 +35,15 @@ class com_tjfieldsInstallerScript
 	// Used to identify new install or update
 	private $componentStatus = "install";
 
+	private $installation_queue = array(
+
+		'modules'=>array(
+			'site'=>array(
+					'mod_tjfields_search' => array('position-7', 0)
+						)
+		)
+	);
+
 	/**
 	 * method to run before an install/update/uninstall method
 	 *

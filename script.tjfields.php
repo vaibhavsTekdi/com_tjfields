@@ -51,6 +51,9 @@ class com_tjfieldsInstallerScript
 	 */
 	function postflight( $type, $parent )
 	{
+		// Install subextensions
+		$status = $this->_installSubextensions($parent);
+
 		$msgBox = array();
 
 		if (version_compare(JVERSION, '3.0', 'lt'))
@@ -58,6 +61,131 @@ class com_tjfieldsInstallerScript
 			$document = JFactory::getDocument();
 			$document->addStyleSheet(JUri::root() . '/media/techjoomla_strapper/css/bootstrap.min.css');
 		}
+	}
+
+	/**
+	 * Installs subextensions (modules, plugins) bundled with the main extension
+	 *
+	 * @param JInstaller $parent
+	 * @return JObject The subextension installation status
+	 */
+	private function _installSubextensions($parent)
+	{
+		$src = $parent->getParent()->getPath('source');
+
+		$db = JFactory::getDbo();
+
+		$status = new JObject();
+		$status->modules = array();
+
+		// Modules installation
+
+		if(count($this->installation_queue['modules'])) {
+			foreach($this->installation_queue['modules'] as $folder => $modules) {
+				if(count($modules))
+					foreach($modules as $module => $modulePreferences)
+					{
+						// Install the module
+						if(empty($folder))
+							$folder = 'site';
+						$path = "$src/modules/$folder/$module";
+						if(!is_dir($path))// if not dir
+						{
+							$path = "$src/modules/$folder/mod_$module";
+						}
+						if(!is_dir($path)) {
+							$path = "$src/modules/$module";
+						}
+
+						if(!is_dir($path)) {
+							$path = "$src/modules/mod_$module";
+						}
+						if(!is_dir($path))
+						{
+
+							$fortest='';
+							//continue;
+						}
+
+						// Was the module already installed?
+						$sql = $db->getQuery(true)
+							->select('COUNT(*)')
+							->from('#__modules')
+							->where($db->qn('module').' = '.$db->q('mod_'.$module));
+						$db->setQuery($sql);
+
+						$count = $db->loadResult();
+
+						$installer = new JInstaller;
+						$result = $installer->install($path);
+						$status->modules[] = array(
+							'name'=>$module,
+							'client'=>$folder,
+							'result'=>$result,
+							'status'=>$modulePreferences[1]
+						);
+
+						// Modify where it's published and its published state
+						if(!$count) {
+							// A. Position and state
+							list($modulePosition, $modulePublished) = $modulePreferences;
+							if($modulePosition == 'cpanel') {
+								$modulePosition = 'icon';
+							}
+							$sql = $db->getQuery(true)
+								->update($db->qn('#__modules'))
+								->set($db->qn('position').' = '.$db->q($modulePosition))
+								->where($db->qn('module').' = '.$db->q('mod_'.$module));
+							if($modulePublished) {
+								$sql->set($db->qn('published').' = '.$db->q('1'));
+							}
+							$db->setQuery($sql);
+							$db->query();
+
+							// B. Change the ordering of back-end modules to 1 + max ordering
+							if($folder == 'admin') {
+								$query = $db->getQuery(true);
+								$query->select('MAX('.$db->qn('ordering').')')
+									->from($db->qn('#__modules'))
+									->where($db->qn('position').'='.$db->q($modulePosition));
+								$db->setQuery($query);
+								$position = $db->loadResult();
+								$position++;
+
+								$query = $db->getQuery(true);
+								$query->update($db->qn('#__modules'))
+									->set($db->qn('ordering').' = '.$db->q($position))
+									->where($db->qn('module').' = '.$db->q('mod_'.$module));
+								$db->setQuery($query);
+								$db->query();
+							}
+
+							// C. Link to all pages
+							$query = $db->getQuery(true);
+							$query->select('id')->from($db->qn('#__modules'))
+								->where($db->qn('module').' = '.$db->q('mod_'.$module));
+							$db->setQuery($query);
+							$moduleid = $db->loadResult();
+
+							$query = $db->getQuery(true);
+							$query->select('*')->from($db->qn('#__modules_menu'))
+								->where($db->qn('moduleid').' = '.$db->q($moduleid));
+							$db->setQuery($query);
+							$assignments = $db->loadObjectList();
+							$isAssigned = !empty($assignments);
+							if(!$isAssigned) {
+								$o = (object)array(
+									'moduleid'	=> $moduleid,
+									'menuid'	=> 0
+								);
+								$db->insertObject('#__modules_menu', $o);
+							}
+						}
+					}
+			}
+		}
+
+		return $status;
 	}
 
 	/**

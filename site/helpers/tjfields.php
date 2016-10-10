@@ -563,6 +563,9 @@ class TjfieldsHelper
 			$coreFields = $db->loadObjectlist("option_id");
 			$allFields = $coreFields;
 
+			// Type cast value of category
+			$category_id = (int) $category_id;
+
 			// If category related field present
 			if (!empty($category_id) && is_int($category_id))
 			{

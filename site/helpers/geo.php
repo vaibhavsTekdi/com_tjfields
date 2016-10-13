@@ -170,20 +170,22 @@ class TjGeoHelper
 	/**
 	 * Gives region list according.( field region gives you region name in current language) .
 	 *
-	 * @param   string  $country_id    id of country
+	 * @param   string  $countryId     id of country
 	 * @param   string  $component_nm  name of component
+	 * @param   string  $orderingCol   order by table column eg region
 	 *
 	 * @return  regionlist
 	 *
 	 * @since   1.5
 	 */
-	public function getRegionList($country_id, $component_nm = "")
+	public function getRegionList($countryId, $component_nm = "", $orderingCol = "region")
 	{
 		$this->_db = JFactory::getDBO();
 		$query     = $this->_db->getQuery(true);
 		$query->select("id, region,region_jtext");
 		$query->from('#__tj_region');
-		$query->where('country_id=' . $this->_db->quote($country_id));
+		$query->where('country_id=' . $this->_db->quote($countryId));
+		$query->order($this->_db->escape($orderingCol . ' ASC'));
 
 		if ($component_nm)
 		{
@@ -285,6 +287,122 @@ class TjGeoHelper
 		elseif ($jtext !== '')
 		{
 			return null;
+		}
+	}
+
+	/**
+	 * Returns the countryID from country code (2 digit country code like IN for india )
+	 *
+	 * @param   string  $countryCode  2 digit country code like IN for india
+	 *
+	 * @return  object  country object which includes id, country name accourding to curren language && country_jtext, country_jtext;
+	 *
+	 * @since   1.1
+	 */
+	public function getCountryFromTwoDigitCountryCode($countryCode)
+	{
+		if (empty($countryCode))
+		{
+			return false;
+		}
+
+		$countryCode = strtoupper($countryCode);
+
+		try
+		{
+			$query = $this->_db->getQuery(true);
+			$query->select('id,country,country_jtext');
+			$query->from('#__tj_country');
+			$query->where("country_code = '" . $countryCode . "'");
+			$this->_db->setQuery($query);
+			$country = $this->_db->loadObject();
+		}
+		catch (Exception $e)
+		{
+			echo $e->getMessage();
+
+			return false;
+		}
+
+		if ($country)
+		{
+			$countryName = "";
+
+			if (!empty($country->country_jtext))
+			{
+				$countryName = $this->getCountryJText($country->country_jtext);
+			}
+			else
+			{
+				$countryName = $country->country;
+			}
+
+			$country->country = $countryName;
+
+			return $country;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	/**
+	 * Returns the Region from region name
+	 *
+	 * @param   integer  $countryId   2 digit country code like IN for india
+	 * @param   string   $regionName  State/region name
+	 *
+	 * @return  object  country object which includes id, country name accourding to curren language && country_jtext, country_jtext;
+	 *
+	 * @since   1.1
+	 */
+	public function getRegionFromRegionName($countryId, $regionName)
+	{
+		if (empty($countryId) || empty($regionName))
+		{
+			return false;
+		}
+
+		$countryId = strtoupper($countryId);
+
+		try
+		{
+			$query = $this->_db->getQuery(true);
+			$query->select('id,region,region_jtext');
+			$query->from('#__tj_region');
+			$query->where("country_id = '" . $countryId . "'");
+			$query->where("LOWER(region) = '" . strtolower($regionName) . "'");
+			$this->_db->setQuery($query);
+			$region = $this->_db->loadObject();
+		}
+		catch (Exception $e)
+		{
+			echo $e->getMessage();
+
+			return false;
+		}
+
+		if ($region)
+		{
+			$regionName = "";
+
+			if (!empty($region->region_jtext))
+			{
+				$regionName = $this->getRegionJText($region->region_jtext);
+			}
+			else
+			{
+				$regionName = $region->region;
+			}
+
+			$region->region = $regionName;
+
+			return $region;
+		}
+		else
+		{
+			return false;
 		}
 	}
 }

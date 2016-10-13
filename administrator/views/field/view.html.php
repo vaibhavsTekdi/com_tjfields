@@ -85,6 +85,11 @@ class TjfieldsViewField extends JViewLegacy
 			{
 				$component_title = JText::_('COM_JTICKETING_COMPONENT');
 			}
+
+			if ($client['0'] == 'com_tjlms')
+			{
+				$component_title = JText::_('COM_TJLMS_COMPONENT');
+			}
 		}
 
 		if ($isNew)

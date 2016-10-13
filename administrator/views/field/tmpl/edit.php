@@ -29,7 +29,10 @@ $input = JFactory::getApplication()->input;
 		$client = $full_client[0];
 		$client_type = $full_client[1];
 
-
+// Import helper for declaring language constant
+JLoader::import('TjfieldsHelper', JUri::root().'administrator/components/com_tjfields/helpers/tjfields.php');
+// Call helper function
+TjfieldsHelper::getLanguageConstant();
 
 ?>
 <script type="text/javascript">
@@ -49,6 +52,7 @@ $input = JFactory::getApplication()->input;
 
 	Joomla.submitbutton = function(task)
 	{
+		whitespaces_not_llowed = Joomla.JText._('COM_TJFIELDS_LABEL_WHITESPACES_NOT_ALLOWED');
 		//alert(task);
 		if(task == 'field.cancel'){
 			Joomla.submitform(task, document.getElementById('field-form'));
@@ -57,10 +61,64 @@ $input = JFactory::getApplication()->input;
 
 			if (task != 'field.cancel' && document.formvalidator.isValid(document.id('field-form'))) {
 
+				var isrequired = techjoomla.jQuery('input[name="jform[required]"]:checked', '#field-form').val();
+				var isreadonly = techjoomla.jQuery('input[name="jform[readonly]"]:checked', '#field-form').val();
+				var field_type = techjoomla.jQuery('#jform_type').val();
+
+				switch(field_type)
+				{
+					case 'multi_select':
+					case 'single_select':
+					case 'checkbox':
+					case 'radio':
+						if(isrequired == 1)
+						{
+							if(techjoomla.jQuery('.tjfields_optionname').val().trim() == '' && techjoomla.jQuery('.tjfields_optionvalue').val().trim() == '')
+							{
+								techjoomla.jQuery('.tjfields_optionname').val('');
+								techjoomla.jQuery('.tjfields_optionname').attr('required', 'required');
+								techjoomla.jQuery('.tjfields_optionvalue').attr('required', 'required');
+								techjoomla.jQuery('.tjfields_optionname').focus();
+								return false;
+							}
+						}
+						break;
+					case 'text':
+					case 'textarea':
+					case 'calendar':
+					case 'email_field':
+						if ((isrequired == 1 && isreadonly == 1) || isreadonly == 1)
+						{
+							if (techjoomla.jQuery('#jform_default_value').val().trim() == '')
+							{
+								techjoomla.jQuery('#jform_default_value').attr('required', 'required');
+								techjoomla.jQuery('#jform_default_value').focus();
+								return false;
+							}
+						}
+						break;
+				}
+
+				if (techjoomla.jQuery('#jform_label').val().trim() == '')
+				{
+					alert(whitespaces_not_llowed);
+					techjoomla.jQuery('#jform_label').val('');
+					techjoomla.jQuery('#jform_label').focus();
+					return false;
+				}
+
+				if (techjoomla.jQuery('#jform_name').val().trim() == '')
+				{
+					alert(whitespaces_not_llowed);
+					techjoomla.jQuery('#jform_name').val('');
+					techjoomla.jQuery('#jform_name').focus();
+					return false;
+				}
+
 				Joomla.submitform(task, document.getElementById('field-form'));
 			}
 			else {
-				alert('<?php echo $this->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED')); ?>');
+				alert('<?php echo $this->escape(JText::_('COM_TJFIELDS_INVALID_FORM')); ?>');
 			}
 		}
 	}
@@ -113,6 +171,7 @@ $input = JFactory::getApplication()->input;
 				case	"calendar":
 				case	"editor":
 				case	"file":
+				case	"user":
 				case	"hidden":
 							techjoomla.jQuery('#option_div').hide();
 							techjoomla.jQuery('#option_min_char').hide();
@@ -127,6 +186,7 @@ $input = JFactory::getApplication()->input;
 							if(field_value == "calendar")
 							{
 								techjoomla.jQuery('#date_format').show();
+								techjoomla.jQuery('#default_value_text').show();
 							}
 							else if(field_value == "hidden")
 							{
@@ -164,7 +224,10 @@ $input = JFactory::getApplication()->input;
 								<div class="control-label"><?php echo $this->form->getLabel('label'); ?></div>
 								<div class="controls"><?php echo $this->form->getInput('label'); ?>
 									<span class="alert alert-info alert-help-inline span9 alert_no_margin">
-										<?php echo JText::_('COM_TJFIELDS_LABEL_LANG_CONSTRAINT'); ?>
+										<?php echo JText::_('COM_TJFIELDS_LABEL_LANG_CONSTRAINT_ONE'); ?>
+										<span class="alert-text-change">
+											<?php echo JText::sprintf('COM_TJFIELDS_LABEL_LANG_CONSTRAINT_TWO', $client); ?>
+										</span>
 									</span>
 								</div>
 
@@ -266,12 +329,32 @@ $input = JFactory::getApplication()->input;
 							</span>
 						</div>
 					</div>
+
+					<div class="control-group">
+						<div class="control-label"><?php echo $this->form->getLabel('filterable'); ?></div>
+						<div class="controls">
+							<?php echo $this->form->getInput('filterable'); ?>
+							<div style="clear:both" ></div>
+							<span class="alert alert-info alert-help-inline span9 alert_no_margin">
+								<?php echo JText::_('COM_TJFIELDS_FILTERABLE_NOTE'); ?>
+							</span>
+						</div>
+					</div>
+
+					<div class="control-group">
+						<div class="control-label"><?php echo $this->form->getLabel('category') ; ?></div>
+						<div class="controls">
+							<?php
+							echo $this->form->getInput('category'); ?>
+							<div style="clear:both" ></div>
+							<span class="alert alert-info alert-help-inline span9 alert_no_margin">
+								<?php echo JText::_('COM_TJFIELDS_CATEGORY_NOTE'); ?>
+							</span>
+						</div>
+					</div>
 					</fieldset>
 				</div>
-
 			</div>
-
-
 			<!--</fieldset>-->
 		</div>
 

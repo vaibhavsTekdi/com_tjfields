@@ -37,6 +37,7 @@
 				<option value="calendar">COM_TJFIELDS_CALENDAR</option>
 				<option value="editor">COM_TJFIELDS_EDITOR</option>
 				<option value="email_field">COM_TJFIELDS_EMAIL</option>
+				<option value="user">COM_TJFIELDS_USERS</option>
 				<!--<option value="file">COM_TJFIELDS_FILE</option>-->
 		</field>
 
@@ -178,6 +179,17 @@
 				<option value="0">JUNPUBLISHED</option>
 		</field>
 
+		<field name="filterable" type="radio"
+			label="COM_TJFIELDS_FORM_LBL_FIELD_FILTERABLE"
+			description="COM_TJFIELDS_FORM_DESC_FIELD_FILTERABLE"
+			default="0"
+			required="true" class="btn-group" >
+				<option value="1">COM_TJFIELDS_YES</option>
+				<option value="0">COM_TJFIELDS_NO</option>
+		</field>
+		<field name="category" type="fieldcategory"  multiple="multiple" label="COM_TJFIELDS_FORM_LBL_FIELD_CATEGORY"
+			class="category"
+			description="COM_TJFIELDS_FORM_FIELD_CATEGORY_DESC" />
 	</fieldset>
 
 </form>

@@ -193,6 +193,8 @@ function addClone(rId,rClass)
 				removeButton+="</div>";
 
 				var newElem=techjoomla.jQuery('#'+rId+pre).clone().attr('id',rId+field_lenght);
+				newElem.find('input[name=\"tjfields[' + pre + '][optionname]\"]').val('');
+				newElem.find('input[name=\"tjfields[' + pre + '][optionvalue]\"]').val('');
 				newElem.find('input[name=\"tjfields[' + pre + '][optionname]\"]').attr({'name': 'tjfields[' + field_lenght + '][optionname]','value':''});
 				newElem.find('input[name=\"tjfields[' + pre + '][optionvalue]\"]').attr({'name': 'tjfields[' + field_lenght + '][optionvalue]','value':''});
 				newElem.find('input[name=\"tjfields[' + pre + '][hiddenoption]\"]').attr({'name': 'tjfields[' + field_lenght + '][hiddenoption]','value':''});

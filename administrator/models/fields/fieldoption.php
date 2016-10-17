@@ -33,7 +33,7 @@ class JFormFieldFieldoption extends JFormField
 	 *
 	 * @since	1.6
 	 */
-	protected function __construct ()
+	public function __construct ()
 	{
 		parent::__construct();
 		$this->countoption = 0;
@@ -139,20 +139,21 @@ class JFormFieldFieldoption extends JFormField
 			{
 						$html .= '<div id="com_tjfields_repeating_block0" class="com_tjfields_repeating_block span7">
 									<div class="form-inline">
-										' . $this->
-										fetchOptionName($this->name, (isset($this->value[$k]->options))?$this->value[$k]->options:"", $this->element, $this->options['control'], $k)
-										. $this
-										->fetchOptionValue($this->name, (isset($this->value[$k]->value))?$this->value[$k]->value:"", $this->element, $this->options['control'], $k)
-										. $this
-										->fetchdedaultoption(
+										' . $this->fetchOptionName(
+										$this->name, (isset($this->value[$k]->options))?$this->value[$k]->options:"", $this->element, $this->options['control'], $k
+										)
+										. $this->fetchOptionValue(
+										$this->name, (isset($this->value[$k]->value))?$this->value[$k]->value:"", $this->element, $this->options['control'], $k
+										)
+										. $this->fetchdedaultoption(
 										$this->name, (isset($this->value[$k]->default_option))?$this->value[$k]->default_option:"", $this->element, $this->options['control'], $k
 										)
-										. $this
-										->fetchhiddenoption(
+										. $this->fetchhiddenoption(
 										$this->name, (isset($this->value[$k]->default_option))?$this->value[$k]->default_option:"", $this->element, $this->options['control'], $k
 										)
-										. $this
-										->fetchhiddenoptionid($this->name, (isset($this->value[$k]->id))?$this->value[$k]->id:"", $this->element, $this->options['control'], $k)
+										. $this->fetchhiddenoptionid(
+										$this->name, (isset($this->value[$k]->id))?$this->value[$k]->id:"", $this->element, $this->options['control'], $k
+										)
 										. '
 									</div>
 								</div>';

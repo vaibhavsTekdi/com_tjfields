@@ -485,7 +485,7 @@ class TjfieldsHelper
 		{
 			$db    = JFactory::getDbo();
 			$query = $db->getQuery(true);
-			$query->select('DISTINCT f.id,f.label,f.name FROM #__tjfields_fields AS f');
+			$query->select('DISTINCT * FROM #__tjfields_fields AS f');
 			$query->where('NOT EXISTS (select * FROM #__tjfields_category_mapping AS cm where f.id=cm.field_id)');
 			$query->where('f.client="' . $client . '"');
 			$query->where('f.state=1');

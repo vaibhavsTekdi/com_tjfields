@@ -21,7 +21,7 @@ if(JVERSION >= '3.0')
 // Import CSS
 $document = JFactory::getDocument();
 $document->addStyleSheet('components/com_tjfields/assets/css/tjfields.css');
-JHtml::script(JUri::root() . 'administrator/components/com_tjfields/assets/js/field.js');
+$document->addScript(JUri::root() . 'administrator/components/com_tjfields/assets/js/field.js');
 $input = JFactory::getApplication()->input;
 
 		$full_client = $input->get('client','','STRING');

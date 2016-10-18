@@ -279,6 +279,27 @@ class TjfieldsHelper
 		{
 			$this->createXml($data, $unmappedFields);
 		}
+		else
+		{
+			// Delete Universal fields file if there are not any unmapped categorys
+			$filePathFrontend = JPATH_SITE . '/components/' . $extension . '/models/forms/' .
+			$data['client_type'] . 'form_extra.xml';
+			$content  = '';
+
+			$filePathBackend = JPATH_SITE . DS . 'administrator/components/' .
+			$extension . '/models/forms/' .
+			$data['client_type'] . '_extra.xml';
+
+			if (JFile::exists($filePathFrontend))
+			{
+				JFile::delete($filePathFrontend);
+			}
+
+			if (JFile::exists($filePathBackend))
+			{
+				JFile::delete($filePathBackend);
+			}
+		}
 
 		// For unmapped categorys - end
 		if (!empty($categorys))

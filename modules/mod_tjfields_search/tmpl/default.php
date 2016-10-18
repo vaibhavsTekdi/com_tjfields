@@ -27,6 +27,8 @@ $document->addStyleSheet($path);
 
 $baseurl = $jinput->server->get('REQUEST_URI', '', 'STRING');
 
+// Get client type in module params
+$client_type = $params->get('client_type', '');
 
 // Get uRL base part and parameter part
 $temp =  explode ('?', $baseurl);
@@ -160,7 +162,7 @@ foreach ($fieldsArray as $key => $fieldOptions)
 	function tjfieldsapplyfilters()
 	{
 		var redirectlink = '<?php echo $baseurl;?>';
-		var client = "com_quick2cart.products";
+		var client = "<?php echo $client_type; ?>";
 		var optionStr = "";
 
 		if (typeof(client) != 'undefined')

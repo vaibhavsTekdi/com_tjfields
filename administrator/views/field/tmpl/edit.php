@@ -39,7 +39,6 @@ TjfieldsHelper::getLanguageConstant();
 <script type="text/javascript">
 
 	techjoomla.jQuery( document ).ready(function(){
-
 			var field_type=techjoomla.jQuery('#jform_type').val();
 			show_option_div(field_type);
 			//if edit ..make name field readonly
@@ -126,12 +125,19 @@ TjfieldsHelper::getLanguageConstant();
 
 	function show_option_div(field_value)
 	{
+			techjoomla.jQuery('#jform_filterable').parent().parent().hide();
 
 			switch (field_value)
 			{
 				case	"radio":
+							techjoomla.jQuery('#jform_filterable').parent().parent().show();
+							break;
 				case 	"single_select":
+							techjoomla.jQuery('#jform_filterable').parent().parent().show();
+							break;
 				case 	"multi_select":
+							techjoomla.jQuery('#jform_filterable').parent().parent().show();
+							break;
 				case	"checkbox":
 							techjoomla.jQuery('#option_div').show();
 							techjoomla.jQuery('#option_min_char').hide();

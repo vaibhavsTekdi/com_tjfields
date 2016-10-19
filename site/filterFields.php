@@ -315,7 +315,6 @@ trait TjfieldsFilterField
 		}
 
 		$tjFieldsHelper = new TjfieldsHelper;
-		$data               = array();
 		$data['content_id'] = $id;
 		$extra_fields_data = $tjFieldsHelper->FetchDatavalue($data);
 

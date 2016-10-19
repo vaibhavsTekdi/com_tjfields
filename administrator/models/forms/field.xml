@@ -23,7 +23,7 @@
 			description="COM_TJFIELDS_FORM_DESC_FIELD_NAME"
 			required="true" />
 
-	   <field name="type" type="list" onchange="show_option_div(this.value)"
+		<field name="type" type="list" onchange="show_option_div(this.value)"
 			label="COM_TJFIELDS_FORM_LBL_FIELD_FIELD_TYPE"
 			description="COM_TJFIELDS_FORM_DESC_FIELD_FIELD_TYPE"
 			default="text"
@@ -183,7 +183,7 @@
 			label="COM_TJFIELDS_FORM_LBL_FIELD_FILTERABLE"
 			description="COM_TJFIELDS_FORM_DESC_FIELD_FILTERABLE"
 			default="0"
-			required="true" class="btn-group" >
+			required="true" class="btn-group">
 				<option value="1">COM_TJFIELDS_YES</option>
 				<option value="0">COM_TJFIELDS_NO</option>
 		</field>

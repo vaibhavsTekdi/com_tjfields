@@ -183,7 +183,7 @@ foreach ($fieldsArray as $key => $fieldOptions)
 
 		var urlValueName = "<?php echo $url_cat_param_name;?>";
 
-		if (urlValueName != 'undefined')
+		if (urlValueName != 'undefined' && urlValueName!= '')
 		{
 			if (redirectlink.indexOf('?') === -1)
 			{
@@ -204,7 +204,7 @@ foreach ($fieldsArray as $key => $fieldOptions)
 
 		if (typeof(category) != 'undefined')
 		{
-			if (urlValueName != 'undefined')
+			if (urlValueName != 'undefined' && urlValueName!='')
 			{
 				if (redirectlink.indexOf('?') === -1)
 				{

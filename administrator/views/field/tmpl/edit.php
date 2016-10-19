@@ -130,24 +130,20 @@ TjfieldsHelper::getLanguageConstant();
 			switch (field_value)
 			{
 				case	"radio":
+							showOptions();
 							techjoomla.jQuery('#jform_filterable').parent().parent().show();
 							break;
 				case 	"single_select":
+							showOptions();
 							techjoomla.jQuery('#jform_filterable').parent().parent().show();
 							break;
 				case 	"multi_select":
+							showOptions();
 							techjoomla.jQuery('#jform_filterable').parent().parent().show();
 							break;
 				case	"checkbox":
-							techjoomla.jQuery('#option_div').show();
-							techjoomla.jQuery('#option_min_char').hide();
-							techjoomla.jQuery('#option_max_char').hide();
-							techjoomla.jQuery('#date_format').hide();
-							techjoomla.jQuery('#default_value_text').hide();
-							techjoomla.jQuery('.textarea_inputs').children().removeAttr('required');
-							techjoomla.jQuery('#textarea_rows').hide();
-							techjoomla.jQuery('#textarea_cols').hide();
-							techjoomla.jQuery('#div_placeholder').hide();
+							showOptions();
+							techjoomla.jQuery('#jform_filterable').parent().parent().show();
 							break;
 				case	"text":
 				case	"textarea":
@@ -205,6 +201,19 @@ TjfieldsHelper::getLanguageConstant();
 			}
 
 
+	}
+
+	function showOptions()
+	{
+		techjoomla.jQuery('#option_div').show();
+		techjoomla.jQuery('#option_min_char').hide();
+		techjoomla.jQuery('#option_max_char').hide();
+		techjoomla.jQuery('#date_format').hide();
+		techjoomla.jQuery('#default_value_text').hide();
+		techjoomla.jQuery('.textarea_inputs').children().removeAttr('required');
+		techjoomla.jQuery('#textarea_rows').hide();
+		techjoomla.jQuery('#textarea_cols').hide();
+		techjoomla.jQuery('#div_placeholder').hide();
 	}
 
 </script>

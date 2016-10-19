@@ -63,9 +63,8 @@ if (!empty($this->extra_sidebar)) {
     $this->sidebar .= $this->extra_sidebar;
 }
 ?>
-
-<div class="techjoomla-bootstrap">
-	<form action="<?php echo JRoute::_('index.php?option=com_tjfields&view=fields&client='.$input->get('client','','STRING')); ?>" method="post" name="adminForm" id="adminForm">
+<form action="<?php echo JRoute::_('index.php?option=com_tjfields&view=fields&client='.$input->get('client','','STRING')); ?>" method="post" name="adminForm" id="adminForm">
+	<div class="techjoomla-bootstrap">
 		<?php if(!empty($this->sidebar)): ?>
 			<div id="j-sidebar-container" class="span2">
 				<?php echo $this->sidebar; ?>
@@ -254,5 +253,5 @@ if (!empty($this->extra_sidebar)) {
 			<input type="hidden" name="filter_order_Dir" value="<?php echo $listDirn; ?>" />
 			<?php echo JHtml::_('form.token'); ?>
 		</div>
-	</form>
-</div>
+	</div>
+</form>

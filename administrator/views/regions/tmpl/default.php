@@ -30,12 +30,10 @@ if (! empty($this->extra_sidebar))
 }
 ?>
 
-<div class="<?php echo TJFIELDS_WRAPPER_CLASS;?> tj-regions">
-
-	<form
+<form
 		action="<?php echo JRoute::_('index.php?option=com_tjfields&view=regions&client=' . $this->input->get('client', '', 'STRING')); ?>"
 		method="post" name="adminForm" id="adminForm">
-
+	<div class="<?php echo TJFIELDS_WRAPPER_CLASS;?> tj-regions">
 		<?php
 		// JHtmlsidebar for menu.
 		if (JVERSION >= '3.0'):
@@ -237,5 +235,5 @@ if (! empty($this->extra_sidebar))
 
 			<?php echo JHtml::_('form.token'); ?>
 		</div>
-	</form>
-</div>
+	</div>
+</form>

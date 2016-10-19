@@ -11,11 +11,6 @@
 defined('_JEXEC') or die();
 $jinput = JFactory::getApplication()->input;
 
-if (empty($fieldsArray))
-{
-	return '';
-}
-
 $document = JFactory::getDocument();
 $path = JUri::base() . 'modules/mod_tjfields_search/assets/css/tjfilters.css';
 $document->addStyleSheet($path);
@@ -100,39 +95,41 @@ if ($showCategoryFilter && !empty($fieldsCategorys))
 
 	echo $compSpecificFilterHtml;
 
-foreach ($fieldsArray as $key => $fieldOptions)
+if (!empty($fieldsArray))
 {
-	$i = 0;
-	$fieldName = '';
-
-	if (!empty($fieldOptions))
+	foreach ($fieldsArray as $key => $fieldOptions)
 	{
-	?>
-		<div class="tj-filterwrapper filterwrapper<?php echo $fieldOptions[0]->id; ?>" >
-			<div class="qtcfiltername filtername<?php echo $fieldOptions[0]->id; ?>">
-				<b><?php echo ucfirst($fieldOptions[0]->label);?></b>
-			</div>
-			<div class="tj-filterlistwrapper">
-				<?php
+		$i = 0;
+		$fieldName = '';
 
-				foreach ($fieldOptions as $option)
-				{
-
-				?>
-					<div class="tj-filteritem tjfieldfilters-<?php echo $option->name;?>" >
-						<input type="checkbox" class="tjfieldCheck" name="tj_fields_value[]" id="<?php echo $option->name .'||'.  $option->option_id;?>" value="<?php echo $option->option_id;?>" <?php echo in_array($option->option_id, $selectedFilters)?'checked="checked"':'';?>  onclick='tjfieldsapplyfilters()' />
-						<label> <?php echo ucfirst($option->options);?></label>
-					</div>
-
+		if (!empty($fieldOptions))
+		{
+		?>
+			<div class="tj-filterwrapper filterwrapper<?php echo $fieldOptions[0]->id; ?>" >
+				<div class="qtcfiltername filtername<?php echo $fieldOptions[0]->id; ?>">
+					<b><?php echo ucfirst($fieldOptions[0]->label);?></b>
+				</div>
+				<div class="tj-filterlistwrapper">
 					<?php
-				}
-				?>
+
+					foreach ($fieldOptions as $option)
+					{
+
+					?>
+						<div class="tj-filteritem tjfieldfilters-<?php echo $option->name;?>" >
+							<input type="checkbox" class="tjfieldCheck" name="tj_fields_value[]" id="<?php echo $option->name .'||'.  $option->option_id;?>" value="<?php echo $option->option_id;?>" <?php echo in_array($option->option_id, $selectedFilters)?'checked="checked"':'';?>  onclick='tjfieldsapplyfilters()' />
+							<label> <?php echo ucfirst($option->options);?></label>
+						</div>
+
+						<?php
+					}
+					?>
+				</div>
 			</div>
-		</div>
-		<?php
+			<?php
+		}
 	}
 }
-
 
 ?>
 <p></p>

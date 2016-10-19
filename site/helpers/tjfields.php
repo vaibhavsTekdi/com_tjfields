@@ -829,7 +829,7 @@ class TjfieldsHelper
 		}
 		else
 		{
-			return false;
+			return '-2';
 		}
 	}
 }

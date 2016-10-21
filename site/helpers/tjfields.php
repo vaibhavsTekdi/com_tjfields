@@ -489,7 +489,6 @@ class TjfieldsHelper
 			$query->where('NOT EXISTS (select * FROM #__tjfields_category_mapping AS cm where f.id=cm.field_id)');
 			$query->where('f.client="' . $client . '"');
 			$query->where('f.state=1');
-			$query->where('f.filterable=1');
 			$db->setQuery($query);
 			$universalFields = $db->loadObjectlist();
 		}
@@ -809,7 +808,9 @@ class TjfieldsHelper
 	{
 		$db = JFactory::getDbo();
 		$jinput  = JFactory::getApplication()->input;
-		$tjfieldIitem_ids = "0";
+
+		// Function will return -1 when no content found according to selected fields in filter
+		$tjfieldIitem_ids = "-1";
 		$tj_mod_filter_cat = $jinput->get("ModFilterCat", "prod_cat");
 		$category_id = $jinput->get($tj_mod_filter_cat);
 		$fields_value_str = $jinput->get("tj_fields_value", '', "RAW");
@@ -825,10 +826,12 @@ class TjfieldsHelper
 				$tjfieldIitem_ids = implode(",", $client_ids);
 			}
 
+			// Return all the content ids which are matching the filters condition
 			return $tjfieldIitem_ids;
 		}
 		else
 		{
+			// Return -2 when no filters are selected
 			return '-2';
 		}
 	}

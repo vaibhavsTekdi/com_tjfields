@@ -21,6 +21,7 @@ $url_cat_param_name       = $params->get('url_cat_param_name', '');
 $client_type               = $params->get('client_type', '');
 $category_type               = $params->get('category_type', '');
 $URLParamConditions               = $params->get('URLParamConditions', '');
+$bootstrapVersion = $params->get('bootstrapversion', 'bs3', 'STRING');
 $URLParamConditions = trim($URLParamConditions);
 
 $tmp = explode(".", $client_type);
@@ -45,7 +46,7 @@ if (JFile::exists(JPATH_SITE . '/components/com_tjfields/tjfields.php'))
 		$url = JFactory::getApplication()->input->server->get('REQUEST_URI', '', 'STRING');
 
 		// Get uRL base part and parameter part
-		$temp =  explode ('?', $url);
+		$temp = explode('?', $url);
 		$urlArray = array();
 
 		if (!empty($temp[1]))
@@ -62,12 +63,6 @@ if (JFile::exists(JPATH_SITE . '/components/com_tjfields/tjfields.php'))
 		{
 			foreach ($conditionList as $urlParam => $urlValue)
 			{
-				// Condition not math
-				if (!in_array($urlValue, $urlArray))
-				{
-
-				}
-
 				if (empty($urlArray[$urlParam]) || $urlArray[$urlParam] != $urlValue)
 				{
 					$showHtml = 0;
@@ -97,6 +92,25 @@ if (JFile::exists(JPATH_SITE . '/components/com_tjfields/tjfields.php'))
 		break;
 	}
 
+	if ($bootstrapVersion == 'bs2')
+	{
+		$basePath = JPATH_SITE . '/components/' . $category_type . '/layouts/corefilters/bs2';
+	}
+	else
+	{
+		$basePath = JPATH_SITE . '/components/' . $category_type . '/layouts/corefilters/bs3';
+	}
+
+	$layout = new JLayoutFile('corefilters', $basePath);
+	$data = "";
+	$fieldHtml = $layout->render($data);
+	?>
+	<div>
+		<?php echo $fieldHtml;?>
+	</div>
+	<?php
+
+
 	// Selected category
 	$clientCatUrlParam = $params->get("url_cat_param_name", "prod_cat");
 	$selectedCategory = $input->get($clientCatUrlParam, '');
@@ -109,6 +123,7 @@ if (JFile::exists(JPATH_SITE . '/components/com_tjfields/tjfields.php'))
 	$fieldsCategorys               = array_merge($options, $cats);
 
 	$fieldsArray = array();
+
 	// Universal field- for client - those field who doesn't mapped agaist category
 	// $fieldsArray['universal'] = $tjfieldsHelper->getUniversalFields($client_type);
 

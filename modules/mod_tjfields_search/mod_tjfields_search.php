@@ -87,7 +87,6 @@ if (JFile::exists(JPATH_SITE . '/components/com_tjfields/tjfields.php'))
 				require_once JPATH_SITE . '/components/com_quick2cart/helper.php';
 				$comquick2cartHelper = new Comquick2cartHelper;
 				$removeParamOnchangeCat = $comquick2cartHelper->getParameterToRemoveOnChangeOfCategory();
-				$compSpecificFilterHtml = $comquick2cartHelper->getComponentSpecificFilterHtml();
 
 		break;
 	}
@@ -103,13 +102,7 @@ if (JFile::exists(JPATH_SITE . '/components/com_tjfields/tjfields.php'))
 
 	$layout = new JLayoutFile('corefilters', $basePath);
 	$data = "";
-	$fieldHtml = $layout->render($data);
-	?>
-	<div>
-		<?php echo $fieldHtml;?>
-	</div>
-	<?php
-
+	$compSpecificFilterHtml = $layout->render($data);
 
 	// Selected category
 	$clientCatUrlParam = $params->get("url_cat_param_name", "prod_cat");

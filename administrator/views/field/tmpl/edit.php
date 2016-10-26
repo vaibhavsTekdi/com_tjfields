@@ -52,6 +52,12 @@ TjfieldsHelper::getLanguageConstant();
 
 	Joomla.submitbutton = function(task)
 	{
+		// Remove disable attribute from category select so that the selected category can be saved
+		if (task == 'field.apply' || task == 'field.save' || task == 'field.newsave' || task == 'field.save2copy')
+		{
+			techjoomla.jQuery('#jformcategory').attr("disabled", false);
+		}
+
 		whitespaces_not_llowed = Joomla.JText._('COM_TJFIELDS_LABEL_WHITESPACES_NOT_ALLOWED');
 		//alert(task);
 		if(task == 'field.cancel'){

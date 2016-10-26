@@ -202,6 +202,26 @@ class TjfieldsHelper
 					}
 				}
 			}
+			else
+			{
+				if (isset($field_data->id) && isset($data['content_id']))
+				{
+					// Delete entry is field is deselected
+					$conditions = array(
+						$db->quoteName('field_id') . ' = ' . $field_data->id,
+						$db->quoteName('content_id') . ' = ' . $data['content_id']
+					);
+
+					$query = $db->getQuery(true);
+
+					$query->delete($db->quoteName('#__tjfields_fields_value'));
+					$query->where($conditions);
+
+					$db->setQuery($query);
+
+					$result = $db->execute();
+				}
+			}
 		}
 
 		return true;

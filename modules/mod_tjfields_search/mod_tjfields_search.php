@@ -27,6 +27,10 @@ $URLParamConditions = trim($URLParamConditions);
 $tmp = explode(".", $client_type);
 $configuredComp = $tmp[0];
 
+// Check the Bootstrap here
+$mod_tjfilter_layout = $params->get('bootstrapversion');
+
+
 if (JFile::exists(JPATH_SITE . '/components/com_tjfields/tjfields.php'))
 {
 	$path = JPATH_SITE . '/components/com_tjfields/helpers/tjfields.php';
@@ -147,5 +151,5 @@ if (JFile::exists(JPATH_SITE . '/components/com_tjfields/tjfields.php'))
 		}
 	}
 
-	require JModuleHelper::getLayoutPath('mod_tjfields_search');
+	require JModuleHelper::getLayoutPath('mod_tjfields_search', 'default_' . $mod_tjfilter_layout);
 }

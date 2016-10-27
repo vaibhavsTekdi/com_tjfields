@@ -21,6 +21,7 @@ if(JVERSION >= '3.0')
 // Import CSS
 $document = JFactory::getDocument();
 $document->addStyleSheet('components/com_tjfields/assets/css/tjfields.css');
+$document->addScript(JUri::root() . 'administrator/components/com_tjfields/assets/js/field.js');
 $input = JFactory::getApplication()->input;
 
 		$full_client = $input->get('client','','STRING');
@@ -38,7 +39,6 @@ TjfieldsHelper::getLanguageConstant();
 <script type="text/javascript">
 
 	techjoomla.jQuery( document ).ready(function(){
-
 			var field_type=techjoomla.jQuery('#jform_type').val();
 			show_option_div(field_type);
 			//if edit ..make name field readonly
@@ -52,6 +52,12 @@ TjfieldsHelper::getLanguageConstant();
 
 	Joomla.submitbutton = function(task)
 	{
+		// Remove disable attribute from category select so that the selected category can be saved
+		if (task == 'field.apply' || task == 'field.save' || task == 'field.newsave' || task == 'field.save2copy')
+		{
+			techjoomla.jQuery('#jformcategory').attr("disabled", false);
+		}
+
 		whitespaces_not_llowed = Joomla.JText._('COM_TJFIELDS_LABEL_WHITESPACES_NOT_ALLOWED');
 		//alert(task);
 		if(task == 'field.cancel'){
@@ -125,22 +131,25 @@ TjfieldsHelper::getLanguageConstant();
 
 	function show_option_div(field_value)
 	{
+			techjoomla.jQuery('#jform_filterable').parent().parent().hide();
 
 			switch (field_value)
 			{
 				case	"radio":
+							showOptions();
+							techjoomla.jQuery('#jform_filterable').parent().parent().show();
+							break;
 				case 	"single_select":
+							showOptions();
+							techjoomla.jQuery('#jform_filterable').parent().parent().show();
+							break;
 				case 	"multi_select":
+							showOptions();
+							techjoomla.jQuery('#jform_filterable').parent().parent().show();
+							break;
 				case	"checkbox":
-							techjoomla.jQuery('#option_div').show();
-							techjoomla.jQuery('#option_min_char').hide();
-							techjoomla.jQuery('#option_max_char').hide();
-							techjoomla.jQuery('#date_format').hide();
-							techjoomla.jQuery('#default_value_text').hide();
-							techjoomla.jQuery('.textarea_inputs').children().removeAttr('required');
-							techjoomla.jQuery('#textarea_rows').hide();
-							techjoomla.jQuery('#textarea_cols').hide();
-							techjoomla.jQuery('#div_placeholder').hide();
+							showOptions();
+							techjoomla.jQuery('#jform_filterable').parent().parent().show();
 							break;
 				case	"text":
 				case	"textarea":
@@ -200,6 +209,19 @@ TjfieldsHelper::getLanguageConstant();
 
 	}
 
+	function showOptions()
+	{
+		techjoomla.jQuery('#option_div').show();
+		techjoomla.jQuery('#option_min_char').hide();
+		techjoomla.jQuery('#option_max_char').hide();
+		techjoomla.jQuery('#date_format').hide();
+		techjoomla.jQuery('#default_value_text').hide();
+		techjoomla.jQuery('.textarea_inputs').children().removeAttr('required');
+		techjoomla.jQuery('#textarea_rows').hide();
+		techjoomla.jQuery('#textarea_cols').hide();
+		techjoomla.jQuery('#div_placeholder').hide();
+	}
+
 </script>
 
 <div class="techjoomla-bootstrap">
@@ -209,61 +231,65 @@ TjfieldsHelper::getLanguageConstant();
 
 			<div class="container1">
 				<div class="span6 ">
-					<fieldset class="adminform form-horizontal">
-						<legend>
-							<?php echo JText::_('COM_TJFIELDS_BASIC_FIELDS_VALUES');?>
-						</legend>
-						<div class="control-group">
-							<div class="control-label"><?php echo $this->form->getLabel('id'); ?></div>
-							<div class="controls"><?php echo $this->form->getInput('id'); ?></div>
-						</div>
-						<div class="control-group">
-							<div class="control-label"><?php echo $this->form->getLabel('label'); ?></div>
-							<div class="controls"><?php echo $this->form->getInput('label'); ?>
-								<span class="alert alert-info alert-help-inline span9 alert_no_margin">
-									<?php echo JText::_('COM_TJFIELDS_LABEL_LANG_CONSTRAINT_ONE'); ?>
-									<span class="alert-text-change">
-										<?php echo JText::sprintf('COM_TJFIELDS_LABEL_LANG_CONSTRAINT_TWO', $client); ?>
-									</span>
-								</span>
+				<fieldset class="adminform form-horizontal">
+				<legend>
+					<?php
+						echo JText::_('COM_TJFIELDS_BASIC_FIELDS_VALUES');
+					?>
+				</legend>
+
+							<div class="control-group">
+								<div class="control-label"><?php echo $this->form->getLabel('id'); ?></div>
+								<div class="controls"><?php echo $this->form->getInput('id'); ?></div>
 							</div>
-						</div>
-						<div class="control-group">
-							<div class="control-label"><?php echo $this->form->getLabel('name'); ?></div>
-							<div class="controls"><?php echo $this->form->getInput('name'); ?></div>
-						</div>
-						<div class="control-group">
-							<div class="control-label"><?php echo $this->form->getLabel('type'); ?></div>
-							<div class="controls"><?php echo $this->form->getInput('type'); ?></div>
-						</div>
-						<div class="control-group displaynone" id="option_div" >
-							<div class="control-label"><?php echo $this->form->getLabel('fieldoption'); ?></div>
-							<div class="controls"><?php echo $this->form->getInput('fieldoption'); ?></div>
-						</div>
-						<div class="control-group displaynone" id="date_format" >
-							<div class="control-label"><?php echo $this->form->getLabel('format'); ?></div>
-							<div class="controls"><?php echo $this->form->getInput('format'); ?></div>
-						</div>
-						<div class="control-group displaynone" id="option_min_char">
-							<div class="control-label"><?php echo $this->form->getLabel('min'); ?></div>
-							<div class="controls"><?php echo $this->form->getInput('min'); ?></div>
-						</div>
-						<div class="control-group displaynone" id="option_max_char">
-							<div class="control-label"><?php echo $this->form->getLabel('max'); ?></div>
-							<div class="controls"><?php echo $this->form->getInput('max'); ?></div>
-						</div>
-						<div class="control-group displaynone" id="textarea_rows">
-							<div class="control-label"><?php echo $this->form->getLabel('rows'); ?></div>
-							<div class="controls textarea_inputs"><?php echo $this->form->getInput('rows'); ?></div>
-						</div>
-						<div class="control-group displaynone" id="textarea_cols">
-							<div class="control-label"><?php echo $this->form->getLabel('cols'); ?></div>
-							<div class="controls textarea_inputs"><?php echo $this->form->getInput('cols'); ?></div>
-						</div>
-						<div class="control-group displaynone" id="default_value_text">
-							<div class="control-label"><?php echo $this->form->getLabel('default_value'); ?></div>
-							<div class="controls"><?php echo $this->form->getInput('default_value'); ?></div>
-						</div>
+							<div class="control-group">
+								<div class="control-label"><?php echo $this->form->getLabel('label'); ?></div>
+								<div class="controls"><?php echo $this->form->getInput('label'); ?>
+									<span class="alert alert-info alert-help-inline span9 alert_no_margin">
+										<?php echo JText::_('COM_TJFIELDS_LABEL_LANG_CONSTRAINT_ONE'); ?>
+										<span class="alert-text-change">
+											<?php echo JText::sprintf('COM_TJFIELDS_LABEL_LANG_CONSTRAINT_TWO', $client); ?>
+										</span>
+									</span>
+								</div>
+
+							</div>
+							<div class="control-group">
+								<div class="control-label"><?php echo $this->form->getLabel('name'); ?></div>
+								<div class="controls"><?php echo $this->form->getInput('name'); ?></div>
+							</div>
+							<div class="control-group">
+								<div class="control-label"><?php echo $this->form->getLabel('type'); ?></div>
+								<div class="controls"><?php echo $this->form->getInput('type'); ?></div>
+							</div>
+							<div class="control-group displaynone" id="option_div" >
+								<div class="control-label"><?php echo $this->form->getLabel('fieldoption'); ?></div>
+								<div class="controls"><?php echo $this->form->getInput('fieldoption'); ?></div>
+							</div>
+							<div class="control-group displaynone" id="date_format" >
+								<div class="control-label"><?php echo $this->form->getLabel('format'); ?></div>
+								<div class="controls"><?php echo $this->form->getInput('format'); ?></div>
+							</div>
+							<div class="control-group displaynone" id="option_min_char">
+								<div class="control-label"><?php echo $this->form->getLabel('min'); ?></div>
+								<div class="controls"><?php echo $this->form->getInput('min'); ?></div>
+							</div>
+							<div class="control-group displaynone" id="option_max_char">
+								<div class="control-label"><?php echo $this->form->getLabel('max'); ?></div>
+								<div class="controls"><?php echo $this->form->getInput('max'); ?></div>
+							</div>
+							<div class="control-group displaynone" id="textarea_rows">
+								<div class="control-label"><?php echo $this->form->getLabel('rows'); ?></div>
+								<div class="controls textarea_inputs"><?php echo $this->form->getInput('rows'); ?></div>
+							</div>
+							<div class="control-group displaynone" id="textarea_cols">
+								<div class="control-label"><?php echo $this->form->getLabel('cols'); ?></div>
+								<div class="controls textarea_inputs"><?php echo $this->form->getInput('cols'); ?></div>
+							</div>
+							<div class="control-group displaynone" id="default_value_text">
+								<div class="control-label"><?php echo $this->form->getLabel('default_value'); ?></div>
+								<div class="controls"><?php echo $this->form->getInput('default_value'); ?></div>
+							</div>
 
 					</fieldset>
 					<input type="hidden" name="jform[client]" value="<?php echo $input->get('client','','STRING'); ?>" />
@@ -271,59 +297,81 @@ TjfieldsHelper::getLanguageConstant();
 
 
 				<div class="span5 form-horizontal">
-					<fieldset class="adminform form-horizontal">
-						<legend>
-							<?php echo JText::_('COM_TJFIELDS_EXTRA_FIELDS_VALUES');?>
-						</legend>
+				<fieldset class="adminform form-horizontal">
+				<legend>
+					<?php
+						echo JText::_('COM_TJFIELDS_EXTRA_FIELDS_VALUES');
+					?>
+				</legend>
 
-						<div class="control-group">
-							<div class="control-label"><?php echo $this->form->getLabel('group_id'); ?></div>
-							<div class="controls"><?php echo $this->form->getInput('group_id'); ?></div>
+					<div class="control-group">
+						<div class="control-label"><?php echo $this->form->getLabel('group_id'); ?></div>
+						<div class="controls"><?php echo $this->form->getInput('group_id'); ?></div>
+					</div>
+
+					<div class="control-group" >
+						<div class="control-label"><?php echo $this->form->getLabel('state'); ?></div>
+						<div class="controls"><?php echo $this->form->getInput('state'); ?></div>
+					</div>
+					<div class="control-group">
+						<div class="control-label"><?php echo $this->form->getLabel('required'); ?></div>
+						<div class="controls"><?php echo $this->form->getInput('required'); ?></div>
+					</div>
+					<div class="control-group">
+						<div class="control-label"><?php echo $this->form->getLabel('readonly'); ?></div>
+						<div class="controls"><?php echo $this->form->getInput('readonly'); ?></div>
+					</div>
+					<div class="control-group" id="div_placeholder">
+						<div class="control-label"><?php echo $this->form->getLabel('placeholder'); ?></div>
+						<div class="controls"><?php echo $this->form->getInput('placeholder'); ?></div>
+					</div>
+					<div class="control-group">
+						<div class="control-label"><?php echo $this->form->getLabel('created_by'); ?></div>
+						<div class="controls"><?php echo $this->form->getInput('created_by'); ?></div>
+					</div>
+					<div class="control-group">
+						<div class="control-label"><?php echo $this->form->getLabel('category') ; ?></div>
+						<div class="controls">
+							<?php
+							echo $this->form->getInput('category');?>
+							<div style="clear:both" ></div>
+							<span class="alert alert-warning alert-help-inline span9 alert_no_margin">
+								<?php echo JText::_('COM_TJFIELDS_CATEGORY_NOTE'); ?>
+							</span>
 						</div>
-						<div class="control-group" >
-							<div class="control-label"><?php echo $this->form->getLabel('state'); ?></div>
-							<div class="controls"><?php echo $this->form->getInput('state'); ?></div>
+					</div>
+					<div class="control-group">
+						<div class="control-label"><?php echo $this->form->getLabel('filterable'); ?></div>
+						<div class="controls">
+							<?php echo $this->form->getInput('filterable'); ?>
+							<div style="clear:both" ></div>
+							<span class="alert alert-info alert-help-inline span9 alert_no_margin">
+								<?php echo JText::_('COM_TJFIELDS_FILTERABLE_NOTE'); ?>
+							</span>
 						</div>
-						<div class="control-group">
-							<div class="control-label"><?php echo $this->form->getLabel('required'); ?></div>
-							<div class="controls"><?php echo $this->form->getInput('required'); ?></div>
+					</div>
+					<div class="control-group">
+						<div class="control-label"><?php echo $this->form->getLabel('description'); ?></div>
+						<div class="controls"><?php echo $this->form->getInput('description'); ?></div>
+					</div>
+					<div class="control-group">
+						<div class="control-label"><?php echo $this->form->getLabel('js_function'); ?></div>
+						<div class="controls">
+							<?php echo $this->form->getInput('js_function'); ?>
+
 						</div>
-						<div class="control-group">
-							<div class="control-label"><?php echo $this->form->getLabel('readonly'); ?></div>
-							<div class="controls"><?php echo $this->form->getInput('readonly'); ?></div>
+
+					</div>
+					<div class="control-group">
+						<div class="control-label"><?php echo $this->form->getLabel('validation_class'); ?></div>
+						<div class="controls">
+							<?php echo $this->form->getInput('validation_class'); ?>
+							<div style="clear:both" ></div>
+							<span class="alert alert-info alert-help-inline span9 alert_no_margin">
+								<?php echo JText::_('COM_TJFIELDS_VALIDATION_CLASS_NOTE'); ?>
+							</span>
 						</div>
-						<div class="control-group">
-							<div class="control-label"><?php echo $this->form->getLabel('display_field'); ?></div>
-							<div class="controls"><?php echo $this->form->getInput('display_field'); ?></div>
-						</div>
-						<div class="control-group" id="div_placeholder">
-							<div class="control-label"><?php echo $this->form->getLabel('placeholder'); ?></div>
-							<div class="controls"><?php echo $this->form->getInput('placeholder'); ?></div>
-						</div>
-						<div class="control-group">
-							<div class="control-label"><?php echo $this->form->getLabel('created_by'); ?></div>
-							<div class="controls"><?php echo $this->form->getInput('created_by'); ?></div>
-						</div>
-						<div class="control-group">
-							<div class="control-label"><?php echo $this->form->getLabel('description'); ?></div>
-							<div class="controls"><?php echo $this->form->getInput('description'); ?></div>
-						</div>
-						<div class="control-group">
-							<div class="control-label"><?php echo $this->form->getLabel('js_function'); ?></div>
-							<div class="controls">
-								<?php echo $this->form->getInput('js_function'); ?>
-							</div>
-						</div>
-						<div class="control-group">
-							<div class="control-label"><?php echo $this->form->getLabel('validation_class'); ?></div>
-							<div class="controls">
-								<?php echo $this->form->getInput('validation_class'); ?>
-								<div style="clear:both" ></div>
-								<span class="alert alert-info alert-help-inline span9 alert_no_margin">
-									<?php echo JText::_('COM_TJFIELDS_VALIDATION_CLASS_NOTE'); ?>
-								</span>
-							</div>
-						</div>
+					</div>
 					</fieldset>
 				</div>
 			</div>

@@ -191,6 +191,7 @@ class TjfieldsModelField extends JModelAdmin
 		$data['client_type'] = $post->get('client_type', '', 'STRING');
 
 		// Use later to store later.
+
 		$data['saveOption'] = 0;
 
 		// Remove extra value which are not needed to save in the fields table
@@ -307,6 +308,48 @@ class TjfieldsModelField extends JModelAdmin
 					}
 				}
 			}
+
+			// Save/update field and category mapping
+			$selectedCategories = !empty($data['category']) ? $data['category'] : array();
+
+			// 1 Fetch cat mapping for field from DB
+			$DBcat_maping   = $TjfieldsHelper->getFieldCategoryMapping($id);
+
+			if ($selectedCategories)
+			{
+				$newlyAddedCats = array_diff($selectedCategories, $DBcat_maping);
+				$deletedCats    = array_diff($DBcat_maping, $selectedCategories);
+
+				if (!empty($deletedCats))
+				{
+					$arrayId = array($id);
+					$this->deleteFieldCategoriesMapping($arrayId, $deletedCats);
+				}
+
+				if (!empty($newlyAddedCats))
+				{
+					// Add newly added  category mapping
+					foreach ($newlyAddedCats as $cat)
+					{
+						$obj              = new stdClass;
+						$obj->field_id    = $id;
+						$obj->category_id = $cat;
+
+						if (!$this->_db->insertObject('#__tjfields_category_mapping', $obj, 'id'))
+						{
+							echo $this->_db->stderr();
+
+							return false;
+						}
+					}
+				}
+			}
+			else
+			{
+				$arrayId = array($id);
+				$this->deleteFieldCategoriesMapping($arrayId, array());
+			}
+
 			// Create XML for the current client.
 			$TjfieldsHelper->generateXml($data);
 
@@ -379,6 +422,50 @@ class TjfieldsModelField extends JModelAdmin
 
 				return false;
 			}
+		}
+	}
+
+	/**
+	 * Method for Delete Field Categories Mapping
+	 *
+	 * @param   Integer  $field_id  Id
+	 * @param   String   $cats      Category
+	 *
+	 * @return  Boolean
+	 *
+	 * @since	1.6
+	 */
+	public function deleteFieldCategoriesMapping($field_id = array(), $cats = array())
+	{
+		$db = JFactory::getDBO();
+
+		try
+		{
+			$query      = $db->getQuery(true);
+
+			if (!empty($field_id))
+			{
+				$conditions = array(
+					$db->quoteName('field_id') . ' IN (' . implode(",", $field_id) . ")"
+				);
+
+				if (!empty($cats))
+				{
+					$conditions[] = $db->quoteName('category_id') . ' IN (' . implode(",", $cats) . ")";
+				}
+
+				$query->delete($db->quoteName('#__tjfields_category_mapping'));
+				$query->where($conditions);
+				$db->setQuery($query);
+
+				$result = $db->execute();
+			}
+		}
+		catch (RuntimeException $e)
+		{
+			$this->setError($e->getMessage());
+
+			return 0;
 		}
 	}
 }

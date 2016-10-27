@@ -3,7 +3,7 @@
  * @version    SVN: <svn_id>
  * @package    Tjfields
  * @author     Techjoomla <extensions@techjoomla.com>
- * @copyright  Copyright (c) 2009-2015 TechJoomla. All rights reserved.
+ * @copyright  Copyright (c) 2009-2016 TechJoomla. All rights reserved.
  * @license    GNU General Public License version 2 or later.
  */
 
@@ -244,166 +244,282 @@ class TjfieldsHelper
 	 */
 	public function generateXml($data)
 	{
+		$client = $data['client'];
+		$input = JFactory::getApplication()->input;
+		$extension = $input->get('extension', '', 'STRING');
+
+		if (empty($extension))
+		{
+			$client = explode(".", $client);
+			$extension = $client[0];
+		}
+
+		if (!empty($extension))
+		{
+			$db     = JFactory::getDbo();
+			$query  = "SELECT DISTINCT id as category_id FROM #__categories where extension='" . $extension . "'";
+
+			$db->setQuery($query);
+			$categorys = $db->loadAssocList();
+		}
+
+		// For unmapped categorys - start
 		$db     = JFactory::getDbo();
 		$query  = 'SELECT f.*,g.name as group_name FROM
 		#__tjfields_fields as f
 		LEFT JOIN #__tjfields_groups as g
-		ON g.id = f.group_id
-		WHERE f.client="' . $data['client'] . '" AND f.state=1 AND g.state = 1
-		ORDER BY g.ordering
-		';
+		ON g.id = f.group_id WHERE NOT EXISTS (select * FROM #__tjfields_category_mapping AS cm where f.id=cm.field_id)
+		AND f.client="' . $data['client'] . '" AND f.state=1 AND g.state = 1
+		ORDER BY g.ordering';
 
 		$db->setQuery($query);
-		$fields = $db->loadObjectList();
-		$newXML = new SimpleXMLElement("<form></form>");
+		$unmappedFields = $db->loadObjectList();
 
-		$current_group = $fields[0]->group_id;
-		$i = 0;
-		$new_fieldset = $newXML->addChild('fieldset');
-		$new_fieldset->addAttribute('name', $fields[0]->group_name);
-
-		foreach ($fields as $f)
+		if (!empty($unmappedFields))
 		{
-			// Add fieldset as per group id
-			if ($current_group != $f->group_id)
+			$this->createXml($data, $unmappedFields);
+		}
+		else
+		{
+			// Delete Universal fields file if there are not any unmapped categorys
+			$filePathFrontend = JPATH_SITE . '/components/' . $extension . '/models/forms/' .
+			$data['client_type'] . 'form_extra.xml';
+			$content  = '';
+
+			$filePathBackend = JPATH_SITE . DS . 'administrator/components/' .
+			$extension . '/models/forms/' .
+			$data['client_type'] . '_extra.xml';
+
+			if (JFile::exists($filePathFrontend))
 			{
-				$new_fieldset = $newXML->addChild('fieldset');
-				$new_fieldset->addAttribute('name', $f->group_name);
-				$current_group = $f->group_id;
+				JFile::delete($filePathFrontend);
 			}
 
-			$f = $this->SwitchCaseForExtraAttribute($f);
-			$field = $new_fieldset->addChild('field');
-			$field->addAttribute('name', $f->name);
-
-			// Need to change...
-			$field->addAttribute('type', $f->type);
-			$field->addAttribute('label', $f->label);
-			$field->addAttribute('description', $f->description);
-
-			if ($f->required == 1)
+			if (JFile::exists($filePathBackend))
 			{
-				$field->addAttribute('required', 'true');
-			}
-
-			if ($f->readonly == 1)
-			{
-				$field->addAttribute('readonly', 'true');
-			}
-
-			if (isset($f->placeholder))
-			{
-				$field->addAttribute('hint', $f->placeholder);
-			}
-
-			$field->addAttribute('class', $f->validation_class);
-
-			$default_value = array();
-			$value_string = '';
-
-			// ADD option if present.
-			if (isset($f->extra_options))
-			{
-				foreach ($f->extra_options as $f_option)
-				{
-					$option = $field->addChild('option', $f_option->options);
-					$option->addAttribute('value', $f_option->value);
-
-					if ($f_option->default_option == 1)
-					{
-						$default_value[] = $f_option->value;
-					}
-				}
-			}
-
-			// Add javascript
-			if (isset($f->js_function))
-			{
-				$jsArray = $this->getJsArray($f->js_function);
-
-				foreach ($jsArray as $js)
-				{
-					$field->addAttribute($js[0], $js[1]);
-				}
-			}
-
-			// Add multiple attribute for multilist.
-			if (isset($f->multiple))
-			{
-				if (!empty($default_value))
-				{
-					if (count($default_value) > 1)
-					{
-						// Convert values to string
-						$value_string = json_encode($default_value);
-						$field->addAttribute('default', $value_string);
-					}
-					else
-					{
-						$field->addAttribute('default', $default_value[0]);
-					}
-				}
-
-				$field->addAttribute('filter', 'raw');
-				$field->addAttribute('multiple', $f->multiple);
-			}
-
-			// Add mim max charcter attribute.
-			if (isset($f->max) && !empty($f->max))
-			{
-				$field->addAttribute('maxlength', $f->max);
-			}
-
-			// Add deault value attribute.
-			if (isset($f->default_value) && !empty($f->default_value))
-			{
-				$field->addAttribute('default', $f->default_value);
-			}
-
-			if (isset($f->textarea))
-			{
-				$field->addAttribute('rows', $f->rows);
-				$field->addAttribute('cols', $f->cols);
-			}
-
-			if ($f->type == 'calendar')
-			{
-				$f->format = $this->getDateFormat($f->format);
-				$field->addAttribute('format', $f->format);
-			}
-
-			if ($f->type == 'editor')
-			{
-				$field->addAttribute('filter', "JComponentHelper::filterText");
+				JFile::delete($filePathBackend);
 			}
 		}
+
+		// For unmapped categorys - end
+		if (!empty($categorys))
+		{
+			foreach ($categorys as $category)
+			{
+				// Join
+				$db     = JFactory::getDbo();
+				$query  = 'SELECT f.*,g.name as group_name FROM
+				#__tjfields_fields as f
+				LEFT JOIN #__tjfields_groups as g
+				ON g.id = f.group_id LEFT JOIN #__tjfields_category_mapping as cm ON f.id=cm.field_id
+				WHERE f.client="' . $data['client'] . '" AND cm.category_id="' . $category['category_id'] . '" AND f.state=1 AND g.state = 1
+				ORDER BY g.ordering';
+
+				$db->setQuery($query);
+				$fields = $db->loadObjectList();
+
+				$this->createXml($data, $fields, $category);
+			}
+		}
+	}
+
+	/**
+	 * This function genarate XML on each saving of field.
+	 *
+	 * @param   OBJECT  $data      all data to save in xml
+	 * @param   OBJECT  $fields    fields data
+	 * @param   OBJECT  $category  category mapped to field
+	 *
+	 * @return  BOOLEAN
+	 *
+	 * @since 1.0
+	 */
+	public function createXml($data, $fields, $category = null)
+	{
+		$newXML = new SimpleXMLElement("<form></form>");
 
 		$explodeForCom = explode(".", $data['client']);
 
-		$filePathFrontend = JPATH_SITE . '/components/' . $explodeForCom[0] . '/models/forms/' . $data['client_type'] . 'form_extra.xml';
-		$content  = '';
-
-		if (!JFile::exists($filePathFrontend))
+		// Get backend XML file path
+		if (!empty($category['category_id']))
 		{
-			JFile::write($filePathFrontend, $content);
+			$filePathBackend = JPATH_SITE . DS . 'administrator/components/' .
+			$explodeForCom[0] . '/models/forms/' . $category['category_id'] .
+			$data['client_type'] . '_extra.xml';
+		}
+		else
+		{
+			$filePathBackend = JPATH_SITE . DS . 'administrator/components/' .
+			$explodeForCom[0] . '/models/forms/' .
+			$data['client_type'] . '_extra.xml';
 		}
 
-		// ->asXML();
-		$newXML->asXML($filePathFrontend);
-		$filePathBackend = JPATH_SITE . DS . 'administrator/components/' . $explodeForCom[0] . '/models/forms/' . $data['client_type'] . '_extra.xml';
-		$content  = '';
-
-		if (!JFile::exists($filePathBackend))
+		// Get frontend XML file path
+		if (!empty($category['category_id']))
 		{
-			JFile::write($filePathBackend, $content);
+			$filePathFrontend = JPATH_SITE . '/components/' . $explodeForCom[0] . '/models/forms/' .
+			$category['category_id'] . $data['client_type'] . 'form_extra.xml';
+			$content  = '';
+		}
+		else
+		{
+			$filePathFrontend = JPATH_SITE . '/components/' . $explodeForCom[0] . '/models/forms/' .
+			$data['client_type'] . 'form_extra.xml';
+			$content  = '';
 		}
 
-		// ->asXML();
-		$newXML->asXML($filePathBackend);
-
-		// Delete xml if no field present
-		if (empty($fields))
+		if (!empty($fields))
 		{
+			$current_group = $fields[0]->group_id;
+			$i = 0;
+			$new_fieldset = $newXML->addChild('fieldset');
+			$new_fieldset->addAttribute('name', $fields[0]->group_name);
+
+			foreach ($fields as $f)
+			{
+				// Add fieldset as per group id
+				if ($current_group != $f->group_id)
+				{
+					$new_fieldset = $newXML->addChild('fieldset');
+					$new_fieldset->addAttribute('name', $f->group_name);
+					$current_group = $f->group_id;
+				}
+
+				$f = $this->SwitchCaseForExtraAttribute($f);
+				$field = $new_fieldset->addChild('field');
+				$field->addAttribute('name', $f->name);
+
+				// Need to change...
+				$field->addAttribute('type', $f->type);
+				$field->addAttribute('label', $f->label);
+				$field->addAttribute('description', $f->description);
+
+				if ($f->required == 1)
+				{
+					$field->addAttribute('required', 'true');
+				}
+
+				if ($f->readonly == 1)
+				{
+					$field->addAttribute('readonly', 'true');
+				}
+
+				if (isset($f->placeholder))
+				{
+					$field->addAttribute('hint', $f->placeholder);
+				}
+
+				$field->addAttribute('class', $f->validation_class);
+
+				$default_value = array();
+				$value_string = '';
+
+				// ADD option if present.
+				if (isset($f->extra_options))
+				{
+					// Extra value for only Single select field // && $f->multiple == 'false')
+					if ($f->type == 'list')
+					{
+						// Set Default blank Option
+						$option = $field->addChild('option', '- ' . JText::_('COM_TJFIELDS_SELECT_OPTION') . " " . $f->label . ' -');
+						$option->addAttribute('value', '');
+					}
+
+					foreach ($f->extra_options as $f_option)
+					{
+						$option = $field->addChild('option', $f_option->options);
+						$option->addAttribute('value', $f_option->value);
+
+						if ($f_option->default_option == 1)
+						{
+							$default_value[] = $f_option->value;
+						}
+					}
+				}
+
+				// Add javascript
+				if (isset($f->js_function))
+				{
+					$jsArray = $this->getJsArray($f->js_function);
+
+					foreach ($jsArray as $js)
+					{
+						$field->addAttribute($js[0], $js[1]);
+					}
+				}
+
+				// Add multiple attribute for multilist.
+				if (isset($f->multiple))
+				{
+					if (!empty($default_value))
+					{
+						if (count($default_value) > 1)
+						{
+							// Convert values to string
+							$value_string = json_encode($default_value);
+							$field->addAttribute('default', $value_string);
+						}
+						else
+						{
+							$field->addAttribute('default', $default_value[0]);
+						}
+					}
+
+					$field->addAttribute('filter', 'raw');
+					$field->addAttribute('multiple', $f->multiple);
+				}
+
+				// Add mim max charcter attribute.
+				if (isset($f->max) && !empty($f->max))
+				{
+					$field->addAttribute('maxlength', $f->max);
+				}
+
+				// Add deault value attribute.
+				if (isset($f->default_value) && !empty($f->default_value))
+				{
+					$field->addAttribute('default', $f->default_value);
+				}
+
+				if (isset($f->textarea))
+				{
+					$field->addAttribute('rows', $f->rows);
+					$field->addAttribute('cols', $f->cols);
+				}
+
+				if ($f->type == 'calendar')
+				{
+					$f->format = $this->getDateFormat($f->format);
+					$field->addAttribute('format', $f->format);
+				}
+
+				if ($f->type == 'editor')
+				{
+					$field->addAttribute('filter', "JComponentHelper::filterText");
+				}
+			}
+
+			if (!JFile::exists($filePathFrontend))
+			{
+				JFile::write($filePathFrontend, $content);
+			}
+
+			// ->asXML();
+			$newXML->asXML($filePathFrontend);
+
+			$content  = '';
+
+			if (!JFile::exists($filePathBackend))
+			{
+				JFile::write($filePathBackend, $content);
+			}
+
+			// ->asXML();
+			$newXML->asXML($filePathBackend);
+		}
+		else
+		{
+			// Delete xml if no field present
 			if (JFile::exists($filePathFrontend))
 			{
 				JFile::delete($filePathFrontend);
@@ -486,6 +602,26 @@ class TjfieldsHelper
 		}
 
 		return $data;
+	}
+
+	/**
+	 * Get option which are stored in field option table.
+	 *
+	 * @param   INT  $field_id  field id
+	 *
+	 * @return array of option for the particular field
+	 */
+	public function getFieldCategoryMapping($field_id)
+	{
+		$db = JFactory::getDbo();
+		$query	= $db->getQuery(true);
+		$query->select('category_id');
+		$query->from('#__tjfields_category_mapping AS cm');
+		$query->where('field_id=' . $field_id);
+		$db->setQuery($query);
+		$mapping = $db->loadColumn();
+
+		return $mapping;
 	}
 
 	/**

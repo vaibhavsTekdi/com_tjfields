@@ -232,7 +232,7 @@ class TjfieldsModelFields extends JModelList
 	 */
 	public function  deletefield($id)
 	{
-		if (count($id) > 1)
+		if (count($id) >= 1)
 		{
 			$group_to_delet = implode(',', $id);
 			$db             = JFactory::getDBO();
@@ -280,6 +280,30 @@ class TjfieldsModelFields extends JModelList
 
 				return false;
 			}
+
+			// Delete the fields value
+			$query = "DELETE FROM #__tjfields_fields_value where field_id =" . $id[0];
+			$db->setQuery($query);
+
+			if (!$db->execute())
+			{
+				$this->setError($this->_db->getErrorMsg());
+
+				return false;
+			}
+
+			// Delete the fields option value
+			$query = "DELETE FROM #__tjfields_options where field_id =" . $id[0];
+			$db->setQuery($query);
+
+			if (!$db->execute())
+			{
+				$this->setError($this->_db->getErrorMsg());
+
+				return false;
+			}
 		}
+
+		return true;
 	}
 }

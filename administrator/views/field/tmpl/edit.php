@@ -378,7 +378,7 @@ TjfieldsHelper::getLanguageConstant();
 			<!--</fieldset>-->
 		</div>
 
-		<input type="hidden" name="client_type" value="<?php	echo $client_type;	?>" />
+		<input type="hidden" name="client_type" value="<?php echo $client_type;?>" />
 		<input type="hidden" name="task" value="" />
 		<?php echo JHtml::_('form.token'); ?>
 

@@ -10,7 +10,6 @@
 // No direct access.
 defined('_JEXEC') or die();
 $jinput = JFactory::getApplication()->input;
-
 $document = JFactory::getDocument();
 $path = JUri::base() . 'modules/mod_tjfields_search/assets/css/tjfilters.css';
 $document->addStyleSheet($path);
@@ -19,7 +18,6 @@ $document->addStyleSheet($path);
 <div class="tjfield-wrapper <?php  echo $params->get('moduleclass_sfx');?>">
 
 <?php
-
 $baseurl = $jinput->server->get('REQUEST_URI', '', 'STRING');
 
 // Get client type in module params
@@ -49,30 +47,24 @@ if (!empty($urlArray))
 	}
 }
 
-//$baseurl = implode('&', $urlArray);
 $baseurl = $siteBase  . "?" . implode('&', $urlArray);
-
 
 // Make base URL ends
 $selectedFilters = explode(',', $jinput->get('tj_fields_value', '', 'string'));
 ?>
 <?php
 	$buttons = $params->get('apply_clear_buttons', '');
-	if($buttons == "above" || $buttons == "both")
+
+	if ($buttons == "above" || $buttons == "both")
 	{ ?>
 	<div class="center">
-<!--
-		<a class="btn btn-small btn-info" onclick='tj_clearfilters()'><?php echo JText::_('MOD_TJFIELDS_SEARCH_APPLY_BTN');?></a>
--->
+<!-- @TOODO Temporary hide this button
 		<a class="btn btn-small btn-info" onclick='tj_clearfilters()'><?php echo JText::_('MOD_TJFIELDS_SEARCH_CLEAR_BTN');?></a>
+-->
 	</div>
 	<?php
 	}
 ?>
-
-<!--
-<form method="post" name="tjfieldsSearchForm" id="tjfieldsSearchForm">
--->
 
 <?php
 $showCategoryFilter = $params->get('showCategoryFilter', 0);
@@ -86,9 +78,11 @@ if ($showCategoryFilter && !empty($fieldsCategorys))
 	?>
 	<div class="tj_categoryFilter" style="<?php echo $categoryFilterStyle; ?>">
 		<div><b><?php echo JText::_('MOD_TJFIELDS_SEARCH_SELECT_CATEGORY');?></b></div>
-		<?php
-		echo JHtml::_('select.genericlist', $fieldsCategorys, "category_id", 'class="form-control"  size="1" onchange="submitCategory()" title="' . JText::_('MOD_TJFIELDS_SEARCH_SELECT_CATEGORY') . '"', 'value', 'text', $selectedCategory, 'category_id');
-		?>
+		<div class="form-group">
+			<?php
+				echo JHtml::_('select.genericlist', $fieldsCategorys, "category_id", 'class="form-control"  size="1" onchange="submitCategory()" title="' . JText::_('MOD_TJFIELDS_SEARCH_SELECT_CATEGORY') . '"', 'value', 'text', $selectedCategory, 'category_id');
+			?>
+		</div>
 	</div>
 
 	<?php
@@ -111,17 +105,18 @@ if (!empty($fieldsArray))
 				</div>
 				<div class="tj-filterlistwrapper">
 					<?php
-
 					foreach ($fieldOptions as $option)
-					{
-
-					?>
+					{?>
 						<div class="tj-filteritem tjfieldfilters-<?php echo $option->name;?>" >
-							<input type="checkbox" class="tjfieldCheck" name="tj_fields_value[]" id="<?php echo $option->name .'||'.  $option->option_id;?>" value="<?php echo $option->option_id;?>" <?php echo in_array($option->option_id, $selectedFilters)?'checked="checked"':'';?>  onclick='tjfieldsapplyfilters()' />
+							<input type="checkbox" class="tjfieldCheck"
+							name="tj_fields_value[]"
+							id="<?php echo $option->name . '||' . $option->option_id;?>"
+							value="<?php echo $option->option_id;?>"
+							<?php echo in_array($option->option_id, $selectedFilters)?'checked="checked"':'';?>
+							onclick='tjfieldsapplyfilters()' />
 							<label> <?php echo ucfirst($option->options);?></label>
 						</div>
-
-						<?php
+					<?php
 					}
 					?>
 				</div>
@@ -134,23 +129,20 @@ if (!empty($fieldsArray))
 ?>
 <p></p>
 	<?php
-	if($buttons == "below" || $buttons == "both")
-	{
-		?>
-		<div class="center">
-<!--
-			<a class="btn btn-small btn-info" onclick='tj_clearfilters()'><?php //echo JText::_('MOD_TJFIELDS_SEARCH_APPLY_BTN');?></a>
--->
-			<a class="btn btn-small btn-info" onclick='tj_clearfilters()'><?php echo JText::_('MOD_TJFIELDS_SEARCH_CLEAR_BTN');?></a>
-		</div>
 
-		<?php
+	if ($buttons == "below" || $buttons == "both")
+	{?>
+<!-- @TOODO Temporary hide this button
+		<div class="center">
+			<a class="btn btn-small btn-info" onclick='tj_clearfilters()'>
+				<?php echo JText::_('MOD_TJFIELDS_SEARCH_CLEAR_BTN');?>
+			</a>
+		</div>
+-->
+	<?php
 	}
 	?>
 
-<!--
-</form>
--->
 </div> <!--End of wrapper-->
 <script>
 
@@ -379,5 +371,4 @@ if (!empty($fieldsArray))
 
 		window.location = redirectlink;
 	}
-
 </script>

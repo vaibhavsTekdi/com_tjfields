@@ -46,12 +46,14 @@
 					<option value="bs3">MOD_TJFIELDS_SEARCH_BS3</option>
 					<option value="bs2">MOD_TJFIELDS_SEARCH_BS2</option>
 				</field>
+<!--
 				<field name="apply_clear_buttons" class="btn-group" type="radio" default="below" description="MOD_TJFIELDS_SEARCH_SHOW_BUTTONS_DESC" label="MOD_TJFIELDS_SEARCH_SHOW_BUTTONS" >
 					<option value="below">MOD_TJFIELDS_SEARCH_SHOW_BUTTON_BELOW</option>
 					<option value="above">MOD_TJFIELDS_SEARCH_SHOW_BUTTON_ABOVE</option>
 					<option value="both">MOD_TJFIELDS_SEARCH_SHOW_BUTTON_BOTH</option>
 					<option value="none">MOD_TJFIELDS_SEARCH_SHOW_BUTTON_NONE</option>
 				</field>
+-->
 			</fieldset>
 
 			<fieldset name="advanced">

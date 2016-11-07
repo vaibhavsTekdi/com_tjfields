@@ -108,13 +108,15 @@ if (!empty($fieldsArray))
 					foreach ($fieldOptions as $option)
 					{?>
 						<div class="tj-filteritem tjfieldfilters-<?php echo $option->name;?>" >
-							<input type="checkbox" class="tjfieldCheck"
-							name="tj_fields_value[]"
-							id="<?php echo $option->name . '||' . $option->option_id;?>"
-							value="<?php echo $option->option_id;?>"
-							<?php echo in_array($option->option_id, $selectedFilters)?'checked="checked"':'';?>
-							onclick='tjfieldsapplyfilters()' />
-							<label> <?php echo ucfirst($option->options);?></label>
+							<label>
+								<input type="checkbox" class="tjfieldCheck"
+								name="tj_fields_value[]"
+								id="<?php echo $option->name . '||' . $option->option_id;?>"
+								value="<?php echo $option->option_id;?>"
+								<?php echo in_array($option->option_id, $selectedFilters)?'checked="checked"':'';?>
+								onclick='tjfieldsapplyfilters()' />
+								<?php echo ucfirst($option->options);?>
+							</label>
 						</div>
 					<?php
 					}

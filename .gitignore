@@ -1,0 +1,3 @@
+# Codeception
+tests/codeception/vendor/*
+tests/codeception/tests/_output/*

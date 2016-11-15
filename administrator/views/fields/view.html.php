@@ -225,9 +225,6 @@ class TjfieldsViewFields extends JViewLegacy
 			'a.label' => JText::_('COM_TJFIELDS_FIELDS_LABEL'),
 			'a.type' => JText::_('COM_TJFIELDS_FIELDS_FIELD_TYPE'),
 			'a.state' => JText::_('JSTATUS'),
-			'a.placeholder' => JText::_('COM_TJFIELDS_FIELDS_PLACEHOLDER'),
-			'a.tooltip' => JText::_('COM_TJFIELDS_FIELDS_TOOLTIP'),
-			'a.ordering' => JText::_('JGRID_HEADING_ORDERING'),
 			'a.client' => JText::_('COM_TJFIELDS_FIELDS_CLIENT')
 		);
 	}

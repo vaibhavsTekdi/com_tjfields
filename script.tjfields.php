@@ -35,6 +35,15 @@ class com_tjfieldsInstallerScript
 	// Used to identify new install or update
 	private $componentStatus = "install";
 
+	private $installation_queue = array(
+
+		'modules'=>array(
+			'site'=>array(
+					'mod_tjfields_search' => array('position-7', 0)
+						)
+		)
+	);
+
 	/**
 	 * method to run before an install/update/uninstall method
 	 *
@@ -51,6 +60,9 @@ class com_tjfieldsInstallerScript
 	 */
 	function postflight( $type, $parent )
 	{
+		// Install subextensions
+		$status = $this->_installSubextensions($parent);
+
 		$msgBox = array();
 
 		if (version_compare(JVERSION, '3.0', 'lt'))
@@ -58,6 +70,131 @@ class com_tjfieldsInstallerScript
 			$document = JFactory::getDocument();
 			$document->addStyleSheet(JUri::root() . '/media/techjoomla_strapper/css/bootstrap.min.css');
 		}
+	}
+
+	/**
+	 * Installs subextensions (modules, plugins) bundled with the main extension
+	 *
+	 * @param JInstaller $parent
+	 * @return JObject The subextension installation status
+	 */
+	private function _installSubextensions($parent)
+	{
+		$src = $parent->getParent()->getPath('source');
+
+		$db = JFactory::getDbo();
+
+		$status = new JObject();
+		$status->modules = array();
+
+		// Modules installation
+
+		if(count($this->installation_queue['modules'])) {
+			foreach($this->installation_queue['modules'] as $folder => $modules) {
+				if(count($modules))
+					foreach($modules as $module => $modulePreferences)
+					{
+						// Install the module
+						if(empty($folder))
+							$folder = 'site';
+						$path = "$src/modules/$folder/$module";
+						if(!is_dir($path))// if not dir
+						{
+							$path = "$src/modules/$folder/mod_$module";
+						}
+						if(!is_dir($path)) {
+							$path = "$src/modules/$module";
+						}
+
+						if(!is_dir($path)) {
+							$path = "$src/modules/mod_$module";
+						}
+						if(!is_dir($path))
+						{
+
+							$fortest='';
+							//continue;
+						}
+
+						// Was the module already installed?
+						$sql = $db->getQuery(true)
+							->select('COUNT(*)')
+							->from('#__modules')
+							->where($db->qn('module').' = '.$db->q('mod_'.$module));
+						$db->setQuery($sql);
+
+						$count = $db->loadResult();
+
+						$installer = new JInstaller;
+						$result = $installer->install($path);
+						$status->modules[] = array(
+							'name'=>$module,
+							'client'=>$folder,
+							'result'=>$result,
+							'status'=>$modulePreferences[1]
+						);
+
+						// Modify where it's published and its published state
+						if(!$count) {
+							// A. Position and state
+							list($modulePosition, $modulePublished) = $modulePreferences;
+							if($modulePosition == 'cpanel') {
+								$modulePosition = 'icon';
+							}
+							$sql = $db->getQuery(true)
+								->update($db->qn('#__modules'))
+								->set($db->qn('position').' = '.$db->q($modulePosition))
+								->where($db->qn('module').' = '.$db->q('mod_'.$module));
+							if($modulePublished) {
+								$sql->set($db->qn('published').' = '.$db->q('1'));
+							}
+							$db->setQuery($sql);
+							$db->query();
+
+							// B. Change the ordering of back-end modules to 1 + max ordering
+							if($folder == 'admin') {
+								$query = $db->getQuery(true);
+								$query->select('MAX('.$db->qn('ordering').')')
+									->from($db->qn('#__modules'))
+									->where($db->qn('position').'='.$db->q($modulePosition));
+								$db->setQuery($query);
+								$position = $db->loadResult();
+								$position++;
+
+								$query = $db->getQuery(true);
+								$query->update($db->qn('#__modules'))
+									->set($db->qn('ordering').' = '.$db->q($position))
+									->where($db->qn('module').' = '.$db->q('mod_'.$module));
+								$db->setQuery($query);
+								$db->query();
+							}
+
+							// C. Link to all pages
+							$query = $db->getQuery(true);
+							$query->select('id')->from($db->qn('#__modules'))
+								->where($db->qn('module').' = '.$db->q('mod_'.$module));
+							$db->setQuery($query);
+							$moduleid = $db->loadResult();
+
+							$query = $db->getQuery(true);
+							$query->select('*')->from($db->qn('#__modules_menu'))
+								->where($db->qn('moduleid').' = '.$db->q($moduleid));
+							$db->setQuery($query);
+							$assignments = $db->loadObjectList();
+							$isAssigned = !empty($assignments);
+							if(!$isAssigned) {
+								$o = (object)array(
+									'moduleid'	=> $moduleid,
+									'menuid'	=> 0
+								);
+								$db->insertObject('#__modules_menu', $o);
+							}
+						}
+					}
+			}
+		}
+
+		return $status;
 	}
 
 	/**
@@ -112,8 +249,69 @@ class com_tjfieldsInstallerScript
 	{
 		$this->componentStatus = "update";
 		$this->installSqlFiles($parent);
+		$this->fix_db_on_update();
 	}
 
+	//since version 2.0
+	function fix_db_on_update()
+	{
+		$db =  JFactory::getDBO();
+
+		$field_array = array();
+		$query = "SHOW COLUMNS FROM `#__tjfields_fields`";
+		$db->setQuery($query);
+		$columns = $db->loadobjectlist();
+
+		for ($i = 0; $i < count($columns); $i++) {
+			$field_array[] = $columns[$i]->Field;
+		}
+
+		if (!in_array('filterable', $field_array)) {
+			$query = "ALTER TABLE `#__tjfields_fields`
+						ADD COLUMN `filterable` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0 - For not filterable field. 1 for filterable field'";
+			$db->setQuery($query);
+			if (!$db->execute() )
+			{
+				echo $img_ERROR.JText::_('Unable to Alter #__tjfields_fields table. (While adding filterable column )').$BR;
+				echo $db->getErrorMsg();
+				return false;
+			}
+		}
+
+		$query="
+				CREATE TABLE IF NOT EXISTS `#__tjfields_category_mapping` (
+				  `id` INT(11) NOT NULL AUTO_INCREMENT,
+				  `field_id` INT(11) NOT NULL,
+				  `category_id` INT(11) NOT NULL COMMENT 'CATEGORY ID FROM JOOMLA CATEGORY TABLE FOR CLIENTS EG CLIENT=COM_QUICK2CART.PRODUCT',
+				  PRIMARY KEY (`id`)
+				)DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+		$db->setQuery($query);
+		$db->execute();
+
+		// Check for table//////////////////////////////////////////////////////////////////////////////
+		$db =  JFactory::getDBO();
+
+		$field_array = array();
+		$query = "SHOW COLUMNS FROM `#__tjfields_fields_value`";
+		$db->setQuery($query);
+		$columns = $db->loadobjectlist();
+
+		for ($i = 0; $i < count($columns); $i++) {
+			$field_array[] = $columns[$i]->Field;
+		}
+
+		if (!in_array('option_id', $field_array)) {
+			$query = "ALTER TABLE `#__tjfields_fields_value`
+						ADD COLUMN `option_id` int(11) DEFAULT NULL";
+			$db->setQuery($query);
+			if (!$db->execute() )
+			{
+				echo $img_ERROR.JText::_('Unable to Alter #__tjfields_fields_value table. (While adding option_id column )').$BR;
+				echo $db->getErrorMsg();
+				return false;
+			}
+		}
+	}
 	function installSqlFiles($parent)
 	{
 		$db = JFactory::getDBO();

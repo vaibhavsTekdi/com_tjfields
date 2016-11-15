@@ -1,10 +1,10 @@
 <?php
 /**
- * @version     1.0.0
- * @package     com_tjfields
- * @copyright   Copyright (C) 2014. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
- * @author      TechJoomla <extensions@techjoomla.com> - http://www.techjoomla.com
+ * @version    SVN: <svn_id>
+ * @package    TJ-Fields
+ * @author     Techjoomla <extensions@techjoomla.com>
+ * @copyright  Copyright (c) 2009-2016 TechJoomla. All rights reserved.
+ * @license    GNU General Public License version 2 or later.
  */
 
 // No direct access.
@@ -14,19 +14,27 @@ jimport('joomla.application.component.controlleradmin');
 
 /**
  * Fields list controller class.
+ *
+ * @since  1.0
  */
 class TjfieldsControllerFields extends JControllerAdmin
 {
 	/**
 	 * Proxy for getModel.
-	 * @since	1.6
+	 *
+	 * @param   string  $name    key
+	 * @param   string  $prefix  urlVar
+	 *
+	 * @since   1.0
+	 *
+	 * @return  object
 	 */
 	public function getModel($name = 'field', $prefix = 'TjfieldsModel')
 	{
 		$model = parent::getModel($name, $prefix, array('ignore_request' => true));
+
 		return $model;
 	}
-
 
 	/**
 	 * Method to save the submitted ordering values for records via AJAX.
@@ -61,18 +69,22 @@ class TjfieldsControllerFields extends JControllerAdmin
 		JFactory::getApplication()->close();
 	}
 
-
+	/**
+	 * Function to publish fields
+	 *
+	 * @return  void
+	 */
 	public function publish()
 	{
-		$input =JFactory::getApplication()->input;
+		$input = JFactory::getApplication()->input;
 		$post = $input->post;
-		$client = $input->get('client','','STRING');
+		$client = $input->get('client', '', 'STRING');
 		$cid = JFactory::getApplication()->input->get('cid', array(), 'array');
 		$data = array('publish' => 1, 'unpublish' => 0, 'archive' => 2, 'trash' => -2, 'report' => -3);
 		$task = $this->getTask();
 		$value = JArrayHelper::getValue($data, $task, 0, 'int');
-		// Get some variables from the request
 
+		// Get some variables from the request
 
 		if (empty($cid))
 		{
@@ -81,7 +93,7 @@ class TjfieldsControllerFields extends JControllerAdmin
 		else
 		{
 			// Get the model.
-			$model = $this->getModel( 'fields' );
+			$model = $this->getModel('fields');
 
 			// Make sure the item ids are integers
 			JArrayHelper::toInteger($cid);
@@ -107,39 +119,45 @@ class TjfieldsControllerFields extends JControllerAdmin
 				{
 					$ntext = $this->text_prefix . '_N_ITEMS_TRASHED';
 				}
-				//generate xml here
-				$TjfieldsHelper=new TjfieldsHelper();
-				$client_form = explode('.',$client);
+
+				// Generate xml here
+				$TjfieldsHelper = new TjfieldsHelper;
+				$client_form = explode('.', $client);
 				$client_type = $client_form[1];
 
-					$data = array();
-					$data['client'] = $client;
-					$data['client_type'] = $client_type;
-					$TjfieldsHelper->generateXml($data);
-				//end xml
+				$data = array();
+				$data['client'] = $client;
+				$data['client_type'] = $client_type;
+				$TjfieldsHelper->generateXml($data);
+
+				// End xml
 				$this->setMessage(JText::plural($ntext, count($cid)));
 			}
 			catch (Exception $e)
 			{
 				$this->setMessage(JText::_('JLIB_DATABASE_ERROR_ANCESTOR_NODES_LOWER_STATE'), 'error');
 			}
-
 		}
 
-		$this->setRedirect('index.php?option=com_tjfields&view=fields&client='.$client, $msg);
-
+		$this->setRedirect('index.php?option=com_tjfields&view=fields&client=' . $client, $msg);
 	}
 
-
+	/**
+	 * Function to deete fields
+	 *
+	 * @return  void
+	 */
 	public function delete()
 	{
-	// Check for request forgeries
+		// Check for request forgeries
 		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
-		//GET CLIENT AND CLIENT TYPE
-		$input =JFactory::getApplication()->input;
-		$client = $input->get('client','','STRING');
-		$client_form = explode('.',$client);
+
+		// GET CLIENT AND CLIENT TYPE
+		$input = JFactory::getApplication()->input;
+		$client = $input->get('client', '', 'STRING');
+		$client_form = explode('.', $client);
 		$client_type = $client_form[1];
+
 		// Get items to remove from the request.
 		$cid = JFactory::getApplication()->input->get('cid', array(), 'array');
 
@@ -150,7 +168,7 @@ class TjfieldsControllerFields extends JControllerAdmin
 		else
 		{
 			// Get the model.
-			$model =$this->getModel( 'fields' );
+			$model = $this->getModel('fields');
 
 			// Make sure the item ids are integers
 			jimport('joomla.utilities.arrayhelper');
@@ -159,12 +177,15 @@ class TjfieldsControllerFields extends JControllerAdmin
 			// Remove the items.
 			if ($model->deletefield($cid))
 			{
-				$TjfieldsHelper = new TjfieldsHelper();
+				$model_field = $this->getModel('field');
+				$model_field->deleteFieldCategoriesMapping($cid);
+				$TjfieldsHelper = new TjfieldsHelper;
 				$data = array();
 				$data['client'] = $client;
 				$data['client_type'] = $client_type;
 				$TjfieldsHelper->generateXml($data);
-			//	$this->setMessage(JText::plural($this->text_prefix . '_N_ITEMS_DELETED', count($cid)));
+
+				// $this->setMessage(JText::plural($this->text_prefix . '_N_ITEMS_DELETED', count($cid)));
 				$ntext = $this->text_prefix . '_N_ITEMS_DELETED';
 			}
 			else
@@ -172,11 +193,8 @@ class TjfieldsControllerFields extends JControllerAdmin
 				$this->setMessage($model->getError());
 			}
 		}
+
 		$this->setMessage(JText::plural($ntext, count($cid)));
-		$this->setRedirect('index.php?option=com_tjfields&view=fields&client='.$client, false);
-
+		$this->setRedirect('index.php?option=com_tjfields&view=fields&client=' . $client, false);
 	}
-
-
-
 }

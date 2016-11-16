@@ -321,6 +321,10 @@ TjfieldsHelper::getLanguageConstant();
 						<div class="control-label"><?php echo $this->form->getLabel('readonly'); ?></div>
 						<div class="controls"><?php echo $this->form->getInput('readonly'); ?></div>
 					</div>
+					<div class="control-group">
+						<div class="control-label"><?php echo $this->form->getLabel('showonlist'); ?></div>
+						<div class="controls"><?php echo $this->form->getInput('showonlist'); ?></div>
+					</div>
 					<div class="control-group" id="div_placeholder">
 						<div class="control-label"><?php echo $this->form->getLabel('placeholder'); ?></div>
 						<div class="controls"><?php echo $this->form->getInput('placeholder'); ?></div>

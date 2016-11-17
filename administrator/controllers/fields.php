@@ -139,7 +139,7 @@ class TjfieldsControllerFields extends JControllerAdmin
 			}
 		}
 
-		$this->setRedirect('index.php?option=com_tjfields&view=fields&client=' . $client, $msg);
+		$this->setRedirect('index.php?option=com_tjfields&view=fields&client=' . $client . '&extension=' . $input->get('extension', '', 'STRING'), $msg);
 	}
 
 	/**
@@ -195,6 +195,6 @@ class TjfieldsControllerFields extends JControllerAdmin
 		}
 
 		$this->setMessage(JText::plural($ntext, count($cid)));
-		$this->setRedirect('index.php?option=com_tjfields&view=fields&client=' . $client, false);
+		$this->setRedirect('index.php?option=com_tjfields&view=fields&client=' . $client . '&extension=' . $input->get('extension', '', 'STRING'), false);
 	}
 }

@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS `#__tjfields_fields` (
 	`filterable` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0 - For not filterable field. 1 for filterable field',
 	`client` varchar(255) NOT NULL,
 	`group_id` int(11) NOT NULL,
+	`showonlist` int(11) NOT NULL,
 	PRIMARY KEY (`id`)
 )   DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 

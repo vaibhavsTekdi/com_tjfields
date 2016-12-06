@@ -130,10 +130,15 @@ class TjfieldsHelper
 	{
 		switch ($data['type'])
 		{
+				case	"checkbox":
+							$data['min'] = '';
+							$data['max'] = '';
+							$data['format'] = '';
+							$data['default_value'] = '0';
+						break;
 				case	"radio":
 				case 	"single_select":
 				case 	"multi_select":
-				case	"checkbox":
 							$data['saveOption'] = 1;
 							$data['min'] = '';
 							$data['max'] = '';
@@ -270,7 +275,7 @@ class TjfieldsHelper
 		LEFT JOIN #__tjfields_groups as g
 		ON g.id = f.group_id WHERE NOT EXISTS (select * FROM #__tjfields_category_mapping AS cm where f.id=cm.field_id)
 		AND f.client="' . $data['client'] . '" AND f.state=1 AND g.state = 1
-		ORDER BY g.ordering';
+		ORDER BY f.ordering';
 
 		$db->setQuery($query);
 		$unmappedFields = $db->loadObjectList();
@@ -313,7 +318,7 @@ class TjfieldsHelper
 				LEFT JOIN #__tjfields_groups as g
 				ON g.id = f.group_id LEFT JOIN #__tjfields_category_mapping as cm ON f.id=cm.field_id
 				WHERE f.client="' . $data['client'] . '" AND cm.category_id="' . $category['category_id'] . '" AND f.state=1 AND g.state = 1
-				ORDER BY g.ordering';
+				ORDER BY f.ordering';
 
 				$db->setQuery($query);
 				$fields = $db->loadObjectList();

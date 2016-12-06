@@ -148,8 +148,8 @@ TjfieldsHelper::getLanguageConstant();
 							techjoomla.jQuery('#jform_filterable').parent().parent().show();
 							break;
 				case	"checkbox":
-							showOptions();
-							techjoomla.jQuery('#jform_filterable').parent().parent().show();
+							techjoomla.jQuery('#option_div').hide();
+							techjoomla.jQuery('#default_value_text').show();
 							break;
 				case	"text":
 				case	"textarea":

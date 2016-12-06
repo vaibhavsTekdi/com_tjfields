@@ -78,7 +78,7 @@ class TjfieldsHelper
 
 			if (!empty($fieldData))
 			{
-				if ($fieldData->type == 'single_select' || $fieldData->type == 'multi_select' || $fieldData->type == 'radio' || $fieldData->type == 'checkbox')
+				if ($fieldData->type == 'single_select' || $fieldData->type == 'multi_select' || $fieldData->type == 'radio')
 				{
 					$extra_options = $this->getOptions($fdata->field_id, $fdata->value);
 					$fdata->value  = $extra_options;
@@ -166,6 +166,46 @@ class TjfieldsHelper
 
 		$singleSelectionFields = array("single_select", "radio");
 		$multipleSelectionFields = array("multi_select");
+
+		// Get all the fields for given client
+		$clientFields = $this->getClientFields($data['client']);
+
+		// Get all the fields for which value is saved in given content
+		foreach ($data['fieldsvalue'] as $fname => $fvalue)
+		{
+			$savedFields[] = $fname;
+		}
+
+		// Get the fields for which no value are stored for given content
+		$fieldsWithNoValues = array_diff($clientFields, $savedFields);
+
+		// Delete the entry of the fields with no records in tjfields_values table
+		foreach ($fieldsWithNoValues as $fieldWithNoValues)
+		{
+			$db    = JFactory::getDbo();
+			$query = $db->getQuery(true);
+			$query->select('id');
+			$query->from('#__tjfields_fields');
+			$query->quoteName('client') . ' = ' . $db->quote($data['client']);
+			$query->quoteName('name') . ' = ' . $db->quote($fieldWithNoValues);
+			$db->setQuery($query);
+			$fieldId = $db->loadResult();
+
+			$conditions = array(
+				$db->quoteName('client') . ' = ' . $db->quote($data['client']),
+				$db->quoteName('content_id') . ' = ' . $db->quote($data['content_id']),
+				$db->quoteName('field_id') . ' = ' . $db->quote($fieldId)
+			);
+
+			$query = $db->getQuery(true);
+
+			$query->delete($db->quoteName('#__tjfields_fields_value'));
+			$query->where($conditions);
+
+			$db->setQuery($query);
+
+			$result = $db->execute();
+		}
 
 		// Values array will contain menu fields value.
 		foreach ($data['fieldsvalue'] as $fname => $fvalue)
@@ -864,6 +904,33 @@ class TjfieldsHelper
 		{
 			// Return -2 when no filters are selected
 			return '-2';
+		}
+	}
+
+	/**
+	 * Get fields for given client
+	 *
+	 * @param   STRING  $client  client
+	 *
+	 * @return object
+	 */
+	public function getClientFields($client)
+	{
+		if (!empty($client))
+		{
+			$db    = JFactory::getDbo();
+			$query = $db->getQuery(true);
+			$query->select('name');
+			$query->from('#__tjfields_fields');
+			$query->quoteName('client') . ' = ' . $db->quote($client);
+			$db->setQuery($query);
+			$clientFields = $db->loadColumn();
+
+			return $clientFields;
+		}
+		else
+		{
+			return false;
 		}
 	}
 }

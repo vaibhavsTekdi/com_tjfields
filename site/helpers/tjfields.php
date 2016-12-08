@@ -71,8 +71,14 @@ class TjfieldsHelper
 
 		$field_data_value = $db->loadObjectlist();
 
+		foreach ($field_data_value as $k => $data)
+		{
+			$fieldDataValue[$data->field_id]->value[] = $data->value;
+			$fieldDataValue[$data->field_id]->field_id = $data->field_id;
+		}
+
 		// Check if the field type is list or radio (fields which have option)
-		foreach ($field_data_value as $fdata)
+		foreach ($fieldDataValue as $fdata)
 		{
 			$fieldData = $this->getFieldData('', $fdata->field_id);
 
@@ -80,7 +86,7 @@ class TjfieldsHelper
 			{
 				if ($fieldData->type == 'single_select' || $fieldData->type == 'multi_select' || $fieldData->type == 'radio')
 				{
-					$extra_options = $this->getOptions($fdata->field_id, $fdata->value);
+					$extra_options = $this->getOptions($fdata->field_id, json_encode($fdata->value));
 					$fdata->value  = $extra_options;
 				}
 				elseif ($fieldData->type == 'calendar')
@@ -110,7 +116,7 @@ class TjfieldsHelper
 			}
 		}
 
-		return $field_data_value;
+		return $fieldDataValue;
 	}
 
 	/**

@@ -71,6 +71,8 @@ class TjfieldsHelper
 
 		$field_data_value = $db->loadObjectlist();
 
+		$fieldDataValue = array();
+
 		foreach ($field_data_value as $k => $data)
 		{
 			$fieldDataValue[$data->field_id]->value[] = $data->value;

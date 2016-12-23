@@ -80,13 +80,20 @@ class TjfieldsModelField extends JModelAdmin
 	 */
 	protected function loadFormData()
 	{
-		// Check the session for previously entered form data.
-		$data = JFactory::getApplication()->getUserState('com_tjfields.edit.field.data', array());
+		$app = JFactory::getApplication();
 
-		if (empty($data))
+		$input = $app->input;
+
+		// Check the session for previously entered form data.
+		$data = $app->getUserState('com_tjfields.edit.field.data', array());
+		$id = $input->get('id', '0', 'INT');
+
+		if (!empty($id))
 		{
 			$data = $this->getItem();
 		}
+
+		$this->preprocessData('com_tjfields.field', $data);
 
 		return $data;
 	}
@@ -196,7 +203,39 @@ class TjfieldsModelField extends JModelAdmin
 
 		// Remove extra value which are not needed to save in the fields table
 		$TjfieldsHelper      = new TjfieldsHelper;
+
 		$data                = $TjfieldsHelper->getFieldArrayFormatted($data);
+
+		$params = array();
+
+		// TODO :- move all field params to params column
+		if (!empty($data['formsource']))
+		{
+			$params['formsource'] = $data['formsource'];
+		}
+
+		// TODO :- move all field params to params column
+		if (!empty($data['buttons']))
+		{
+			$params['buttons'] = $data['buttons'];
+		}
+
+		// TODO :- move all field params to params column
+		if (!empty($data['layout']))
+		{
+			$params['layout'] = $data['layout'];
+		}
+
+		// TODO :- move all field params to params column
+		if (!empty($data['groupbysubform']))
+		{
+			$params['groupbysubform'] = $data['groupbysubform'];
+		}
+
+		if (!empty($params))
+		{
+			$data['params'] = json_encode($params);
+		}
 
 		if ($table->save($data) === true)
 		{
@@ -224,6 +263,9 @@ class TjfieldsModelField extends JModelAdmin
 		if ($id)
 		{
 			$options = $post->get('tjfields', '', 'ARRAY');
+
+			$jformData = $post->get('jform', '', 'ARRAY');
+			$optionsData = json_decode($jformData['params']['options']);
 
 			if ($data['saveOption'] == 1)
 			{
@@ -467,5 +509,41 @@ class TjfieldsModelField extends JModelAdmin
 
 			return 0;
 		}
+	}
+
+	/**
+	 * Method to inject field attributes in jform object
+	 *
+	 * @param   Integer  $form   form
+	 * @param   String   $form   form
+	 * @param   String   $group  group
+	 *
+	 * @return  Boolean
+	 *
+	 * @since	1.6
+	 */
+	protected function preprocessForm(JForm $form, $form, $group = 'content')
+	{
+		$dataObject = $data;
+
+		if (is_array($dataObject))
+		{
+			$dataObject = (object) $dataObject;
+		}
+
+		if (empty($dataObject->type))
+		{
+			$dataObject->type = 'text';
+		}
+
+		if (isset($dataObject->type))
+		{
+			$path = JPATH_ADMINISTRATOR . '/components/com_tjfields/models/forms/types/forms/' . $dataObject->type . '.xml';
+
+			$form->loadFile($path, true, '/form/*');
+		}
+
+		// Trigger the default form events.
+		parent::preprocessForm($form, $data, $group);
 	}
 }

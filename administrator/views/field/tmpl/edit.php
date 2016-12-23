@@ -30,6 +30,8 @@ $input = JFactory::getApplication()->input;
 		$client = $full_client[0];
 		$client_type = $full_client[1];
 
+$link = JRoute::_('index.php?option=com_tjfields&view=field&layout=edit&id=0&client=' . $input->get('client', '', 'STRING') . '&extension=' . $input->get('extension', '', 'STRING'), false);
+
 // Import helper for declaring language constant
 JLoader::import('TjfieldsHelper', JUri::root().'administrator/components/com_tjfields/helpers/tjfields.php');
 // Call helper function
@@ -39,10 +41,16 @@ TjfieldsHelper::getLanguageConstant();
 <script type="text/javascript">
 
 	techjoomla.jQuery( document ).ready(function(){
-			var field_type=techjoomla.jQuery('#jform_type').val();
-			show_option_div(field_type);
+			var field_type = techjoomla.jQuery('#jform_type').val();
+
+			if (field_type == 'radio' || field_type == 'single_select' || field_type == 'multi_select' || field_type == 'list')
+			{
+				techjoomla.jQuery('#option_div').show();
+			}
+
 			//if edit ..make name field readonly
 			var field_id=techjoomla.jQuery('#jform_id').val();
+
 			if(field_id!=0)
 			{
 				techjoomla.jQuery('#jform_name').attr('readonly',true);
@@ -131,82 +139,9 @@ TjfieldsHelper::getLanguageConstant();
 
 	function show_option_div(field_value)
 	{
-			techjoomla.jQuery('#jform_filterable').parent().parent().hide();
-
-			switch (field_value)
-			{
-				case	"radio":
-							showOptions();
-							techjoomla.jQuery('#jform_filterable').parent().parent().show();
-							break;
-				case 	"single_select":
-							showOptions();
-							techjoomla.jQuery('#jform_filterable').parent().parent().show();
-							break;
-				case 	"multi_select":
-							showOptions();
-							techjoomla.jQuery('#jform_filterable').parent().parent().show();
-							break;
-				case	"checkbox":
-							techjoomla.jQuery('#option_div').hide();
-							techjoomla.jQuery('#default_value_text').show();
-							break;
-				case	"text":
-				case	"textarea":
-				case	"email_field":
-							techjoomla.jQuery('#option_div').hide();
-							techjoomla.jQuery('#option_min_char').show();
-							techjoomla.jQuery('#option_max_char').show();
-							techjoomla.jQuery('#div_placeholder').show();
-
-							techjoomla.jQuery('#date_format').hide();
-							techjoomla.jQuery('#default_value_text').show();
-
-							if(field_value == "textarea")
-							{
-								techjoomla.jQuery('#textarea_rows').show();
-								techjoomla.jQuery('#textarea_cols').show();
-								//techjoomla.jQuery('#textarea_cols').addClass('required');
-								techjoomla.jQuery('.textarea_inputs').children().attr('required','required');
-							}
-							else
-							{
-								techjoomla.jQuery('.textarea_inputs').children().removeAttr('required');
-								techjoomla.jQuery('#textarea_rows').hide();
-								techjoomla.jQuery('#textarea_cols').hide();
-							}
-
-							break;
-				case	"calendar":
-				case	"editor":
-				case	"file":
-				case	"user":
-				case	"hidden":
-							techjoomla.jQuery('#option_div').hide();
-							techjoomla.jQuery('#option_min_char').hide();
-							techjoomla.jQuery('#option_max_char').hide();
-							techjoomla.jQuery('#div_placeholder').hide();
-							techjoomla.jQuery('#date_format').hide();
-							techjoomla.jQuery('#default_value_text').hide();
-							techjoomla.jQuery('.textarea_inputs').children().removeAttr('required');
-							techjoomla.jQuery('#textarea_rows').hide();
-							techjoomla.jQuery('#textarea_cols').hide();
-
-							if(field_value == "calendar")
-							{
-								techjoomla.jQuery('#date_format').show();
-								techjoomla.jQuery('#default_value_text').show();
-							}
-							else if(field_value == "hidden")
-							{
-								techjoomla.jQuery('#default_value_text').show();
-							}
-
-							break;
-
-			}
-
-
+		techjoomla.jQuery('input[name=task]').val('field.saveFormState');
+		document.forms.adminForm.action='<?php echo $link;?>';
+		document.forms.adminForm.submit();
 	}
 
 	function showOptions()
@@ -262,10 +197,6 @@ TjfieldsHelper::getLanguageConstant();
 								<div class="control-label"><?php echo $this->form->getLabel('type'); ?></div>
 								<div class="controls"><?php echo $this->form->getInput('type'); ?></div>
 							</div>
-							<div class="control-group displaynone" id="option_div" >
-								<div class="control-label"><?php echo $this->form->getLabel('fieldoption'); ?></div>
-								<div class="controls"><?php echo $this->form->getInput('fieldoption'); ?></div>
-							</div>
 							<div class="control-group displaynone" id="date_format" >
 								<div class="control-label"><?php echo $this->form->getLabel('format'); ?></div>
 								<div class="controls"><?php echo $this->form->getInput('format'); ?></div>
@@ -285,6 +216,29 @@ TjfieldsHelper::getLanguageConstant();
 							<div class="control-group displaynone" id="textarea_cols">
 								<div class="control-label"><?php echo $this->form->getLabel('cols'); ?></div>
 								<div class="controls textarea_inputs"><?php echo $this->form->getInput('cols'); ?></div>
+							</div>
+							<!-- // Added By KOMAL TEMP -->
+							<div class="control-group displaynone" id="file_accept">
+								<div class="control-label"><?php echo $this->form->getLabel('accept'); ?></div>
+								<div class="controls"><?php echo $this->form->getInput('accept'); ?></div>
+							</div>
+							<!-- // Added By KOMAL TEMP -->
+							<div>
+								<?php
+								foreach ($this->form->getFieldsets('params') as $name => $fieldSet)
+								{
+									foreach ($this->form->getFieldset($name) as $field)
+									{
+										echo $field->renderField();
+									}
+								}
+
+								echo $this->form->getInput('options');
+								?>
+							</div>
+							<div class="control-group displaynone" id="option_div" >
+								<div class="control-label"><?php echo $this->form->getLabel('fieldoption'); ?></div>
+								<div class="controls"><?php echo $this->form->getInput('fieldoption'); ?></div>
 							</div>
 							<div class="control-group displaynone" id="default_value_text">
 								<div class="control-label"><?php echo $this->form->getLabel('default_value'); ?></div>

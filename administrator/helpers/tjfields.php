@@ -416,6 +416,27 @@ class TjfieldsHelper
 
 				$field->addAttribute('class', $f->validation_class);
 
+				if (!empty($f->params))
+				{
+					$fieldAttribute = json_decode($f->params);
+
+					foreach ($fieldAttribute as $attribute => $fieldparam)
+					{
+						$field->addAttribute($attribute, $fieldparam);
+					}
+				}
+
+				// Add javascript
+				if (isset($f->js_function))
+				{
+					$jsArray = $this->getJsArray($f->js_function);
+
+					foreach ($jsArray as $js)
+					{
+						$field->addAttribute($js[0], $js[1]);
+					}
+				}
+
 				$default_value = array();
 				$value_string = '';
 
@@ -440,67 +461,6 @@ class TjfieldsHelper
 							$default_value[] = $f_option->value;
 						}
 					}
-				}
-
-				// Add javascript
-				if (isset($f->js_function))
-				{
-					$jsArray = $this->getJsArray($f->js_function);
-
-					foreach ($jsArray as $js)
-					{
-						$field->addAttribute($js[0], $js[1]);
-					}
-				}
-
-				// Add multiple attribute for multilist.
-				if (isset($f->multiple))
-				{
-					if (!empty($default_value))
-					{
-						if (count($default_value) > 1)
-						{
-							// Convert values to string
-							$value_string = json_encode($default_value);
-							$field->addAttribute('default', $value_string);
-						}
-						else
-						{
-							$field->addAttribute('default', $default_value[0]);
-						}
-					}
-
-					$field->addAttribute('filter', 'raw');
-					$field->addAttribute('multiple', $f->multiple);
-				}
-
-				// Add mim max charcter attribute.
-				if (isset($f->max) && !empty($f->max))
-				{
-					$field->addAttribute('maxlength', $f->max);
-				}
-
-				// Add deault value attribute.
-				if (isset($f->default_value) && !empty($f->default_value))
-				{
-					$field->addAttribute('default', $f->default_value);
-				}
-
-				if (isset($f->textarea))
-				{
-					$field->addAttribute('rows', $f->rows);
-					$field->addAttribute('cols', $f->cols);
-				}
-
-				if ($f->type == 'calendar')
-				{
-					$f->format = $this->getDateFormat($f->format);
-					$field->addAttribute('format', $f->format);
-				}
-
-				if ($f->type == 'editor')
-				{
-					$field->addAttribute('filter', "JComponentHelper::filterText");
 				}
 			}
 

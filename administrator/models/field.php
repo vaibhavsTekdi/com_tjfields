@@ -197,45 +197,10 @@ class TjfieldsModelField extends JModelAdmin
 		// Add clint type in data as it is not present in jform
 		$data['client_type'] = $post->get('client_type', '', 'STRING');
 
-		// Use later to store later.
-
 		$data['saveOption'] = 0;
 
 		// Remove extra value which are not needed to save in the fields table
 		$TjfieldsHelper      = new TjfieldsHelper;
-
-		$data                = $TjfieldsHelper->getFieldArrayFormatted($data);
-
-		$params = array();
-
-		// TODO :- move all field params to params column
-		if (!empty($data['formsource']))
-		{
-			$params['formsource'] = $data['formsource'];
-		}
-
-		// TODO :- move all field params to params column
-		if (!empty($data['buttons']))
-		{
-			$params['buttons'] = $data['buttons'];
-		}
-
-		// TODO :- move all field params to params column
-		if (!empty($data['layout']))
-		{
-			$params['layout'] = $data['layout'];
-		}
-
-		// TODO :- move all field params to params column
-		if (!empty($data['groupbysubform']))
-		{
-			$params['groupbysubform'] = $data['groupbysubform'];
-		}
-
-		if (!empty($params))
-		{
-			$data['params'] = json_encode($params);
-		}
 
 		if ($table->save($data) === true)
 		{
@@ -515,14 +480,14 @@ class TjfieldsModelField extends JModelAdmin
 	 * Method to inject field attributes in jform object
 	 *
 	 * @param   Integer  $form   form
-	 * @param   String   $form   form
+	 * @param   String   $data   form
 	 * @param   String   $group  group
 	 *
 	 * @return  Boolean
 	 *
 	 * @since	1.6
 	 */
-	protected function preprocessForm(JForm $form, $form, $group = 'content')
+	protected function preprocessForm(JForm $form, $data, $group = 'content')
 	{
 		$dataObject = $data;
 

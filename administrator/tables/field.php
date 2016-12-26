@@ -175,22 +175,22 @@ class TjfieldsTablefield extends JTable {
         $this->setError('');
         return true;
     }
-    
+
     /**
       * Define a namespaced asset name for inclusion in the #__assets table
-      * @return string The asset name 
+      * @return string The asset name
       *
-      * @see JTable::_getAssetName 
+      * @see JTable::_getAssetName
     */
     protected function _getAssetName() {
         $k = $this->_tbl_key;
         return 'com_tjfields.field.' . (int) $this->$k;
     }
- 
+
     /**
       * Returns the parent asset's id. If you have a tree structure, retrieve the parent's id using the external key field
       *
-      * @see JTable::_getAssetParentId 
+      * @see JTable::_getAssetParentId
     */
     protected function _getAssetParentId(JTable $table = null, $id = null){
         // We will retrieve the parent-asset from the Asset-table
@@ -205,7 +205,4 @@ class TjfieldsTablefield extends JTable {
         }
         return $assetParentId;
     }
-    
-    
-
 }

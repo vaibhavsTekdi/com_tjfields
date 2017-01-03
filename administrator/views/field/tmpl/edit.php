@@ -42,8 +42,11 @@ TjfieldsHelper::getLanguageConstant();
 	techjoomla.jQuery( document ).ready(function(){
 		var field_type = techjoomla.jQuery('#jform_type').val();
 
+		techjoomla.jQuery('#jform_filterable').parent().parent().hide();
+
 		if (field_type == 'radio' || field_type == 'single_select' || field_type == 'multi_select' || field_type == 'list')
 		{
+			techjoomla.jQuery('#jform_filterable').parent().parent().show();
 			techjoomla.jQuery('#option_div').show();
 		}
 

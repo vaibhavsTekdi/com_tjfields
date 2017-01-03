@@ -278,6 +278,18 @@ class com_tjfieldsInstallerScript
 			}
 		}
 
+		if (!in_array('params', $field_array)) {
+			$query = "ALTER TABLE `#__tjfields_fields`
+						ADD COLUMN `params` varchar(500) DEFAULT '' COMMENT '0 - to store attributes of field'";
+			$db->setQuery($query);
+			if (!$db->execute() )
+			{
+				echo $img_ERROR.JText::_('Unable to Alter #__tjfields_fields table. (While adding filterable column )').$BR;
+				echo $db->getErrorMsg();
+				return false;
+			}
+		}
+
 		$query="
 				CREATE TABLE IF NOT EXISTS `#__tjfields_category_mapping` (
 				  `id` INT(11) NOT NULL AUTO_INCREMENT,

@@ -199,6 +199,11 @@ class TjfieldsModelField extends JModelAdmin
 
 		$data['saveOption'] = 0;
 
+		if ($data['type'] == "radio" || $data['type'] == "list" || $data['type'] == "checkbox")
+		{
+			$data['saveOption'] = 1;
+		}
+
 		// Remove extra value which are not needed to save in the fields table
 		$TjfieldsHelper      = new TjfieldsHelper;
 

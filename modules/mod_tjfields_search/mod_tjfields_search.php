@@ -21,10 +21,15 @@ $url_cat_param_name       = $params->get('url_cat_param_name', '');
 $client_type               = $params->get('client_type', '');
 $category_type               = $params->get('category_type', '');
 $URLParamConditions               = $params->get('URLParamConditions', '');
+$bootstrapVersion = $params->get('bootstrapversion', 'bs3', 'STRING');
 $URLParamConditions = trim($URLParamConditions);
 
 $tmp = explode(".", $client_type);
 $configuredComp = $tmp[0];
+
+// Check the Bootstrap here
+$mod_tjfilter_layout = $params->get('bootstrapversion');
+
 
 if (JFile::exists(JPATH_SITE . '/components/com_tjfields/tjfields.php'))
 {
@@ -45,7 +50,7 @@ if (JFile::exists(JPATH_SITE . '/components/com_tjfields/tjfields.php'))
 		$url = JFactory::getApplication()->input->server->get('REQUEST_URI', '', 'STRING');
 
 		// Get uRL base part and parameter part
-		$temp =  explode ('?', $url);
+		$temp = explode('?', $url);
 		$urlArray = array();
 
 		if (!empty($temp[1]))
@@ -62,12 +67,6 @@ if (JFile::exists(JPATH_SITE . '/components/com_tjfields/tjfields.php'))
 		{
 			foreach ($conditionList as $urlParam => $urlValue)
 			{
-				// Condition not math
-				if (!in_array($urlValue, $urlArray))
-				{
-
-				}
-
 				if (empty($urlArray[$urlParam]) || $urlArray[$urlParam] != $urlValue)
 				{
 					$showHtml = 0;
@@ -92,10 +91,22 @@ if (JFile::exists(JPATH_SITE . '/components/com_tjfields/tjfields.php'))
 				require_once JPATH_SITE . '/components/com_quick2cart/helper.php';
 				$comquick2cartHelper = new Comquick2cartHelper;
 				$removeParamOnchangeCat = $comquick2cartHelper->getParameterToRemoveOnChangeOfCategory();
-				$compSpecificFilterHtml = $comquick2cartHelper->getComponentSpecificFilterHtml();
 
 		break;
 	}
+
+	if ($bootstrapVersion == 'bs2')
+	{
+		$basePath = JPATH_SITE . '/components/' . $category_type . '/layouts/corefilters/bs2';
+	}
+	else
+	{
+		$basePath = JPATH_SITE . '/components/' . $category_type . '/layouts/corefilters/bs3';
+	}
+
+	$layout = new JLayoutFile('corefilters', $basePath);
+	$data = "";
+	$compSpecificFilterHtml = $layout->render($data);
 
 	// Selected category
 	$clientCatUrlParam = $params->get("url_cat_param_name", "prod_cat");
@@ -109,6 +120,7 @@ if (JFile::exists(JPATH_SITE . '/components/com_tjfields/tjfields.php'))
 	$fieldsCategorys               = array_merge($options, $cats);
 
 	$fieldsArray = array();
+
 	// Universal field- for client - those field who doesn't mapped agaist category
 	// $fieldsArray['universal'] = $tjfieldsHelper->getUniversalFields($client_type);
 
@@ -132,5 +144,5 @@ if (JFile::exists(JPATH_SITE . '/components/com_tjfields/tjfields.php'))
 		}
 	}
 
-	require JModuleHelper::getLayoutPath('mod_tjfields_search');
+	require JModuleHelper::getLayoutPath('mod_tjfields_search', 'default_' . $mod_tjfilter_layout);
 }

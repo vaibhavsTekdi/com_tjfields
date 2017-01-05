@@ -71,16 +71,24 @@ class TjfieldsHelper
 
 		$field_data_value = $db->loadObjectlist();
 
+		$fieldDataValue = array();
+
+		foreach ($field_data_value as $k => $data)
+		{
+			$fieldDataValue[$data->field_id]->value[] = $data->value;
+			$fieldDataValue[$data->field_id]->field_id = $data->field_id;
+		}
+
 		// Check if the field type is list or radio (fields which have option)
-		foreach ($field_data_value as $fdata)
+		foreach ($fieldDataValue as $fdata)
 		{
 			$fieldData = $this->getFieldData('', $fdata->field_id);
 
 			if (!empty($fieldData))
 			{
-				if ($fieldData->type == 'single_select' || $fieldData->type == 'multi_select' || $fieldData->type == 'radio' || $fieldData->type == 'checkbox')
+				if ($fieldData->type == 'single_select' || $fieldData->type == 'multi_select' || $fieldData->type == 'radio')
 				{
-					$extra_options = $this->getOptions($fdata->field_id, $fdata->value);
+					$extra_options = $this->getOptions($fdata->field_id, json_encode($fdata->value));
 					$fdata->value  = $extra_options;
 				}
 				elseif ($fieldData->type == 'calendar')
@@ -110,7 +118,7 @@ class TjfieldsHelper
 			}
 		}
 
-		return $field_data_value;
+		return $fieldDataValue;
 	}
 
 	/**
@@ -167,6 +175,46 @@ class TjfieldsHelper
 		$singleSelectionFields = array("single_select", "radio");
 		$multipleSelectionFields = array("multi_select");
 
+		// Get all the fields for given client
+		$clientFields = $this->getClientFields($data['client']);
+
+		// Get all the fields for which value is saved in given content
+		foreach ($data['fieldsvalue'] as $fname => $fvalue)
+		{
+			$savedFields[] = $fname;
+		}
+
+		// Get the fields for which no value are stored for given content
+		$fieldsWithNoValues = array_diff($clientFields, $savedFields);
+
+		// Delete the entry of the fields with no records in tjfields_values table
+		foreach ($fieldsWithNoValues as $fieldWithNoValues)
+		{
+			$db    = JFactory::getDbo();
+			$query = $db->getQuery(true);
+			$query->select('id');
+			$query->from('#__tjfields_fields');
+			$query->quoteName('client') . ' = ' . $db->quote($data['client']);
+			$query->quoteName('name') . ' = ' . $db->quote($fieldWithNoValues);
+			$db->setQuery($query);
+			$fieldId = $db->loadResult();
+
+			$conditions = array(
+				$db->quoteName('client') . ' = ' . $db->quote($data['client']),
+				$db->quoteName('content_id') . ' = ' . $db->quote($data['content_id']),
+				$db->quoteName('field_id') . ' = ' . $db->quote($fieldId)
+			);
+
+			$query = $db->getQuery(true);
+
+			$query->delete($db->quoteName('#__tjfields_fields_value'));
+			$query->where($conditions);
+
+			$db->setQuery($query);
+
+			$result = $db->execute();
+		}
+
 		// Values array will contain menu fields value.
 		foreach ($data['fieldsvalue'] as $fname => $fvalue)
 		{
@@ -200,6 +248,26 @@ class TjfieldsHelper
 						$insert_obj->id = '';
 						$db->insertObject('#__tjfields_fields_value', $insert_obj, 'id');
 					}
+				}
+			}
+			else
+			{
+				if (isset($field_data->id) && isset($data['content_id']))
+				{
+					// Delete entry is field is deselected
+					$conditions = array(
+						$db->quoteName('field_id') . ' = ' . $field_data->id,
+						$db->quoteName('content_id') . ' = ' . $data['content_id']
+					);
+
+					$query = $db->getQuery(true);
+
+					$query->delete($db->quoteName('#__tjfields_fields_value'));
+					$query->where($conditions);
+
+					$db->setQuery($query);
+
+					$result = $db->execute();
 				}
 			}
 		}
@@ -436,13 +504,13 @@ class TjfieldsHelper
 	 */
 	public function getOptions($field_id, $option_value = '')
 	{
-		$db    = JFactory::getDbo();
-		$query = $db->getQuery(true);
-		$query->select('id,options,default_option,value FROM #__tjfields_options');
-		$query->where('field_id=' . $field_id);
-
 		if ($option_value != '')
 		{
+			$db    = JFactory::getDbo();
+			$query = $db->getQuery(true);
+			$query->select('options,default_option,value FROM #__tjfields_options');
+			$query->where('field_id=' . $field_id);
+
 			$new_option_value = json_decode($option_value);
 
 			if ($new_option_value != '')
@@ -462,10 +530,21 @@ class TjfieldsHelper
 				// Radio.
 				$query->where('value=' . $db->quote($option_value));
 			}
-		}
 
-		$db->setQuery($query);
-		$extra_options = $db->loadObjectlist();
+			$db->setQuery($query);
+			$extra_options = $db->loadObjectlist();
+		}
+		else
+		{
+			$extra_options = array();
+			$obj = new stdclass;
+			$obj->id = '';
+			$obj->options = '';
+			$obj->default_option = '';
+			$obj->value = '';
+
+			$extra_options[] = $obj;
+		}
 
 		return $extra_options;
 	}
@@ -485,11 +564,10 @@ class TjfieldsHelper
 		{
 			$db    = JFactory::getDbo();
 			$query = $db->getQuery(true);
-			$query->select('DISTINCT f.id,f.label,f.name FROM #__tjfields_fields AS f');
+			$query->select('DISTINCT * FROM #__tjfields_fields AS f');
 			$query->where('NOT EXISTS (select * FROM #__tjfields_category_mapping AS cm where f.id=cm.field_id)');
 			$query->where('f.client="' . $client . '"');
 			$query->where('f.state=1');
-			$query->where('f.filterable=1');
 			$db->setQuery($query);
 			$universalFields = $db->loadObjectlist();
 		}
@@ -562,6 +640,9 @@ class TjfieldsHelper
 			$db->setQuery($query);
 			$coreFields = $db->loadObjectlist("option_id");
 			$allFields = $coreFields;
+
+			// Type cast value of category
+			$category_id = (int) $category_id;
 
 			// If category related field present
 			if (!empty($category_id) && is_int($category_id))
@@ -806,7 +887,9 @@ class TjfieldsHelper
 	{
 		$db = JFactory::getDbo();
 		$jinput  = JFactory::getApplication()->input;
-		$tjfieldIitem_ids = "0";
+
+		// Function will return -1 when no content found according to selected fields in filter
+		$tjfieldIitem_ids = "-1";
 		$tj_mod_filter_cat = $jinput->get("ModFilterCat", "prod_cat");
 		$category_id = $jinput->get($tj_mod_filter_cat);
 		$fields_value_str = $jinput->get("tj_fields_value", '', "RAW");
@@ -822,7 +905,36 @@ class TjfieldsHelper
 				$tjfieldIitem_ids = implode(",", $client_ids);
 			}
 
+			// Return all the content ids which are matching the filters condition
 			return $tjfieldIitem_ids;
+		}
+		else
+		{
+			// Return -2 when no filters are selected
+			return '-2';
+		}
+	}
+
+	/**
+	 * Get fields for given client
+	 *
+	 * @param   STRING  $client  client
+	 *
+	 * @return object
+	 */
+	public function getClientFields($client)
+	{
+		if (!empty($client))
+		{
+			$db    = JFactory::getDbo();
+			$query = $db->getQuery(true);
+			$query->select('name');
+			$query->from('#__tjfields_fields');
+			$query->quoteName('client') . ' = ' . $db->quote($client);
+			$db->setQuery($query);
+			$clientFields = $db->loadColumn();
+
+			return $clientFields;
 		}
 		else
 		{

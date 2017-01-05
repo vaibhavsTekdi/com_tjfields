@@ -21,6 +21,7 @@ if(JVERSION >= '3.0')
 // Import CSS
 $document = JFactory::getDocument();
 $document->addStyleSheet('components/com_tjfields/assets/css/tjfields.css');
+$document->addScript(JUri::root() . 'administrator/components/com_tjfields/assets/js/field.js');
 $input = JFactory::getApplication()->input;
 
 		$full_client = $input->get('client','','STRING');
@@ -38,7 +39,6 @@ TjfieldsHelper::getLanguageConstant();
 <script type="text/javascript">
 
 	techjoomla.jQuery( document ).ready(function(){
-
 			var field_type=techjoomla.jQuery('#jform_type').val();
 			show_option_div(field_type);
 			//if edit ..make name field readonly
@@ -52,6 +52,12 @@ TjfieldsHelper::getLanguageConstant();
 
 	Joomla.submitbutton = function(task)
 	{
+		// Remove disable attribute from category select so that the selected category can be saved
+		if (task == 'field.apply' || task == 'field.save' || task == 'field.newsave' || task == 'field.save2copy')
+		{
+			techjoomla.jQuery('#jformcategory').attr("disabled", false);
+		}
+
 		whitespaces_not_llowed = Joomla.JText._('COM_TJFIELDS_LABEL_WHITESPACES_NOT_ALLOWED');
 		//alert(task);
 		if(task == 'field.cancel'){
@@ -125,22 +131,25 @@ TjfieldsHelper::getLanguageConstant();
 
 	function show_option_div(field_value)
 	{
+			techjoomla.jQuery('#jform_filterable').parent().parent().hide();
 
 			switch (field_value)
 			{
 				case	"radio":
+							showOptions();
+							techjoomla.jQuery('#jform_filterable').parent().parent().show();
+							break;
 				case 	"single_select":
+							showOptions();
+							techjoomla.jQuery('#jform_filterable').parent().parent().show();
+							break;
 				case 	"multi_select":
+							showOptions();
+							techjoomla.jQuery('#jform_filterable').parent().parent().show();
+							break;
 				case	"checkbox":
-							techjoomla.jQuery('#option_div').show();
-							techjoomla.jQuery('#option_min_char').hide();
-							techjoomla.jQuery('#option_max_char').hide();
-							techjoomla.jQuery('#date_format').hide();
-							techjoomla.jQuery('#default_value_text').hide();
-							techjoomla.jQuery('.textarea_inputs').children().removeAttr('required');
-							techjoomla.jQuery('#textarea_rows').hide();
-							techjoomla.jQuery('#textarea_cols').hide();
-							techjoomla.jQuery('#div_placeholder').hide();
+							techjoomla.jQuery('#option_div').hide();
+							techjoomla.jQuery('#default_value_text').show();
 							break;
 				case	"text":
 				case	"textarea":
@@ -200,10 +209,23 @@ TjfieldsHelper::getLanguageConstant();
 
 	}
 
+	function showOptions()
+	{
+		techjoomla.jQuery('#option_div').show();
+		techjoomla.jQuery('#option_min_char').hide();
+		techjoomla.jQuery('#option_max_char').hide();
+		techjoomla.jQuery('#date_format').hide();
+		techjoomla.jQuery('#default_value_text').hide();
+		techjoomla.jQuery('.textarea_inputs').children().removeAttr('required');
+		techjoomla.jQuery('#textarea_rows').hide();
+		techjoomla.jQuery('#textarea_cols').hide();
+		techjoomla.jQuery('#div_placeholder').hide();
+	}
+
 </script>
 
 <div class="techjoomla-bootstrap">
-	<form action="<?php echo JRoute::_('index.php?option=com_tjfields&layout=edit&id='.(int) $this->item->id).'&client='.$input->get('client','','STRING'); ?>" method="post" enctype="multipart/form-data" name="adminForm" id="field-form" class="form-validate">
+	<form action="<?php echo JRoute::_('index.php?option=com_tjfields&layout=edit&id='.(int) $this->item->id).'&client='.$input->get('client','','STRING').'&extension='.$input->get('extension','','STRING'); ?>" method="post" enctype="multipart/form-data" name="adminForm" id="field-form" class="form-validate">
 		<div class="techjoomla-bootstrap">
 		<div class="row-fluid">
 
@@ -299,6 +321,10 @@ TjfieldsHelper::getLanguageConstant();
 						<div class="control-label"><?php echo $this->form->getLabel('readonly'); ?></div>
 						<div class="controls"><?php echo $this->form->getInput('readonly'); ?></div>
 					</div>
+					<div class="control-group">
+						<div class="control-label"><?php echo $this->form->getLabel('showonlist'); ?></div>
+						<div class="controls"><?php echo $this->form->getInput('showonlist'); ?></div>
+					</div>
 					<div class="control-group" id="div_placeholder">
 						<div class="control-label"><?php echo $this->form->getLabel('placeholder'); ?></div>
 						<div class="controls"><?php echo $this->form->getInput('placeholder'); ?></div>
@@ -306,6 +332,27 @@ TjfieldsHelper::getLanguageConstant();
 					<div class="control-group">
 						<div class="control-label"><?php echo $this->form->getLabel('created_by'); ?></div>
 						<div class="controls"><?php echo $this->form->getInput('created_by'); ?></div>
+					</div>
+					<div class="control-group">
+						<div class="control-label"><?php echo $this->form->getLabel('category') ; ?></div>
+						<div class="controls">
+							<?php
+							echo $this->form->getInput('category');?>
+							<div style="clear:both" ></div>
+							<span class="alert alert-warning alert-help-inline span9 alert_no_margin">
+								<?php echo JText::_('COM_TJFIELDS_CATEGORY_NOTE'); ?>
+							</span>
+						</div>
+					</div>
+					<div class="control-group">
+						<div class="control-label"><?php echo $this->form->getLabel('filterable'); ?></div>
+						<div class="controls">
+							<?php echo $this->form->getInput('filterable'); ?>
+							<div style="clear:both" ></div>
+							<span class="alert alert-info alert-help-inline span9 alert_no_margin">
+								<?php echo JText::_('COM_TJFIELDS_FILTERABLE_NOTE'); ?>
+							</span>
+						</div>
 					</div>
 					<div class="control-group">
 						<div class="control-label"><?php echo $this->form->getLabel('description'); ?></div>
@@ -329,36 +376,13 @@ TjfieldsHelper::getLanguageConstant();
 							</span>
 						</div>
 					</div>
-
-					<div class="control-group">
-						<div class="control-label"><?php echo $this->form->getLabel('filterable'); ?></div>
-						<div class="controls">
-							<?php echo $this->form->getInput('filterable'); ?>
-							<div style="clear:both" ></div>
-							<span class="alert alert-info alert-help-inline span9 alert_no_margin">
-								<?php echo JText::_('COM_TJFIELDS_FILTERABLE_NOTE'); ?>
-							</span>
-						</div>
-					</div>
-
-					<div class="control-group">
-						<div class="control-label"><?php echo $this->form->getLabel('category') ; ?></div>
-						<div class="controls">
-							<?php
-							echo $this->form->getInput('category'); ?>
-							<div style="clear:both" ></div>
-							<span class="alert alert-info alert-help-inline span9 alert_no_margin">
-								<?php echo JText::_('COM_TJFIELDS_CATEGORY_NOTE'); ?>
-							</span>
-						</div>
-					</div>
 					</fieldset>
 				</div>
 			</div>
 			<!--</fieldset>-->
 		</div>
 
-		<input type="hidden" name="client_type" value="<?php	echo $client_type;	?>" />
+		<input type="hidden" name="client_type" value="<?php echo $client_type;?>" />
 		<input type="hidden" name="task" value="" />
 		<?php echo JHtml::_('form.token'); ?>
 

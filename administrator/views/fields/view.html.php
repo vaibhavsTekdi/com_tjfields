@@ -36,6 +36,9 @@ class TjfieldsViewFields extends JViewLegacy
 	 */
 	public function display($tpl = null)
 	{
+		$input           = jFactory::getApplication()->input;
+		$client          = $input->get('client', '', 'STRING');
+
 		$this->state      = $this->get('State');
 		$this->items      = $this->get('Items');
 		$this->pagination = $this->get('Pagination');
@@ -200,7 +203,9 @@ class TjfieldsViewFields extends JViewLegacy
 		if (JVERSION >= '3.0')
 		{
 			// Set sidebar action - New in 3.0
-			$action = 'index.php?option=com_tjfields&view=fields&client="' . $input->get('client', '', 'STRING') . '"';
+			$action = 'index.php?option=com_tjfields&view=fields&client='
+			. $input->get('client', '', 'STRING')
+			. '&extension=' . $input->get('extension', '', 'STRING');
 			JHtmlSidebar::setAction($action);
 			$filter_type = $this->state->get('filter.type');
 			JHtmlSidebar::addFilter($select_label, 'filter_field_type', JHtml::_('select.options', $options, "value", "text", $filter_type, true));
@@ -225,9 +230,6 @@ class TjfieldsViewFields extends JViewLegacy
 			'a.label' => JText::_('COM_TJFIELDS_FIELDS_LABEL'),
 			'a.type' => JText::_('COM_TJFIELDS_FIELDS_FIELD_TYPE'),
 			'a.state' => JText::_('JSTATUS'),
-			'a.placeholder' => JText::_('COM_TJFIELDS_FIELDS_PLACEHOLDER'),
-			'a.tooltip' => JText::_('COM_TJFIELDS_FIELDS_TOOLTIP'),
-			'a.ordering' => JText::_('JGRID_HEADING_ORDERING'),
 			'a.client' => JText::_('COM_TJFIELDS_FIELDS_CLIENT')
 		);
 	}

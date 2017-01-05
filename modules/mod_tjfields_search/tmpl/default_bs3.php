@@ -1,21 +1,15 @@
 <?php
 /**
  * @version    SVN: <svn_id>
- * @package    Quick2cart
+ * @package    TJ-Fields
  * @author     Techjoomla <extensions@techjoomla.com>
- * @copyright  Copyright (c) 2009-2015 TechJoomla. All rights reserved.
+ * @copyright  Copyright (c) 2009-2016 TechJoomla. All rights reserved.
  * @license    GNU General Public License version 2 or later.
  */
 
 // No direct access.
 defined('_JEXEC') or die();
 $jinput = JFactory::getApplication()->input;
-
-if (empty($fieldsArray))
-{
-	return '';
-}
-
 $document = JFactory::getDocument();
 $path = JUri::base() . 'modules/mod_tjfields_search/assets/css/tjfilters.css';
 $document->addStyleSheet($path);
@@ -24,9 +18,10 @@ $document->addStyleSheet($path);
 <div class="tjfield-wrapper <?php  echo $params->get('moduleclass_sfx');?>">
 
 <?php
-
 $baseurl = $jinput->server->get('REQUEST_URI', '', 'STRING');
 
+// Get client type in module params
+$client_type = $params->get('client_type', '');
 
 // Get uRL base part and parameter part
 $temp =  explode ('?', $baseurl);
@@ -52,30 +47,24 @@ if (!empty($urlArray))
 	}
 }
 
-//$baseurl = implode('&', $urlArray);
 $baseurl = $siteBase  . "?" . implode('&', $urlArray);
-
 
 // Make base URL ends
 $selectedFilters = explode(',', $jinput->get('tj_fields_value', '', 'string'));
 ?>
 <?php
 	$buttons = $params->get('apply_clear_buttons', '');
-	if($buttons == "above" || $buttons == "both")
+
+	if ($buttons == "above" || $buttons == "both")
 	{ ?>
 	<div class="center">
-<!--
-		<a class="btn btn-small btn-info" onclick='tj_clearfilters()'><?php echo JText::_('MOD_TJFIELDS_SEARCH_APPLY_BTN');?></a>
--->
+<!-- @TOODO Temporary hide this button
 		<a class="btn btn-small btn-info" onclick='tj_clearfilters()'><?php echo JText::_('MOD_TJFIELDS_SEARCH_CLEAR_BTN');?></a>
+-->
 	</div>
 	<?php
 	}
 ?>
-
-<!--
-<form method="post" name="tjfieldsSearchForm" id="tjfieldsSearchForm">
--->
 
 <?php
 $showCategoryFilter = $params->get('showCategoryFilter', 0);
@@ -88,70 +77,73 @@ if ($showCategoryFilter && !empty($fieldsCategorys))
 }
 	?>
 	<div class="tj_categoryFilter" style="<?php echo $categoryFilterStyle; ?>">
-		<div><b><?php echo JText::_('MOD_TJFIELDS_SEARCH_SELECT_CATEGORY');?></b></div>
-		<?php
-		echo JHtml::_('select.genericlist', $fieldsCategorys, "category_id", 'class="form-control"  size="1" onchange="submitCategory()" title="' . JText::_('MOD_TJFIELDS_SEARCH_SELECT_CATEGORY') . '"', 'value', 'text', $selectedCategory, 'category_id');
-		?>
+		<div class="form-group">
+			<?php
+				echo JHtml::_('select.genericlist', $fieldsCategorys, "category_id", 'class="form-control"  size="1" onchange="submitCategory()" title="' . JText::_('MOD_TJFIELDS_SEARCH_SELECT_CATEGORY') . '"', 'value', 'text', $selectedCategory, 'category_id');
+			?>
+		</div>
 	</div>
 
 	<?php
 
 	echo $compSpecificFilterHtml;
 
-foreach ($fieldsArray as $key => $fieldOptions)
+if (!empty($fieldsArray))
 {
-	$i = 0;
-	$fieldName = '';
-
-	if (!empty($fieldOptions))
+	foreach ($fieldsArray as $key => $fieldOptions)
 	{
-	?>
-		<div class="tj-filterwrapper filterwrapper<?php echo $fieldOptions[0]->id; ?>" >
-			<div class="qtcfiltername filtername<?php echo $fieldOptions[0]->id; ?>">
-				<b><?php echo ucfirst($fieldOptions[0]->label);?></b>
-			</div>
-			<div class="tj-filterlistwrapper">
-				<?php
+		$i = 0;
+		$fieldName = '';
 
-				foreach ($fieldOptions as $option)
-				{
-
-				?>
-					<div class="tj-filteritem tjfieldfilters-<?php echo $option->name;?>" >
-						<input type="checkbox" class="tjfieldCheck" name="tj_fields_value[]" id="<?php echo $option->name .'||'.  $option->option_id;?>" value="<?php echo $option->option_id;?>" <?php echo in_array($option->option_id, $selectedFilters)?'checked="checked"':'';?>  onclick='tjfieldsapplyfilters()' />
-						<label> <?php echo ucfirst($option->options);?></label>
-					</div>
-
+		if (!empty($fieldOptions))
+		{
+		?>
+			<div class="tj-filterwrapper filterwrapper<?php echo $fieldOptions[0]->id; ?>" >
+				<div class="qtcfiltername filtername<?php echo $fieldOptions[0]->id; ?>">
+					<b><?php echo ucfirst($fieldOptions[0]->label);?></b>
+				</div>
+				<div class="tj-filterlistwrapper">
 					<?php
-				}
-				?>
+					foreach ($fieldOptions as $option)
+					{?>
+						<div class="tj-filteritem tjfieldfilters-<?php echo $option->name;?>" >
+							<label>
+								<input type="checkbox" class="tjfieldCheck"
+								name="tj_fields_value[]"
+								id="<?php echo $option->name . '||' . $option->option_id;?>"
+								value="<?php echo $option->option_id;?>"
+								<?php echo in_array($option->option_id, $selectedFilters)?'checked="checked"':'';?>
+								onclick='tjfieldsapplyfilters()' />
+								<?php echo ucfirst($option->options);?>
+							</label>
+						</div>
+					<?php
+					}
+					?>
+				</div>
 			</div>
-		</div>
-		<?php
+			<?php
+		}
 	}
 }
-
 
 ?>
 <p></p>
 	<?php
-	if($buttons == "below" || $buttons == "both")
-	{
-		?>
-		<div class="center">
-<!--
-			<a class="btn btn-small btn-info" onclick='tj_clearfilters()'><?php //echo JText::_('MOD_TJFIELDS_SEARCH_APPLY_BTN');?></a>
--->
-			<a class="btn btn-small btn-info" onclick='tj_clearfilters()'><?php echo JText::_('MOD_TJFIELDS_SEARCH_CLEAR_BTN');?></a>
-		</div>
 
-		<?php
+	if ($buttons == "below" || $buttons == "both")
+	{?>
+<!-- @TOODO Temporary hide this button
+		<div class="center">
+			<a class="btn btn-small btn-info" onclick='tj_clearfilters()'>
+				<?php echo JText::_('MOD_TJFIELDS_SEARCH_CLEAR_BTN');?>
+			</a>
+		</div>
+-->
+	<?php
 	}
 	?>
 
-<!--
-</form>
--->
 </div> <!--End of wrapper-->
 <script>
 
@@ -160,7 +152,7 @@ foreach ($fieldsArray as $key => $fieldOptions)
 	function tjfieldsapplyfilters()
 	{
 		var redirectlink = '<?php echo $baseurl;?>';
-		var client = "com_quick2cart.products";
+		var client = "<?php echo $client_type; ?>";
 		var optionStr = "";
 
 		if (typeof(client) != 'undefined')
@@ -181,7 +173,7 @@ foreach ($fieldsArray as $key => $fieldOptions)
 
 		var urlValueName = "<?php echo $url_cat_param_name;?>";
 
-		if (urlValueName != 'undefined')
+		if (urlValueName != 'undefined' && urlValueName!= '')
 		{
 			if (redirectlink.indexOf('?') === -1)
 			{
@@ -202,7 +194,7 @@ foreach ($fieldsArray as $key => $fieldOptions)
 
 		if (typeof(category) != 'undefined')
 		{
-			if (urlValueName != 'undefined')
+			if (urlValueName != 'undefined' && urlValueName!='')
 			{
 				if (redirectlink.indexOf('?') === -1)
 				{
@@ -257,7 +249,7 @@ foreach ($fieldsArray as $key => $fieldOptions)
 	{
 		var redirectlink = '<?php echo $baseurl;?>';
 
-		var client = "com_quick2cart.products";
+		var client = "<?php echo $client_type; ?>";
 		var optionStr = "";
 
 		if (typeof(client) != 'undefined')
@@ -380,5 +372,4 @@ foreach ($fieldsArray as $key => $fieldOptions)
 
 		window.location = redirectlink;
 	}
-
 </script>

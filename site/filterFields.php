@@ -214,6 +214,7 @@ trait TjfieldsFilterField
 		$data['user_id']     = JFactory::getUser()->id;
 
 		$extra_fields_data = $tjFieldsHelper->FetchDatavalue($data);
+
 		$extra_fields_data_formatted = array();
 
 		foreach ($extra_fields_data as $efd)
@@ -224,6 +225,8 @@ trait TjfieldsFilterField
 			}
 			else
 			{
+				$temp = array();
+
 				switch ($efd->type)
 				{
 					case 'multi_select':
@@ -236,6 +239,7 @@ trait TjfieldsFilterField
 						{
 							$extra_fields_data_formatted[$efd->name] = $temp;
 						}
+
 					break;
 
 					case 'single_select':
@@ -315,7 +319,6 @@ trait TjfieldsFilterField
 		}
 
 		$tjFieldsHelper = new TjfieldsHelper;
-		$data               = array();
 		$data['content_id'] = $id;
 		$extra_fields_data = $tjFieldsHelper->FetchDatavalue($data);
 
@@ -346,6 +349,35 @@ trait TjfieldsFilterField
 		$data['user_id']     = JFactory::getUser()->id;
 
 		$result = $tjFieldsHelper->saveFieldsValue($data);
+
+		return $result;
+	}
+
+	/**
+	 * Method to delete extra fields data.
+	 *
+	 * @param   INT     $content_id  content id
+	 * @param   STRING  $client      client
+	 *
+	 * @return  boolean
+	 *
+	 * @since  1.6
+	 */
+	public function deleteExtraFieldsData($content_id, $client)
+	{
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+		$conditions = array(
+			$db->quoteName('content_id') . ' = ' . $content_id,
+			$db->quoteName('client') . " = '" . $client . "'"
+		);
+
+		$query->delete($db->quoteName('#__tjfields_fields_value'));
+		$query->where($conditions);
+
+		$db->setQuery($query);
+
+		$result = $db->execute();
 
 		return $result;
 	}

@@ -63,9 +63,8 @@ if (!empty($this->extra_sidebar)) {
     $this->sidebar .= $this->extra_sidebar;
 }
 ?>
-
-<div class="techjoomla-bootstrap">
-	<form action="<?php echo JRoute::_('index.php?option=com_tjfields&view=fields&client='.$input->get('client','','STRING')); ?>" method="post" name="adminForm" id="adminForm">
+<form action="<?php echo JRoute::_('index.php?option=com_tjfields&view=fields&client='.$input->get('client','','STRING') . '&extension=' . $input->get('extension', '', 'STRING')); ?>" method="post" name="adminForm" id="adminForm">
+	<div class="techjoomla-bootstrap">
 		<?php if(!empty($this->sidebar)): ?>
 			<div id="j-sidebar-container" class="span2">
 				<?php echo $this->sidebar; ?>
@@ -225,11 +224,20 @@ if (!empty($this->extra_sidebar)) {
 							<?php echo $this->escape($item->label); ?>
 						<?php endif; ?>
 						</td>
-						<td>
-
-							<?php echo $item->type; ?>
-						</td>
-
+					<td>
+					<?php if (isset($item->checked_out) && $item->checked_out) : ?>
+						<?php echo JHtml::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, 'fields.', $canCheckin); ?>
+					<?php endif; ?>
+					<?php if ($canEdit) : ?>
+						<a href="<?php echo JRoute::_('index.php?option=com_tjfields&task=field.edit&id='.(int) $item->id.'&client='.$input->get('client','','STRING').'&extension='.$input->get('extension','','STRING')); ?>">
+						<?php echo $this->escape($item->label); ?></a>
+					<?php else : ?>
+						<?php echo $this->escape($item->label); ?>
+					<?php endif; ?>
+					</td>
+					<td>
+						<?php echo $item->type; ?>
+					</td>
 						<td>
 
 							<?php echo $item->client; ?>
@@ -254,5 +262,5 @@ if (!empty($this->extra_sidebar)) {
 			<input type="hidden" name="filter_order_Dir" value="<?php echo $listDirn; ?>" />
 			<?php echo JHtml::_('form.token'); ?>
 		</div>
-	</form>
-</div>
+	</div>
+</form>

@@ -46,7 +46,7 @@ class TjfieldsHelper
 
 		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true);
-		$query->select('#__tjfields_fields_value.field_id,value FROM #__tjfields_fields_value ');
+		$query->select('#__tjfields_fields_value.field_id,#__tjfields_fields.type,value FROM #__tjfields_fields_value ');
 		$query->join('INNER', $db->qn('#__tjfields_fields') . ' ON (' .
 		$db->qn('#__tjfields_fields.id') . ' = ' . $db->qn('#__tjfields_fields_value.field_id') . ')');
 
@@ -61,8 +61,16 @@ class TjfieldsHelper
 
 		foreach ($field_data_value as $k => $data)
 		{
-			$fieldDataValue[$data->field_id]->value[] = $data->value;
-			$fieldDataValue[$data->field_id]->field_id = $data->field_id;
+			if ($data->type == "radio" || $data->type == "single_select" || $data->type == "multi_select")
+			{
+				$fieldDataValue[$data->field_id]->value[] = $data->value;
+				$fieldDataValue[$data->field_id]->field_id = $data->field_id;
+			}
+			else
+			{
+				$fieldDataValue[$data->field_id]->value = $data->value;
+				$fieldDataValue[$data->field_id]->field_id = $data->field_id;
+			}
 		}
 
 		// Check if the field type is list or radio (fields which have option)

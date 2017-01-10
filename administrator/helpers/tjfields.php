@@ -407,8 +407,14 @@ class TjfieldsHelper
 	 */
 	public function getOptionData($data)
 	{
-		if ($data->type == 'radio' || $data->type == 'single_select' || $data->type == 'multi_select' || $data->type == 'checkbox')
+		if ($data->type == 'radio' || $data->type == 'single_select' || $data->type == 'multi_select')
 		{
+			// For field type single select and multi select field type in xml is 'list'
+			if ($data->type == 'single_select' || $data->type == 'multi_select')
+			{
+				$data->type = "list";
+			}
+
 			$extra_options = $this->getOptions($data->id);
 			$data->extra_options = $extra_options;
 		}

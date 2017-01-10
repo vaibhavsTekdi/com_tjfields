@@ -199,9 +199,20 @@ class TjfieldsModelField extends JModelAdmin
 
 		$data['saveOption'] = 0;
 
-		if ($data['type'] == "radio" || $data['type'] == "list" || $data['type'] == "checkbox")
+		if ($data['type'] == "radio" || $data['type'] == "single_select" || $data['type'] == "multi_select" || $data['type'] == "checkbox")
 		{
 			$data['saveOption'] = 1;
+		}
+
+		// Change the name only if the field is newly created....don't do on edit fields
+		if ($data['id'] == 0)
+		{
+			// Escape apostraphe
+			$data_name = trim(preg_replace('/[^A-Za-z0-9\-\']/', '', $data['name']));
+			$client = explode('.', $data['client']);
+			$client = $client[0];
+			$data_unique_name = $client . '_' . $data['client_type'] . '_' . $data_name;
+			$data['name'] = $data_unique_name;
 		}
 
 		// Remove extra value which are not needed to save in the fields table

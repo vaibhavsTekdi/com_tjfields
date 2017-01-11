@@ -44,25 +44,11 @@ class TjfieldsHelper
 		$client            = $data['client'];
 		$query_user_string = '';
 
-		/*if (isset($data['user_id']))
-		{
-			$user_id           = $data['user_id'];
-			$query_user_string = " AND user_id=" . $user_id;
-		}*/
-
 		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true);
-		$query->select('#__tjfields_fields_value.field_id,value FROM #__tjfields_fields_value ');
+		$query->select('#__tjfields_fields_value.field_id,#__tjfields_fields.type,value FROM #__tjfields_fields_value ');
 		$query->join('INNER', $db->qn('#__tjfields_fields') . ' ON (' .
 		$db->qn('#__tjfields_fields.id') . ' = ' . $db->qn('#__tjfields_fields_value.field_id') . ')');
-
-		/*if (!empty($data['category_id']))
-		{
-			$query->join('Left', $db->qn('#__tjfields_category_mapping') . 'ON (' .
-			$db->qn('#__tjfields_category_mapping.field_id') . ' = ' . $db->qn('#__tjfields_fields.id') . ')');
-			$query->where('#__tjfields_category_mapping.category_id = ' . $data['category_id']);
-		}
-		*/
 
 		$query->where('#__tjfields_fields_value.content_id=' . $content_id);
 		$query->where('#__tjfields_fields_value.client="' . $client . '" ' . $query_user_string);
@@ -75,8 +61,16 @@ class TjfieldsHelper
 
 		foreach ($field_data_value as $k => $data)
 		{
-			$fieldDataValue[$data->field_id]->value[] = $data->value;
-			$fieldDataValue[$data->field_id]->field_id = $data->field_id;
+			if ($data->type == "radio" || $data->type == "single_select" || $data->type == "multi_select")
+			{
+				$fieldDataValue[$data->field_id]->value[] = $data->value;
+				$fieldDataValue[$data->field_id]->field_id = $data->field_id;
+			}
+			else
+			{
+				$fieldDataValue[$data->field_id]->value = $data->value;
+				$fieldDataValue[$data->field_id]->field_id = $data->field_id;
+			}
 		}
 
 		// Check if the field type is list or radio (fields which have option)
@@ -93,7 +87,6 @@ class TjfieldsHelper
 				}
 				elseif ($fieldData->type == 'calendar')
 				{
-					// $format = $this->getDateFormat($fieldData->format);
 					if ($fieldData->format == 1)
 					{
 						$fdata->value = JFactory::getDate($fdata->value)->Format('d-m-Y');
@@ -172,48 +165,14 @@ class TjfieldsHelper
 		$insert_obj->email_id   = '';
 		$insert_obj->client     = $data['client'];
 
+		$insert_obj_file = new stdClass;
+		$insert_obj_file->content_id = $data['content_id'];
+		$insert_obj_file->user_id    = $data['user_id'];
+		$insert_obj_file->email_id   = '';
+		$insert_obj_file->client     = $data['client'];
+
 		$singleSelectionFields = array("single_select", "radio");
 		$multipleSelectionFields = array("multi_select");
-
-		// Get all the fields for given client
-		$clientFields = $this->getClientFields($data['client']);
-
-		// Get all the fields for which value is saved in given content
-		foreach ($data['fieldsvalue'] as $fname => $fvalue)
-		{
-			$savedFields[] = $fname;
-		}
-
-		// Get the fields for which no value are stored for given content
-		$fieldsWithNoValues = array_diff($clientFields, $savedFields);
-
-		// Delete the entry of the fields with no records in tjfields_values table
-		foreach ($fieldsWithNoValues as $fieldWithNoValues)
-		{
-			$db    = JFactory::getDbo();
-			$query = $db->getQuery(true);
-			$query->select('id');
-			$query->from('#__tjfields_fields');
-			$query->quoteName('client') . ' = ' . $db->quote($data['client']);
-			$query->quoteName('name') . ' = ' . $db->quote($fieldWithNoValues);
-			$db->setQuery($query);
-			$fieldId = $db->loadResult();
-
-			$conditions = array(
-				$db->quoteName('client') . ' = ' . $db->quote($data['client']),
-				$db->quoteName('content_id') . ' = ' . $db->quote($data['content_id']),
-				$db->quoteName('field_id') . ' = ' . $db->quote($fieldId)
-			);
-
-			$query = $db->getQuery(true);
-
-			$query->delete($db->quoteName('#__tjfields_fields_value'));
-			$query->where($conditions);
-
-			$db->setQuery($query);
-
-			$result = $db->execute();
-		}
 
 		// Values array will contain menu fields value.
 		foreach ($data['fieldsvalue'] as $fname => $fvalue)
@@ -221,58 +180,222 @@ class TjfieldsHelper
 			$field_data           = $this->getFieldData($fname);
 			$insert_obj->field_id = $field_data->id;
 
-			// Check for duplicate entry
-			$if_edit_id           = $this->checkForAlreadyexitsDetails($data, $field_data->id);
+			// Added By KOMAL TEMP
+			// Field Data
+			$db    = JFactory::getDbo();
+			$query = $db->getQuery(true);
+			$query->select('* FROM #__tjfields_fields');
+			$query->where('name="' . $fname . '"');
+			$db->setQuery($query);
+			$file_field_data_check = $db->loadObject();
 
-			if (!empty($fvalue))
+			if ($fname == 'file')
 			{
-				if (in_array($field_data->type, $multipleSelectionFields))
+				foreach ($fvalue as $fieldName => $singleFile)
 				{
-					$this->saveMultiselectOptions($data, $fname, $field_data);
-				}
-				elseif (in_array($field_data->type, $singleSelectionFields))
-				{
-					$this->saveSingleSelectFieldValue($data, $fname, $field_data, $if_edit_id);
-				}
-				else
-				{
-					$insert_obj->value = $fvalue;
+					// Field Data
+					$db    = JFactory::getDbo();
+					$query = $db->getQuery(true);
+					$query->select('* FROM #__tjfields_fields');
+					$query->where('name="' . $fieldName . '"');
+					$db->setQuery($query);
+					$file_field_data = $db->loadObject();
 
-					if ($if_edit_id)
+					$insert_obj_file->field_id = $file_field_data->id;
+
+					if (!empty($singleFile))
 					{
-						$insert_obj->id = $if_edit_id;
-						$db->updateObject('#__tjfields_fields_value', $insert_obj, 'id');
-					}
-					else
-					{
-						$insert_obj->id = '';
-						$db->insertObject('#__tjfields_fields_value', $insert_obj, 'id');
+						$filename = $this->uploadFile($singleFile, $insert_obj_file, $file_field_data);
+
+						if ($filename)
+						{
+							$if_edit_file_id        = $this->checkForAlreadyexitsDetails($data, $file_field_data->id);
+
+							$insert_obj_file->value = $filename;
+
+							if ($insert_obj_file->value)
+							{
+								if ($if_edit_file_id)
+								{
+									$insert_obj_file->id = $if_edit_file_id;
+									$db->updateObject('#__tjfields_fields_value', $insert_obj_file, 'id');
+								}
+								else
+								{
+									$insert_obj_file->id = '';
+									$db->insertObject('#__tjfields_fields_value', $insert_obj_file, 'id');
+								}
+							}
+						}
 					}
 				}
 			}
 			else
 			{
-				if (isset($field_data->id) && isset($data['content_id']))
+				if (empty($file_field_data_check->accept))
 				{
-					// Delete entry is field is deselected
-					$conditions = array(
-						$db->quoteName('field_id') . ' = ' . $field_data->id,
-						$db->quoteName('content_id') . ' = ' . $data['content_id']
-					);
+					// Check for duplicate entry
+					$if_edit_id           = $this->checkForAlreadyexitsDetails($data, $field_data->id);
 
-					$query = $db->getQuery(true);
+					if (!empty($fvalue))
+					{
+						if (in_array($field_data->type, $multipleSelectionFields))
+						{
+							$this->saveMultiselectOptions($data, $fname, $field_data);
+						}
+						elseif (in_array($field_data->type, $singleSelectionFields))
+						{
+							$this->saveSingleSelectFieldValue($data, $fname, $field_data, $if_edit_id);
+						}
+						else
+						{
+							$insert_obj->value = $fvalue;
 
-					$query->delete($db->quoteName('#__tjfields_fields_value'));
-					$query->where($conditions);
+							if ($if_edit_id)
+							{
+								$insert_obj->id = $if_edit_id;
+								$db->updateObject('#__tjfields_fields_value', $insert_obj, 'id');
+							}
+							else
+							{
+								$insert_obj->id = '';
+								$db->insertObject('#__tjfields_fields_value', $insert_obj, 'id');
+							}
+						}
+					}
+					else
+					{
+						if (isset($field_data->id) && isset($data['content_id']))
+						{
+							// Delete entry is field is deselected
+							$conditions = array(
+								$db->quoteName('field_id') . ' = ' . $field_data->id,
+								$db->quoteName('content_id') . ' = ' . $data['content_id']
+							);
 
-					$db->setQuery($query);
+							$query = $db->getQuery(true);
 
-					$result = $db->execute();
+							$query->delete($db->quoteName('#__tjfields_fields_value'));
+							$query->where($conditions);
+
+							$db->setQuery($query);
+
+							$result = $db->execute();
+						}
+					}
 				}
 			}
 		}
 
 		return true;
+	}
+
+	/**
+	 * Function to upload file
+	 *
+	 * @param   string  $singleFile       name of field
+	 * @param   string  $insert_obj_file  file object
+	 * @param   string  $file_field_data  data
+	 *
+	 * @return  object
+	 */
+	public function uploadFile($singleFile, $insert_obj_file, $file_field_data)
+	{
+		$app             = JFactory::getApplication();
+		$user = JFactory::getUser();
+		$user_id = $user->id;
+		$username = $string = preg_replace('/\s+/', '', $user->name);
+
+		$title = $singleFile['name'];
+		$title = $string = preg_replace('/\s+/', '', $title);
+
+		jimport('joomla.filesystem.file');
+
+		// Check if the server found any error.
+		$fileError = $singleFile['error'];
+		$message   = '';
+
+		if ($fileError > 0 && $fileError != 4)
+		{
+			switch ($fileError)
+			{
+				case 1:
+					$message = JText::_('COM_TJFIELDS_FILE_UPLOAD_ERROR_SIZE_EXCEED');
+					break;
+				case 2:
+					$message = JText::_('COM_TJFIELDS_FILE_UPLOAD_ERROR_SIZE_EXCEED1');
+					break;
+				case 3:
+					$message = JText::_('COM_TJFIELDS_FILE_UPLOAD_ERROR_SIZE_EXCEED2');
+					break;
+			}
+
+			if ($message != '')
+			{
+				$app->enqueueMessage($message, 'warning');
+
+				return false;
+			}
+		}
+		elseif ($fileError == 4)
+		{
+			if (isset($singleFile['name']))
+			{
+				$filename = $singleFile['name'];
+			}
+		}
+		else
+		{
+			// Check for filesize
+			$fileSize = $singleFile['size'];
+
+			if ($fileSize > 15728640)
+			{
+				$app->enqueueMessage('This <strong>' . $title . '</strong> file size is greater than 15MB', 'warning');
+
+				return false;
+			}
+
+			$okMIMETypes    = 'pdf,PDF,doc,DOC,docx,DOCX,xls,XLS,xlsx,XLSX,jpeg,JPEG,png,PNG,jpg,JPG';
+			$validMIMEArray = explode(',', $okMIMETypes);
+
+			$client = explode('.', $insert_obj_file->client);
+
+			$filename  = JFile::stripExt($singleFile['name']);
+			$extension = JFile::getExt($singleFile['name']);
+
+			jimport('joomla.filesystem.file');
+			$fileMime = JFile::getExt($singleFile['name']);
+
+			if (!in_array($fileMime, $validMIMEArray))
+			{
+				$app->enqueueMessage('This <strong>' . $title . '</strong> file type is not allowed for file ' . $filename . '.' . $extension, 'warning');
+
+				return false;
+			}
+
+			// Replace any special characters in the filename
+
+			$random_string = rand();
+			$filename = $client[1] . "_" . $username . "_" . $random_string;
+
+			$filename = $filename . '.' . $extension;
+
+			$uploadPath = JPATH_ROOT . '/media/' . $client[0] . '/' . $client[1] . '/' . $filename;
+			$fileTemp = $singleFile['tmp_name'];
+
+			if (!JFile::exists($uploadPath))
+			{
+				if (!JFile::upload($fileTemp, $uploadPath))
+				{
+					$app->enqueueMessage('Error moving file', 'warning');
+
+					return false;
+				}
+			}
+
+			return $filename;
+		}
 	}
 
 	/**
@@ -481,8 +604,6 @@ class TjfieldsHelper
 		$query->select('id FROM #__tjfields_fields_value');
 		$query->where('content_id=' . $content_id . ' AND client="' . $client . '"');
 
-		// $query->where('content_id=' . $content_id . ' AND client="' . $client . '" AND user_id=' . $user_id);
-
 		if ($field_id)
 		{
 			$query->where('field_id=' . $field_id);
@@ -624,17 +745,8 @@ class TjfieldsHelper
 			$query->where('fv.option_id IS NOT NULL');
 			$query->where("f.type IN ('single_select','multi_select', 'radio')");
 
-			/*if (!empty($category_id))
-			{
-				$query->JOIN('INNER', '#__tjfields_category_mapping AS fcm ON fcm.field_id = f.id');
-				$query->where('fcm.category_id=' . $category_id);
-			}
-			else*/
-
-			{
-				// Doesn't have mapped any category
-				$query->where('NOT EXISTS (select * FROM #__tjfields_category_mapping AS cm where f.id=cm.field_id)');
-			}
+			// Doesn't have mapped any category
+			$query->where('NOT EXISTS (select * FROM #__tjfields_category_mapping AS cm where f.id=cm.field_id)');
 
 			$query->order('f.ordering');
 			$db->setQuery($query);
@@ -683,33 +795,6 @@ class TjfieldsHelper
 		}
 
 		return $allFields;
-	}
-
-	/**
-	 * Get dete format
-	 *
-	 * @param   array  $format  format of date
-	 *
-	 * @return object
-	 */
-	public function getDateFormat($format)
-	{
-		if ($format == 1)
-		{
-			return "d/m/Y";
-		}
-		elseif (($format == 2))
-		{
-			return "m/d/Y";
-		}
-		elseif ($format == 3)
-		{
-			return "Y/d/m";
-		}
-		else
-		{
-			return "Y/m/d";
-		}
 	}
 
 	/**
@@ -762,15 +847,6 @@ class TjfieldsHelper
 			}
 			else
 			{
-				/*
-				 * SELECT fv1. *
-					FROM  `xcqpa_tjfields_fields_value` AS fv1
-					INNER JOIN  `xcqpa_tjfields_fields_value` AS fv2 ON fv2.`content_id` = fv1.content_id
-					WHERE fv1.option_id
-					IN ( 18 ) AND
-					WHERE fv2.option_id
-					IN ( 13,14 )
-				 * */
 				$query->select('DISTINCT fv1.content_id');
 				$fromFlag = 0;
 				$i = 1;
@@ -802,28 +878,6 @@ class TjfieldsHelper
 	}
 
 	/**
-	 * Method buildFilterModuleQuery for client = com_quick2cart.products
-	 *
-	 * @param   String  $component  Component name
-	 * @param   String  $query      Query
-	 *
-	 * @return object
-	 */
-	public static function mergeWithCompoentQuery($component, $query)
-	{
-		// Load Quick2cart helper class for js files.
-		$path                = JPATH_SITE . "/components/com_quick2cart/helper.php";
-		$comquick2cartHelper = self::loadClass($path, 'comquick2cartHelper');
-		comquick2cartHelper::displayQuick2cartData($query);
-
-		// Load Quick2cart helper class for js files.
-
-		/*$path                = JPATH_SITE . "/components/com_jgive/helper.php";
-		$JgiveFrontendHelper = self::loadClass($path, 'JgiveFrontendHelper');
-		JgiveFrontendHelper::displayQuick2cartData($query);*/
-	}
-
-	/**
 	 * This function to load class.
 	 *
 	 * @param   string  $path       Path of file.
@@ -846,8 +900,6 @@ class TjfieldsHelper
 		else
 		{
 			throw new RuntimeException(sprintf('Unable to load class: %s', $className));
-
-			// JFactory::getApplication()->enqueueMessage(sprintf('Unable to load class: %s, $className), 'error');
 		}
 	}
 

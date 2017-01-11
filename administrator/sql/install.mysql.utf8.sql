@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS `#__tjfields_fields` (
 	`client` varchar(255) NOT NULL,
 	`group_id` int(11) NOT NULL,
 	`showonlist` int(11) NOT NULL,
+	`params` varchar(500),
 	PRIMARY KEY (`id`)
 )   DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 

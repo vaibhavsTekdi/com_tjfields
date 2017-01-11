@@ -191,7 +191,7 @@ class TjfieldsViewFields extends JViewLegacy
 		$options[8]->value  = "editor";
 		$options[8]->text   = "Editor";
 		$options[9]         = new stdClass;
-		$options[9]->value  = "email_field";
+		$options[9]->value  = "email";
 		$options[9]->text   = "Email";
 		$options[10]        = new stdClass;
 		$options[10]->value = "password";

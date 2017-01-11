@@ -3,7 +3,7 @@
  * @version    SVN: <svn_id>
  * @package    Tjfields
  * @author     Techjoomla <extensions@techjoomla.com>
- * @copyright  Copyright (c) 2009-2015 TechJoomla. All rights reserved.
+ * @copyright  Copyright (c) 2009-2016 TechJoomla. All rights reserved.
  * @license    GNU General Public License version 2 or later.
  */
 
@@ -76,21 +76,6 @@ class TjfieldsViewField extends JViewLegacy
 		$input           = JFactory::getApplication()->input;
 		$client          = $input->get('client');
 		$component_title = JText::_('COM_TJFIELDS_TITLE_COMPONENT');
-
-		if (!empty($client))
-		{
-			$client = explode('.', $client);
-
-			if ($client['0'] == 'com_jticketing')
-			{
-				$component_title = JText::_('COM_JTICKETING_COMPONENT');
-			}
-
-			if ($client['0'] == 'com_tjlms')
-			{
-				$component_title = JText::_('COM_TJLMS_COMPONENT');
-			}
-		}
 
 		if ($isNew)
 		{

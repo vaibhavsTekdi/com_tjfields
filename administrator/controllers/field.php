@@ -192,4 +192,30 @@ class TjfieldsControllerField extends JControllerForm
 		);
 		$this->setRedirect($link);
 	}
+
+	/**
+	 * Function to save field state
+	 *
+	 * @return  void
+	 */
+	public function saveFormState()
+	{
+		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+
+		$app = JFactory::getApplication();
+
+		$data = $this->input->get($this->input->get('formcontrol', 'jform'), array(), 'array');
+
+		if (empty($data['id']))
+		{
+			$app->setUserState('com_tjfields.edit.field.data', $data);
+		}
+
+		$link = JRoute::_(
+		'index.php?option=com_tjfields&view=field&layout=edit&id=0&client='
+		. $this->input->get('client', '', 'STRING') . '&extension=' . $this->input->get('extension', '', 'STRING'), false
+			);
+
+		$this->setRedirect($link);
+	}
 }

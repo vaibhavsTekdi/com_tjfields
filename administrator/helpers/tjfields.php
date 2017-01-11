@@ -28,34 +28,6 @@ class TjfieldsHelper
 	 */
 	public static function addSubmenu($view = '')
 	{
-		/*
-		if(JVERSION >= '3.0')
-		{
-			JHtmlSidebar::addEntry(
-				JText::_('COM_TJFIELDS_TITLE_FIELDS'),
-				'index.php?option=com_tjfields&view=fields',
-				$vName == 'fields'
-			);
-			JHtmlSidebar::addEntry(
-				JText::_('COM_TJFIELDS_TITLE_GROUPS'),
-				'index.php?option=com_tjfields&view=groups',
-				$vName == 'groups'
-			);
-		}
-		else
-		{
-			JSubMenuHelper::addEntry(
-				JText::_('COM_TJFIELDS_TITLE_FIELDS'),
-				'index.php?option=com_tjfields&view=fields',
-				$vName == 'fields'
-			);
-			JSubMenuHelper::addEntry(
-				JText::_('COM_TJFIELDS_TITLE_GROUPS'),
-				'index.php?option=com_tjfields&view=groups',
-				$vName == 'groups'
-			);
-		}
-		*/
 		$input = JFactory::getApplication()->input;
 		$full_client = $input->get('client', '', 'STRING');
 		$full_client = explode('.', $full_client);
@@ -101,7 +73,7 @@ class TjfieldsHelper
 	 */
 	public static function getActions()
 	{
-		$user	= JFactory::getUser();
+		$user = JFactory::getUser();
 		$result	= new JObject;
 
 		$assetName = 'com_tjfields';
@@ -116,79 +88,6 @@ class TjfieldsHelper
 		}
 
 		return $result;
-	}
-
-	/**
-	 * Get the data that has to bo store for a particlular field..
-	 * Extra data is make blank
-	 *
-	 * @param   OBJECT  $data  all data to format
-	 *
-	 * @return -- formated array...which do not contain extra value
-	 */
-	public function getFieldArrayFormatted($data)
-	{
-		switch ($data['type'])
-		{
-				case	"checkbox":
-							$data['min'] = '';
-							$data['max'] = '';
-							$data['format'] = '';
-							$data['default_value'] = '0';
-						break;
-				case	"radio":
-				case 	"single_select":
-				case 	"multi_select":
-							$data['saveOption'] = 1;
-							$data['min'] = '';
-							$data['max'] = '';
-							$data['format'] = '';
-
-							// This value is only for text type areas...for slect list etc...it
-							$data['default_value'] = '';
-						break;
-				case	"editor":
-				case	"file":
-				case	"password":
-							$data['min'] = '';
-							$data['max'] = '';
-							$data['format'] = '';
-
-							// This value is only for text type areas...for slect list etc...it is saved later
-							$data['default_value'] = '';
-							break;
-				case	"text":
-				case	"textarea":
-				case	"email_field":
-							$data['format'] = '';
-							break;
-				case	"calendar":
-
-							$data['min'] = '';
-							$data['max'] = '';
-							$data['default_value'] = '';
-
-							// $data['format'] = $this->getDateFormat($data['format']);
-							break;
-				case	"hidden":
-							$data['min'] = '';
-							$data['max'] = '';
-							$data['format'] = '';
-							break;
-		}
-
-			// Change the name only if the field is newly created....don't do on edit fields
-			if ($data['id'] == 0)
-			{
-				// Escape apostraphe
-				$data_name = trim(preg_replace('/[^A-Za-z0-9\-\']/', '', $data['name']));
-				$client = explode('.', $data['client']);
-				$client = $client[0];
-				$data_unique_name = $client . '_' . $data['client_type'] . '_' . $data_name;
-				$data['name'] = $data_unique_name;
-			}
-
-			return $data;
 	}
 
 	/**
@@ -390,7 +289,7 @@ class TjfieldsHelper
 					$current_group = $f->group_id;
 				}
 
-				$f = $this->SwitchCaseForExtraAttribute($f);
+				$f = $this->getOptionData($f);
 				$field = $new_fieldset->addChild('field');
 				$field->addAttribute('name', $f->name);
 
@@ -416,6 +315,27 @@ class TjfieldsHelper
 
 				$field->addAttribute('class', $f->validation_class);
 
+				if (!empty($f->params))
+				{
+					$fieldAttribute = json_decode($f->params);
+
+					foreach ($fieldAttribute as $attribute => $fieldparam)
+					{
+						$field->addAttribute($attribute, $fieldparam);
+					}
+				}
+
+				// Add javascript
+				if (isset($f->js_function))
+				{
+					$jsArray = $this->getJsArray($f->js_function);
+
+					foreach ($jsArray as $js)
+					{
+						$field->addAttribute($js[0], $js[1]);
+					}
+				}
+
 				$default_value = array();
 				$value_string = '';
 
@@ -440,67 +360,6 @@ class TjfieldsHelper
 							$default_value[] = $f_option->value;
 						}
 					}
-				}
-
-				// Add javascript
-				if (isset($f->js_function))
-				{
-					$jsArray = $this->getJsArray($f->js_function);
-
-					foreach ($jsArray as $js)
-					{
-						$field->addAttribute($js[0], $js[1]);
-					}
-				}
-
-				// Add multiple attribute for multilist.
-				if (isset($f->multiple))
-				{
-					if (!empty($default_value))
-					{
-						if (count($default_value) > 1)
-						{
-							// Convert values to string
-							$value_string = json_encode($default_value);
-							$field->addAttribute('default', $value_string);
-						}
-						else
-						{
-							$field->addAttribute('default', $default_value[0]);
-						}
-					}
-
-					$field->addAttribute('filter', 'raw');
-					$field->addAttribute('multiple', $f->multiple);
-				}
-
-				// Add mim max charcter attribute.
-				if (isset($f->max) && !empty($f->max))
-				{
-					$field->addAttribute('maxlength', $f->max);
-				}
-
-				// Add deault value attribute.
-				if (isset($f->default_value) && !empty($f->default_value))
-				{
-					$field->addAttribute('default', $f->default_value);
-				}
-
-				if (isset($f->textarea))
-				{
-					$field->addAttribute('rows', $f->rows);
-					$field->addAttribute('cols', $f->cols);
-				}
-
-				if ($f->type == 'calendar')
-				{
-					$f->format = $this->getDateFormat($f->format);
-					$field->addAttribute('format', $f->format);
-				}
-
-				if ($f->type == 'editor')
-				{
-					$field->addAttribute('filter', "JComponentHelper::filterText");
 				}
 			}
 
@@ -546,64 +405,18 @@ class TjfieldsHelper
 	 *
 	 * @since  1.0
 	 */
-	public function SwitchCaseForExtraAttribute($data)
+	public function getOptionData($data)
 	{
-		switch ($data->type)
+		if ($data->type == 'radio' || $data->type == 'single_select' || $data->type == 'multi_select')
 		{
-				case	"text":
+			// For field type single select and multi select field type in xml is 'list'
+			if ($data->type == 'single_select' || $data->type == 'multi_select')
+			{
+				$data->type = "list";
+			}
 
-						// Min max default
-						break;
-				case	"radio":
-
-						// $data[0]->extra_options=1;
-						$extra_options = $this->getOptions($data->id);
-						$data->extra_options = $extra_options;
-
-						// Options default(from another table)
-						break;
-				case 	"single_select":
-						$data->type = 'list';
-
-						// $data[0]->extra_options=1;
-						$extra_options = $this->getOptions($data->id);
-						$data->extra_options = $extra_options;
-						$data->multiple = "false";
-
-						// Options default(from another table) multiple="false"
-						break;
-				case 	"multi_select":
-						$data->type = 'list';
-
-						// $data[0]->extra_options=1;
-						$extra_options = $this->getOptions($data->id);
-						$data->extra_options = $extra_options;
-						$data->multiple = "true";
-
-						// Options default(from another table) multiple="true"
-						break;
-				case	"hidden":
-						break;
-				case	"textarea":
-						$data->textarea = 1;
-						break;
-				case	"checkbox":
-
-						// $data[0]->extra_options=1;
-						$extra_options = $this->getOptions($data->id);
-						$data->extra_options = $extra_options;
-						break;
-				case	"calendar":
-						break;
-				case	"editor":
-						break;
-				case	"email_field":
-						$data->type = 'email';
-						break;
-				case	"password":
-						break;
-				case	"file":
-						break;
+			$extra_options = $this->getOptions($data->id);
+			$data->extra_options = $extra_options;
 		}
 
 		return $data;
@@ -650,35 +463,6 @@ class TjfieldsHelper
 	}
 
 	/**
-	 * Mathod to get date format
-	 *
-	 * @param   INT  $format  type of format
-	 *
-	 * @return STRING  date format
-	 *
-	 * @since  1.0
-	 */
-	public function getDateFormat($format)
-	{
-		if ($format == 1)
-		{
-			return "%d-%m-%Y";
-		}
-		elseif (($format == 2))
-		{
-			return "%m-%d-%Y";
-		}
-		elseif ($format == 3)
-		{
-			return "%Y-%d-%m";
-		}
-		else
-		{
-			return "%Y-%m-%d";
-		}
-	}
-
-	/**
 	 * Method to get JsArray
 	 *
 	 * @param   ARRAY  $jsarray  array of js function
@@ -687,14 +471,9 @@ class TjfieldsHelper
 	 */
 	public function getJsArray($jsarray)
 	{
-		// $jsarray contains --    onclick-getfunction()||onchange-getfunction2()||
-
 		$jsarray = explode('||', $jsarray);
-		/*now we get array[0] = onclick-getfunction()
-		array[1] = onchange-getfunction2()
-		array[2] = '';
-		remove the blank array element */
 
+		// Remove the blank array element
 		$jsarray_removed_blank_element = array_filter($jsarray);
 
 		foreach ($jsarray_removed_blank_element as $eachjs)

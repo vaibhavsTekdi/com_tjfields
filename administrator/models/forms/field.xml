@@ -49,7 +49,6 @@
 		<field name="description" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_TOOLTIP" description="COM_TJFIELDS_FORM_DESC_FIELD_TOOLTIP" />
 		<field name="js_function" type="jsfunction" label="COM_TJFIELDS_FORM_LBL_FIELD_JS_FUNCTION" description="COM_TJFIELDS_FORM_DESC_FIELD_VALIDATION_CLASS" required="false" />
 		<field name="validation_class" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_VALIDATION_CLASS" description="COM_TJFIELDS_FORM_DESC_FIELD_VALIDATION_CLASS" cols="100" rows="8" />
-		<field name="default_value" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_DEFAULT" description="COM_TJFIELDS_FORM_DESC_FIELD_DEFAULT" />
 		<field name="client" type="text" size="40" class="inputbox" label="COM_TJFIELDS_FORM_LBL_FIELD_CLIENT" description="COM_TJFIELDS_FORM_DESC_FIELD_CLIENT" default="1" filter="safehtml" />
 		<field name="client_type" type="text" size="40" class="inputbox" label="COM_TJFIELDS_FORM_LBL_FIELD_CLIENT_TYPE" description="COM_TJFIELDS_FORM_DESC_FIELD_CLIENT_TYPE" filter="safehtml" />
 		<field name="group_id" type="text" size="40" class="inputbox" label="COM_TJFIELDS_FORM_LBL_FIELD_GROUP_ID" description="COM_TJFIELDS_FORM_DESC_FIELD_GROUP_ID" filter="safehtml" />

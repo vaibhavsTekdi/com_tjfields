@@ -278,18 +278,6 @@ class com_tjfieldsInstallerScript
 			}
 		}
 
-		if (!in_array('params', $field_array)) {
-			$query = "ALTER TABLE `#__tjfields_fields`
-						ADD COLUMN `params` varchar(500) DEFAULT '' COMMENT '0 - to store attributes of field'";
-			$db->setQuery($query);
-			if (!$db->execute() )
-			{
-				echo $img_ERROR.JText::_('Unable to Alter #__tjfields_fields table. (While adding filterable column )').$BR;
-				echo $db->getErrorMsg();
-				return false;
-			}
-		}
-
 		$query="
 				CREATE TABLE IF NOT EXISTS `#__tjfields_category_mapping` (
 				  `id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -323,7 +311,77 @@ class com_tjfieldsInstallerScript
 				return false;
 			}
 		}
+		
+		// Add params column in tjfields_fields table to store fields attributes - added in v1.4
+		$this->addparamsColumn();
 	}
+
+	public function addparamsColumn()
+	{
+		$field_array = array();
+		$query = "SHOW COLUMNS FROM `#__tjfields_fields`";
+		$db =  JFactory::getDbo();
+		$db->setQuery($query);
+		$columns = $db->loadobjectlist();
+
+		for ($i = 0; $i < count($columns); $i++) 
+		{
+			$field_array[] = $columns[$i]->Field;
+		}
+
+		if (!in_array('params', $field_array)) 
+		{
+			$query = "ALTER TABLE `#__tjfields_fields` ADD COLUMN `params` text COMMENT 'stores fields extra attributes in json format'";
+			$db->setQuery($query);
+
+			if (!$db->execute())
+			{
+				echo $img_ERROR.JText::_('Unable to Alter #__tjfields_fields table. (While adding params column )').$BR;
+				echo $db->getErrorMsg();
+				return false;
+			}
+			else
+			{
+				$query = $db->getQuery(true);
+				$query->select('*');
+				$query->from('#__tjfields_fields');
+				$db->setQuery($query);
+				$fields = $db->loadObjectList();
+				
+				$param = array();
+
+				foreach ($fields as $field)
+				{
+					$param['min'] = $field->min;
+					$param['max'] = $field->max;
+					$param['rows'] = $field->rows;
+					$param['cols'] = $field->cols;
+					$param['format'] = $field->format;
+					$param['default_value'] = $field->default;
+					$param['placeholder'] = $field->placeholder;
+
+					$field->params = json_encode($param);
+
+					JFactory::getDbo()->updateObject('#__tjfields_fields', $field, 'id', true);
+				}
+				
+				foreach ($param as $pm => $val)
+				{
+					$query = "ALTER TABLE `#__tjfields_fields` DROP COLUMN " . $pm;
+					
+					$db->setQuery($query);
+				
+					if (!$db->execute())
+					{
+						echo $img_ERROR.JText::_('Unable to delete column ') . $pm .$BR;
+						echo $db->getErrorMsg();
+						return false;
+					}
+				}
+			}
+		}
+	}
+
 	function installSqlFiles($parent)
 	{
 		$db = JFactory::getDBO();

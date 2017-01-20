@@ -104,16 +104,6 @@ TjfieldsHelper::getLanguageConstant();
 					case 'textarea':
 					case 'calendar':
 					case 'email_field':
-						if ((isrequired == 1 && isreadonly == 1) || isreadonly == 1)
-						{
-							if (techjoomla.jQuery('#jform_default_value').val().trim() == '')
-							{
-								techjoomla.jQuery('#jform_default_value').attr('required', 'required');
-								techjoomla.jQuery('#jform_default_value').focus();
-								return false;
-							}
-						}
-
 						break;
 				}
 
@@ -207,10 +197,6 @@ TjfieldsHelper::getLanguageConstant();
 								<div class="control-label"><?php echo $this->form->getLabel('fieldoption'); ?></div>
 								<div class="controls"><?php echo $this->form->getInput('fieldoption'); ?></div>
 							</div>
-							<div class="control-group displaynone" id="default_value_text">
-								<div class="control-label"><?php echo $this->form->getLabel('default_value'); ?></div>
-								<div class="controls"><?php echo $this->form->getInput('default_value'); ?></div>
-							</div>
 						</fieldset>
 						<input type="hidden" name="jform[client]" value="<?php echo $input->get('client','','STRING'); ?>" />
 					</div>
@@ -240,10 +226,6 @@ TjfieldsHelper::getLanguageConstant();
 							<div class="control-group">
 								<div class="control-label"><?php echo $this->form->getLabel('showonlist'); ?></div>
 								<div class="controls"><?php echo $this->form->getInput('showonlist'); ?></div>
-							</div>
-							<div class="control-group" id="div_placeholder">
-								<div class="control-label"><?php echo $this->form->getLabel('placeholder'); ?></div>
-								<div class="controls"><?php echo $this->form->getInput('placeholder'); ?></div>
 							</div>
 							<div class="control-group">
 								<div class="control-label"><?php echo $this->form->getLabel('created_by'); ?></div>

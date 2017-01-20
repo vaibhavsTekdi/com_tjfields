@@ -85,25 +85,6 @@ class TjfieldsHelper
 					$extra_options = $this->getOptions($fdata->field_id, json_encode($fdata->value));
 					$fdata->value  = $extra_options;
 				}
-				elseif ($fieldData->type == 'calendar')
-				{
-					if ($fieldData->format == 1)
-					{
-						$fdata->value = JFactory::getDate($fdata->value)->Format('d-m-Y');
-					}
-					elseif (($fieldData->format == 2))
-					{
-						$fdata->value = JFactory::getDate($fdata->value)->Format('m-d-Y');
-					}
-					elseif ($fieldData->format == 3)
-					{
-						$fdata->value = JFactory::getDate($fdata->value)->Format('Y-d-m');
-					}
-					else
-					{
-						$fdata->value = JFactory::getDate($fdata->value)->Format('Y-m-d');
-					}
-				}
 
 				$fdata->type  = $fieldData->type;
 				$fdata->name  = $fieldData->name;
@@ -126,7 +107,7 @@ class TjfieldsHelper
 	{
 		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true);
-		$query->select('id,type,name,label,format FROM #__tjfields_fields');
+		$query->select('id,type,name,label FROM #__tjfields_fields');
 
 		if ($fname)
 		{

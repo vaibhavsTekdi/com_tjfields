@@ -199,7 +199,7 @@ class TjfieldsModelField extends JModelAdmin
 
 		$data['saveOption'] = 0;
 
-		if ($data['type'] == "radio" || $data['type'] == "single_select" || $data['type'] == "multi_select" || $data['type'] == "checkbox")
+		if ($data['type'] == "radio" || $data['type'] == "single_select" || $data['type'] == "multi_select")
 		{
 			$data['saveOption'] = 1;
 		}

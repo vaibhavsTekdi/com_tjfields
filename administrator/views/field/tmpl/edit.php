@@ -86,7 +86,6 @@ TjfieldsHelper::getLanguageConstant();
 				{
 					case 'multi_select':
 					case 'single_select':
-					case 'checkbox':
 					case 'radio':
 						if(isrequired == 1)
 						{
@@ -178,7 +177,22 @@ TjfieldsHelper::getLanguageConstant();
 							</div>
 							<div class="control-group">
 								<div class="control-label"><?php echo $this->form->getLabel('type'); ?></div>
-								<div class="controls"><?php echo $this->form->getInput('type'); ?></div>
+								<?php
+									if (!empty($this->item->id))
+									{
+										?>
+										<div class="controls">
+											<input type="text" name="jform[type]" id="jform_type" value="<?php echo $this->item->type;?>" class="required" required="required" aria-required="true" aria-invalid="false" readonly="true"/>
+										</div>
+										<?php
+									}
+									else
+									{
+										?>
+										<div class="controls"><?php echo $this->form->getInput('type'); ?></div>
+										<?php 
+									}
+								?>
 							</div>
 							<div>
 								<?php

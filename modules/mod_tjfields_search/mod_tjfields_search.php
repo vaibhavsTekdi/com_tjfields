@@ -96,7 +96,7 @@ if (JFile::exists(JPATH_SITE . '/components/com_tjfields/tjfields.php'))
 		break;
 	}
 
-	if($displayLayout == 'horizontal')
+	if ($displayLayout == 'horizontal')
 	{
 		if ($bootstrapVersion == 'bs2')
 		{

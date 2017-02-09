@@ -22,6 +22,7 @@ $client_type               = $params->get('client_type', '');
 $category_type               = $params->get('category_type', '');
 $URLParamConditions               = $params->get('URLParamConditions', '');
 $bootstrapVersion = $params->get('bootstrapversion', 'bs3', 'STRING');
+$displayLayout = $params->get('layout', 'horizontal', 'STRING');
 $URLParamConditions = trim($URLParamConditions);
 
 $tmp = explode(".", $client_type);
@@ -95,13 +96,27 @@ if (JFile::exists(JPATH_SITE . '/components/com_tjfields/tjfields.php'))
 		break;
 	}
 
-	if ($bootstrapVersion == 'bs2')
+	if($displayLayout == 'horizontal')
 	{
-		$basePath = JPATH_SITE . '/components/' . $category_type . '/layouts/corefilters/bs2';
+		if ($bootstrapVersion == 'bs2')
+		{
+			$basePath = JPATH_SITE . '/components/' . $category_type . '/layouts/corefilters/horizontal/bs2';
+		}
+		else
+		{
+			$basePath = JPATH_SITE . '/components/' . $category_type . '/layouts/corefilters/horizontal/bs3';
+		}
 	}
 	else
 	{
-		$basePath = JPATH_SITE . '/components/' . $category_type . '/layouts/corefilters/bs3';
+		if ($bootstrapVersion == 'bs2')
+		{
+			$basePath = JPATH_SITE . '/components/' . $category_type . '/layouts/corefilters/vertical/bs2';
+		}
+		else
+		{
+			$basePath = JPATH_SITE . '/components/' . $category_type . '/layouts/corefilters/vertical/bs3';
+		}
 	}
 
 	$layout = new JLayoutFile('corefilters', $basePath);

@@ -42,7 +42,11 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 				</field>
-				<field name="bootstrapversion" class="btn-group" type="radio" default="0" description="MOD_TJFIELDS_SEARCH_SHOW_SEARCH_FILTER_DESC" label="MOD_TJFIELDS_SEARCH_SHOW_SEARCH_FILTER" >
+				<field name="layout" class="btn-group" type="radio" default="horizontal" description="MOD_TJFIELDS_SEARCH_DISPLAY_LAYOUT_DESC" label="MOD_TJFIELDS_SEARCH_DISPLAY_LAYOUT" >
+					<option value="horizontal">MOD_TJFIELDS_SEARCH_HORZONTAL_LAYOUT</option>
+					<option value="vertical">MOD_TJFIELDS_SEARCH_VERTICAL_LAYOUT</option>
+				</field>
+				<field name="bootstrapversion" class="btn-group" type="radio" default="bs3" description="MOD_TJFIELDS_SEARCH_SHOW_SEARCH_FILTER_DESC" label="MOD_TJFIELDS_SEARCH_SHOW_SEARCH_FILTER" >
 					<option value="bs3">MOD_TJFIELDS_SEARCH_BS3</option>
 					<option value="bs2">MOD_TJFIELDS_SEARCH_BS2</option>
 				</field>

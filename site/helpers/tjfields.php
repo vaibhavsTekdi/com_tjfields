@@ -154,12 +154,14 @@ class TjfieldsHelper
 
 		$singleSelectionFields = array("single_select", "radio");
 		$multipleSelectionFields = array("multi_select");
+		$fieldsSubmitted = array();
 
 		// Values array will contain menu fields value.
 		foreach ($data['fieldsvalue'] as $fname => $fvalue)
 		{
 			$field_data           = $this->getFieldData($fname);
 			$insert_obj->field_id = $field_data->id;
+			$fieldsSubmitted[] = $insert_obj->field_id;
 
 			// Added By KOMAL TEMP
 			// Field Data
@@ -170,7 +172,7 @@ class TjfieldsHelper
 			$db->setQuery($query);
 			$file_field_data_check = $db->loadObject();
 
-			if ($fname == 'file')
+			if ($fname == 'tjFieldFileField')
 			{
 				foreach ($fvalue as $fieldName => $singleFile)
 				{
@@ -192,19 +194,21 @@ class TjfieldsHelper
 						{
 							$if_edit_file_id        = $this->checkForAlreadyexitsDetails($data, $file_field_data->id);
 
-							$insert_obj_file->value = $filename;
+							$client = explode('.', $insert_obj_file->client);
+
+							$insert_obj_file->value = '/media/' . $client[0] . '/' . $client[1] . '/' . $filename;
 
 							if ($insert_obj_file->value)
 							{
 								if ($if_edit_file_id)
 								{
 									$insert_obj_file->id = $if_edit_file_id;
-									$db->updateObject('#__tjfields_fields_value', $insert_obj_file, 'id');
+									$result = $db->updateObject('#__tjfields_fields_value', $insert_obj_file, 'id');
 								}
 								else
 								{
 									$insert_obj_file->id = '';
-									$db->insertObject('#__tjfields_fields_value', $insert_obj_file, 'id');
+									$result = $db->insertObject('#__tjfields_fields_value', $insert_obj_file, 'id');
 								}
 							}
 						}
@@ -216,7 +220,7 @@ class TjfieldsHelper
 				if (empty($file_field_data_check->accept))
 				{
 					// Check for duplicate entry
-					$if_edit_id           = $this->checkForAlreadyexitsDetails($data, $field_data->id);
+					$if_edit_id = $this->checkForAlreadyexitsDetails($data, $field_data->id);
 
 					if (!empty($fvalue))
 					{
@@ -251,7 +255,8 @@ class TjfieldsHelper
 							// Delete entry is field is deselected
 							$conditions = array(
 								$db->quoteName('field_id') . ' = ' . $field_data->id,
-								$db->quoteName('content_id') . ' = ' . $data['content_id']
+								$db->quoteName('content_id') . ' = ' . $data['content_id'],
+								$db->quoteName('client') . " = '" . $data['client'] . "'"
 							);
 
 							$query = $db->getQuery(true);
@@ -268,7 +273,66 @@ class TjfieldsHelper
 			}
 		}
 
+		$fieldsSubmitted = array_filter($fieldsSubmitted);
+
+		$unsubmittedFields = $this->getUnsubmittedFields($data['content_id'], $data['client'], $fieldsSubmitted);
+
+		// Delete Values of unsubmitted fields
+		foreach ($unsubmittedFields as $unsubmittedField)
+		{
+			$db = JFactory::getDbo();
+
+			// Delete entry if field is deselected
+			$conditions = array(
+				$db->quoteName('field_id') . ' = ' . $unsubmittedField,
+				$db->quoteName('content_id') . ' = ' . $data['content_id'],
+				$db->quoteName('client') . " = '" . $data['client'] . "'"
+			);
+
+			$query = $db->getQuery(true);
+
+			$query->delete($db->quoteName('#__tjfields_fields_value'));
+			$query->where($conditions);
+
+			$db->setQuery($query);
+
+			$db->execute();
+		}
+
 		return true;
+	}
+
+	/**
+	 * Function to get sunsubmitted fields value
+	 *
+	 * @param   INT     $content_id       content id
+	 * @param   STRING  $client           client
+	 * @param   ARRAY   $fieldsSubmitted  array of fields submitted
+	 *
+	 * @return  true
+	 */
+	public function getUnsubmittedFields($content_id, $client, $fieldsSubmitted)
+	{
+		if (!empty($content_id) && !empty($client))
+		{
+			// Field Data
+			$db    = JFactory::getDbo();
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName('field_id'));
+			$query->from($db->quoteName('#__tjfields_fields_value'));
+			$query->where($db->quoteName('content_id') . " = '" . $content_id . "'");
+			$query->where($db->quoteName('client') . " = '" . $client . "'");
+			$db->setQuery($query);
+			$dataSavedFields = $db->loadColumn();
+
+			$unsubmittedFields = array_diff($dataSavedFields, $fieldsSubmitted);
+
+			return $unsubmittedFields;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	/**
@@ -363,6 +427,7 @@ class TjfieldsHelper
 			$filename = $filename . '.' . $extension;
 
 			$uploadPath = JPATH_ROOT . '/media/' . $client[0] . '/' . $client[1] . '/' . $filename;
+
 			$fileTemp = $singleFile['tmp_name'];
 
 			if (!JFile::exists($uploadPath))

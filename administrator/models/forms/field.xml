@@ -11,6 +11,7 @@
 			<option value="checkbox">COM_TJFIELDS_CHECKBOX</option>
 			<option value="single_select">COM_TJFIELDS_SINGLE_SELECT</option>
 			<option value="multi_select">COM_TJFIELDS_MULTI_SELECT</option>
+			<option value="sql">COM_TJFIELDS_SQL</option>
 			<option value="textarea">COM_TJFIELDS_TEXTAREA</option>
 			<option value="calendar">COM_TJFIELDS_CALENDAR</option>
 			<option value="editor">COM_TJFIELDS_EDITOR</option>
@@ -28,6 +29,7 @@
 			<option value="checkbox">COM_TJFIELDS_CHECKBOX</option>
 			<option value="single_select">COM_TJFIELDS_SINGLE_SELECT</option>
 			<option value="multi_select">COM_TJFIELDS_MULTI_SELECT</option>
+			<option value="sql">COM_TJFIELDS_SQL</option>
 			<option value="textarea">COM_TJFIELDS_TEXTAREA</option>
 			<option value="calendar">COM_TJFIELDS_CALENDAR</option>
 			<option value="editor">COM_TJFIELDS_EDITOR</option>

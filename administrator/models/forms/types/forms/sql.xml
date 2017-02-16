@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<fields name="params" label="COM_TJFIELDS_FIELD_BASIC_LABEL">
+		<fieldset name="params">
+			<field name="query" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_QUERY" description="COM_TJFIELDS_FORM_DESC_FIELD_QUERY"/>
+			<field name="default" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_DEFAULT" description="COM_TJFIELDS_FORM_DESC_FIELD_DEFAULT"/>
+			<field name="key_field" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_KEY_FIELD" description="COM_TJFIELDS_FORM_DESC_KEY_FIELD"/>
+			<field name="value_field" type="text" label="COM_TJFIELDS_FORM_LBL_VALUE_FIELD" description="COM_TJFIELDS_FORM_DESC_VALUE_FIELD"/>
+			<field name="translate" type="radio" default="false"
+				label="COM_TJFIELDS_FORM_LBL_FIELD_TRANSLATE" description="COM_TJFIELDS_FORM_DESC_FIELD_TRANSLATE">
+				<option value="true">JYES</option>
+				<option value="false">JNO</option>
+			</field>
+			<field name="header" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_HEADER" description="COM_TJFIELDS_FORM_DESC_FIELD_HEADER"/>
+			<field name="sql_select" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_SQL_SELECT" description="COM_TJFIELDS_FORM_DESC_FIELD_SQL_SELECT"/>
+			<field name="sql_from" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_SQL_FROM" description="COM_TJFIELDS_FORM_DESC_FIELD_SQL_FROM"/>
+			<field name="sql_join" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_SQL_JOIN" description="COM_TJFIELDS_FORM_DESC_FIELD_SQL_JOIN"/>
+			<field name="sql_where" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_SQL_WHERE" description="COM_TJFIELDS_FORM_DESC_FIELD_SQL_WHERE"/>
+			<field name="sql_group" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_SQL_GROUP" description="COM_TJFIELDS_FORM_DESC_FIELD_SQL_GROUP"/>
+			<field name="sql_order" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_SQL_ORDER" description="COM_TJFIELDS_FORM_DESC_FIELD_SQL_ORDER"/>
+			<field name="sql_filter" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_SQL_FILTER" description="COM_TJFIELDS_FORM_DESC_FIELD_SQL_FILTER"/>
+		</fieldset>
+	</fields>
+</form>

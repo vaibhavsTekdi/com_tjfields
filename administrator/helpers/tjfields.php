@@ -340,9 +340,14 @@ class TjfieldsHelper
 					// Extra value for only Single select field // && $f->multiple == 'false')
 					if ($f->type == 'list')
 					{
-						// Set Default blank Option
-						$option = $field->addChild('option', '- ' . JText::_('COM_TJFIELDS_SELECT_OPTION') . " " . $f->label . ' -');
-						$option->addAttribute('value', '');
+						$fieldAttribute = json_decode($f->params);
+
+						if ($fieldAttribute->multiple != 'true')
+						{
+							// Set Default blank Option
+							$option = $field->addChild('option', '- ' . JText::_('COM_TJFIELDS_SELECT_OPTION') . " " . $f->label . ' -');
+							$option->addAttribute('value', '');
+						}
 					}
 
 					foreach ($f->extra_options as $f_option)

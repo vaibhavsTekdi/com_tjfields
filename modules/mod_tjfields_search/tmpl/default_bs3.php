@@ -78,9 +78,9 @@ if ($showCategoryFilter && !empty($fieldsCategorys))
 }
 	?>
 <div class="tj-filterlistwrapper">
-	<div class="tj-filterhrizontal tj_categoryFilter pull-left" style="<?php echo $categoryFilterStyle; ?>">
+	<div class="tj-filterhrizontal pull-left" style="<?php echo $categoryFilterStyle; ?>">
 		<div><b><?php echo JText::_('Category'); ?></b></div>
-		<div class="form-group">
+		<div class="form-group tj_categoryFilter">
 		<?php
 			if($displayLayout == 'horizontal')
 			{

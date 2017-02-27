@@ -41,7 +41,7 @@ if (!empty($urlArray))
 	foreach ($urlArray as $key => $url)
 	{
 		// Unset Not required parameter from array
-		if (!empty(strstr($url, 'ModFilterCat=')) || ($url_cat_param_name &&  !empty(strstr($url, $url_cat_param_name))) || !empty(strstr($url, 'tj_fields_value=')) || !empty(strstr($url, 'client=')))
+		if (strstr($url, 'ModFilterCat=') || ($url_cat_param_name &&  strstr($url, $url_cat_param_name)) || strstr($url, 'tj_fields_value=') || strstr($url, 'client='))
 		{
 			unset($urlArray[$key]);
 		}
@@ -78,9 +78,9 @@ if ($showCategoryFilter && !empty($fieldsCategorys))
 }
 	?>
 <div class="tj-filterlistwrapper">
-	<div class="tj-filterhrizontal pull-left" style="<?php echo $categoryFilterStyle; ?>">
+	<div class="tj-filterhrizontal tj_categoryFilter pull-left" style="<?php echo $categoryFilterStyle; ?>">
 		<div><b><?php echo JText::_('Category'); ?></b></div>
-		<div class="form-group tj_categoryFilter">
+		<div class="form-group">
 		<?php
 			if($displayLayout == 'horizontal')
 			{

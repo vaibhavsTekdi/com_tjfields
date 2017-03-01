@@ -212,6 +212,8 @@ class TjfieldsHelper
 								}
 							}
 						}
+
+						$fieldsSubmitted[] = $insert_obj_file->field_id;
 					}
 				}
 			}

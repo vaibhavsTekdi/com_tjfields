@@ -40,7 +40,7 @@ if (!empty($urlArray))
 	foreach ($urlArray as $key => $url)
 	{
 		// Unset Not required parameter from array
-		if (!empty(strstr($url, 'ModFilterCat=')) || ($url_cat_param_name &&  !empty(strstr($url, $url_cat_param_name))) || !empty(strstr($url, 'tj_fields_value=')) || !empty(strstr($url, 'client=')))
+		if (strstr($url, 'ModFilterCat=') || ($url_cat_param_name && strstr($url, $url_cat_param_name)) || strstr($url, 'tj_fields_value=') || strstr($url, 'client='))
 		{
 			unset($urlArray[$key]);
 		}
@@ -57,13 +57,11 @@ $selectedFilters = explode(',', $jinput->get('tj_fields_value', '', 'string'));
 
 	if ($buttons == "above" || $buttons == "both")
 	{ ?>
-<!--  @TOODO Temporary hide this button
-		<div class="center">
-			<a class="btn btn-small btn-info" onclick='tj_clearfilters()'>
-				<?php echo JText::_('MOD_TJFIELDS_SEARCH_CLEAR_BTN');?>
-			</a>
-		</div>
+	<div class="center">
+<!-- @TOODO Temporary hide this button
+		<a class="btn btn-small btn-info" onclick='tj_clearfilters()'><?php echo JText::_('MOD_TJFIELDS_SEARCH_CLEAR_BTN');?></a>
 -->
+	</div>
 	<?php
 	}
 ?>
@@ -78,18 +76,21 @@ if ($showCategoryFilter && !empty($fieldsCategorys))
 	$categoryFilterStyle = '';
 }
 	?>
-	<div class="tj_categoryFilter" style="<?php echo $categoryFilterStyle; ?>">
-		<div class="control-group">
+<div class="tj-filterlistwrapper-horizontal">
+	<div class="tj-filterhrizontal pull-left" style="<?php echo $categoryFilterStyle; ?>">
+
+		<div class="cotrol-group tjfilter-radio-btn">
+			<div class="control-label"><b><?php echo JText::_('Category'); ?></b></div>
 			<?php
-				echo JHtml::_('select.genericlist', $fieldsCategorys, "category_id", 'class="input-medium"  size="1" onchange="submitCategory()" title="' . JText::_('MOD_TJFIELDS_SEARCH_SELECT_CATEGORY') . '"', 'value', 'text', $selectedCategory, 'category_id');
+				echo JHtml::_('select.radiolist', $fieldsCategorys, "category_id", 'class="inputbox" onclick="submitCategory(this.value)"', "value", "text", $selectedCategory,"category_id");
 			?>
 		</div>
 	</div>
-
 	<?php
+		echo $compSpecificFilterHtml;
+	?>
 
-	echo $compSpecificFilterHtml;
-
+<?php
 if (!empty($fieldsArray))
 {
 	foreach ($fieldsArray as $key => $fieldOptions)
@@ -100,27 +101,28 @@ if (!empty($fieldsArray))
 		if (!empty($fieldOptions))
 		{
 		?>
-			<div class="tj-filterwrapper filterwrapper<?php echo $fieldOptions[0]->id; ?>" >
-				<div class="qtcfiltername filtername<?php echo $fieldOptions[0]->id; ?>">
-					<b><?php echo ucfirst($fieldOptions[0]->label);?></b>
-				</div>
-				<div class="tj-filterlistwrapper">
+					<div class="tj-filterhrizontal pull-left">
+						<div class="tj-filterwrapper filterwrapper<?php echo $fieldOptions[0]->id; ?>" >
+						<div class="qtcfiltername filtername<?php echo $fieldOptions[0]->id; ?>">
+							<b><?php echo ucfirst($fieldOptions[0]->label);?></b>
+						</div>
 					<?php
-						foreach ($fieldOptions as $option)
-						{?>
-							<div class="tj-filteritem tjfieldfilters-<?php echo $option->name;?>" >
-								<label>
-									<input type="checkbox" class="tjfieldCheck"
-									name="tj_fields_value[]"
-									id="<?php echo $option->name . '||' . $option->option_id;?>"
-									value="<?php echo $option->option_id;?>"
-									<?php echo in_array($option->option_id, $selectedFilters)?'checked="checked"':'';?>
-									onclick='tjfieldsapplyfilters()' />
-									<?php echo ucfirst($option->options);?>
-								</label>
-							</div>
-						<?php
-						}
+
+					foreach ($fieldOptions as $option)
+					{?>
+						<div class="tj-filteritem tjfieldfilters-<?php echo $option->name;?>" >
+							<label>
+								<input type="checkbox" class="tjfieldCheck"
+								name="tj_fields_value[]"
+								id="<?php echo $option->name . '||' . $option->option_id;?>"
+								value="<?php echo $option->option_id;?>"
+								<?php echo in_array($option->option_id, $selectedFilters)?'checked="checked"':'';?>
+								onclick='tjfieldsapplyfilters()' />
+								<?php echo ucfirst($option->options);?>
+							</label>
+						</div>
+					<?php
+					}
 					?>
 				</div>
 			</div>
@@ -135,7 +137,7 @@ if (!empty($fieldsArray))
 
 	if ($buttons == "below" || $buttons == "both")
 	{?>
-<!--@TOODO Temporary hide this button
+<!-- @TOODO Temporary hide this button
 		<div class="center">
 			<a class="btn btn-small btn-info" onclick='tj_clearfilters()'>
 				<?php echo JText::_('MOD_TJFIELDS_SEARCH_CLEAR_BTN');?>
@@ -147,6 +149,7 @@ if (!empty($fieldsArray))
 	?>
 
 </div> <!--End of wrapper-->
+</div>
 <script>
 	techjoomla.jquery = jQuery.noConflict();
 
@@ -288,8 +291,7 @@ if (!empty($fieldsArray))
 		optionStr = "";
 
 		// Variable to get current filter values
-		var category = techjoomla.jQuery('#category_id').val();
-
+		var category = techjoomla.jQuery('input:radio[name ="category_id"]:checked').val();
 		if (typeof(category) != 'undefined')
 		{
 			if (urlValueName != 'undefined')
@@ -374,4 +376,3 @@ if (!empty($fieldsArray))
 		window.location = redirectlink;
 	}
 </script>
-

@@ -35,6 +35,8 @@ class TjfieldsControllerField extends JControllerForm
 	public function newsave()
 	{
 		$input = JFactory::getApplication()->input;
+		$app = JFactory::getApplication();
+		$app->setUserState('com_tjfields.edit.field.data', "");
 		$post = $input->post;
 		$model = $this->getModel('field');
 		$save_option = $model->save_option($post);
@@ -150,6 +152,10 @@ class TjfieldsControllerField extends JControllerForm
 	public function add()
 	{
 		$input = JFactory::getApplication()->input;
+
+		$app = JFactory::getApplication();
+		$app->setUserState('com_tjfields.edit.field.data', "");
+
 		$link = JRoute::_(
 		'index.php?option=com_tjfields&view=field&layout=edit&client=' . $input->get('client', '', 'STRING')
 		. '&extension=' . $input->get('extension', '', 'STRING'), false

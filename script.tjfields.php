@@ -39,7 +39,7 @@ class com_tjfieldsInstallerScript
 
 		'modules'=>array(
 			'site'=>array(
-					'mod_tjfields_search' => array('position-7', 0)
+					'mod_tjfields_search' => array('tj-filters-mod-pos', 1)
 						)
 		)
 	);

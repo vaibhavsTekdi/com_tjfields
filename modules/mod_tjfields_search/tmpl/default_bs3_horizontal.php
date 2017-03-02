@@ -41,7 +41,7 @@ if (!empty($urlArray))
 	foreach ($urlArray as $key => $url)
 	{
 		// Unset Not required parameter from array
-		if (strstr($url, 'ModFilterCat=') || ($url_cat_param_name &&  strstr($url, $url_cat_param_name)) || strstr($url, 'tj_fields_value=') || strstr($url, 'client='))
+		if (!empty(strstr($url, 'ModFilterCat=')) || ($url_cat_param_name &&  !empty(strstr($url, $url_cat_param_name))) || !empty(strstr($url, 'tj_fields_value=')) || !empty(strstr($url, 'client=')))
 		{
 			unset($urlArray[$key]);
 		}
@@ -77,20 +77,14 @@ if ($showCategoryFilter && !empty($fieldsCategorys))
 	$categoryFilterStyle = '';
 }
 	?>
-<div class="tj-filterlistwrapper">
-	<div class="tj-filterhrizontal tj_categoryFilter pull-left" style="<?php echo $categoryFilterStyle; ?>">
-		<div><b><?php echo JText::_('Category'); ?></b></div>
-		<div class="form-group">
-		<?php
-			if($displayLayout == 'horizontal')
-			{
+<div class="tj-filterlistwrapper-horizontal">
+	<div class="tj-filterhrizontal pull-left" style="<?php echo $categoryFilterStyle; ?>">
+
+		<div class="form-group tjfilter-radio-btn">
+			<div class="control-label"><b><?php echo JText::_('Category'); ?></b></div>
+			<?php
 				echo JHtml::_('select.radiolist', $fieldsCategorys, "category_id", 'class="inputbox" onclick="submitCategory(this.value)"', "value", "text", $selectedCategory,"category_id");
-			}
-			else
-			{
-				echo JHtml::_('select.genericlist', $fieldsCategorys, "category_id", 'class="form-control"  size="1" onchange="submitCategory()" title="' . JText::_('MOD_TJFIELDS_SEARCH_SELECT_CATEGORY') . '"', 'value', 'text', $selectedCategory, 'category_id');
-			}
-		?>
+			?>
 		</div>
 	</div>
 	<?php
@@ -108,21 +102,13 @@ if (!empty($fieldsArray))
 		if (!empty($fieldOptions))
 		{
 		?>
-			<div class="tj-filterwrapper filterwrapper<?php echo $fieldOptions[0]->id; ?>" >
-				<div class="qtcfiltername filtername<?php echo $fieldOptions[0]->id; ?>">
-					<b><?php echo ucfirst($fieldOptions[0]->label);?></b>
-				</div>
-				<?php
-				if ($displayLayout == 'horizontal')
-				{?>
 					<div class="tj-filterhrizontal pull-left">
+						<div class="tj-filterwrapper filterwrapper<?php echo $fieldOptions[0]->id; ?>" >
+						<div class="qtcfiltername filtername<?php echo $fieldOptions[0]->id; ?>">
+							<b><?php echo ucfirst($fieldOptions[0]->label);?></b>
+						</div>
 					<?php
-				}
-				else
-				{?>
-					<div class="tj-filterlistwrapper">
-				<?php
-				}
+
 					foreach ($fieldOptions as $option)
 					{?>
 						<div class="tj-filteritem tjfieldfilters-<?php echo $option->name;?>" >

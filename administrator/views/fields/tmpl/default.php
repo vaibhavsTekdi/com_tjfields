@@ -150,8 +150,6 @@ if (!empty($this->extra_sidebar)) {
 						<?php echo JHtml::_('grid.sort',  'COM_TJFIELDS_FIELDS_CLIENT', 'a.client', $listDirn, $listOrder); ?>
 						</th>
 
-
-
 						<?php if (isset($this->items[0]->id)): ?>
 							<th width="1%" class="nowrap center hidden-phone">
 								<?php echo JHtml::_('grid.sort', 'JGRID_HEADING_ID', 'a.id', $listDirn, $listOrder); ?>
@@ -218,44 +216,29 @@ if (!empty($this->extra_sidebar)) {
 							<?php echo JHtml::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, 'fields.', $canCheckin); ?>
 						<?php endif; ?>
 						<?php if ($canEdit) : ?>
-							<a href="<?php echo JRoute::_('index.php?option=com_tjfields&task=field.edit&id='.(int) $item->id.'&client='.$input->get('client','','STRING')); ?>">
+							<a href="<?php echo JRoute::_('index.php?option=com_tjfields&task=field.edit&id='.(int) $item->id.'&client='.$input->get('client','','STRING').'&extension='.$input->get('extension','','STRING')); ?>">
 							<?php echo $this->escape($item->label); ?></a>
 						<?php else : ?>
 							<?php echo $this->escape($item->label); ?>
 						<?php endif; ?>
 						</td>
 					<td>
-					<?php if (isset($item->checked_out) && $item->checked_out) : ?>
-						<?php echo JHtml::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, 'fields.', $canCheckin); ?>
-					<?php endif; ?>
-					<?php if ($canEdit) : ?>
-						<a href="<?php echo JRoute::_('index.php?option=com_tjfields&task=field.edit&id='.(int) $item->id.'&client='.$input->get('client','','STRING').'&extension='.$input->get('extension','','STRING')); ?>">
-						<?php echo $this->escape($item->label); ?></a>
-					<?php else : ?>
-						<?php echo $this->escape($item->label); ?>
-					<?php endif; ?>
-					</td>
-					<td>
 						<?php echo $item->type; ?>
 					</td>
-						<td>
-
-							<?php echo $item->client; ?>
+					<td>
+						<?php echo $item->client; ?>
+					</td>
+					<?php if (isset($this->items[0]->id)): ?>
+						<td class="center hidden-phone">
+							<?php echo (int) $item->id; ?>
 						</td>
-
-
-
-						<?php if (isset($this->items[0]->id)): ?>
-							<td class="center hidden-phone">
-								<?php echo (int) $item->id; ?>
-							</td>
-						<?php endif; ?>
-						</tr>
-						<?php endforeach; ?>
-					</tbody>
-				</table>
-			<?php
-			}?>
+					<?php endif; ?>
+					</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+		<?php
+		}?>
 			<input type="hidden" name="task" value="" />
 			<input type="hidden" name="boxchecked" value="0" />
 			<input type="hidden" name="filter_order" value="<?php echo $listOrder; ?>" />

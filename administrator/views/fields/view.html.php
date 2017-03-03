@@ -197,6 +197,8 @@ class TjfieldsViewFields extends JViewLegacy
 		$options[10]->value = "password";
 		$options[10]->text  = "Password";
 		$options[11]        = new stdClass;
+
+		// Added By KOMAL TEMP
 		$options[11]->value = "file";
 		$options[11]->text  = "File";
 

@@ -211,9 +211,9 @@ class TjfieldsHelper
 									$result = $db->insertObject('#__tjfields_fields_value', $insert_obj_file, 'id');
 								}
 							}
-						}
 
-						$fieldsSubmitted[] = $insert_obj_file->field_id;
+							$fieldsSubmitted[] = $insert_obj_file->field_id;
+						}
 					}
 				}
 			}
@@ -226,7 +226,11 @@ class TjfieldsHelper
 
 					if (!empty($fvalue))
 					{
-						if (in_array($field_data->type, $multipleSelectionFields))
+						if ($field_data->type == 'subform')
+						{
+							$this->saveSubformData($data, $fname, $field_data);
+						}
+						elseif (in_array($field_data->type, $multipleSelectionFields))
 						{
 							$this->saveMultiselectOptions($data, $fname, $field_data);
 						}
@@ -492,6 +496,62 @@ class TjfieldsHelper
 			$insert_obj->id = '';
 			$db->insertObject('#__tjfields_fields_value', $insert_obj, 'id');
 		}
+	}
+
+	/**
+	 * check if the fields values are already store. so it means we need to edit the entry
+	 *
+	 * @param   array  $postFieldData  Post array which content (client, content_id, Fname, Fvalue, u_id)
+	 * @param   array  $subformFname   Current subform field name
+	 * @param   array  $field_data     field data
+	 *
+	 * @return  array
+	 */
+	public function saveSubformData($postFieldData, $subformFname, $field_data)
+	{
+		// Select all entries for __tjfields_fields_value
+		$db    = JFactory::getDbo();
+		$query = $db->getQuery(true);
+		$query->select('*');
+		$query->from('#__tjfields_fields_value');
+		$query->where('content_id=' . $postFieldData['content_id']);
+		$query->where('field_id=' . $field_data->id);
+		$query->where('client="' . $postFieldData['client'] . '"');
+		$db->setQuery($query);
+		$dbFieldValue = $db->loadObjectList();
+
+		$newFields = $postFieldData['fieldsvalue'];
+		$subformField = $newFields[$subformFname];
+
+		if (!empty($dbFieldValue))
+		{
+			if (!empty($subformField))
+			{
+				$obj = new stdClass;
+				$obj->field_id = $field_data->id;
+				$obj->content_id = $postFieldData['content_id'];
+				$obj->value = json_encode($subformField);
+				$obj->client = $postFieldData['client'];
+				$obj->user_id = JFactory::getUser()->id;
+
+				$obj->id = $dbFieldValue[0]->id;
+				$db->updateObject('#__tjfields_fields_value', $obj, 'id');
+			}
+		}
+		else
+		{
+			$obj = new stdClass;
+			$obj->field_id = $field_data->id;
+			$obj->content_id = $postFieldData['content_id'];
+			$obj->value = json_encode($subformField);
+			$obj->client = $postFieldData['client'];
+			$obj->user_id = JFactory::getUser()->id;
+
+			$db = JFactory::getDbo();
+			$db->insertObject('#__tjfields_fields_value', $obj, 'id');
+		}
+
+		return true;
 	}
 
 	/**

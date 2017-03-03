@@ -134,6 +134,26 @@ class TjfieldsModelFields extends JModelList
 			$query->where('(a.state IN (0, 1))');
 		}
 
+		// Filter by Show field on list view
+		$showonlist = $this->getState('filter.showonlist');
+
+		if ($showonlist)
+		{
+			$query->where('a.showonlist = ' . (int) $showonlist);
+		}
+
+		// Filter by client (Set state from external view to render client specific fields)
+		$client = $this->getState('filter.client');
+
+		if ($client)
+		{
+			$query->where('a.client = ' . $db->quote($client));
+		}
+		else
+		{
+			$query->where('a.client= ' . $db->quote($input->get('client', '', 'STRING')));
+		}
+
 		// Filter by search in title
 		$search = $this->getState('filter.search');
 

@@ -311,7 +311,7 @@ class com_tjfieldsInstallerScript
 				return false;
 			}
 		}
-		
+
 		// Add params column in tjfields_fields table to store fields attributes - added in v1.4
 		$this->addparamsColumn();
 	}
@@ -324,12 +324,12 @@ class com_tjfieldsInstallerScript
 		$db->setQuery($query);
 		$columns = $db->loadobjectlist();
 
-		for ($i = 0; $i < count($columns); $i++) 
+		for ($i = 0; $i < count($columns); $i++)
 		{
 			$field_array[] = $columns[$i]->Field;
 		}
 
-		if (!in_array('params', $field_array)) 
+		if (!in_array('params', $field_array))
 		{
 			$query = "ALTER TABLE `#__tjfields_fields` ADD COLUMN `params` text COMMENT 'stores fields extra attributes in json format'";
 			$db->setQuery($query);
@@ -347,7 +347,7 @@ class com_tjfieldsInstallerScript
 				$query->from('#__tjfields_fields');
 				$db->setQuery($query);
 				$fields = $db->loadObjectList();
-				
+
 				$param = array();
 
 				foreach ($fields as $field)
@@ -357,23 +357,25 @@ class com_tjfieldsInstallerScript
 					$param['rows'] = $field->rows;
 					$param['cols'] = $field->cols;
 					$param['format'] = $field->format;
-					$param['default_value'] = $field->default;
+					$param['default'] = $field->default_value;
 					$param['placeholder'] = $field->placeholder;
 
 					$field->params = json_encode($param);
 
 					JFactory::getDbo()->updateObject('#__tjfields_fields', $field, 'id', true);
 				}
-				
-				foreach ($param as $pm => $val)
+
+				$deleteColumn = array("min", "max", "rows", "cols", "format", "default_value", "placeholder");
+
+				foreach ($deleteColumn as $pm)
 				{
 					$query = "ALTER TABLE `#__tjfields_fields` DROP COLUMN " . $pm;
-					
+
 					$db->setQuery($query);
-				
+
 					if (!$db->execute())
 					{
-						echo $img_ERROR.JText::_('Unable to delete column ') . $pm .$BR;
+						echo $img_ERROR.JText::_('Unable to delete column ') . $pm;
 						echo $db->getErrorMsg();
 						return false;
 					}

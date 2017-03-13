@@ -159,5 +159,5 @@ if (JFile::exists(JPATH_SITE . '/components/com_tjfields/tjfields.php'))
 		}
 	}
 
-	require JModuleHelper::getLayoutPath('mod_tjfields_search', 'default_' . $mod_tjfilter_layout);
+	require JModuleHelper::getLayoutPath('mod_tjfields_search', 'default_' . $mod_tjfilter_layout . '_' . $displayLayout);
 }

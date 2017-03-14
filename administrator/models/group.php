@@ -1,10 +1,10 @@
 <?php
 /**
- * @version     1.0.0
- * @package     com_tjfields
- * @copyright   Copyright (C) 2014. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
- * @author      TechJoomla <extensions@techjoomla.com> - www.techjoomla.com
+ * @version    CVS: 1.0.0
+ * @package    Com_Tjfield
+ * @author     Techjoomla <contact@techjoomla.com>
+ * @copyright  2016  Techjoomla
+ * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // No direct access.
@@ -13,8 +13,12 @@ defined('_JEXEC') or die;
 jimport('joomla.application.component.modeladmin');
 
 /**
- * Tjfields model.
+ * Methods supporting a list of Tjfields records.
+ *
+ * @since  1.6
+ *
  */
+
 class TjfieldsModelGroup extends JModelAdmin
 {
 	/**
@@ -23,15 +27,14 @@ class TjfieldsModelGroup extends JModelAdmin
 	 */
 	protected $text_prefix = 'COM_TJFIELDS';
 
-
 	/**
-	 * Returns a reference to the a Table object, always creating it.
+	 * Returns a Table object, always creating it.
 	 *
-	 * @param	type	The table type to instantiate
-	 * @param	string	A prefix for the table class name. Optional.
-	 * @param	array	Configuration array for model. Optional.
-	 * @return	JTable	A database object
-	 * @since	1.6
+	 * @param   string  $type    The table type to instantiate
+	 * @param   string  $prefix  A prefix for the table class name. Optional.
+	 * @param   array   $config  Configuration array for model. Optional.
+	 *
+	 * @return  JTable    A database object
 	 */
 	public function getTable($type = 'Group', $prefix = 'TjfieldsTable', $config = array())
 	{
@@ -41,10 +44,12 @@ class TjfieldsModelGroup extends JModelAdmin
 	/**
 	 * Method to get the record form.
 	 *
-	 * @param	array	$data		An optional array of data for the form to interogate.
-	 * @param	boolean	$loadData	True if the form is to load its own data (default case), false if not.
-	 * @return	JForm	A JForm object on success, false on failure
-	 * @since	1.6
+	 * @param   array    $data      An optional ordering field.
+	 * @param   boolean  $loadData  An optional direction (asc|desc).
+	 *
+	 * @return  JForm    $form      A JForm object on success, false on failure
+	 *
+	 * @since   1.6
 	 */
 	public function getForm($data = array(), $loadData = true)
 	{
@@ -54,8 +59,8 @@ class TjfieldsModelGroup extends JModelAdmin
 		// Get the form.
 		$form = $this->loadForm('com_tjfields.group', 'group', array('control' => 'jform', 'load_data' => $loadData));
 
-
-		if (empty($form)) {
+		if (empty($form))
+		{
 			return false;
 		}
 
@@ -65,7 +70,8 @@ class TjfieldsModelGroup extends JModelAdmin
 	/**
 	 * Method to get the data that should be injected in the form.
 	 *
-	 * @return	mixed	The data for the form.
+	 * @return	mixed	$data  The data for the form.
+	 *
 	 * @since	1.6
 	 */
 	protected function loadFormData()
@@ -73,9 +79,9 @@ class TjfieldsModelGroup extends JModelAdmin
 		// Check the session for previously entered form data.
 		$data = JFactory::getApplication()->getUserState('com_tjfields.edit.group.data', array());
 
-		if (empty($data)) {
+		if (empty($data))
+		{
 			$data = $this->getItem();
-
 		}
 
 		return $data;
@@ -84,82 +90,88 @@ class TjfieldsModelGroup extends JModelAdmin
 	/**
 	 * Method to get a single record.
 	 *
-	 * @param	integer	The id of the primary key.
+	 * @param   integer  $pk  The id of the primary key.
 	 *
-	 * @return	mixed	Object on success, false on failure.
-	 * @since	1.6
+	 * @return  mixed  $item  Object on success, false on failure.
 	 */
 	public function getItem($pk = null)
 	{
-		if ($item = parent::getItem($pk)) {
-
-			//Do any procesing on fields here if needed
-
+		if ($item = parent::getItem($pk))
+		{
+			// Do any procesing on fields here if needed
 		}
 
 		return $item;
 	}
 
 	/**
-	 * Prepare and sanitise the table prior to saving.
+	 * Prepare and sanitise the table data prior to saving.
 	 *
-	 * @since	1.6
+	 * @param   JTable  $table  A JTable object.
+	 *
+	 * @return  void
+	 *
+	 * @since   1.6
 	 */
 	protected function prepareTable($table)
 	{
 		jimport('joomla.filter.output');
 
-		if (empty($table->id)) {
-
+		if (empty($table->id))
+		{
 			// Set ordering to the last item if not set
-			if (@$table->ordering === '') {
+			if (@$table->ordering === '')
+			{
 				$db = JFactory::getDbo();
 				$db->setQuery('SELECT MAX(ordering) FROM #__tjfields_groups');
 				$max = $db->loadResult();
-				$table->ordering = $max+1;
+				$table->ordering = $max + 1;
 			}
-
 		}
 	}
 
 	/**
-	 * save group
+	 * Method to save the form data.
 	 *
+	 * @param   array  $post  The form data.
+	 *
+	 * @return   mixed		The user id on success, false on failure.
+	 *
+	 * @since	1.6
 	 */
 	public function save($post)
 	{
 		$table = $this->getTable();
-		$data=$post->get('jform','','ARRAY');
-		$input=JFactory::getApplication()->input;
+		$data = $post->get('jform', '', 'ARRAY');
+		$input = JFactory::getApplication()->input;
 
 		if ($input->get('task') == 'save2copy')
 		{
 			unset($data['id']);
-			$name = explode("(",$data['name']);
-			$name =trim($name['0']);
-			$name = str_replace("`","",$name);
+			$name = explode("(", $data['name']);
+			$name = trim($name['0']);
+			$name = str_replace("`", "", $name);
 			$db = JFactory::getDbo();
 			$query = 'SELECT a.*'
 			. ' FROM #__tjfields_groups AS a'
-			. " WHERE  a.name LIKE '" .$db->escape($name)."%'"
-			. " AND  a.client LIKE '" . $db->escape($data['client'])."'";
+			. " WHERE  a.name LIKE '" . $db->escape($name) . "%'"
+			. " AND  a.client LIKE '" . $db->escape($data['client']) . "'";
 			$db->setQuery($query);
 			$posts = $db->loadAssocList();
-			$postsCount = count($posts)+1;
-			$data['name'] = $name. ' ('.$postsCount. ')';
-			$data['created_by'] =JFactory::getUser()->id;
+			$postsCount = count($posts) + 1;
+			$data['name'] = $name . ' (' . $postsCount . ')';
+			$data['created_by'] = JFactory::getUser()->id;
 		}
 
 		if ($table->save($data) === true)
 		{
-			$id=$table->id;
+			$id = $table->id;
+
 			return $id;
 		}
 		else
 		{
 			return false;
 		}
-
 	}
-
 }

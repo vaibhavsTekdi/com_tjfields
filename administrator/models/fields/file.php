@@ -130,7 +130,7 @@ class JFormFieldFile extends JFormField
 		if (!empty($layoutData["value"]))
 		{
 			$html .= '<input type="hidden" name="'
-			. $layoutData["name"] . '"' . 'id="' . $layoutData["id"] . '"' . 'value="' . $layoutData["value"] . '"';
+			. $layoutData["name"] . '"' . 'id="' . $layoutData["id"] . '"' . 'value="' . $layoutData["value"] . '" />';
 			$html .= '<div class="control-group">';
 			$fileInfo = new SplFileInfo($layoutData["value"]);
 			$extension = $fileInfo->getExtension();

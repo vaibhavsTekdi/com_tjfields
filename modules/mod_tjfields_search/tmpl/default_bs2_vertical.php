@@ -40,7 +40,7 @@ if (!empty($urlArray))
 	foreach ($urlArray as $key => $url)
 	{
 		// Unset Not required parameter from array
-		if (!empty(strstr($url, 'ModFilterCat=')) || ($url_cat_param_name &&  !empty(strstr($url, $url_cat_param_name))) || !empty(strstr($url, 'tj_fields_value=')) || !empty(strstr($url, 'client=')))
+		if (strstr($url, 'ModFilterCat=') || ($url_cat_param_name && strstr($url, $url_cat_param_name)) || strstr($url, 'tj_fields_value=') || strstr($url, 'client='))
 		{
 			unset($urlArray[$key]);
 		}
@@ -79,7 +79,6 @@ if ($showCategoryFilter && !empty($fieldsCategorys))
 }
 	?>
 	<div class="tj_categoryFilter" style="<?php echo $categoryFilterStyle; ?>">
-		<div><b><?php echo JText::_('MOD_TJFIELDS_SEARCH_SELECT_CATEGORY');?></b></div>
 		<div class="control-group">
 			<?php
 				echo JHtml::_('select.genericlist', $fieldsCategorys, "category_id", 'class="input-medium"  size="1" onchange="submitCategory()" title="' . JText::_('MOD_TJFIELDS_SEARCH_SELECT_CATEGORY') . '"', 'value', 'text', $selectedCategory, 'category_id');

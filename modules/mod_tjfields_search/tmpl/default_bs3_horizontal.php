@@ -9,6 +9,7 @@
 
 // No direct access.
 defined('_JEXEC') or die();
+jimport( 'joomla.html.html.select');
 $jinput = JFactory::getApplication()->input;
 $document = JFactory::getDocument();
 $path = JUri::base() . 'modules/mod_tjfields_search/assets/css/tjfilters.css';
@@ -40,7 +41,7 @@ if (!empty($urlArray))
 	foreach ($urlArray as $key => $url)
 	{
 		// Unset Not required parameter from array
-		if (!empty(strstr($url, 'ModFilterCat=')) || ($url_cat_param_name &&  !empty(strstr($url, $url_cat_param_name))) || !empty(strstr($url, 'tj_fields_value=')) || !empty(strstr($url, 'client=')))
+		if (strstr($url, 'ModFilterCat=') || ($url_cat_param_name && strstr($url, $url_cat_param_name)) || strstr($url, 'tj_fields_value=') || strstr($url, 'client='))
 		{
 			unset($urlArray[$key]);
 		}
@@ -76,19 +77,21 @@ if ($showCategoryFilter && !empty($fieldsCategorys))
 	$categoryFilterStyle = '';
 }
 	?>
-	<div class="tj_categoryFilter" style="<?php echo $categoryFilterStyle; ?>">
-		<div><b><?php echo JText::_('MOD_TJFIELDS_SEARCH_SELECT_CATEGORY');?></b></div>
-		<div class="form-group">
+<div class="tj-filterlistwrapper-horizontal">
+	<div class="tj-filterhrizontal pull-left" style="<?php echo $categoryFilterStyle; ?>">
+
+		<div class="form-group tjfilter-radio-btn">
+			<div class="control-label"><b><?php echo JText::_('Category'); ?></b></div>
 			<?php
-				echo JHtml::_('select.genericlist', $fieldsCategorys, "category_id", 'class="form-control"  size="1" onchange="submitCategory()" title="' . JText::_('MOD_TJFIELDS_SEARCH_SELECT_CATEGORY') . '"', 'value', 'text', $selectedCategory, 'category_id');
+				echo JHtml::_('select.radiolist', $fieldsCategorys, "category_id", 'class="inputbox" onclick="submitCategory(this.value)"', "value", "text", $selectedCategory,"category_id");
 			?>
 		</div>
 	</div>
-
 	<?php
+		echo $compSpecificFilterHtml;
+	?>
 
-	echo $compSpecificFilterHtml;
-
+<?php
 if (!empty($fieldsArray))
 {
 	foreach ($fieldsArray as $key => $fieldOptions)
@@ -99,12 +102,13 @@ if (!empty($fieldsArray))
 		if (!empty($fieldOptions))
 		{
 		?>
-			<div class="tj-filterwrapper filterwrapper<?php echo $fieldOptions[0]->id; ?>" >
-				<div class="qtcfiltername filtername<?php echo $fieldOptions[0]->id; ?>">
-					<b><?php echo ucfirst($fieldOptions[0]->label);?></b>
-				</div>
-				<div class="tj-filterlistwrapper">
+					<div class="tj-filterhrizontal pull-left">
+						<div class="tj-filterwrapper filterwrapper<?php echo $fieldOptions[0]->id; ?>" >
+						<div class="qtcfiltername filtername<?php echo $fieldOptions[0]->id; ?>">
+							<b><?php echo ucfirst($fieldOptions[0]->label);?></b>
+						</div>
 					<?php
+
 					foreach ($fieldOptions as $option)
 					{?>
 						<div class="tj-filteritem tjfieldfilters-<?php echo $option->name;?>" >
@@ -146,6 +150,7 @@ if (!empty($fieldsArray))
 	?>
 
 </div> <!--End of wrapper-->
+</div>
 <script>
 
 	techjoomla.jquery = jQuery.noConflict();
@@ -288,8 +293,7 @@ if (!empty($fieldsArray))
 		optionStr = "";
 
 		// Variable to get current filter values
-		var category = techjoomla.jQuery('#category_id').val();
-
+		var category = techjoomla.jQuery('input:radio[name ="category_id"]:checked').val();
 		if (typeof(category) != 'undefined')
 		{
 			if (urlValueName != 'undefined')

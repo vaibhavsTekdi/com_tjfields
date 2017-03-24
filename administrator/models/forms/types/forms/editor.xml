@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<fields name="params" label="COM_TJFIELDS_FIELD_BASIC_LABEL">
+		<fieldset name="params">
+			<field name="buttons" type="radio" class="btn-group" default="0"
+				label="COM_TJFIELDS_FORM_LBL_SHOW_BUTTONS"
+				description="COM_TJFIELDS_FORM_DESC_SHOW_BUTTONS">
+				<option value="1">JYES</option>
+				<option value="0">JNO</option>
+			</field>
+			<field name="hide" type="text" default="pagebreak,readmore"
+				 label="COM_TJFIELDS_FORM_LBL_SHOW_BUTTONS_HIDE"
+				description="COM_TJFIELDS_FORM_DESC_SHOW_BUTTONS_HIDE" />
+
+			<field name="width" type="text" default="100%"
+				label="COM_TJFIELDS_FORM_LBL_EDITOR_WIDTH" description="COM_TJFIELDS_FORM_DESC_EDITOR_WIDTH"
+				size="5"/>
+			<field name="height" type="text" default="250px"
+				label="COM_TJFIELDS_FORM_LBL_EDITOR_HEIGHT" description="COM_TJFIELDS_FORM_DESC_EDITOR_HEIGHT"
+				size="5" />
+			<field name="rows" type="text" default=""
+				label="COM_TJFIELDS_FORM_LBL_FIELD_ROWS" description="COM_TJFIELDS_FORM_DESC_FIELD_ROWS"
+				size="5" />
+			<field name="cols" type="text" default=""
+				label="COM_TJFIELDS_FORM_LBL_FIELD_COLS" description="COM_TJFIELDS_FORM_DESC_FIELD_COLS"
+				size="5" />
+		</fieldset>
+	</fields>
+</form>

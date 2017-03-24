@@ -80,13 +80,20 @@ class TjfieldsModelField extends JModelAdmin
 	 */
 	protected function loadFormData()
 	{
-		// Check the session for previously entered form data.
-		$data = JFactory::getApplication()->getUserState('com_tjfields.edit.field.data', array());
+		$app = JFactory::getApplication();
 
-		if (empty($data))
+		$input = $app->input;
+
+		// Check the session for previously entered form data.
+		$data = $app->getUserState('com_tjfields.edit.field.data', array());
+		$id = $input->get('id', '0', 'INT');
+
+		if (!empty($id))
 		{
 			$data = $this->getItem();
 		}
+
+		$this->preprocessData('com_tjfields.field', $data);
 
 		return $data;
 	}
@@ -190,13 +197,26 @@ class TjfieldsModelField extends JModelAdmin
 		// Add clint type in data as it is not present in jform
 		$data['client_type'] = $post->get('client_type', '', 'STRING');
 
-		// Use later to store later.
-
 		$data['saveOption'] = 0;
+
+		if ($data['type'] == "radio" || $data['type'] == "single_select" || $data['type'] == "multi_select")
+		{
+			$data['saveOption'] = 1;
+		}
+
+		// Change the name only if the field is newly created....don't do on edit fields
+		if ($data['id'] == 0)
+		{
+			// Escape apostraphe
+			$data_name = trim(preg_replace('/[^A-Za-z0-9\-\']/', '', $data['name']));
+			$client = explode('.', $data['client']);
+			$client = $client[0];
+			$data_unique_name = $client . '_' . $data['client_type'] . '_' . $data_name;
+			$data['name'] = $data_unique_name;
+		}
 
 		// Remove extra value which are not needed to save in the fields table
 		$TjfieldsHelper      = new TjfieldsHelper;
-		$data                = $TjfieldsHelper->getFieldArrayFormatted($data);
 
 		if ($table->save($data) === true)
 		{
@@ -224,6 +244,9 @@ class TjfieldsModelField extends JModelAdmin
 		if ($id)
 		{
 			$options = $post->get('tjfields', '', 'ARRAY');
+
+			$jformData = $post->get('jform', '', 'ARRAY');
+			$optionsData = json_decode($jformData['params']['options']);
 
 			if ($data['saveOption'] == 1)
 			{
@@ -467,5 +490,41 @@ class TjfieldsModelField extends JModelAdmin
 
 			return 0;
 		}
+	}
+
+	/**
+	 * Method to inject field attributes in jform object
+	 *
+	 * @param   Integer  $form   form
+	 * @param   String   $data   form
+	 * @param   String   $group  group
+	 *
+	 * @return  Boolean
+	 *
+	 * @since	1.6
+	 */
+	protected function preprocessForm(JForm $form, $data, $group = 'content')
+	{
+		$dataObject = $data;
+
+		if (is_array($dataObject))
+		{
+			$dataObject = (object) $dataObject;
+		}
+
+		if (empty($dataObject->type))
+		{
+			$dataObject->type = 'text';
+		}
+
+		if (isset($dataObject->type))
+		{
+			$path = JPATH_ADMINISTRATOR . '/components/com_tjfields/models/forms/types/forms/' . $dataObject->type . '.xml';
+
+			$form->loadFile($path, true, '/form/*');
+		}
+
+		// Trigger the default form events.
+		parent::preprocessForm($form, $data, $group);
 	}
 }

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<fields name="params" label="COM_TJFIELDS_FIELD_BASIC_LABEL">
+		<fieldset name="params">
+			<field name="default" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_DEFAULT" description="COM_TJFIELDS_FORM_DESC_FIELD_DEFAULT"/>
+		</fieldset>
+	</fields>
+</form>

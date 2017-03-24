@@ -214,6 +214,7 @@ trait TjfieldsFilterField
 		$data['user_id']     = JFactory::getUser()->id;
 
 		$extra_fields_data = $tjFieldsHelper->FetchDatavalue($data);
+
 		$extra_fields_data_formatted = array();
 
 		foreach ($extra_fields_data as $efd)
@@ -224,6 +225,8 @@ trait TjfieldsFilterField
 			}
 			else
 			{
+				$temp = array();
+
 				switch ($efd->type)
 				{
 					case 'multi_select':
@@ -236,6 +239,7 @@ trait TjfieldsFilterField
 						{
 							$extra_fields_data_formatted[$efd->name] = $temp;
 						}
+
 					break;
 
 					case 'single_select':

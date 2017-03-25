@@ -316,7 +316,10 @@ class TjfieldsHelper
 
 					foreach ($fieldAttribute as $attribute => $fieldparam)
 					{
-						$field->addAttribute($attribute, $fieldparam);
+						if (!empty($fieldparam))
+						{
+							$field->addAttribute($attribute, $fieldparam);
+						}
 					}
 				}
 

@@ -20,6 +20,7 @@
 			<option value="file">COM_TJFIELDS_FILE</option>
 			<option value="spacer">COM_TJFIELDS_SPACER</option>
 			<option value="subform">COM_TJFIELDS_SUBFORM</option>
+			<option value="number">COM_TJFIELDS_NUMBER</option>
 		</field>
 		<field name="fieldoption" type="fieldoption" label="COM_TJFIELDS_FORM_LBL_FIELD_OPTION" description="COM_TJFIELDS_FORM_DESC_FIELD_OPTION" required="false" />
 		<field name="filter_field_type" type="list" onchange="this.form.submit();">
@@ -37,6 +38,7 @@
 			<option value="user">COM_TJFIELDS_USERS</option>
 			<option value="file">COM_TJFIELDS_FILE</option>
 			<option value="subform">COM_TJFIELDS_SUBFORM</option>
+			<option value="number">COM_TJFIELDS_NUMBER</option>
 		</field>
 		<field name="required" type="radio" label="COM_TJFIELDS_FORM_LBL_FIELD_REQUIRED" description="COM_TJFIELDS_FORM_DESC_FIELD_REQUIRED" default="0" required="true" class="btn-group">
 			<option value="1">COM_TJFIELDS_YES</option>

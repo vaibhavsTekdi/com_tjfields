@@ -194,7 +194,7 @@ if (!empty($fieldsArray))
 		optionStr = "";
 
 		// Variable to get current filter values
-		var category = techjoomla.jQuery('#category_id').val();
+		var category = techjoomla.jQuery('input:radio[name ="category_id"]:checked').val();
 
 		if (typeof(category) != 'undefined')
 		{

@@ -79,9 +79,10 @@ if ($showCategoryFilter && !empty($fieldsCategorys))
 }
 	?>
 	<div class="tj_categoryFilter" style="<?php echo $categoryFilterStyle; ?>">
-		<div class="control-group">
+		<div class="form-group">
+			<label class="form-label"><?php echo JText::_('MOD_TJFIELDS_SEARCH_SELECT_CATEGORY');?></label>
 			<?php
-				echo JHtml::_('select.genericlist', $fieldsCategorys, "category_id", 'class="input-medium"  size="1" onchange="submitCategory()" title="' . JText::_('MOD_TJFIELDS_SEARCH_SELECT_CATEGORY') . '"', 'value', 'text', $selectedCategory, 'category_id');
+				echo JHtml::_('select.genericlist', $fieldsCategorys, "category_id", 'class="input-medium"  size="1" onchange="submitCategory()" ', 'value', 'text', $selectedCategory, 'category_id');
 			?>
 		</div>
 	</div>

@@ -80,10 +80,10 @@ if ($showCategoryFilter && !empty($fieldsCategorys))
 <div class="tj-filterlistwrapper-horizontal">
 	<div class="tj-filterhrizontal pull-left" style="<?php echo $categoryFilterStyle; ?>">
 
-		<div class="form-group tjfilter-radio-btn">
-			<div class="control-label"><b><?php echo JText::_('Category'); ?></b></div>
+		<div class="tjfilter-radio-btn">
+			<div><b><?php echo JText::_('Category'); ?></b></div>
 			<?php
-				echo JHtml::_('select.radiolist', $fieldsCategorys, "category_id", 'class="inputbox" onclick="submitCategory(this.value)"', "value", "text", $selectedCategory,"category_id");
+				echo JHtml::_('select.radiolist', $fieldsCategorys, "category_id", 'class="" onclick="submitCategory(this.value)"', "value", "text", $selectedCategory,"category_id");
 			?>
 		</div>
 	</div>
@@ -196,7 +196,7 @@ if (!empty($fieldsArray))
 		optionStr = "";
 
 		// Variable to get current filter values
-		var category = techjoomla.jQuery('#category_id').val();
+		var category = techjoomla.jQuery('input:radio[name ="category_id"]:checked').val();
 
 		if (typeof(category) != 'undefined')
 		{

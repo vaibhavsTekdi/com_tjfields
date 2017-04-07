@@ -8,7 +8,7 @@
 .tj-filterhrizontal_max_height
 {
 	overflow-y:auto;
-	height:250px;
+	max-height:250px;
 	overflow-x:hidden;
 }
 

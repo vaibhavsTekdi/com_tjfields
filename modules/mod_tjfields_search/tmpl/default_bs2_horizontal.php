@@ -78,13 +78,14 @@ if ($showCategoryFilter && !empty($fieldsCategorys))
 	?>
 <div class="tj-filterlistwrapper-horizontal">
 	<div class="span3">
-		<div class="tj-filterhrizontal" style="<?php echo $categoryFilterStyle; ?>" id='tj-filterhrizontal_category'>
-
-			<div class="cotrol-group tjfilter-radio-btn">
-				<div class="control-label"><b><?php echo JText::_('Category'); ?></b></div>
+		<div class="tj-filterhrizontal" style="<?php echo $categoryFilterStyle; ?>">
+			<div class="tjfilter-radio-btn">
+				<div><b><?php echo JText::_('Category'); ?></b></div>
+				<div id='tj-filterhrizontal_category'>
 				<?php
-					echo JHtml::_('select.radiolist', $fieldsCategorys, "category_id", 'class="inputbox" onclick="submitCategory(this.value)"', "value", "text", $selectedCategory,"category_id");
+					echo JHtml::_('select.radiolist', $fieldsCategorys, "category_id", 'class="" onclick="submitCategory(this.value)"', "value", "text", $selectedCategory,"category_id");
 				?>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -104,11 +105,12 @@ if (!empty($fieldsArray))
 		{
 		?>
 			<div class="span3">
-				<div class="tj-filterhrizontal pull-left">
+				<div class="">
 					<div class="tj-filterwrapper filterwrapper<?php echo $fieldOptions[0]->id; ?>" >
 						<div class="qtcfiltername filtername<?php echo $fieldOptions[0]->id; ?>">
 							<b><?php echo ucfirst($fieldOptions[0]->label);?></b>
 						</div>
+						<div class="tj-filterhrizontal_max_height">
 						<?php
 
 						foreach ($fieldOptions as $option)
@@ -127,6 +129,7 @@ if (!empty($fieldsArray))
 						<?php
 						}
 						?>
+						</div>
 					</div>
 				</div>
 			</div>

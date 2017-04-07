@@ -5,10 +5,17 @@
 	overflow-x:hidden;
 }
 
-.tj-filterhrizontal_max_height
+.tj-filterhrizontal_max_height_vertical
 {
 	overflow-y:auto;
 	max-height:250px;
+	overflow-x:hidden;
+}
+
+.tj-filterhrizontal_max_height
+{
+	overflow-y:auto;
+	height:250px;
 	overflow-x:hidden;
 }
 

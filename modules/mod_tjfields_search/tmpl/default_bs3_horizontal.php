@@ -77,23 +77,23 @@ if ($showCategoryFilter && !empty($fieldsCategorys))
 	$categoryFilterStyle = '';
 }
 	?>
-<div class="tj-filterlistwrapper-horizontal">
+<div class="tj-filterlistwrapper-horizontal row">
 	<div class="col-xs-12 col-sm-3">
-		<div class="tj-filterhrizontal" style="<?php echo $categoryFilterStyle; ?>" id='tj-filterhrizontal_category'>
-
+		<div class="tj-filterhrizontal" style="<?php echo $categoryFilterStyle; ?>">
 			<div class="tjfilter-radio-btn">
-				<div><p class="text-muted"><?php echo JText::_('Category'); ?></p></div>
+				<div><b><?php echo JText::_('Category'); ?></b></div>
+				<div id='tj-filterhrizontal_category'>
 				<?php
 					echo JHtml::_('select.radiolist', $fieldsCategorys, "category_id", 'class="" onclick="submitCategory(this.value)"', "value", "text", $selectedCategory,"category_id");
 				?>
+				</div>
 			</div>
 		</div>
 	</div>
 	<?php
-		echo $compSpecificFilterHtml;
-	?>
 
-<?php
+echo $compSpecificFilterHtml;
+
 if (!empty($fieldsArray))
 {
 	foreach ($fieldsArray as $key => $fieldOptions)
@@ -104,15 +104,15 @@ if (!empty($fieldsArray))
 		if (!empty($fieldOptions))
 		{
 		?>	<div class="col-xs-12 col-sm-3">
-				<div class="tj-filterhrizontal pull-left">
+				<div class="tj-filterhrizontal">
 					<div class="tj-filterwrapper filterwrapper<?php echo $fieldOptions[0]->id; ?>" >
 						<div class="qtcfiltername filtername<?php echo $fieldOptions[0]->id; ?>">
 							<b><?php echo ucfirst($fieldOptions[0]->label);?></b>
 						</div>
+						<div class="tj-filterhrizontal_max_height">
 						<?php
-
 						foreach ($fieldOptions as $option)
-						{?>						
+						{?>
 								<div class="tj-filteritem tjfieldfilters-<?php echo $option->name;?>" >
 									<label>
 										<input type="checkbox" class="tjfieldCheck"
@@ -124,12 +124,13 @@ if (!empty($fieldsArray))
 										<?php echo ucfirst($option->options);?>
 									</label>
 								</div>
-							
+
 						<?php
 						}
 						?>
+						</div>
 					</div>
-				</div>	
+				</div>
 			</div>
 		<?php
 		}

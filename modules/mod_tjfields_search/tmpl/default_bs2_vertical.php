@@ -105,7 +105,7 @@ if (!empty($fieldsArray))
 				<div class="qtcfiltername filtername<?php echo $fieldOptions[0]->id; ?>">
 					<b><?php echo ucfirst($fieldOptions[0]->label);?></b>
 				</div>
-				<div class="tj-filterlistwrapper">
+				<div class="tj-filterhrizontal_max_height">
 					<?php
 						foreach ($fieldOptions as $option)
 						{?>

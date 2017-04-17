@@ -352,13 +352,40 @@ class com_tjfieldsInstallerScript
 
 				foreach ($fields as $field)
 				{
-					$param['min'] = $field->min;
-					$param['max'] = $field->max;
-					$param['rows'] = $field->rows;
-					$param['cols'] = $field->cols;
-					$param['format'] = $field->format;
-					$param['default'] = $field->default_value;
-					$param['placeholder'] = $field->placeholder;
+					if (!empty($field->min))
+					{
+						$param['min'] = $field->min;
+					}
+
+					if (!empty($field->max))
+					{
+						$param['max'] = $field->max;
+					}
+
+					if (!empty($field->rows))
+					{
+						$param['rows'] = $field->rows;
+					}
+
+					if (!empty($field->cols))
+					{
+						$param['cols'] = $field->cols;
+					}
+
+					if (!empty($field->format))
+					{
+						$param['format'] = $field->format;
+					}
+
+					if (!empty($field->default_value))
+					{
+						$param['default'] = $field->default_value;
+					}
+
+					if (!empty($field->placeholder))
+					{
+						$param['placeholder'] = $field->placeholder;
+					}
 
 					$field->params = json_encode($param);
 

@@ -226,7 +226,7 @@ class TjGeoHelper
 	 */
 	public function getCityList($countryId, $component_nm = "")
 	{
-		$this->_db = JFactory::getDBO();
+		$this->_db = JFactory::getDbo();
 		$query     = $this->_db->getQuery(true);
 		$query->select("id, city,city_jtext");
 		$query->from('#__tj_city');

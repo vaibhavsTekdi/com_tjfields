@@ -48,6 +48,7 @@ class TjGeoHelper
 		$this->_tjlang = JFactory::getLanguage();
 		$this->_tjlang->load('tjgeo.countries', JPATH_SITE, null, false, true);
 		$this->_tjlang->load('tjgeo.regions', JPATH_SITE, null, false, true);
+		$this->_tjlang->load('tjgeo.cities', JPATH_SITE, null, false, true);
 		$this->_db = JFactory::getDbo();
 	}
 
@@ -211,6 +212,50 @@ class TjGeoHelper
 		// Get trasalated string.
 		return $regionList;
 	}
+	
+	/**
+	 * Gives city list according.( field city gives you city name in current language) .
+	 *
+	 * @param   string  $countryId     id of country
+	 * @param   string  $component_nm  name of component
+	 * @param   string  $orderingCol   order by table column eg city
+	 *
+	 * @return  citylist
+	 *
+	 * @since   1.5
+	 */
+	public function getCityList($countryId, $component_nm = "")
+	{
+		$this->_db = JFactory::getDbo();
+		$query     = $this->_db->getQuery(true);
+		$query->select("id, city,city_jtext");
+		$query->from('#__tj_city');
+		$query->where('country_id=' . $this->_db->quote($countryId));
+		/*$query->order($this->_db->escape($orderingCol . ' ASC'));*/
+		
+		if ($component_nm)
+		{
+			$query->where($component_nm . "=1");
+		}
+				
+		$this->_db->setQuery((string) $query);
+		$cityList = $this->_db->loadAssocList();
+		
+		foreach ($cityList as $key => $city)
+		{
+			if ($city['city_jtext'])
+			{
+				$jtext = $this->getCityJText($city['city_jtext']);
+				
+				if ($jtext)
+				{
+					$cityList[$key]['city'] = $jtext;
+				}				
+			}
+		}
+		
+		return $cityList;
+	 }
 
 	/**
 	 * Gives region list according to country ID
@@ -289,6 +334,27 @@ class TjGeoHelper
 			return null;
 		}
 	}
+	
+	/**
+	 * Method gives city name in current  language if exist.
+	 *
+	 * @param   string  $jtext  Jtext constant for city .
+	 *
+	 * @since   1.3
+	 * @return   city name;
+	 */
+	 public function getCityJText($jtext)
+	{
+		if ($this->_tjlang->hasKey(strtoupper($jtext)))
+		{
+			return JText::_($jtext, true);
+		}
+		elseif ($jtext !== '')
+		{
+			return null;
+		}
+	}
+	 
 
 	/**
 	 * Returns the countryID from country code (2 digit country code like IN for india )

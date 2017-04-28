@@ -174,6 +174,12 @@ class TjfieldsModelField extends JModelAdmin
 		$data  = $post->get('jform', '', 'ARRAY');
 		$input = JFactory::getApplication()->input;
 
+		// Set field title as field label
+		if (!empty($data['label']))
+		{
+			$data['title'] = $data['label'];
+		}
+
 		if ($input->get('task') == 'save2copy')
 		{
 			unset($data['id']);

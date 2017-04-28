@@ -320,6 +320,21 @@ class Com_TjfieldsInstallerScript
 			}
 		}
 
+		if (!in_array('asset_id', $field_array))
+		{
+			$query = "ALTER TABLE `#__tjfields_fields`
+						ADD COLUMN `asset_id` int(10) DEFAULT '0'";
+			$db->setQuery($query);
+
+			if (!$db->execute() )
+			{
+				echo $img_ERROR . JText::_('Unable to Alter #__tjfields_fields table. (While adding asset_id column )') . $BR;
+				echo $db->getErrorMsg();
+
+				return false;
+			}
+		}
+
 		$query = "
 				CREATE TABLE IF NOT EXISTS `#__tjfields_category_mapping` (
 				  `id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -384,7 +399,7 @@ class Com_TjfieldsInstallerScript
 
 		if (!in_array('title', $field_array))
 		{
-			$query = "ALTER TABLE `#__tjfields_fields` ADD COLUMN `title` varchar(255) NOT NULL";
+			$query = "ALTER TABLE `#__tjfields_fields` ADD COLUMN `title` varchar(255) NOT NULL after `core`";
 			$db->setQuery($query);
 
 			if (!$db->execute())

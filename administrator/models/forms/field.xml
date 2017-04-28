@@ -3,7 +3,7 @@
 	<fieldset addfieldpath="/administrator/components/com_tjfields/models/fields">
 		<field name="id" type="text" default="0" label="COM_TJFIELDS_FORM_LBL_FIELD_ID" readonly="true" class="readonly" description="JGLOBAL_FIELD_ID_DESC" />
 		<field name="group_id" type="customfield" label="COM_TJFIELDS_FORM_LBL_FIELD_GROUP_NAME" description="COM_TJFIELDS_FORM_DESC_FIELD_GROUP_NAME" required="true" multiple="false" />
-		<field name="title" type="hidden" label="COM_TJFIELDS_FORM_LBL_FIELD_TITLE" description="COM_TJFIELDS_FORM_DESC_FIELD_TITLE" required="true" filter="raw" />
+		<field name="title" type="hidden" label="COM_TJFIELDS_FORM_LBL_FIELD_TITLE" description="COM_TJFIELDS_FORM_DESC_FIELD_TITLE" />
 		<field name="label" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_LABEL" description="COM_TJFIELDS_FORM_DESC_FIELD_LABEL" required="true" filter="raw" />
 		<field name="name" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_NAME" description="COM_TJFIELDS_FORM_DESC_FIELD_NAME" required="true" />
 		<field name="type" type="list" onchange="show_option_div(this.value)" label="COM_TJFIELDS_FORM_LBL_FIELD_FIELD_TYPE" description="COM_TJFIELDS_FORM_DESC_FIELD_FIELD_TYPE" required="true" multiple="false">

@@ -96,7 +96,7 @@ class TjfieldsViewFields extends JViewLegacy
 		}
 
 		$state = $this->get('State');
-		$canDo = TjfieldsHelper::getActions($state->get('filter.category_id'));
+		$canDo = TjfieldsHelper::getActions('com_tjfields', 'field');
 
 		if (JVERSION >= '3.0')
 		{

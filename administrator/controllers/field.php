@@ -177,7 +177,7 @@ class TjfieldsControllerField extends JControllerForm
 		$cid      = $input->post->get('cid', array(), 'array');
 		$recordId = (int) (count($cid) ? $cid[0] : $input->getInt('id'));
 		$link = JRoute::_(
-		'index.php?option=com_tjfields&view=field&layout=edit&id= ' . $recordId . '&client='
+		'index.php?option=com_tjfields&view=field&layout=edit&id=' . $recordId . '&client='
 		. $input->get('client', '', 'STRING') . '&extension=' . $input->get('extension', '', 'STRING'), false
 		);
 		$this->setRedirect($link);

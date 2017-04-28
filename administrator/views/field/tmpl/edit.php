@@ -147,6 +147,9 @@ TjfieldsHelper::getLanguageConstant();
 <div class="techjoomla-bootstrap">
 	<form action="<?php echo JRoute::_('index.php?option=com_tjfields&layout=edit&id='.(int) $this->item->id).'&client='.$input->get('client','','STRING').'&extension='.$input->get('extension','','STRING'); ?>" method="post" enctype="multipart/form-data" name="adminForm" id="field-form" class="form-validate">
 		<div class="techjoomla-bootstrap">
+		    <?php echo JHtml::_('bootstrap.startTabSet', 'myTab', array('active' => 'general')); ?>
+
+			<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'general', JText::_('COM_TJFIELDS_TITLE_FIELD', true)); ?>
 			<div class="row-fluid">
 				<div class="container1">
 					<div class="span6 ">
@@ -160,6 +163,7 @@ TjfieldsHelper::getLanguageConstant();
 								<div class="control-label"><?php echo $this->form->getLabel('id'); ?></div>
 								<div class="controls"><?php echo $this->form->getInput('id'); ?></div>
 							</div>
+							<?php echo $this->form->getInput('title');?>
 							<div class="control-group">
 								<div class="control-label"><?php echo $this->form->getLabel('label'); ?></div>
 								<div class="controls"><?php echo $this->form->getInput('label'); ?>
@@ -190,7 +194,7 @@ TjfieldsHelper::getLanguageConstant();
 									{
 										?>
 										<div class="controls"><?php echo $this->form->getInput('type'); ?></div>
-										<?php 
+										<?php
 									}
 								?>
 							</div>
@@ -291,6 +295,17 @@ TjfieldsHelper::getLanguageConstant();
 				</div>
 				<!--</fieldset>-->
 			</div>
+
+
+			<?php echo JHtml::_('bootstrap.endTab'); ?>
+
+			<?php if (JFactory::getUser()->authorise('core.admin','com_tjfields')) : ?>
+				<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'permissions', JText::_('JGLOBAL_ACTION_PERMISSIONS_LABEL', true)); ?>
+				<?php echo $this->form->getInput('rules'); ?>
+				<?php echo JHtml::_('bootstrap.endTab'); ?>
+			<?php endif; ?>
+
+		<?php echo JHtml::_('bootstrap.endTabSet'); ?>
 			<input type="hidden" name="client_type" value="<?php echo $clientType;?>" />
 			<input type="hidden" name="task" value="" />
 			<?php echo JHtml::_('form.token'); ?>

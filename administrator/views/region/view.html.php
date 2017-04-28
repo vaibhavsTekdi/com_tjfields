@@ -103,7 +103,7 @@ class TjfieldsViewRegion extends JViewLegacy
 			$checkedOut = false;
 		}
 
-		$canDo = TjfieldsHelper::getActions();
+		$canDo = TjfieldsHelper::getActions('com_tjfields', 'region');
 
 		// If not checked out, can save the item.
 		if (! $checkedOut && ($canDo->get('core.edit') || ($canDo->get('core.create'))))

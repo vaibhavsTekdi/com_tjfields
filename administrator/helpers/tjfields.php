@@ -17,7 +17,7 @@ defined('_JEXEC') or die;
  * @subpackage  com_tjfields
  * @since       2.2
  */
-class TjfieldsHelper
+class TjfieldsHelper extends JHelperContent
 {
 	/**
 	 * Configure the Linkbar.
@@ -64,28 +64,21 @@ class TjfieldsHelper
 		}
 	}
 
-	/**
-	 * Gets a list of the actions that can be performed.
+/*** Gets a list of the actions that can be performed.
 	 *
-	 * @return	JObject
+	 * @param string $component The component name.
 	 *
-	 * @since	1.6
+	 * @param string $section The access section name.
+	 *
+	 * @param integer $id The item ID.
+	 *
+	 * @return JObject
+	 *
+	 *  @since 3.2
 	 */
-	public static function getActions()
+	public static function getActions($component = 'com_tjfields', $section = '', $id = '')
 	{
-		$user = JFactory::getUser();
-		$result	= new JObject;
-
-		$assetName = 'com_tjfields';
-
-		$actions = array(
-			'core.admin', 'core.manage', 'core.create', 'core.edit', 'core.edit.own', 'core.edit.state', 'core.delete'
-		);
-
-		foreach ($actions as $action)
-		{
-			$result->set($action, $user->authorise($action, $assetName));
-		}
+		$result = parent::getActions($component, $section, $id);
 
 		return $result;
 	}

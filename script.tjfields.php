@@ -1,22 +1,10 @@
 <?php
 /**
- * @package   AdminTools
- * @copyright Copyright (c)2010-2014 Nicholas K. Dionysopoulos
- * @license   GNU General Public License version 3, or later
- * @version   $Id$
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * @version    SVN: <svn_id>
+ * @package    Tjfields
+ * @author     Techjoomla <extensions@techjoomla.com>
+ * @copyright  Copyright (c) 2009-2017 TechJoomla. All rights reserved.
+ * @license    GNU General Public License version 2 or later.
  */
 
 defined('_JEXEC') or die();
@@ -25,20 +13,21 @@ jimport('joomla.filesystem.folder');
 jimport('joomla.filesystem.file');
 jimport('joomla.application.component.controller');
 
-if (!defined('DS'))
-{
-	define('DS',DIRECTORY_SEPARATOR);
-}
-
-class com_tjfieldsInstallerScript
+/**
+ * script
+ *
+ * @package     Tjfields
+ * @subpackage  com_tjfields
+ * @since       1.0
+ */
+class Com_TjfieldsInstallerScript
 {
 	// Used to identify new install or update
 	private $componentStatus = "install";
 
 	private $installation_queue = array(
-
-		'modules'=>array(
-			'site'=>array(
+		'modules' => array(
+			'site' => array(
 					'mod_tjfields_search' => array('tj-filters-mod-pos', 1)
 						)
 		)
@@ -47,18 +36,26 @@ class com_tjfieldsInstallerScript
 	/**
 	 * method to run before an install/update/uninstall method
 	 *
+	 * @param   string      $type    install, update or discover_update
+	 *
+	 * @param   JInstaller  $parent  parent
+	 *
 	 * @return void
 	 */
-	function preflight($type, $parent)
+	public function preflight($type, $parent)
 	{
 	}
 
 	/**
 	 * Runs after install, update or discover_update
-	 * @param string $type install, update or discover_update
-	 * @param JInstaller $parent
+	 *
+	 * @param   string      $type    install, update or discover_update
+	 *
+	 * @param   JInstaller  $parent  parent
+	 *
+	 * @return  void
 	 */
-	function postflight( $type, $parent )
+	public function postflight($type, $parent)
 	{
 		// Install subextensions
 		$status = $this->_installSubextensions($parent);
@@ -75,8 +72,9 @@ class com_tjfieldsInstallerScript
 	/**
 	 * Installs subextensions (modules, plugins) bundled with the main extension
 	 *
-	 * @param JInstaller $parent
-	 * @return JObject The subextension installation status
+	 * @param   JInstaller  $parent  parent
+	 *
+	 * @return  void
 	 */
 	private function _installSubextensions($parent)
 	{
@@ -84,87 +82,106 @@ class com_tjfieldsInstallerScript
 
 		$db = JFactory::getDbo();
 
-		$status = new JObject();
+		$status = new JObject;
 		$status->modules = array();
 
 		// Modules installation
-
-		if(count($this->installation_queue['modules'])) {
-			foreach($this->installation_queue['modules'] as $folder => $modules) {
-				if(count($modules))
-					foreach($modules as $module => $modulePreferences)
+		if (count($this->installation_queue['modules']))
+		{
+			foreach ($this->installation_queue['modules'] as $folder => $modules)
+			{
+				if (count($modules))
+				{
+					foreach ($modules as $module => $modulePreferences)
 					{
 						// Install the module
-						if(empty($folder))
+						if (empty($folder))
+						{
 							$folder = 'site';
+						}
+
 						$path = "$src/modules/$folder/$module";
-						if(!is_dir($path))// if not dir
+
+						if (!is_dir($path))
 						{
 							$path = "$src/modules/$folder/mod_$module";
 						}
-						if(!is_dir($path)) {
+
+						if (!is_dir($path))
+						{
 							$path = "$src/modules/$module";
 						}
 
-						if(!is_dir($path)) {
+						if (!is_dir($path))
+						{
 							$path = "$src/modules/mod_$module";
 						}
-						if(!is_dir($path))
-						{
 
-							$fortest='';
-							//continue;
+						if (!is_dir($path))
+						{
+							$fortest = '';
+
+							// Continue;
 						}
 
 						// Was the module already installed?
 						$sql = $db->getQuery(true)
 							->select('COUNT(*)')
 							->from('#__modules')
-							->where($db->qn('module').' = '.$db->q('mod_'.$module));
+							->where($db->qn('module') . ' = ' . $db->q('mod_' . $module));
 						$db->setQuery($sql);
 
 						$count = $db->loadResult();
 
 						$installer = new JInstaller;
 						$result = $installer->install($path);
+
 						$status->modules[] = array(
-							'name'=>$module,
-							'client'=>$folder,
-							'result'=>$result,
-							'status'=>$modulePreferences[1]
+							'name' => $module,
+							'client' => $folder,
+							'result' => $result,
+							'status' => $modulePreferences[1]
 						);
 
 						// Modify where it's published and its published state
-						if(!$count) {
+						if (!$count)
+						{
 							// A. Position and state
 							list($modulePosition, $modulePublished) = $modulePreferences;
-							if($modulePosition == 'cpanel') {
+
+							if ($modulePosition == 'cpanel')
+							{
 								$modulePosition = 'icon';
 							}
+
 							$sql = $db->getQuery(true)
 								->update($db->qn('#__modules'))
-								->set($db->qn('position').' = '.$db->q($modulePosition))
-								->where($db->qn('module').' = '.$db->q('mod_'.$module));
-							if($modulePublished) {
-								$sql->set($db->qn('published').' = '.$db->q('1'));
+								->set($db->qn('position') . ' = ' . $db->q($modulePosition))
+								->where($db->qn('module') . ' = ' . $db->q('mod_' . $module));
+
+							if ($modulePublished)
+							{
+								$sql->set($db->qn('published') . ' = ' . $db->q('1'));
 							}
+
 							$db->setQuery($sql);
 							$db->query();
 
 							// B. Change the ordering of back-end modules to 1 + max ordering
-							if($folder == 'admin') {
+							if ($folder == 'admin')
+							{
 								$query = $db->getQuery(true);
-								$query->select('MAX('.$db->qn('ordering').')')
+								$query->select('MAX(' . $db->qn('ordering') . ')')
 									->from($db->qn('#__modules'))
-									->where($db->qn('position').'='.$db->q($modulePosition));
+									->where($db->qn('position') . '=' . $db->q($modulePosition));
 								$db->setQuery($query);
 								$position = $db->loadResult();
 								$position++;
 
 								$query = $db->getQuery(true);
 								$query->update($db->qn('#__modules'))
-									->set($db->qn('ordering').' = '.$db->q($position))
-									->where($db->qn('module').' = '.$db->q('mod_'.$module));
+									->set($db->qn('ordering') . ' = ' . $db->q($position))
+									->where($db->qn('module') . ' = ' . $db->q('mod_' . $module));
 								$db->setQuery($query);
 								$db->query();
 							}
@@ -172,18 +189,20 @@ class com_tjfieldsInstallerScript
 							// C. Link to all pages
 							$query = $db->getQuery(true);
 							$query->select('id')->from($db->qn('#__modules'))
-								->where($db->qn('module').' = '.$db->q('mod_'.$module));
+								->where($db->qn('module') . ' = ' . $db->q('mod_' . $module));
 							$db->setQuery($query);
 							$moduleid = $db->loadResult();
 
 							$query = $db->getQuery(true);
 							$query->select('*')->from($db->qn('#__modules_menu'))
-								->where($db->qn('moduleid').' = '.$db->q($moduleid));
+								->where($db->qn('moduleid') . ' = ' . $db->q($moduleid));
 							$db->setQuery($query);
 							$assignments = $db->loadObjectList();
 							$isAssigned = !empty($assignments);
-							if(!$isAssigned) {
-								$o = (object)array(
+
+							if (!$isAssigned)
+							{
+								$o = (object) array(
 									'moduleid'	=> $moduleid,
 									'menuid'	=> 0
 								);
@@ -191,6 +210,7 @@ class com_tjfieldsInstallerScript
 							}
 						}
 					}
+				}
 			}
 		}
 
@@ -198,15 +218,25 @@ class com_tjfieldsInstallerScript
 	}
 
 	/**
-	 * method to install the component
+	 * Runs on uninstallation
+	 *
+	 * @param   STRING  $parent  parent
 	 *
 	 * @return void
 	 */
-	function install($parent)
+	public function install($parent)
 	{
 		$this->installSqlFiles($parent);
 	}
 
+	/**
+	 * Runs on post installation
+	 *
+	 * @param   STRING  $status  status
+	 * @param   STRING  $parent  parent
+	 *
+	 * @return void
+	 */
 	private function _renderPostUninstallation($status, $parent)
 	{
 		?>
@@ -221,7 +251,7 @@ class com_tjfieldsInstallerScript
 			</thead>
 			<tbody>
 				<tr class="row0">
-					<td class="key" colspan="2"><?php echo 'TjFields '.JText::_('Component'); ?></td>
+					<td class="key" colspan="2"><?php echo 'TjFields ' . JText::_('Component'); ?></td>
 					<td><strong style="color: green"><?php echo JText::_('Removed'); ?></strong></td>
 				</tr>
 			</tbody>
@@ -232,9 +262,11 @@ class com_tjfieldsInstallerScript
 	/**
 	 * Runs on uninstallation
 	 *
-	 * @param JInstaller $parent
+	 * @param   STRING  $parent  parent
+	 *
+	 * @return void
 	 */
-	function uninstall($parent)
+	public function uninstall($parent)
 	{
 		// Show the post-uninstallation page
 		$this->_renderPostUninstallation($status, $parent);
@@ -243,42 +275,52 @@ class com_tjfieldsInstallerScript
 	/**
 	 * method to update the component
 	 *
+	 * @param   STRING  $parent  parent
+	 *
 	 * @return void
 	 */
-	function update($parent)
+	public function update($parent)
 	{
 		$this->componentStatus = "update";
 		$this->installSqlFiles($parent);
 		$this->fix_db_on_update();
 	}
 
-	//since version 2.0
-	function fix_db_on_update()
+	/**
+	 * method to fix database on update
+	 *
+	 * @return void
+	 */
+	public function fix_db_on_update()
 	{
-		$db =  JFactory::getDBO();
+		$db = JFactory::getDbo();
 
 		$field_array = array();
 		$query = "SHOW COLUMNS FROM `#__tjfields_fields`";
 		$db->setQuery($query);
 		$columns = $db->loadobjectlist();
 
-		for ($i = 0; $i < count($columns); $i++) {
+		for ($i = 0; $i < count($columns); $i++)
+		{
 			$field_array[] = $columns[$i]->Field;
 		}
 
-		if (!in_array('filterable', $field_array)) {
+		if (!in_array('filterable', $field_array))
+		{
 			$query = "ALTER TABLE `#__tjfields_fields`
 						ADD COLUMN `filterable` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0 - For not filterable field. 1 for filterable field'";
 			$db->setQuery($query);
+
 			if (!$db->execute() )
 			{
-				echo $img_ERROR.JText::_('Unable to Alter #__tjfields_fields table. (While adding filterable column )').$BR;
+				echo $img_ERROR . JText::_('Unable to Alter #__tjfields_fields table. (While adding filterable column )') . $BR;
 				echo $db->getErrorMsg();
+
 				return false;
 			}
 		}
 
-		$query="
+		$query = "
 				CREATE TABLE IF NOT EXISTS `#__tjfields_category_mapping` (
 				  `id` INT(11) NOT NULL AUTO_INCREMENT,
 				  `field_id` INT(11) NOT NULL,
@@ -288,39 +330,98 @@ class com_tjfieldsInstallerScript
 		$db->setQuery($query);
 		$db->execute();
 
-		// Check for table//////////////////////////////////////////////////////////////////////////////
-		$db =  JFactory::getDBO();
+		$db = JFactory::getDbo();
 
 		$field_array = array();
 		$query = "SHOW COLUMNS FROM `#__tjfields_fields_value`";
 		$db->setQuery($query);
 		$columns = $db->loadobjectlist();
 
-		for ($i = 0; $i < count($columns); $i++) {
+		for ($i = 0; $i < count($columns); $i++)
+		{
 			$field_array[] = $columns[$i]->Field;
 		}
 
-		if (!in_array('option_id', $field_array)) {
+		if (!in_array('option_id', $field_array))
+		{
 			$query = "ALTER TABLE `#__tjfields_fields_value`
 						ADD COLUMN `option_id` int(11) DEFAULT NULL";
 			$db->setQuery($query);
-			if (!$db->execute() )
+
+			if (!$db->execute())
 			{
-				echo $img_ERROR.JText::_('Unable to Alter #__tjfields_fields_value table. (While adding option_id column )').$BR;
+				echo $img_ERROR . JText::_('Unable to Alter #__tjfields_fields_value table. (While adding option_id column )') . $BR;
 				echo $db->getErrorMsg();
+
 				return false;
 			}
 		}
 
 		// Add params column in tjfields_fields table to store fields attributes - added in v1.4
 		$this->addparamsColumn();
+
+		// Add title column in tjfields_fields table to store fields title - added in v1.4
+		$this->addTitleColumn();
 	}
 
+	/**
+	 * method to add title column
+	 *
+	 * @return void
+	 */
+	public function addTitleColumn()
+	{
+		$field_array = array();
+		$query = "SHOW COLUMNS FROM `#__tjfields_fields`";
+		$db = JFactory::getDbo();
+		$db->setQuery($query);
+		$columns = $db->loadobjectlist();
+
+		for ($i = 0; $i < count($columns); $i++)
+		{
+			$field_array[] = $columns[$i]->Field;
+		}
+
+		if (!in_array('title', $field_array))
+		{
+			$query = "ALTER TABLE `#__tjfields_fields` ADD COLUMN `title` varchar(255) NOT NULL";
+			$db->setQuery($query);
+
+			if (!$db->execute())
+			{
+				echo $img_ERROR . JText::_('Unable to Alter #__tjfields_fields table. (While adding title column )') . $BR;
+				echo $db->getErrorMsg();
+
+				return false;
+			}
+			else
+			{
+				$query = $db->getQuery(true);
+				$query->select('*');
+				$query->from($db->quoteName('#__tjfields_fields'));
+				$db->setQuery($query);
+				$fields = $db->loadObjectList();
+
+				foreach ($fields as $field)
+				{
+					$field->title = $field->label;
+
+					JFactory::getDbo()->updateObject('#__tjfields_fields', $field, 'id', true);
+				}
+			}
+		}
+	}
+
+	/**
+	 * method to add params column
+	 *
+	 * @return void
+	 */
 	public function addparamsColumn()
 	{
 		$field_array = array();
 		$query = "SHOW COLUMNS FROM `#__tjfields_fields`";
-		$db =  JFactory::getDbo();
+		$db = JFactory::getDbo();
 		$db->setQuery($query);
 		$columns = $db->loadobjectlist();
 
@@ -336,8 +437,9 @@ class com_tjfieldsInstallerScript
 
 			if (!$db->execute())
 			{
-				echo $img_ERROR.JText::_('Unable to Alter #__tjfields_fields table. (While adding params column )').$BR;
+				echo $img_ERROR . JText::_('Unable to Alter #__tjfields_fields table. (While adding params column )') . $BR;
 				echo $db->getErrorMsg();
+
 				return false;
 			}
 			else
@@ -402,8 +504,9 @@ class com_tjfieldsInstallerScript
 
 					if (!$db->execute())
 					{
-						echo $img_ERROR.JText::_('Unable to delete column ') . $pm;
+						echo $img_ERROR . JText::_('Unable to delete column ') . $pm;
 						echo $db->getErrorMsg();
+
 						return false;
 					}
 				}
@@ -411,7 +514,14 @@ class com_tjfieldsInstallerScript
 		}
 	}
 
-	function installSqlFiles($parent)
+	/**
+	 * method to table columns
+	 *
+	 * @param   STRING  $parent  parent
+	 *
+	 * @return void
+	 */
+	public function installSqlFiles($parent)
 	{
 		$db = JFactory::getDBO();
 
@@ -527,7 +637,14 @@ class com_tjfieldsInstallerScript
 		}
 	}
 
-	function checkTableExists($table)
+	/**
+	 * method to check if table exists
+	 *
+	 * @param   STRING  $table  existing name
+	 *
+	 * @return void
+	 */
+	public function checkTableExists($table)
 	{
 		$db = JFactory::getDBO();
 		$config = JFactory::getConfig();
@@ -543,7 +660,7 @@ class com_tjfieldsInstallerScript
 			$dbprefix = $config->getvalue('config.dbprefix');
 		}
 
-		$query =" SELECT table_name
+		$query = " SELECT table_name
 		 FROM information_schema.tables
 		 WHERE table_schema='" . $dbname . "'
 		 AND table_name='" . $dbprefix . $table . "'";
@@ -561,7 +678,14 @@ class com_tjfieldsInstallerScript
 		}
 	}
 
-	function getColumns($table)
+	/**
+	 * method to table columns
+	 *
+	 * @param   STRING  $table  existing name
+	 *
+	 * @return void
+	 */
+	public function getColumns($table)
 	{
 		$db = JFactory::getDBO();
 
@@ -578,7 +702,15 @@ class com_tjfieldsInstallerScript
 		return $columns_array;
 	}
 
-	function renameTable($table, $newTable)
+	/**
+	 * method to rename table
+	 *
+	 * @param   STRING  $table     existing name
+	 * @param   STRING  $newTable  updated name
+	 *
+	 * @return void
+	 */
+	public function renameTable($table, $newTable)
 	{
 		$db = JFactory::getDBO();
 		$query = "RENAME TABLE `" . $table . "` TO `" . $newTable . '_' . date('d-m-Y_H:m:s') . "`";
@@ -592,18 +724,26 @@ class com_tjfieldsInstallerScript
 		return false;
 	}
 
-	function runSQL($parent,$sqlfile)
+	/**
+	 * method to execute sql file
+	 *
+	 * @param   STRING  $parent   parent
+	 * @param   STRING  $sqlfile  sql file
+	 *
+	 * @return void
+	 */
+	public function runSQL($parent,$sqlfile)
 	{
 		$db = JFactory::getDBO();
 
 		// Obviously you may have to change the path and name if your installation SQL file ;)
 		if (method_exists($parent, 'extension_root'))
 		{
-			$sqlfile = $parent->getPath('extension_root').DS.'administrator'.DS.'sql'.DS.$sqlfile;
+			$sqlfile = $parent->getPath('extension_root') . '/administrator/sql/' . $sqlfile;
 		}
 		else
 		{
-			$sqlfile = $parent->getParent()->getPath('extension_root').DS.'sql'.DS.$sqlfile;
+			$sqlfile = $parent->getParent()->getPath('extension_root') . '/sql/' . $sqlfile;
 		}
 
 		// Don't modify below this line

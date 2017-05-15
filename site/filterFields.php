@@ -11,6 +11,7 @@
 defined('_JEXEC') or die();
 
 jimport('joomla.application.component.modellist');
+jimport('joomla.filesystem.file');
 
 /**
  * Methods supporting a list of regions records.

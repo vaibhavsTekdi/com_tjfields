@@ -63,11 +63,13 @@ class TjfieldsHelper
 		{
 			if ($data->type == "radio" || $data->type == "single_select" || $data->type == "multi_select")
 			{
+				$fieldDataValue[$data->field_id] = new stdclass;
 				$fieldDataValue[$data->field_id]->value[] = $data->value;
 				$fieldDataValue[$data->field_id]->field_id = $data->field_id;
 			}
 			else
 			{
+				$fieldDataValue[$data->field_id] = new stdclass;
 				$fieldDataValue[$data->field_id]->value = $data->value;
 				$fieldDataValue[$data->field_id]->field_id = $data->field_id;
 			}

@@ -64,17 +64,17 @@ class TjfieldsHelper extends JHelperContent
 		}
 	}
 
-/*** Gets a list of the actions that can be performed.
+	/** Gets a list of the actions that can be performed.
 	 *
-	 * @param string $component The component name.
+	 * @param   string   $component  The component name.
 	 *
-	 * @param string $section The access section name.
+	 * @param   string   $section    The access section name.
 	 *
-	 * @param integer $id The item ID.
+	 * @param   integer  $id         The item ID.
 	 *
 	 * @return JObject
 	 *
-	 *  @since 3.2
+	 * @since 3.2
 	 */
 	public static function getActions($component = 'com_tjfields', $section = '', $id = '')
 	{

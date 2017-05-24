@@ -31,7 +31,7 @@ $fullClient =  explode('.',$fullClient);
 $client = $fullClient[0];
 $clientType = $fullClient[1];
 
-$link = JRoute::_('index.php?option=com_tjfields&view=field&layout=edit&id=0&client=' . $input->get('client', '', 'STRING') . '&extension=' . $input->get('extension', '', 'STRING'), false);
+$link = JRoute::_('index.php?option=com_tjfields&view=field&layout=edit&id=0&client=' . $input->get('client', '', 'STRING'), false);
 
 // Import helper for declaring language constant
 JLoader::import('TjfieldsHelper', JUri::root().'administrator/components/com_tjfields/helpers/tjfields.php');
@@ -145,7 +145,7 @@ TjfieldsHelper::getLanguageConstant();
 	}
 </script>
 <div class="techjoomla-bootstrap">
-	<form action="<?php echo JRoute::_('index.php?option=com_tjfields&layout=edit&id='.(int) $this->item->id).'&client='.$input->get('client','','STRING').'&extension='.$input->get('extension','','STRING'); ?>" method="post" enctype="multipart/form-data" name="adminForm" id="field-form" class="form-validate">
+	<form action="<?php echo JRoute::_('index.php?option=com_tjfields&layout=edit&id='.(int) $this->item->id).'&client='.$input->get('client','','STRING'); ?>" method="post" enctype="multipart/form-data" name="adminForm" id="field-form" class="form-validate">
 		<div class="techjoomla-bootstrap">
 		    <?php echo JHtml::_('bootstrap.startTabSet', 'myTab', array('active' => 'general')); ?>
 

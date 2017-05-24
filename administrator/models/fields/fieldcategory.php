@@ -54,15 +54,9 @@ class JFormFieldFieldcategory extends JFormField
 		$jinput = JFactory::getApplication()->input;
 		$id = $jinput->get('id', '', 'int');
 		$clientStr = $jinput->get("client");
-		$extension = $jinput->get("extension", "", "STRING");
 		$ClientDetail = explode('.', $clientStr);
 		$client = $ClientDetail[0];
 		$options         = array();
-
-		if (!empty($extension))
-		{
-			$client = $extension;
-		}
 
 		/*$options[]       = JHtml::_('select.option', '', JText::_('COM_TJFIELDS_FORM_SELECT_CLIENT_CATEGORY'));*/
 

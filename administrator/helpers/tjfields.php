@@ -143,13 +143,9 @@ class TjfieldsHelper extends JHelperContent
 	{
 		$client = $data['client'];
 		$input = JFactory::getApplication()->input;
-		$extension = $input->get('extension', '', 'STRING');
 
-		if (empty($extension))
-		{
-			$client = explode(".", $client);
-			$extension = $client[0];
-		}
+		$client = explode(".", $client);
+		$extension = $client[0];
 
 		if (!empty($extension))
 		{

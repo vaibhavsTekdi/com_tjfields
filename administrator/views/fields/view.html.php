@@ -206,8 +206,7 @@ class TjfieldsViewFields extends JViewLegacy
 		{
 			// Set sidebar action - New in 3.0
 			$action = 'index.php?option=com_tjfields&view=fields&client='
-			. $input->get('client', '', 'STRING')
-			. '&extension=' . $input->get('extension', '', 'STRING');
+			. $input->get('client', '', 'STRING');
 			JHtmlSidebar::setAction($action);
 			$filter_type = $this->state->get('filter.type');
 			JHtmlSidebar::addFilter($select_label, 'filter_field_type', JHtml::_('select.options', $options, "value", "text", $filter_type, true));

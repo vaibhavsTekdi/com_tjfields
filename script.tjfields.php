@@ -335,8 +335,21 @@ class Com_TjfieldsInstallerScript
 			}
 		}
 
-		$query = "
-				CREATE TABLE IF NOT EXISTS `#__tjfields_category_mapping` (
+		if (!in_array('showonlist', $field_array))
+		{
+			$query = "ALTER TABLE `#__tjfields_fields` ADD COLUMN `showonlist` tinyint(1) NOT NULL DEFAULT '0'";
+			$db->setQuery($query);
+
+			if (!$db->execute())
+			{
+				echo $img_ERROR . JText::_('Unable to Alter #__tjfields_fields table. (While adding filterable showonlist )') . $BR;
+				echo $db->getErrorMsg();
+
+				return false;
+			}
+		}
+
+		$query = "CREATE TABLE IF NOT EXISTS `#__tjfields_category_mapping` (
 				  `id` INT(11) NOT NULL AUTO_INCREMENT,
 				  `field_id` INT(11) NOT NULL,
 				  `category_id` INT(11) NOT NULL COMMENT 'CATEGORY ID FROM JOOMLA CATEGORY TABLE FOR CLIENTS EG CLIENT=COM_QUICK2CART.PRODUCT',

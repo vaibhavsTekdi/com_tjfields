@@ -28,63 +28,6 @@ class TjfieldsTablefield extends JTable
 	}
 
 	/**
-	 * Overloaded bind function to pre-process the params.
-	 *
-	 * @param   ARRAY   $array   Named array
-	 * @param   STRING  $ignore  ignore
-	 *
-	 * @return  boolean
-	 *
-	 * @since	1.5
-	 */
-	public function bind($array, $ignore = '')
-	{
-		$input = JFactory::getApplication()->input;
-		$task = $input->getString('task', '');
-
-		if (($task == 'save' || $task == 'apply') && (!JFactory::getUser()->authorise('core.edit.state', 'com_tjfields') && $array['state'] == 1))
-		{
-			$array['state'] = 0;
-		}
-
-		if (isset($array['params']) && is_array($array['params']))
-		{
-			$registry = new JRegistry;
-			$registry->loadArray($array['params']);
-			$array['params'] = (string) $registry;
-		}
-
-		if (isset($array['metadata']) && is_array($array['metadata']))
-		{
-			$registry = new JRegistry;
-			$registry->loadArray($array['metadata']);
-			$array['metadata'] = (string) $registry;
-		}
-
-		if (!JFactory::getUser()->authorise('core.admin', 'com_tjfields.field.' . $array['id']))
-		{
-			$actions = JFactory::getACL()->getActions('com_tjfields', 'field');
-			$default_actions = JFactory::getACL()->getAssetRules('com_tjfields.field.' . $array['id'])->getData();
-			$array_jaccess = array();
-
-			foreach ($actions as $action)
-			{
-				$array_jaccess[$action->name] = $default_actions[$action->name];
-			}
-
-			$array['rules'] = $this->JAccessRulestoArray($array_jaccess);
-		}
-
-		// Bind the rules for ACL where supported.
-		if (isset($array['rules']) && is_array($array['rules']))
-		{
-			$this->setRules($array['rules']);
-		}
-
-		return parent::bind($array, $ignore);
-	}
-
-	/**
 	 * This function convert an array of JAccessRule objects into an rules array.
 	 *
 	 * @param   type  $jaccessrules  an arrao of JAccessRule objects.

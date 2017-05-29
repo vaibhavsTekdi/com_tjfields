@@ -83,17 +83,29 @@ trait TjfieldsFilterField
 		$category = !empty($data['category']) ? $data['category'] : '';
 		$filePath = JPATH_SITE . '/components/' . $data['clientComponent'] . '/models/forms/' . $category . $data['view'] . 'form_extra.xml';
 
-		if (!JFile::exists($filePath))
-		{
-			return false;
-		}
-
 		$form = new stdclass;
 
 		$formName = $data['client'] . "_extra" . $category;
 
 		// Get the form.
 		$form = $this->loadForm($formName, $filePath, array('control' => 'jform', 'load_data' => $loadData), true);
+
+		// If category is specified then check if global fields are created and load respective XML
+		if (!empty($category))
+		{
+			$path = JPATH_SITE . '/components/' . $data['clientComponent'] . '/models/forms/' . $data['view'] . 'form_extra.xml';
+
+			// If category XML esists then add global fields XML in current JForm object else create new object of Global Fields
+			if (!empty($form))
+			{
+				$form->loadFile($path, true, '/form/*');
+			}
+			else
+			{
+				$formName = $data['client'] . "_extra";
+				$form = $this->loadForm($formName, $path, array('control' => 'jform', 'load_data' => $loadData), true);
+			}
+		}
 
 		if (empty($form))
 		{
@@ -124,36 +136,12 @@ trait TjfieldsFilterField
 	 */
 	public function getFormExtra($data = array(), $loadData = false)
 	{
-		$formExtra = array();
-		$form = new stdclass;
-
-		// Call to extra fields
-		if (!empty($data['category']))
-		{
-			$form = $this->getFormObject($data, $loadData);
-			unset($data['category']);
-		}
-
-		$tempForm = (array) $form;
-
-		if (!empty($tempForm))
-		{
-			$formExtra[] = $form;
-		}
-
 		$form = new stdclass;
 
 		// Call to global extra fields
 		$form = $this->getFormObject($data, $loadData);
 
-		$tempForm = (array) $form;
-
-		if (!empty($tempForm))
-		{
-			$formExtra[] = $form;
-		}
-
-		return $formExtra;
+		return $form;
 	}
 
 	/**

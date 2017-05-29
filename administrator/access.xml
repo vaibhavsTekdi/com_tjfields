@@ -17,11 +17,10 @@
 		<action name="core.edit" title="JACTION_EDIT" description="JACTION_EDIT_COMPONENT_DESC" />
 		<action name="core.edit.state" title="JACTION_EDITSTATE" description="JACTION_EDITSTATE_COMPONENT_DESC" />
 		<action name="core.edit.own" title="JACTION_EDITOWN" description="JACTION_EDITOWN_COMPONENT_DESC" />
-		<action name="core.viewfieldvalue" title="COM_TJFIELDS_PERMISSION_VIEW_FIELD_VALUE" description="COM_TJFIELDS_PERMISSION_VIEW_FIELD_DESC" />
-		<action name="core.addfieldvalue" title="COM_TJFIELDS_PERMISSION_ADD_FIELD_VALUE" description="JACTION_CREATE_COMPONENT_DESC" />
-		<action name="core.deletefieldvalue" title="COM_TJFIELDS_PERMISSION_DELETE_FIELD_VALUE" description="JACTION_DELETE_COMPONENT_DESC" />
-		<action name="core.editfieldvalue" title="COM_TJFIELDS_PERMISSION_EDIT_FIELD_VALUE" description="JACTION_EDIT_COMPONENT_DESC" />
-		<action name="core.editownfieldvalue" title="COM_TJFIELDS_PERMISSION_EDIT_OWN_FIELD_VALUE" description="JACTION_EDITOWN_COMPONENT_DESC" />
+		<action name="core.viewfieldvalue" title="COM_TJFIELDS_PERMISSION_VIEW_FIELD_VALUE" description="COM_TJFIELDS_PERMISSION_VIEW_FIELD_VALUE_DESC" />
+		<action name="core.addfieldvalue" title="COM_TJFIELDS_PERMISSION_ADD_FIELD_VALUE" description="COM_TJFIELDS_PERMISSION_ADD_FIELD_VALUE_DESC" />
+		<action name="core.editfieldvalue" title="COM_TJFIELDS_PERMISSION_EDIT_FIELD_VALUE" description="COM_TJFIELDS_PERMISSION_EDIT_FIELD_VALUE_DESC" />
+		<action name="core.editownfieldvalue" title="COM_TJFIELDS_PERMISSION_EDIT_OWN_FIELD_VALUE" description="COM_TJFIELDS_PERMISSION_EDIT_OWN_FIELD_VALUE_DESC" />
 	</section>
 	<section name="group">
 		<action name="core.admin" title="JACTION_ADMIN" description="JACTION_ADMIN_COMPONENT_DESC" />

@@ -224,6 +224,8 @@ class TjfieldsModelField extends JModelAdmin
 		// Remove extra value which are not needed to save in the fields table
 		$TjfieldsHelper      = new TjfieldsHelper;
 
+		$data['params'] = json_encode($data['params']);
+
 		if ($table->save($data) === true)
 		{
 			$id = $table->id;

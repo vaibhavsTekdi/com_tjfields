@@ -147,8 +147,7 @@ TjfieldsHelper::getLanguageConstant();
 <div class="techjoomla-bootstrap">
 	<form action="<?php echo JRoute::_('index.php?option=com_tjfields&layout=edit&id='.(int) $this->item->id).'&client='.$input->get('client','','STRING'); ?>" method="post" enctype="multipart/form-data" name="adminForm" id="field-form" class="form-validate">
 		<div class="techjoomla-bootstrap">
-		    <?php echo JHtml::_('bootstrap.startTabSet', 'myTab', array('active' => 'general')); ?>
-
+			<?php echo JHtml::_('bootstrap.startTabSet', 'myTab', array('active' => 'general')); ?>
 			<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'general', JText::_('COM_TJFIELDS_TITLE_FIELD', true)); ?>
 			<div class="row-fluid">
 				<div class="container1">

@@ -12,6 +12,7 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.modellist');
 jimport('joomla.filesystem.file');
+jimport('joomla.database.table');
 
 /**
  * Methods supporting a list of regions records.
@@ -82,11 +83,7 @@ trait TjfieldsFilterField
 		// Check if form file is present.
 		$category = !empty($data['category']) ? $data['category'] : '';
 		$filePath = JPATH_SITE . '/components/' . $data['clientComponent'] . '/models/forms/' . $category . $data['view'] . 'form_extra.xml';
-
-		if (!JFile::exists($filePath))
-		{
-			return false;
-		}
+		$user = JFactory::getUser();
 
 		$form = new stdclass;
 
@@ -94,6 +91,23 @@ trait TjfieldsFilterField
 
 		// Get the form.
 		$form = $this->loadForm($formName, $filePath, array('control' => 'jform', 'load_data' => $loadData), true);
+
+		// If category is specified then check if global fields are created and load respective XML
+		if (!empty($category))
+		{
+			$path = JPATH_SITE . '/components/' . $data['clientComponent'] . '/models/forms/' . $data['view'] . 'form_extra.xml';
+
+			// If category XML esists then add global fields XML in current JForm object else create new object of Global Fields
+			if (!empty($form))
+			{
+				$form->loadFile($path, true, '/form/*');
+			}
+			else
+			{
+				$formName = $data['client'] . "_extra";
+				$form = $this->loadForm($formName, $path, array('control' => 'jform', 'load_data' => $loadData), true);
+			}
+		}
 
 		if (empty($form))
 		{
@@ -105,6 +119,71 @@ trait TjfieldsFilterField
 
 		// Bind the data for extra fields to this form.
 		$form->bind($dataExtra);
+
+		// Check for field level permissions - start
+		$db = JFactory::getDbo();
+		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjfields/tables');
+		$tjFieldFieldTable = JTable::getInstance('field', 'TjfieldsTable', array('dbo', $db));
+		$fieldSets = $form->getFieldsets();
+		$extraData = $this->getDataExtra($data);
+
+		foreach ($fieldSets as $fieldset)
+		{
+			foreach ($form->getFieldset($fieldset->name) as $field)
+			{
+				$tjFieldFieldTable->load(array('name' => $field->fieldname));
+				$canAdd = $user->authorise('core.field.addfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->id);
+				$canEdit = $user->authorise('core.field.editfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->id);
+				$canView = $user->authorise('core.field.viewfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->id);
+
+				if ($data['layout'] == 'edit')
+				{
+					// If new record is added
+					if (empty($data['content_id']))
+					{
+						if (!$canAdd)
+						{
+							$form->setFieldAttribute($field->fieldname, 'required', false);
+							$form->setFieldAttribute($field->fieldname, 'class', 'hidden');
+							$form->setFieldAttribute($field->fieldname, 'hidden', true);
+						}
+					}
+					else
+					{
+						if ($canAdd)
+						{
+							if (!$canEdit)
+							{
+								$form->setFieldAttribute($field->fieldname, 'readonly', true);
+							}
+						}
+						else
+						{
+							$form->setFieldAttribute($field->fieldname, 'required', false);
+							$form->setFieldAttribute($field->fieldname, 'class', 'hidden');
+							$form->setFieldAttribute($field->fieldname, 'hidden', true);
+						}
+					}
+				}
+				else
+				{
+					$userId = $extraData[$tjFieldFieldTable->id]->user_id;
+
+					// Allow to view own data
+					if ($user->id == $userId)
+					{
+						$canView = true;
+					}
+
+					if (!$canView)
+					{
+						$form->removeField($field->fieldname);
+					}
+				}
+			}
+		}
+
+		// Check for field level permissions - end
 
 		return $form;
 	}
@@ -124,36 +203,12 @@ trait TjfieldsFilterField
 	 */
 	public function getFormExtra($data = array(), $loadData = false)
 	{
-		$formExtra = array();
-		$form = new stdclass;
-
-		// Call to extra fields
-		if (!empty($data['category']))
-		{
-			$form = $this->getFormObject($data, $loadData);
-			unset($data['category']);
-		}
-
-		$tempForm = (array) $form;
-
-		if (!empty($tempForm))
-		{
-			$formExtra[] = $form;
-		}
-
 		$form = new stdclass;
 
 		// Call to global extra fields
 		$form = $this->getFormObject($data, $loadData);
 
-		$tempForm = (array) $form;
-
-		if (!empty($tempForm))
-		{
-			$formExtra[] = $form;
-		}
-
-		return $formExtra;
+		return $form;
 	}
 
 	/**
@@ -191,9 +246,10 @@ trait TjfieldsFilterField
 		$input = JFactory::getApplication()->input;
 		$user = JFactory::getUser();
 
+		// If id is not present in $data then check if it is available in JInput
 		if (empty($id))
 		{
-			$id = $input->get('content_id', '', 'INT');
+			$id = (empty($data['content_id']))?$input->get('content_id', '', 'INT'):$data['content_id'];
 		}
 
 		if (empty($id))
@@ -300,10 +356,11 @@ trait TjfieldsFilterField
 	 */
 	public function getDataExtra($data, $id = null)
 	{
+		$input = JFactory::getApplication()->input;
+
 		if (empty($id))
 		{
-			$input = JFactory::getApplication()->input;
-			$id = $input->get('content_id', '', 'INT');
+			$id = (empty($data['content_id']))?$input->get('content_id', '', 'INT'):$data['content_id'];
 		}
 
 		if (empty($id))

@@ -89,12 +89,12 @@ class TjfieldsViewRegions extends JViewLegacy
 	 *
 	 * @since   1.6
 	 */
-	protected function addToolbar ()
+	protected function addToolbar()
 	{
 		require_once JPATH_COMPONENT . '/helpers/tjfields.php';
 
 		$state = $this->get('State');
-		$canDo = TjfieldsHelper::getActions();
+		$canDo = TjfieldsHelper::getActions('com_tjfields', 'region');
 
 		// Let's get the extension name
 		$client = JFactory::getApplication()->input->get('client', '', 'STRING');

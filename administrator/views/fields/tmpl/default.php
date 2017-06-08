@@ -63,7 +63,7 @@ if (!empty($this->extra_sidebar)) {
     $this->sidebar .= $this->extra_sidebar;
 }
 ?>
-<form action="<?php echo JRoute::_('index.php?option=com_tjfields&view=fields&client='.$input->get('client','','STRING') . '&extension=' . $input->get('extension', '', 'STRING')); ?>" method="post" name="adminForm" id="adminForm">
+<form action="<?php echo JRoute::_('index.php?option=com_tjfields&view=fields&client='.$input->get('client','','STRING')); ?>" method="post" name="adminForm" id="adminForm">
 	<div class="techjoomla-bootstrap">
 		<?php if(!empty($this->sidebar)): ?>
 			<div id="j-sidebar-container" class="span2">
@@ -216,7 +216,7 @@ if (!empty($this->extra_sidebar)) {
 							<?php echo JHtml::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, 'fields.', $canCheckin); ?>
 						<?php endif; ?>
 						<?php if ($canEdit) : ?>
-							<a href="<?php echo JRoute::_('index.php?option=com_tjfields&task=field.edit&id='.(int) $item->id.'&client='.$input->get('client','','STRING').'&extension='.$input->get('extension','','STRING')); ?>">
+							<a href="<?php echo JRoute::_('index.php?option=com_tjfields&task=field.edit&id='.(int) $item->id.'&client='.$input->get('client','','STRING')); ?>">
 							<?php echo $this->escape($item->label); ?></a>
 						<?php else : ?>
 							<?php echo $this->escape($item->label); ?>

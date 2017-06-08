@@ -63,6 +63,10 @@ class TjfieldsModelFields extends JModelList
 		// Initialise variables.
 		$app = JFactory::getApplication('administrator');
 
+		// Set client in model state
+		$client = $app->input->get('client', '', 'STRING');
+		$this->setState('filter.client', $client);
+
 		// Load the filter state.
 		$search = $app->getUserStateFromRequest($this->context . '.filter.search', 'filter_search');
 		$this->setState('filter.search', $search);
@@ -146,10 +150,6 @@ class TjfieldsModelFields extends JModelList
 		if ($client)
 		{
 			$query->where('a.client = ' . $db->quote($client));
-		}
-		else
-		{
-			$query->where('a.client= ' . $db->quote($input->get('client', '', 'STRING')));
 		}
 
 		// Filter by search in title

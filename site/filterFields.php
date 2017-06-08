@@ -152,7 +152,9 @@ trait TjfieldsFilterField
 					{
 						if ($canAdd)
 						{
-							if (!$canEdit)
+							$userId = $extraData[$tjFieldFieldTable->id]->user_id;
+
+							if (!$canEdit && ($user->id != $userId))
 							{
 								$form->setFieldAttribute($field->fieldname, 'readonly', true);
 							}

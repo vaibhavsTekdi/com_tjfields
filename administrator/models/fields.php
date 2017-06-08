@@ -108,9 +108,11 @@ class TjfieldsModelFields extends JModelList
 	 */
 	protected function getListQuery()
 	{
+		// Filter by client (Set state from external view to render client specific fields)
+		$client = $this->getState('filter.client');
+
 		// Create a new query object.
 		$db    = $this->getDbo();
-		$input = jFactory::getApplication()->input;
 		$query = $db->getQuery(true);
 
 		// Select the required fields from the table.
@@ -120,7 +122,6 @@ class TjfieldsModelFields extends JModelList
 		// Join over the user field 'created_by'
 		$query->select('created_by.name AS created_by');
 		$query->join('LEFT', '#__users AS created_by ON created_by.id = a.created_by');
-		$query->where('a.client="' . $input->get('client', '', 'STRING') . '"');
 
 		// Filter by published state
 		$published = $this->getState('filter.state');
@@ -141,9 +142,6 @@ class TjfieldsModelFields extends JModelList
 		{
 			$query->where('a.showonlist = ' . (int) $showonlist);
 		}
-
-		// Filter by client (Set state from external view to render client specific fields)
-		$client = $this->getState('filter.client');
 
 		if ($client)
 		{

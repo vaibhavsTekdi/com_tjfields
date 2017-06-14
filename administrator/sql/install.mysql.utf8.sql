@@ -1,8 +1,10 @@
 CREATE TABLE IF NOT EXISTS `#__tjfields_fields` (
 	`id` int(11) unsigned NOT NULL AUTO_INCREMENT,
 	`core` int(11) NOT NULL DEFAULT '0',
+	`asset_id` int(11) NOT NULL DEFAULT '0',
 	`label` varchar(255) NOT NULL,
 	`name` varchar(255) NOT NULL,
+	`title` varchar(255) NOT NULL,
 	`type` varchar(255) NOT NULL,
 	`state` tinyint(1) NOT NULL,
 	`required` varchar(255) NOT NULL,
@@ -18,7 +20,7 @@ CREATE TABLE IF NOT EXISTS `#__tjfields_fields` (
 	`showonlist` tinyint(1) NOT NULL,
 	`params` varchar(500),
 	PRIMARY KEY (`id`)
-)   DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+)   DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
 CREATE TABLE IF NOT EXISTS `#__tjfields_fields_value` (
 	`id` int(11) NOT NULL AUTO_INCREMENT,
@@ -35,9 +37,11 @@ CREATE TABLE IF NOT EXISTS `#__tjfields_fields_value` (
 CREATE TABLE IF NOT EXISTS `#__tjfields_groups` (
 	`id` int(11) unsigned NOT NULL AUTO_INCREMENT,
 	`ordering` int(11) NOT NULL,
+	`asset_id` int(11) NOT NULL DEFAULT '0',
 	`state` tinyint(1) NOT NULL,
 	`created_by` int(11) NOT NULL,
 	`name` varchar(255) NOT NULL,
+	`title` varchar(255) NOT NULL,
 	`client` varchar(255) NOT NULL,
 	PRIMARY KEY (`id`)
 )   DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;

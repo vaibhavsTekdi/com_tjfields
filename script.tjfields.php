@@ -385,6 +385,46 @@ class Com_TjfieldsInstallerScript
 			}
 		}
 
+		$field_array = array();
+		$query = "SHOW COLUMNS FROM `#__tjfields_groups`";
+		$db->setQuery($query);
+		$columns = $db->loadobjectlist();
+
+		for ($i = 0; $i < count($columns); $i++)
+		{
+			$field_array[] = $columns[$i]->Field;
+		}
+
+		if (!in_array('title', $field_array))
+		{
+			$query = "ALTER TABLE `#__tjfields_groups`
+						ADD COLUMN `title` varchar(255) NOT NULL after `name`";
+			$db->setQuery($query);
+
+			if (!$db->execute() )
+			{
+				echo $img_ERROR . JText::_('Unable to Alter #__tjfields_groups table. (While adding title column )') . $BR;
+				echo $db->getErrorMsg();
+
+				return false;
+			}
+		}
+
+		if (!in_array('asset_id', $field_array))
+		{
+			$query = "ALTER TABLE `#__tjfields_groups`
+						ADD COLUMN `asset_id` int(10) DEFAULT '0'";
+			$db->setQuery($query);
+
+			if (!$db->execute() )
+			{
+				echo $img_ERROR . JText::_('Unable to Alter #__tjfields_groups table. (While adding asset_id column )') . $BR;
+				echo $db->getErrorMsg();
+
+				return false;
+			}
+		}
+
 		// Add params column in tjfields_fields table to store fields attributes - added in v1.4
 		$this->addparamsColumn();
 

@@ -408,6 +408,21 @@ class Com_TjfieldsInstallerScript
 
 				return false;
 			}
+			else
+			{
+				$query = $db->getQuery(true);
+				$query->select('*');
+				$query->from($db->quoteName('#__tjfields_groups'));
+				$db->setQuery($query);
+				$groups = $db->loadObjectList();
+
+				foreach ($groups as $group)
+				{
+					$group->title = $group->name;
+
+					JFactory::getDbo()->updateObject('#__tjfields_groups', $group, 'id', true);
+				}
+			}
 		}
 
 		if (!in_array('asset_id', $field_array))

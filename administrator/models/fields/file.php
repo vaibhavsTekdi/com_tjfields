@@ -53,6 +53,8 @@ class JFormFieldFile extends JFormField
 	 */
 	public function __get($name)
 	{
+		require_once JPATH_SITE . '/components/com_tjfields/helpers/tjfields.php';
+
 		switch ($name)
 		{
 			case 'accept':
@@ -125,31 +127,42 @@ class JFormFieldFile extends JFormField
 	protected function getInput()
 	{
 		$layoutData = $this->getLayoutData();
-		$html = $this->getRenderer($this->layout)->render($layoutData);
+		$html = '';
+		$tjFieldHelper = new TjfieldsHelper;
+
+		// Load backend language file
+		$lang = JFactory::getLanguage();
+		$lang->load('com_tjfields', JPATH_SITE);
 
 		if (!empty($layoutData["value"]))
 		{
 			$html .= '<input type="hidden" name="'
 			. $layoutData["name"] . '"' . 'id="' . $layoutData["id"] . '"' . 'value="' . $layoutData["value"] . '" />';
-			$html .= '<div class="control-group">';
 			$fileInfo = new SplFileInfo($layoutData["value"]);
 			$extension = $fileInfo->getExtension();
+			$mediaLink = $tjFieldHelper->getMediaUrl($layoutData["value"]);
 
-			$arr_image_type = array('jpeg', 'JPEG', 'png', 'PNG', 'jpg','JPG');
-
-			if (!empty($layoutData["value"]))
+			if (!empty($mediaLink))
 			{
-				if ((in_array($extension, $arr_image_type)))
-				{
-					$html .= '<div><img height="80" width="100" src="' . JUri::root(true) . $layoutData["value"] . '"></div>';
-				}
-				else
-				{
-					$html .= '<div><a href="' . JUri::root(true) . $layoutData["value"]
-					. '" target="_blank" src="' . JUri::root() . $layoutData["value"] . '">' . JText::_("JGLOBAL_PREVIEW") . '</a></div>';
-				}
+				$html .= '<div class="form-group">';
+				$html .= '<div class="col-sm-3 control-label">';
+				$html .= '<label id="' . $layoutData["id"] . '-lbl" for="' . $layoutData["id"] . '">' . $layoutData["label"] . '</label>';
+				$html .= '</div>';
+				$html .= '<div class="col-sm-3 control-group">';
+				$html .= '<a href="' . $mediaLink . '">' . JText::_("COM_TJFIELDS_FILE_DOWNLOAD") . '</a>';
+				$html .= '</div>';
+				$html .= '</div>';
 			}
-
+		}
+		else
+		{
+			$html .= '<div class="form-group">';
+			$html .= '<div class="col-sm-3 control-label">';
+			$html .= '<label id="' . $layoutData["id"] . '-lbl" for="' . $layoutData["id"] . '">' . $layoutData["label"] . '</label>';
+			$html .= '</div>';
+			$html .= '<div class="col-sm-3 control-group">';
+			$html .= '<input type="file" name="' . $layoutData["name"] . '"' . 'id="' . $layoutData["id"] . '" />';
+			$html .= '</div>';
 			$html .= '</div>';
 		}
 

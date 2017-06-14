@@ -132,9 +132,26 @@ trait TjfieldsFilterField
 			foreach ($form->getFieldset($fieldset->name) as $field)
 			{
 				$tjFieldFieldTable->load(array('name' => $field->fieldname));
-				$canAdd = $user->authorise('core.field.addfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->id);
-				$canEdit = $user->authorise('core.field.editfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->id);
-				$canView = $user->authorise('core.field.viewfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->id);
+
+				if ($user->authorise('core.field.addfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->group_id))
+				{
+					$canAdd = $user->authorise('core.field.addfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->id);
+				}
+
+				if ($user->authorise('core.field.editfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->group_id))
+				{
+					$canEdit = $user->authorise('core.field.editfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->id);
+				}
+
+				if ($user->authorise('core.field.viewfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->group_id))
+				{
+					$canView = $user->authorise('core.field.viewfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->id);
+				}
+
+				if ($user->authorise('core.field.editownfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->group_id))
+				{
+					$canEditOwn = $user->authorise('core.field.editownfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->id);
+				}
 
 				if ($data['layout'] == 'edit')
 				{
@@ -152,11 +169,21 @@ trait TjfieldsFilterField
 					{
 						if ($canAdd)
 						{
-							$userId = $extraData[$tjFieldFieldTable->id]->user_id;
+							if (!empty($extraData[$tjFieldFieldTable->id]))
+							{
+								$userId = $extraData[$tjFieldFieldTable->id]->user_id;
+							}
 
 							if (!$canEdit && ($user->id != $userId))
 							{
 								$form->setFieldAttribute($field->fieldname, 'readonly', true);
+								$form->setFieldAttribute($field->fieldname, 'disabled', true);
+							}
+
+							if (!$canEditOwn && ($user->id == $userId))
+							{
+								$form->setFieldAttribute($field->fieldname, 'readonly', true);
+								$form->setFieldAttribute($field->fieldname, 'disabled', true);
 							}
 						}
 						else
@@ -169,7 +196,10 @@ trait TjfieldsFilterField
 				}
 				else
 				{
-					$userId = $extraData[$tjFieldFieldTable->id]->user_id;
+					if (!empty($extraData[$tjFieldFieldTable->id]))
+					{
+						$userId = $extraData[$tjFieldFieldTable->id]->user_id;
+					}
 
 					// Allow to view own data
 					if ($user->id == $userId)

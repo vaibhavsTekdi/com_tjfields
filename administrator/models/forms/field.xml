@@ -23,7 +23,7 @@
 			<option value="subform">COM_TJFIELDS_SUBFORM</option>
 			<option value="number">COM_TJFIELDS_NUMBER</option>
 		</field>
-		<field name="fieldoption" type="fieldoption" label="COM_TJFIELDS_FORM_LBL_FIELD_OPTION" description="COM_TJFIELDS_FORM_DESC_FIELD_OPTION" required="false" />
+		<field name="fieldoption" type="fieldoption" label="COM_TJFIELDS_FORM_LBL_FIELD_OPTION" description="COM_TJFIELDS_FORM_DESC_FIELD_OPTION" required="true" />
 		<field name="filter_field_type" type="list" onchange="this.form.submit();">
 			<option value="">COM_TJFIELDS_FIELDS_FIELD_TYPE_FILTER</option>
 			<option value="text">COM_TJFIELDS_TEXT</option>

@@ -145,6 +145,12 @@ class TjfieldsModelGroup extends JModelAdmin
 		$data = $post->get('jform', '', 'ARRAY');
 		$input = JFactory::getApplication()->input;
 
+		// Set group title as group label
+		if (!empty($data['name']))
+		{
+			$data['title'] = $data['name'];
+		}
+
 		if ($input->get('task') == 'save2copy')
 		{
 			unset($data['id']);

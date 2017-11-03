@@ -133,10 +133,9 @@ trait TjfieldsFilterField
 			unset($data['category']);
 		}
 
-		$tempForm = (array) $form;
-
 		if (!empty($tempForm))
 		{
+			$tempForm = (array) $form;
 			$formExtra[] = $form;
 		}
 
@@ -145,10 +144,9 @@ trait TjfieldsFilterField
 		// Call to global extra fields
 		$form = $this->getFormObject($data, $loadData);
 
-		$tempForm = (array) $form;
-
 		if (!empty($tempForm))
 		{
+			$tempForm = (array) $form;
 			$formExtra[] = $form;
 		}
 

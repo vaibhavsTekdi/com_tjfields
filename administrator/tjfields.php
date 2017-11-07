@@ -10,11 +10,6 @@
 // No direct access
 defined('_JEXEC') or die();
 
-if (!defined('DS'))
-{
-	define('DS', DIRECTORY_SEPARATOR);
-}
-
 // Access check.
 if (!JFactory::getUser()->authorise('core.manage', 'com_tjfields'))
 {

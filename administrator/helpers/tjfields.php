@@ -286,7 +286,7 @@ class TjfieldsHelper
 			$data['client_type'] . 'form_extra.xml';
 			$content  = '';
 
-			$filePathBackend = JPATH_SITE . DS . 'administrator/components/' .
+			$filePathBackend = JPATH_SITE . '/administrator/components/' .
 			$extension . '/models/forms/' .
 			$data['client_type'] . '_extra.xml';
 
@@ -343,13 +343,13 @@ class TjfieldsHelper
 		// Get backend XML file path
 		if (!empty($category['category_id']))
 		{
-			$filePathBackend = JPATH_SITE . DS . 'administrator/components/' .
+			$filePathBackend = JPATH_SITE . '/administrator/components/' .
 			$explodeForCom[0] . '/models/forms/' . $category['category_id'] .
 			$data['client_type'] . '_extra.xml';
 		}
 		else
 		{
-			$filePathBackend = JPATH_SITE . DS . 'administrator/components/' .
+			$filePathBackend = JPATH_SITE . '/administrator/components/' .
 			$explodeForCom[0] . '/models/forms/' .
 			$data['client_type'] . '_extra.xml';
 		}

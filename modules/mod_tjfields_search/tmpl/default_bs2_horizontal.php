@@ -77,16 +77,13 @@ if ($showCategoryFilter && !empty($fieldsCategorys))
 }
 	?>
 <div class="tj-filterlistwrapper-horizontal">
-	<div class="span3">
-		<div class="tj-filterhrizontal" style="<?php echo $categoryFilterStyle; ?>">
-			<div class="tjfilter-radio-btn">
-				<div><b><?php echo JText::_('Category'); ?></b></div>
-				<div id='tj-filterhrizontal_category'>
-				<?php
-					echo JHtml::_('select.radiolist', $fieldsCategorys, "category_id", 'class="" onclick="submitCategory(this.value)"', "value", "text", $selectedCategory,"category_id");
-				?>
-				</div>
-			</div>
+	<div class="tj-filterhrizontal pull-left" style="<?php echo $categoryFilterStyle; ?>">
+
+		<div class="cotrol-group tjfilter-radio-btn">
+			<div class="control-label"><b><?php echo JText::_('Category'); ?></b></div>
+			<?php
+				echo JHtml::_('select.radiolist', $fieldsCategorys, "category_id", 'class="inputbox" onclick="submitCategory(this.value)"', "value", "text", $selectedCategory,"category_id");
+			?>
 		</div>
 	</div>
 	<?php
@@ -104,33 +101,29 @@ if (!empty($fieldsArray))
 		if (!empty($fieldOptions))
 		{
 		?>
-			<div class="span3">
-				<div class="">
-					<div class="tj-filterwrapper filterwrapper<?php echo $fieldOptions[0]->id; ?>" >
+					<div class="tj-filterhrizontal pull-left">
+						<div class="tj-filterwrapper filterwrapper<?php echo $fieldOptions[0]->id; ?>" >
 						<div class="qtcfiltername filtername<?php echo $fieldOptions[0]->id; ?>">
 							<b><?php echo ucfirst($fieldOptions[0]->label);?></b>
 						</div>
-						<div class="tj-filterhrizontal_max_height">
-						<?php
+					<?php
 
-						foreach ($fieldOptions as $option)
-						{?>
-							<div class="tj-filteritem tjfieldfilters-<?php echo $option->name;?>" >
-								<label>
-									<input type="checkbox" class="tjfieldCheck"
-									name="tj_fields_value[]"
-									id="<?php echo $option->name . '||' . $option->option_id;?>"
-									value="<?php echo $option->option_id;?>"
-									<?php echo in_array($option->option_id, $selectedFilters)?'checked="checked"':'';?>
-									onclick='tjfieldsapplyfilters()' />
-									<?php echo ucfirst($option->options);?>
-								</label>
-							</div>
-						<?php
-						}
-						?>
+					foreach ($fieldOptions as $option)
+					{?>
+						<div class="tj-filteritem tjfieldfilters-<?php echo $option->name;?>" >
+							<label>
+								<input type="checkbox" class="tjfieldCheck"
+								name="tj_fields_value[]"
+								id="<?php echo $option->name . '||' . $option->option_id;?>"
+								value="<?php echo $option->option_id;?>"
+								<?php echo in_array($option->option_id, $selectedFilters)?'checked="checked"':'';?>
+								onclick='tjfieldsapplyfilters()' />
+								<?php echo ucfirst($option->options);?>
+							</label>
 						</div>
-					</div>
+					<?php
+					}
+					?>
 				</div>
 			</div>
 			<?php
@@ -201,11 +194,7 @@ if (!empty($fieldsArray))
 		optionStr = "";
 
 		// Variable to get current filter values
-<<<<<<< HEAD
 		var category = techjoomla.jQuery('#category_id').val();
-=======
-		var category = techjoomla.jQuery('input:radio[name ="category_id"]:checked').val();
->>>>>>> upstream/stable-released-1.3
 
 		if (typeof(category) != 'undefined')
 		{

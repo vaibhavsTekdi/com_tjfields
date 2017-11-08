@@ -4,10 +4,10 @@
 	<author>TechJoomla</author>
 	<authorEmail>extensions@techjoomla.com</authorEmail>
 	<authorUrl>www.techjoomla.com</authorUrl>
-	<copyright>Copyright(C)2012-17 TechJoomla</copyright>
+	<copyright>Copyright(C)2012-16 TechJoomla</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-	<creationDate>12th Apr 2017</creationDate>
-	<version>1.4</version>
+	<creationDate>3 June 2016</creationDate>
+	<version>2.5.5</version>
 	<description>MOD_TJFIELDS_SEARCH_XML_DESCRIPTION</description>
 	<files>
 		<filename module="mod_tjfields_search">mod_tjfields_search.php</filename>
@@ -42,7 +42,7 @@
 					<option value="0">JNO</option>
 					<option value="1">JYES</option>
 				</field>
-				<field name="layout" class="btn-group" type="radio" default="vertical" description="MOD_TJFIELDS_SEARCH_DISPLAY_LAYOUT_DESC" label="MOD_TJFIELDS_SEARCH_DISPLAY_LAYOUT" >
+				<field name="layout" class="btn-group" type="radio" default="horizontal" description="MOD_TJFIELDS_SEARCH_DISPLAY_LAYOUT_DESC" label="MOD_TJFIELDS_SEARCH_DISPLAY_LAYOUT" >
 					<option value="horizontal">MOD_TJFIELDS_SEARCH_HORZONTAL_LAYOUT</option>
 					<option value="vertical">MOD_TJFIELDS_SEARCH_VERTICAL_LAYOUT</option>
 				</field>

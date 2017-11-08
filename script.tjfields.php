@@ -278,18 +278,6 @@ class com_tjfieldsInstallerScript
 			}
 		}
 
-		if (!in_array('format', $field_array)) {
-			$query = "ALTER TABLE `#__tjfields_fields`
-						ADD COLUMN `format` varchar(255) NOT NULL";
-			$db->setQuery($query);
-			if (!$db->execute() )
-			{
-				echo $img_ERROR.JText::_('Unable to Alter #__tjfields_fields table. (While adding format column )').$BR;
-				echo $db->getErrorMsg();
-				return false;
-			}
-		}
-
 		$query="
 				CREATE TABLE IF NOT EXISTS `#__tjfields_category_mapping` (
 				  `id` INT(11) NOT NULL AUTO_INCREMENT,

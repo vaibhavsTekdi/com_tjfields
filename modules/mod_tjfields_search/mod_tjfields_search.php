@@ -23,7 +23,7 @@ $client_type               = $params->get('client_type', '');
 $category_type               = $params->get('category_type', '');
 $URLParamConditions               = $params->get('URLParamConditions', '');
 $bootstrapVersion = $params->get('bootstrapversion', 'bs3', 'STRING');
-$displayLayout = $params->get('layout', 'vertical', 'STRING');
+$displayLayout = $params->get('layout', 'horizontal', 'STRING');
 $URLParamConditions = trim($URLParamConditions);
 
 $tmp = explode(".", $client_type);
@@ -31,6 +31,7 @@ $configuredComp = $tmp[0];
 
 // Check the Bootstrap here
 $mod_tjfilter_layout = $params->get('bootstrapversion');
+
 
 if (JFile::exists(JPATH_SITE . '/components/com_tjfields/tjfields.php'))
 {
@@ -109,9 +110,6 @@ if (JFile::exists(JPATH_SITE . '/components/com_tjfields/tjfields.php'))
 	}
 	else
 	{
-		$options         = array();
-		$options[]       = JHtml::_('select.option', '', JText::_('MOD_TJFIELDS_SEARCH_SELECT_CATEGORY'));
-
 		if ($bootstrapVersion == 'bs2')
 		{
 			$basePath = JPATH_SITE . '/components/' . $category_type . '/layouts/corefilters/vertical/bs2';
@@ -122,17 +120,20 @@ if (JFile::exists(JPATH_SITE . '/components/com_tjfields/tjfields.php'))
 		}
 	}
 
-	$cats = JHtml::_('category.options', $category_type, array('filter.published' => array(1)));
-	$fieldsCategorys               = array_merge($options, $cats);
-
 	$layout = new JLayoutFile('corefilters', $basePath);
-
 	$data = "";
 	$compSpecificFilterHtml = $layout->render($data);
 
 	// Selected category
 	$clientCatUrlParam = $params->get("url_cat_param_name", "prod_cat");
 	$selectedCategory = $input->get($clientCatUrlParam, '');
+
+	$options         = array();
+	$options[]       = JHtml::_('select.option', '', JText::_('MOD_TJFIELDS_SEARCH_SELECT_CATEGORY'));
+
+	// Static public function options($extension, $config = array('filter.published' => array(0,1)))
+	$cats = JHtml::_('category.options', $category_type, array('filter.published' => array(1)));
+	$fieldsCategorys               = array_merge($options, $cats);
 
 	$fieldsArray = array();
 

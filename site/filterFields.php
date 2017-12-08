@@ -342,7 +342,57 @@ trait TjfieldsFilterField
 
 		$tjFieldsHelper = new TjfieldsHelper;
 
-		$data['user_id']     = JFactory::getUser()->id;
+		$data['user_id'] = JFactory::getUser()->id;
+		$app             = JFactory::getApplication();
+
+		if (!empty($data['category']) && !empty($data['clientComponent']) && !empty($data['client']) && !empty($data['view']))
+		{
+			// Validate the posted data.
+			$formExtra = $this->getFormExtra(
+						array("category" => $data['category'],
+							"clientComponent" => $data['clientComponent'],
+							"client" => $data['client'],
+							"view" => $data['view'])
+							);
+
+			$formExtra = array_filter($formExtra);
+			$extra_jform_data = $data['fieldsvalue'];
+
+			if (!empty($formExtra))
+			{
+				if (!empty($formExtra[0]))
+				{
+					// Validate the posted extra data.
+					$extra_jform_data1 = $this->validateExtra($formExtra[0], $extra_jform_data);
+				}
+
+				if (!empty($formExtra[1]))
+				{
+					// Validate the posted extra data.
+					$extra_jform_data2 = $this->validateExtra($formExtra[1], $extra_jform_data);
+				}
+
+				$extra_jform_data = array_merge($extra_jform_data1, $extra_jform_data2);
+				$data['fieldsvalue'] = $extra_jform_data;
+			}
+
+			$errors = $this->getErrors();
+
+			// Push up to three validation messages out to the user.
+			for ($i = 0, $n = count($errors); $i < $n && $i < 3; $i++)
+			{
+				if ($errors[$i] instanceof Exception)
+				{
+					$app->enqueueMessage($errors[$i]->getMessage(), 'warning');
+				}
+				else
+				{
+					$app->enqueueMessage($errors[$i], 'warning');
+				}
+
+				return false;
+			}
+		}
 
 		$result = $tjFieldsHelper->saveFieldsValue($data);
 

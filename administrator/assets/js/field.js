@@ -45,7 +45,7 @@ function addClone(rId,rClass)
 					techjoomla.jQuery('.tjfields_defaultoptionvalue').each(function(){
 
 							techjoomla.jQuery(this).html("<i class='"+tjfield_icon_emptystar+"'></i>");
-							//techjoomla.jQuery(this).attr('src',"<?php echo JUri::root().'administrator'.DS.'components'.DS.'com_tjfields'.DS.'images'.DS.'nodefault.png' ?>");
+							//techjoomla.jQuery(this).attr('src',"<?php echo JUri::root().'administrator/components/com_tjfields/images/nodefault.png' ?>");
 
 						});
 					techjoomla.jQuery('.tjfields_hiddenoption').each(function(){

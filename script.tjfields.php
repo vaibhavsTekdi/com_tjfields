@@ -25,11 +25,6 @@ jimport('joomla.filesystem.folder');
 jimport('joomla.filesystem.file');
 jimport('joomla.application.component.controller');
 
-if (!defined('DS'))
-{
-	define('DS',DIRECTORY_SEPARATOR);
-}
-
 class com_tjfieldsInstallerScript
 {
 	// Used to identify new install or update
@@ -512,11 +507,11 @@ class com_tjfieldsInstallerScript
 		// Obviously you may have to change the path and name if your installation SQL file ;)
 		if (method_exists($parent, 'extension_root'))
 		{
-			$sqlfile = $parent->getPath('extension_root').DS.'administrator'.DS.'sql'.DS.$sqlfile;
+			$sqlfile = $parent->getPath('extension_root') . '/administrator/sql/' . $sqlfile;
 		}
 		else
 		{
-			$sqlfile = $parent->getParent()->getPath('extension_root').DS.'sql'.DS.$sqlfile;
+			$sqlfile = $parent->getParent()->getPath('extension_root') . '/sql/' . $sqlfile;
 		}
 
 		// Don't modify below this line

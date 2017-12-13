@@ -249,9 +249,7 @@ class JFormFieldFieldoption extends JFormField
 		'][defaultoptionvalue]"   ><i ' . $icon . ' ></i></span>';
 
 		/*
-		'<img src="' . JURI::root() . 'administrator'
-		. DS . 'components' . DS . 'com_tjfields' . DS . 'images' .
-		DS . 'nodefault.png" id="tjfields_defaultoptionvalue_0" onclick="getdefaultimage(this.id)"
+		'<img src="' . JURI::root() . 'administrator/components/com_tjfields/images/nodefault.png" id="tjfields_defaultoptionvalue_0" onclick="getdefaultimage(this.id)"
 		name="tjfields[0][defaultoptionvalue]"  class="tjfields_defaultoptionvalue featured " />';
 		*/
 	}

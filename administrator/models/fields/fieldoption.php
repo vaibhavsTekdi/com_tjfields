@@ -247,11 +247,6 @@ class JFormFieldFieldoption extends JFormField
 		return $dedaultoption = '<span class=" tjfields_defaultoptionvalue " id="tjfields_defaultoptionvalue_' .
 		$k . '" onclick="getdefaultimage(this.id)" name="tjfields[' . $k .
 		'][defaultoptionvalue]"   ><i ' . $icon . ' ></i></span>';
-
-		/*
-		'<img src="' . JURI::root() . 'administrator/components/com_tjfields/images/nodefault.png" id="tjfields_defaultoptionvalue_0" onclick="getdefaultimage(this.id)"
-		name="tjfields[0][defaultoptionvalue]"  class="tjfields_defaultoptionvalue featured " />';
-		*/
 	}
 
 	/**

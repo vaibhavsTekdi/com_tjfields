@@ -205,7 +205,6 @@ trait TjfieldsFilterField
 				else
 				{
 					$userId = 0;
-					$canView = 0;
 
 					if (!empty($extraData[$tjFieldFieldTable->id]))
 					{
@@ -240,7 +239,7 @@ trait TjfieldsFilterField
 	 * @param   Array    $data      An optional array of data for the form to interogate.
 	 * @param   Boolean  $loadData  True if the form is to load its own data (default case), false if not.
 	 *
-	 * @return  JForm    A JForm    object on success, false on failure
+	 * @return  boolean|array    A JForm    object on success, false on failure
 	 *
 	 * @since	1.6
 	 */

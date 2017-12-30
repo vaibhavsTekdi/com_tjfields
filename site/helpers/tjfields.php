@@ -8,8 +8,9 @@
  */
 
 defined('_JEXEC') or die;
+
 /**
- * helper class for tjfields
+ * Helper class for tjfields
  *
  * @package     Tjfields
  * @subpackage  com_tjfields
@@ -356,8 +357,8 @@ class TjfieldsHelper
 	 */
 	public function uploadFile($singleFile, $insert_obj_file, $file_field_data)
 	{
-		$app             = JFactory::getApplication();
-		$user = JFactory::getUser();
+		$app      = JFactory::getApplication();
+		$user     = JFactory::getUser();
 		$username = preg_replace('/\s+/', '', $user->name);
 
 		$title = $singleFile['name'];
@@ -466,7 +467,7 @@ class TjfieldsHelper
 	public function saveSingleSelectFieldValue($postFieldData, $fieldName, $field_data, $updateId = 0)
 	{
 		$currentFieldValue = $postFieldData['fieldsvalue'][$fieldName];
-		$db = JFactory::getDbo();
+		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true);
 
 		$query->select("id")

@@ -784,7 +784,7 @@ class TjfieldsHelper
 	 *
 	 * @param   string  $client  Get all fields based on client
 	 *
-	 * @return array
+	 * @return array|string
 	 */
 	public function getUniversalFields($client)
 	{

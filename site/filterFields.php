@@ -74,7 +74,7 @@ trait TjfieldsFilterField
 	 * @param   Array    $data      An optional array of data for the form to interogate.
 	 * @param   Boolean  $loadData  True if the form is to load its own data (default case), false if not.
 	 *
-	 * @return  JForm|boolean    A JForm    object on success, false on failure
+	 * @return  array|boolean    A JForm    object on success, false on failure
 	 *
 	 * @since	1.6
 	 */
@@ -262,7 +262,7 @@ trait TjfieldsFilterField
 	 *
 	 * @param   array  $data  data
 	 *
-	 * @return  array    A JForm    object on success, false on failure
+	 * @return  JForm    A JForm    object on success, false on failure
 	 *
 	 * @since	1.6
 	 */
@@ -431,7 +431,7 @@ trait TjfieldsFilterField
 	 *
 	 * @param   array  $data  data
 	 *
-	 * @return  array  A JForm object on success, false on failure
+	 * @return  boolean  A JForm object on success, false on failure
 	 *
 	 * @since  1.6
 	 */

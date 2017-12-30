@@ -8,8 +8,9 @@
  */
 
 defined('_JEXEC') or die;
+
 /**
- * helper class for tjfields
+ * Helper class for tjfields
  *
  * @package     Tjfields
  * @subpackage  com_tjfields
@@ -20,7 +21,7 @@ class TjfieldsHelper
 	/**
 	 * My function
 	 *
-	 * @return  void
+	 * @return  string
 	 *
 	 * @since   1.6
 	 */
@@ -36,7 +37,7 @@ class TjfieldsHelper
 	 *
 	 * @param   array  $data  get data
 	 *
-	 * @return  void
+	 * @return  array
 	 */
 	public function FetchDatavalue($data)
 	{
@@ -138,7 +139,7 @@ class TjfieldsHelper
 	 *
 	 * @param   array  $data  Post array which content (client, content_id, Fname, Fvalue, u_id)
 	 *
-	 * @return  true
+	 * @return  boolean  Returns true if successful, and false otherwise.
 	 */
 	public function saveFieldsValue($data)
 	{
@@ -148,7 +149,6 @@ class TjfieldsHelper
 		}
 
 		// Get field Id and field type.
-		$db         = JFactory::getDbo();
 		$insert_obj = new stdClass;
 		$insert_obj->content_id = $data['content_id'];
 		$insert_obj->user_id    = $data['user_id'];
@@ -205,15 +205,15 @@ class TjfieldsHelper
 
 							if ($insert_obj_file->value)
 							{
-								if ($if_edit_file_id)
+								if (!empty($if_edit_file_id))
 								{
 									$insert_obj_file->id = $if_edit_file_id;
-									$result = $db->updateObject('#__tjfields_fields_value', $insert_obj_file, 'id');
+									$db->updateObject('#__tjfields_fields_value', $insert_obj_file, 'id');
 								}
 								else
 								{
 									$insert_obj_file->id = '';
-									$result = $db->insertObject('#__tjfields_fields_value', $insert_obj_file, 'id');
+									$db->insertObject('#__tjfields_fields_value', $insert_obj_file, 'id');
 								}
 							}
 
@@ -247,7 +247,7 @@ class TjfieldsHelper
 						{
 							$insert_obj->value = $fvalue;
 
-							if ($if_edit_id)
+							if (!empty($if_edit_id))
 							{
 								$insert_obj->id = $if_edit_id;
 								$db->updateObject('#__tjfields_fields_value', $insert_obj, 'id');
@@ -277,7 +277,7 @@ class TjfieldsHelper
 
 							$db->setQuery($query);
 
-							$result = $db->execute();
+							$db->execute();
 						}
 					}
 				}
@@ -320,7 +320,7 @@ class TjfieldsHelper
 	 * @param   STRING  $client           client
 	 * @param   ARRAY   $fieldsSubmitted  array of fields submitted
 	 *
-	 * @return  true
+	 * @return  ARRAY|boolean
 	 */
 	public function getUnsubmittedFields($content_id, $client, $fieldsSubmitted)
 	{
@@ -353,17 +353,16 @@ class TjfieldsHelper
 	 * @param   string  $insert_obj_file  file object
 	 * @param   string  $file_field_data  data
 	 *
-	 * @return  object
+	 * @return  string|boolean
 	 */
 	public function uploadFile($singleFile, $insert_obj_file, $file_field_data)
 	{
-		$app             = JFactory::getApplication();
-		$user = JFactory::getUser();
-		$user_id = $user->id;
-		$username = $string = preg_replace('/\s+/', '', $user->name);
+		$app      = JFactory::getApplication();
+		$user     = JFactory::getUser();
+		$username = preg_replace('/\s+/', '', $user->name);
 
 		$title = $singleFile['name'];
-		$title = $string = preg_replace('/\s+/', '', $title);
+		$title = preg_replace('/\s+/', '', $title);
 
 		jimport('joomla.filesystem.file');
 
@@ -468,7 +467,7 @@ class TjfieldsHelper
 	public function saveSingleSelectFieldValue($postFieldData, $fieldName, $field_data, $updateId = 0)
 	{
 		$currentFieldValue = $postFieldData['fieldsvalue'][$fieldName];
-		$db = JFactory::getDbo();
+		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true);
 
 		$query->select("id")
@@ -509,7 +508,7 @@ class TjfieldsHelper
 	 * @param   array  $subformFname   Current subform field name
 	 * @param   array  $field_data     field data
 	 *
-	 * @return  array
+	 * @return  true
 	 */
 	public function saveSubformData($postFieldData, $subformFname, $field_data)
 	{
@@ -565,7 +564,7 @@ class TjfieldsHelper
 	 * @param   array  $multiselectFname  Current multiselect field name
 	 * @param   array  $field_data        field data
 	 *
-	 * @return  array
+	 * @return  true
 	 */
 	public function saveMultiselectOptions($postFieldData, $multiselectFname, $field_data)
 	{
@@ -693,7 +692,7 @@ class TjfieldsHelper
 			$query->delete($db->quoteName('#__tjfields_fields_value'));
 			$query->where($conditions);
 			$db->setQuery($query);
-			$result = $db->execute();
+			$db->execute();
 		}
 	}
 
@@ -709,7 +708,7 @@ class TjfieldsHelper
 	{
 		$content_id = $data['content_id'];
 		$client     = $data['client'];
-		$user_id    = $data['user_id'];
+
 		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true);
 		$query->select('id FROM #__tjfields_fields_value');
@@ -729,8 +728,8 @@ class TjfieldsHelper
 	/**
 	 * Get option which are stored in field option table.
 	 *
-	 * @param   array  $field_id      field if
-	 * @param   array  $option_value  option value
+	 * @param   string  $field_id      field if
+	 * @param   string  $option_value  option value
 	 *
 	 * @return array Option for the particular field
 	 */
@@ -784,9 +783,9 @@ class TjfieldsHelper
 	/**
 	 * Get option which are stored in field option table.
 	 *
-	 * @param   array  $client  Get all fields based on client
+	 * @param   string  $client  Get all fields based on client
 	 *
-	 * @return object
+	 * @return array|string
 	 */
 	public function getUniversalFields($client)
 	{
@@ -812,7 +811,7 @@ class TjfieldsHelper
 	/**
 	 * Get option which are stored in field option table.
 	 *
-	 * @param   array  $client  Get all fields based on client
+	 * @param   string  $client  Get all fields based on client
 	 *
 	 * @return object
 	 */
@@ -832,8 +831,8 @@ class TjfieldsHelper
 	/**
 	 * Get option which are stored in field option table.
 	 *
-	 * @param   array  $client       Get all fields based on client
-	 * @param   array  $category_id  Get all fields for selected category
+	 * @param   string  $client       Get all fields based on client
+	 * @param   string  $category_id  Get all fields for selected category
 	 *
 	 * @return object
 	 */
@@ -919,15 +918,12 @@ class TjfieldsHelper
 		$client = $jinput->get("client");
 
 		// Get parameter name in which you are sending category id
-		$tj_mod_filter_cat = $jinput->get("tj_mod_filter_cat", "prod_cat");
-		$category_id = $jinput->get($tj_mod_filter_cat);
 		$fields_value_str = $jinput->get("tj_fields_value", '', "RAW");
-		$fieldOptions = array();
 
 		if ($fields_value_str)
 		{
 			$fields_value_str = explode(',', $fields_value_str);
-			$fieldOptions = $fields_value_str = array_filter($fields_value_str, 'trim');
+			$fields_value_str = array_filter($fields_value_str, 'trim');
 			$fields_value_str = implode(',', $fields_value_str);
 		}
 
@@ -1053,8 +1049,6 @@ class TjfieldsHelper
 
 		// Function will return -1 when no content found according to selected fields in filter
 		$tjfieldIitem_ids = "-1";
-		$tj_mod_filter_cat = $jinput->get("ModFilterCat", "prod_cat");
-		$category_id = $jinput->get($tj_mod_filter_cat);
 		$fields_value_str = $jinput->get("tj_fields_value", '', "RAW");
 
 		if (!empty($fields_value_str))
@@ -1083,7 +1077,7 @@ class TjfieldsHelper
 	 *
 	 * @param   STRING  $client  client
 	 *
-	 * @return object
+	 * @return array|boolean
 	 */
 	public function getClientFields($client)
 	{
@@ -1110,7 +1104,7 @@ class TjfieldsHelper
 	 *
 	 * @param   STRING  $filePath  media file path
 	 *
-	 * @return object
+	 * @return string|boolean
 	 */
 	public function getFileIdFromFilePath($filePath)
 	{
@@ -1137,7 +1131,7 @@ class TjfieldsHelper
 	 *
 	 * @param   STRING  $mediaId  media id
 	 *
-	 * @return object
+	 * @return string|boolean
 	 */
 	public function getMediaPathFromId($mediaId)
 	{
@@ -1168,12 +1162,11 @@ class TjfieldsHelper
 	 * @param   STRING  $extern           - for direct download it will be file path like http://
 	 * @param   STRING  $exitHere         - for direct download it will be file path like http://
 	 *
-	 * @return  html
+	 * @return  integer
 	 */
 	public function downloadMedia($file, $filename_direct = '', $extern = '', $exitHere = 1)
 	{
 		jimport('joomla.filesystem.file');
-		$app = JFactory::getApplication();
 		$file = substr($file, 1);
 
 		clearstatcache();
@@ -1235,7 +1228,7 @@ class TjfieldsHelper
 	 *
 	 * @param   STRING  $filetype  filetype
 	 *
-	 * @return  html
+	 * @return  string
 	 */
 	public function getMime($filetype)
 	{
@@ -1600,7 +1593,7 @@ class TjfieldsHelper
 	 * @param   STRING  $filePath       media file path
 	 * @param   STRING  $extraUrlPrams  extra url params
 	 *
-	 * @return  boolean  True on success.
+	 * @return  string|boolean  True on success.
 	 *
 	 * @since   3.2
 	 */
@@ -1611,7 +1604,6 @@ class TjfieldsHelper
 			$tjfieldsHelper = new TjfieldsHelper;
 
 			$fileId = $tjfieldsHelper->getFileIdFromFilePath($filePath);
-			$app = JFactory::getApplication();
 
 			//  If url extra param is present
 			if (!empty($extraUrlPrams))

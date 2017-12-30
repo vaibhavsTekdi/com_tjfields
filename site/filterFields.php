@@ -29,7 +29,7 @@ trait TjfieldsFilterField
 	 * @param   array    $data      An optional ordering field.
 	 * @param   boolean  $loadData  An optional direction (asc|desc).
 	 *
-	 * @return  JForm    $form      A JForm object on success, false on failure
+	 * @return  JForm|boolean    $form      A JForm object on success, false on failure
 	 *
 	 * @since   2.2
 	 */
@@ -74,7 +74,7 @@ trait TjfieldsFilterField
 	 * @param   Array    $data      An optional array of data for the form to interogate.
 	 * @param   Boolean  $loadData  True if the form is to load its own data (default case), false if not.
 	 *
-	 * @return  JForm    A JForm    object on success, false on failure
+	 * @return  array|boolean    A JForm    object on success, false on failure
 	 *
 	 * @since	1.6
 	 */
@@ -133,20 +133,28 @@ trait TjfieldsFilterField
 			{
 				$tjFieldFieldTable->load(array('name' => $field->fieldname));
 
+				$canAdd = 0;
+
 				if ($user->authorise('core.field.addfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->group_id))
 				{
 					$canAdd = $user->authorise('core.field.addfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->id);
 				}
+
+				$canEdit = 0;
 
 				if ($user->authorise('core.field.editfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->group_id))
 				{
 					$canEdit = $user->authorise('core.field.editfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->id);
 				}
 
+				$canView = 0;
+
 				if ($user->authorise('core.field.viewfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->group_id))
 				{
 					$canView = $user->authorise('core.field.viewfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->id);
 				}
+
+				$canEditOwn = 0;
 
 				if ($user->authorise('core.field.editownfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->group_id))
 				{
@@ -196,6 +204,8 @@ trait TjfieldsFilterField
 				}
 				else
 				{
+					$userId = 0;
+
 					if (!empty($extraData[$tjFieldFieldTable->id]))
 					{
 						$userId = $extraData[$tjFieldFieldTable->id]->user_id;
@@ -229,7 +239,7 @@ trait TjfieldsFilterField
 	 * @param   Array    $data      An optional array of data for the form to interogate.
 	 * @param   Boolean  $loadData  True if the form is to load its own data (default case), false if not.
 	 *
-	 * @return  JForm    A JForm    object on success, false on failure
+	 * @return  boolean|array    A JForm    object on success, false on failure
 	 *
 	 * @since	1.6
 	 */
@@ -249,7 +259,7 @@ trait TjfieldsFilterField
 	 *
 	 * The base form is loaded from XML
 	 *
-	 * @param   ATTAY  $data  data
+	 * @param   array  $data  data
 	 *
 	 * @return  JForm    A JForm    object on success, false on failure
 	 *
@@ -266,7 +276,7 @@ trait TjfieldsFilterField
 	 * Method to get the data of extra form fields
 	 * This form file will be created by field manager.
 	 *
-	 * @param   ATTAY  $data  data
+	 * @param   array  $data  data
 	 * @param   INT    $id    Id of record
 	 *
 	 * @return  JForm    A JForm    object on success, false on failure
@@ -382,7 +392,7 @@ trait TjfieldsFilterField
 	 * @param   array  $data  data
 	 * @param   array  $id    Id of the record
 	 *
-	 * @return	Extra field data
+	 * @return	array|boolean field data
 	 *
 	 * @since	1.8.5
 	 */
@@ -420,7 +430,7 @@ trait TjfieldsFilterField
 	 *
 	 * @param   array  $data  data
 	 *
-	 * @return  JForm  A JForm object on success, false on failure
+	 * @return  boolean  A JForm object on success, false on failure
 	 *
 	 * @since  1.6
 	 */

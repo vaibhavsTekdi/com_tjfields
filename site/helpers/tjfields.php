@@ -204,7 +204,7 @@ class TjfieldsHelper
 
 							if ($insert_obj_file->value)
 							{
-								if ($if_edit_file_id)
+								if (!empty($if_edit_file_id))
 								{
 									$insert_obj_file->id = $if_edit_file_id;
 									$db->updateObject('#__tjfields_fields_value', $insert_obj_file, 'id');
@@ -917,8 +917,6 @@ class TjfieldsHelper
 		$client = $jinput->get("client");
 
 		// Get parameter name in which you are sending category id
-		$tj_mod_filter_cat = $jinput->get("tj_mod_filter_cat", "prod_cat");
-
 		$fields_value_str = $jinput->get("tj_fields_value", '', "RAW");
 
 		if ($fields_value_str)
@@ -1050,7 +1048,6 @@ class TjfieldsHelper
 
 		// Function will return -1 when no content found according to selected fields in filter
 		$tjfieldIitem_ids = "-1";
-		$tj_mod_filter_cat = $jinput->get("ModFilterCat", "prod_cat");
 		$fields_value_str = $jinput->get("tj_fields_value", '', "RAW");
 
 		if (!empty($fields_value_str))

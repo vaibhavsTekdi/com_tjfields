@@ -78,7 +78,7 @@ class TjfieldsViewCountries extends JViewLegacy
 		require_once JPATH_COMPONENT . '/helpers/tjfields.php';
 
 		$state = $this->get('State');
-		$canDo = TjfieldsHelper::getActions();
+		$canDo = TjfieldsHelper::getActions('com_tjfields', 'country');
 
 		// Let's get the extension name
 		$client = JFactory::getApplication()->input->get('client', '', 'STRING');

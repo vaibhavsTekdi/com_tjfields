@@ -72,7 +72,7 @@ class TjfieldsViewField extends JViewLegacy
 			$checkedOut = false;
 		}
 
-		$canDo           = TjfieldsHelper::getActions();
+		$canDo           = TjfieldsHelper::getActions('com_tjfields', 'field');
 		$input           = JFactory::getApplication()->input;
 		$client          = $input->get('client');
 		$component_title = JText::_('COM_TJFIELDS_TITLE_COMPONENT');

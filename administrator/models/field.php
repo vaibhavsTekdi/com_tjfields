@@ -53,9 +53,6 @@ class TjfieldsModelField extends JModelAdmin
 	 */
 	public function getForm($data = array(), $loadData = true)
 	{
-		// Initialise variables.
-		$app = JFactory::getApplication();
-
 		// Get the form.
 		$form = $this->loadForm('com_tjfields.field', 'field', array(
 			'control' => 'jform',

@@ -79,11 +79,6 @@ class TjfieldsModelCities extends JModelList
 		// Set ordering direction.
 		$listOrder = $app->getUserStateFromRequest($this->context . 'filter_order_Dir', 'filter_order_Dir');
 
-		if (!in_array(strtoupper($listOrder), array('ASC', 'DESC', '')))
-		{
-			$listOrder = 'ASC';
-		}
-
 		// Load the filter search
 		$search = $app->getUserStateFromRequest($this->context . 'filter.search', 'filter_search');
 		$this->setState('filter.search', $search);
@@ -152,15 +147,16 @@ class TjfieldsModelCities extends JModelList
 		);
 
 		$query->from('`#__tj_city` AS a');
-		$query->select('a.' . $client .' AS state');
+		$query->select('a.' . $client . 'AS state');
 
 		$query->select('c.country');
 		$query->join('LEFT', '`#__tj_country` AS c ON c.id=a.country_id');
-		$query->where('c.' . $client .' = 1');
+		$query->where('c.' . $client . ' = 1');
 
 		$query->select('r.region');
 		$query->join('LEFT', '`#__tj_region` AS r ON r.id=a.region_id');
-		//$query->where('r.' . $client .' = 1');
+
+		// $query->where('r.' . $client .' = 1');
 
 		// Filter by search in title
 		$search = $this->getState('filter.search');
@@ -185,11 +181,11 @@ class TjfieldsModelCities extends JModelList
 
 		if (is_numeric($published))
 		{
-			$query->where('a.' . $client .' = ' . (int) $published);
+			$query->where('a.' . $client . ' = ' . (int) $published);
 		}
 		elseif ($published === '')
 		{
-			$query->where('(a.' . $client .' IN (0, 1))');
+			$query->where('(a.' . $client . ' IN (0, 1))');
 		}
 
 		// Filter by country
@@ -208,8 +204,6 @@ class TjfieldsModelCities extends JModelList
 				$query->where('a.region_id = ' . (int) $region);
 			}
 		}
-
-
 
 		// Add the list ordering clause.
 		$orderCol = $this->state->get('list.ordering');

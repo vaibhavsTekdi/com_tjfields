@@ -1,6 +1,13 @@
-function addClone(rId,rClass)
+function addClone(rId)
 		{
-			//window.field_lenght=f_lenght;
+			/*
+			 * global: field_lenght
+			   global: tjfield_icon_minus
+			   global: tjfield_icon_emptystar
+			   global: tjfield_icon_star
+			   global: tjfield_icon_emptystar
+			 */
+
 			var pre=field_lenght;
 			field_lenght++;
 

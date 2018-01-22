@@ -56,7 +56,7 @@ class TjfieldsControllerRegions extends JControllerAdmin
 		);
 
 		$task = $this->getTask();
-		$value = JArrayHelper::getValue($data, $task, 0, 'int');
+		$value = /** @scrutinizer ignore-deprecated */ JArrayHelper::getValue($data, $task, 0, 'int');
 
 		// Get some variables from the request
 		if (empty($cid))
@@ -69,12 +69,14 @@ class TjfieldsControllerRegions extends JControllerAdmin
 			$model = $this->getModel();
 
 			// Make sure the item ids are integers
-			JArrayHelper::toInteger($cid);
+			/** @scrutinizer ignore-deprecated */ JArrayHelper::toInteger($cid);
 
 			// Publish the items.
 			try
 			{
-				$model->publish($cid, $value);
+				$model->/** @scrutinizer ignore-call */ publish($cid, $value);
+
+				$ntext = '';
 
 				if ($value === 1)
 				{
@@ -85,7 +87,7 @@ class TjfieldsControllerRegions extends JControllerAdmin
 					$ntext = 'COM_TJFIELDS_N_REGIONS_UNPUBLISHED';
 				}
 
-				$this->setMessage(JText::plural($ntext, count($cid)));
+				$this->setMessage(JText::/** @scrutinizer ignore-call */ plural($ntext, count($cid)));
 			}
 			catch (Exception $e)
 			{

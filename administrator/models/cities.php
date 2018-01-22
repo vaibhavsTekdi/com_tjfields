@@ -76,9 +76,6 @@ class TjfieldsModelCities extends JModelList
 
 		$this->setState('list.ordering', $orderCol);
 
-		// Set ordering direction.
-		$listOrder = $app->getUserStateFromRequest($this->context . 'filter_order_Dir', 'filter_order_Dir');
-
 		// Load the filter search
 		$search = $app->getUserStateFromRequest($this->context . 'filter.search', 'filter_search');
 		$this->setState('filter.search', $search);

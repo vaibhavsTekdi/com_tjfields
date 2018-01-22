@@ -29,13 +29,17 @@ class TjfieldsControllerRegion extends JControllerForm
 	 */
 	protected $client;
 
+	protected $view_list;
+
+	protected $input;
+
 	/**
 	 * Constructor.
 	 *
-	 * @param  array   $config  An optional associative array of configuration settings.
+	 * @param   array  $config  An optional associative array of configuration settings.
 	 *
-	 * @since  1.6
-	 * @see    JController
+	 * @since   1.6
+	 * @see   JController
 	 */
 	public function __construct($config = array())
 	{

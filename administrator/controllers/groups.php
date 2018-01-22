@@ -187,7 +187,7 @@ class TjfieldsControllerGroups extends JControllerAdmin
 			}
 			else
 			{
-				$this->/** @scrutinizer ignore-call */ setMessage($model->getError());
+				$this->/** @scrutinizer ignore-call */ setMessage($model->/** @scrutinizer ignore-call */ getError());
 			}
 		}
 

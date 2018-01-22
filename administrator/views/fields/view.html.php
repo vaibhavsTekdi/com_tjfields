@@ -36,8 +36,6 @@ class TjfieldsViewFields extends JViewLegacy
 	 */
 	public function display($tpl = null)
 	{
-		$input           = jFactory::getApplication()->input;
-
 		$this->state      = $this->get('State');
 		$this->items      = $this->get('Items');
 		$this->pagination = $this->get('Pagination');

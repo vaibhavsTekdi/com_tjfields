@@ -89,7 +89,7 @@ class TjfieldsControllerCity extends JControllerForm
 	/**
 	 * Loads regions according to selected country
 	 *
-	 * @return states list
+	 * @return null
 	 */
 	public function getRegionsList()
 	{
@@ -100,15 +100,5 @@ class TjfieldsControllerCity extends JControllerForm
 
 		echo json_encode($states);
 		JFactory::getApplication()->close();
-	}
-
-	/**
-	 * Method to get the city list
-	 *
-	 * @return city list
-	 */
-	public function fixDB()
-	{
-		$model = $this->getModel();
 	}
 }

@@ -61,7 +61,7 @@ class TjfieldsControllerGroups extends JControllerAdmin
 		$model = $this->getModel();
 
 		// Save the ordering
-		$return = $model->saveorder($pks, $order);
+		$return = $model->/** @scrutinizer ignore-call */ saveorder($pks, $order);
 
 		if ($return)
 		{
@@ -104,7 +104,7 @@ class TjfieldsControllerGroups extends JControllerAdmin
 			// Publish the items.
 			try
 			{
-				$model->setItemState($cid, $value);
+				$model->/** @scrutinizer ignore-call */ setItemState($cid, $value);
 
 				if ($value == 1)
 				{
@@ -174,7 +174,7 @@ class TjfieldsControllerGroups extends JControllerAdmin
 			JArrayHelper::toInteger($cid);
 
 			// Remove the items.
-			if ($model->deletegroup($cid))
+			if ($model->/** @scrutinizer ignore-call */ deletegroup($cid))
 			{
 				$TjfieldsHelper = new TjfieldsHelper;
 				$data = array();
@@ -187,7 +187,7 @@ class TjfieldsControllerGroups extends JControllerAdmin
 			}
 			else
 			{
-				$this->setMessage($model->getError());
+				$this->/** @scrutinizer ignore-call */ setMessage($model->getError());
 			}
 		}
 

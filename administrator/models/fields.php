@@ -65,7 +65,11 @@ class TjfieldsModelFields extends JModelList
 
 		// Set client in model state
 		$client = $app->input->get('client', '', 'STRING');
-		$this->setState('filter.client', $client);
+
+		if (!empty($client))
+		{
+			$this->setState('filter.client', $client);
+		}
 
 		// Load the filter state.
 		$search = $app->getUserStateFromRequest($this->context . '.filter.search', 'filter_search');

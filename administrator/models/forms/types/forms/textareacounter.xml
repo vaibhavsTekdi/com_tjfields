@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<fields name="params" label="COM_TJFIELDS_FIELD_BASIC_LABEL">
+		<fieldset name="params">
+			<field name="rows" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_ROWS" description="COM_TJFIELDS_FORM_DESC_FIELD_ROWS"/>
+			<field name="cols" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_COLS" description="COM_TJFIELDS_FORM_DESC_FIELD_COLS"/>
+			<field name="countertext" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_COUNTERTEXT" description="COM_TJFIELDS_FORM_DESC_FIELD_COUNTERTEXT" default="Characters remaining ( {remaining} / {maxlength} )"/>
+			<field name="maxlength" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_MAXLENGHT" description="COM_TJFIELDS_FORM_DESC_FIELD_MAXLENGHT"/>
+			<field name="minlength" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_MINLENGHT" description="COM_TJFIELDS_FORM_DESC_FIELD_MINLENGHT"/>
+			<field name="addfieldpath" type="hidden" default="/administrator/components/com_tjfields/models/fields"/>
+		</fieldset>
+	</fields>
+</form>

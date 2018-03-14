@@ -55,7 +55,6 @@ function TjfieldsParseRoute($segments)
 			$vars['id'] = $segment;
 		}
         else{
-            $count--;
             $vars['task'] = array_pop($segments) . '.' . $segment;
         }
 	}

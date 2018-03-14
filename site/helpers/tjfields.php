@@ -1601,19 +1601,16 @@ class TjfieldsHelper
 	{
 		if (!empty($filePath))
 		{
-			$tjfieldsHelper = new TjfieldsHelper;
-
-			$fileId = $tjfieldsHelper->getFileIdFromFilePath($filePath);
-
-			//  If url extra param is present
+			// If url extra param is present
 			if (!empty($extraUrlPrams))
 			{
 				$extraUrlPrams = '&' . $extraUrlPrams;
 			}
 
-			$b_lk = 'index.php?option=com_tjfields&task=getMedia&fid=';
-			$link = JUri::root() . substr(JRoute::_($b_lk . $fileId . $extraUrlPrams), strlen(JUri::base(true)) + 1);
-
+			// Here, fpht means file encoded path
+			$encodedPath = base64_encode($filePath);
+			$b_lk = 'index.php?option=com_tjfields&task=getMedia&fpht=';
+			$link = JUri::root() . substr(JRoute::_($b_lk . $encodedPath . $extraUrlPrams), strlen(JUri::base(true)) + 1);
 			return $link;
 		}
 		else

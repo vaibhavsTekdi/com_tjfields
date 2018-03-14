@@ -231,7 +231,7 @@ class TjfieldsHelper
 
 					if (!empty($fvalue))
 					{
-						if ($field_data->type == 'subform')
+						if ($field_data->type == 'subform' || $field_data->type == 'ucmsubform')
 						{
 							$this->saveSubformData($data, $fname, $field_data);
 						}

@@ -37,6 +37,7 @@ class JFormFieldlayoutfield extends JFormField
 	 */
 	protected function getInput()
 	{
+		$options = array();
 		$options[] = JHtml::_(
 								'select.option', 'joomla.form.field.subform.repeatable',
 								JText::_('COM_TJFIELDS_FORM_LBL_FIELD_SELECT_FIELD_LAYOUT_REPETABLE')

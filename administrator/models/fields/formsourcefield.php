@@ -37,7 +37,6 @@ class JFormFieldformsourcefield extends JFormField
 	 */
 	protected function getInput()
 	{
-		$input = JFactory::getApplication()->input;
 		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true);
 

@@ -350,7 +350,7 @@ class TjfieldsHelper
 	 * Function to upload file
 	 *
 	 * @param   string  $singleFile       name of field
-	 * @param   string  $insert_obj_file  file object
+	 * @param   object  $insert_obj_file  file object
 	 * @param   string  $file_field_data  data
 	 *
 	 * @return  string|boolean

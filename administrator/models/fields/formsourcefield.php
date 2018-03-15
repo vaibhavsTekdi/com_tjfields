@@ -3,11 +3,11 @@
  * @version    SVN: <svn_id>
  * @package    TJ-Fields
  * @author     Techjoomla <extensions@techjoomla.com>
- * @copyright  Copyright (c) 2009-2016 TechJoomla. All rights reserved.
+ * @copyright  Copyright (c) 2009-2018 TechJoomla. All rights reserved.
  * @license    GNU General Public License version 2 or later.
  */
 
-defined('JPATH_BASE') or die;
+defined('JPATH_PLATFORM') or die;
 
 jimport('joomla.html.html');
 jimport('joomla.form.formfield');
@@ -15,7 +15,7 @@ jimport('joomla.form.formfield');
 /**
  * Supports an formsource select list of subform
  *
- * @since  1.6
+ * @since  1.3
  */
 class JFormFieldformsourcefield extends JFormField
 {
@@ -24,7 +24,7 @@ class JFormFieldformsourcefield extends JFormField
 	 *
 	 * @var		string
 	 *
-	 * @since	1.6
+	 * @since	1.3
 	 */
 	protected $type = 'text';
 
@@ -33,7 +33,7 @@ class JFormFieldformsourcefield extends JFormField
 	 *
 	 * @return	string	The field input markup.
 	 *
-	 * @since	1.6
+	 * @since	1.3
 	 */
 	protected function getInput()
 	{
@@ -64,21 +64,5 @@ class JFormFieldformsourcefield extends JFormField
 		return JHtml::_('select.genericlist', $options, $this->name, 'class="inputbox required"',
 		'value', 'text', $this->value, $this->options['control'] . $this->name
 		);
-	}
-
-	/**
-	 * Method to genereate list of form source.
-	 *
-	 * @param   string  $name          Field name
-	 * @param   string  $value         Field value
-	 * @param   string  &$node         Field element
-	 * @param   string  $control_name  Field control_name
-	 *
-	 * @return   list  The list of form source.
-	 *
-	 * @since   1.6
-	 */
-	public function fetchformsource($name, $value, &$node, $control_name)
-	{
 	}
 }

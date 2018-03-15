@@ -3,11 +3,11 @@
  * @version    SVN: <svn_id>
  * @package    TJ-Fields
  * @author     Techjoomla <extensions@techjoomla.com>
- * @copyright  Copyright (c) 2009-2016 TechJoomla. All rights reserved.
+ * @copyright  Copyright (c) 2009-2018 TechJoomla. All rights reserved.
  * @license    GNU General Public License version 2 or later.
  */
 
-defined('JPATH_BASE') or die;
+defined('JPATH_PLATFORM') or die;
 
 jimport('joomla.html.html');
 jimport('joomla.form.formfield');
@@ -15,7 +15,7 @@ jimport('joomla.form.formfield');
 /**
  * Supports an formsource select list of subform
  *
- * @since  1.6
+ * @since  1.3
  */
 class JFormFieldlayoutfield extends JFormField
 {
@@ -24,7 +24,7 @@ class JFormFieldlayoutfield extends JFormField
 	 *
 	 * @var		string
 	 *
-	 * @since	1.6
+	 * @since	1.3
 	 */
 	protected $type = 'text';
 

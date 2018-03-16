@@ -17,7 +17,7 @@ defined('_JEXEC') or die;
 function TjfieldsBuildRoute(&$query)
 {
 	$segments = array();
-    
+
 	if (isset($query['task'])) {
 		$segments[] = implode('/',explode('.',$query['task']));
 		unset($query['task']);
@@ -43,10 +43,10 @@ function TjfieldsBuildRoute(&$query)
 function TjfieldsParseRoute($segments)
 {
 	$vars = array();
-    
+
 	// view is always the first element of the array
 	$count = count($segments);
-    
+
     if ($count)
 	{
 		$count--;
@@ -60,7 +60,7 @@ function TjfieldsParseRoute($segments)
 	}
 
 	if ($count)
-	{   
+	{
         $vars['task'] = implode('.',$segments);
 	}
 	return $vars;

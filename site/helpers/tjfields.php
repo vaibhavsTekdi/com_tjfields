@@ -175,7 +175,6 @@ class TjfieldsHelper
 				$fieldsSubmitted[] = $insert_obj->field_id;
 			}
 
-			// Added By KOMAL TEMP
 			// Field Data
 			$db    = JFactory::getDbo();
 			$query = $db->getQuery(true);
@@ -205,19 +204,23 @@ class TjfieldsHelper
 
 							if ($insert_obj_file->value)
 							{
-								if (!empty($if_edit_file_id))
+								if ($if_edit_file_id)
 								{
 									$insert_obj_file->id = $if_edit_file_id;
-									$db->updateObject('#__tjfields_fields_value', $insert_obj_file, 'id');
+									$result = $db->updateObject('#__tjfields_fields_value', $insert_obj_file, 'id');
 								}
 								else
 								{
 									$insert_obj_file->id = '';
-									$db->insertObject('#__tjfields_fields_value', $insert_obj_file, 'id');
+									$result = $db->insertObject('#__tjfields_fields_value', $insert_obj_file, 'id');
 								}
 							}
 
 							$fieldsSubmitted[] = $insert_obj_file->field_id;
+						}
+						else
+						{
+							return false;
 						}
 					}
 				}
@@ -247,7 +250,7 @@ class TjfieldsHelper
 						{
 							$insert_obj->value = $fvalue;
 
-							if (!empty($if_edit_id))
+							if ($if_edit_id)
 							{
 								$insert_obj->id = $if_edit_id;
 								$db->updateObject('#__tjfields_fields_value', $insert_obj, 'id');
@@ -277,7 +280,7 @@ class TjfieldsHelper
 
 							$db->setQuery($query);
 
-							$db->execute();
+							$result = $db->execute();
 						}
 					}
 				}
@@ -401,19 +404,50 @@ class TjfieldsHelper
 		}
 		else
 		{
-			// Check for filesize
+			JTable::addIncludePath(JPATH_ADMINISTRATOR . "/components/com_tjfields/tables");
+			JModelLegacy::addIncludePath(JPATH_ADMINISTRATOR . "/components/com_tjfields/models");
+			$fieldModel = JModelLegacy::getInstance('Field','TjfieldsModel', array("ignore_request" => 1));
+
+			$fieldId = (int) $file_field_data->id;
+			$fieldItems = $fieldModel->getItem($fieldId);
+
+			// code for file size validation
+			$acceptSize = $fieldItems->params['size'];
 			$fileSize = $singleFile['size'];
 
-			if ($fileSize > 15728640)
+			if($acceptSize != "")
 			{
-				$app->enqueueMessage('This <strong>' . $title . '</strong> file size is greater than 15MB', 'warning');
+				$filesizeInBytes = $this->formatSizeUnits($acceptSize);
+				if($fileSize > $filesizeInBytes)
+				{
+					$app->enqueueMessage('File size is greater than '. $acceptSize . 'MB' , 'warning');
 
-				return false;
+					return false;
+				}
+			}
+			else
+			{
+				if ($fileSize > 33554432)
+				{
+					$app->enqueueMessage('File size is greater than 32MB', 'warning');
+
+					return false;
+				}
 			}
 
-			$okMIMETypes    = 'pdf,PDF,doc,DOC,docx,DOCX,xls,XLS,xlsx,XLSX,jpeg,JPEG,png,PNG,jpg,JPG';
-			$validMIMEArray = explode(',', $okMIMETypes);
+			// Code for file type validation
+			$acceptType = $fieldItems->params['accept'];
+			if (empty($acceptType))
+			{
+				$okMIMETypes    = 'pdf,PDF,doc,DOC,docx,DOCX,xls,XLS,xlsx,XLSX,jpeg,JPEG,png,PNG,jpg,JPG';
+			}
+			else
+			{
+				$okMIMETypes = $acceptType;
+				$okMIMETypes = str_ireplace('.', '', $okMIMETypes);
+			}
 
+			$validMIMEArray = explode(',', $okMIMETypes);
 			$client = explode('.', $insert_obj_file->client);
 
 			$filename  = JFile::stripExt($singleFile['name']);
@@ -424,7 +458,7 @@ class TjfieldsHelper
 
 			if (!in_array($fileMime, $validMIMEArray))
 			{
-				$app->enqueueMessage('This <strong>' . $title . '</strong> file type is not allowed for file ' . $filename . '.' . $extension, 'warning');
+				$app->enqueueMessage('Invalid file type', 'warning');
 
 				return false;
 			}
@@ -805,8 +839,6 @@ class TjfieldsHelper
 
 		return $universalFields;
 	}
-
-	// Added by ankush
 
 	/**
 	 * Get option which are stored in field option table.
@@ -1612,6 +1644,27 @@ class TjfieldsHelper
 			$b_lk = 'index.php?option=com_tjfields&task=getMedia&fpht=';
 			$link = JUri::root() . substr(JRoute::_($b_lk . $encodedPath . $extraUrlPrams), strlen(JUri::base(true)) + 1);
 			return $link;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	/**
+	 * Method to convert file size from MB to Bytes.
+	 *
+	 * @return  int  True on success.
+	 *
+	 * @since   3.2
+	 */
+	public function formatSizeUnits($mb)
+	{
+		if (!empty($mb))
+		{
+			// 1 Megabyte is equal to 1048576 bytes (binary)
+			$bytes = $mb * 1048576;
+			return $bytes;
 		}
 		else
 		{

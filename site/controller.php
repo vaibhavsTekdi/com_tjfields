@@ -22,6 +22,14 @@ jimport('joomla.application.component.controller');
 class TjfieldsController extends JControllerLegacy
 {
 	/**
+	 * The return URL.
+	 *
+	 * @var    mixed
+	 * @since  1.4
+	 */
+	protected $returnURL;
+
+	/**
 	 * Constructor
 	 *
 	 * @since 1.4

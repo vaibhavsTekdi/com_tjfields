@@ -60,6 +60,30 @@ class JFormFieldTextareacounter extends JFormFieldTextarea
 	protected $minlength;
 
 	/**
+	 * The minimum number of characters in textarea countertext.
+	 *
+	 * @var    mixed
+	 * @since  3.4
+	 */
+	protected $countertext;
+
+	/**
+	 * The textarea input field id.
+	 *
+	 * @var    int
+	 * @since  3.4
+	 */
+	protected $id;
+
+	/**
+	 * The class for textarea counter input field
+	 *
+	 * @var    mixed
+	 * @since  3.4
+	 */
+	protected $class;
+
+	/**
 	 * Method to attach a JForm object to the field.
 	 *
 	 * @param   SimpleXMLElement  $element  The SimpleXMLElement object representing the <field /> tag for the form field object.
@@ -107,11 +131,18 @@ class JFormFieldTextareacounter extends JFormFieldTextarea
 		$html = parent::getInput();
 		$html .= $this->getCounterMask();
 
-		// @TODO : Convert this into a snippet that loads only once
-		// using the .charcounter selector
+		// Using the .charcounter selector
 		$doc = JFactory::getDocument();
 		$doc->addScriptDeclaration('
 			jQuery(document).ready(function() {
+
+				jQuery(".charcounter").each(function() {
+					let usedcharlength = parseInt(jQuery(this).val().length);
+					let maxlength = parseInt(jQuery(this).siblings("span").find(".charscontainer_maxlength").text());
+					let availablecharlength = maxlength - usedcharlength;
+					jQuery(this).siblings("span").find(".charscontainer_remaining").text(availablecharlength);
+				})
+
 				jQuery("#' . $this->id . '").on("keyup", function() {
 					jQuery("#usedchars_' . $this->id . '").text(jQuery("#' . $this->id . '").val().length);
 					jQuery("#remainingchars_' . $this->id . '").text((' . $this->maxlength . ' - jQuery("#' . $this->id . '").val().length));

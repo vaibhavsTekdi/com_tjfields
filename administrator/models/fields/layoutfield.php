@@ -33,7 +33,7 @@ class JFormFieldlayoutfield extends JFormField
 	 *
 	 * @return	string	The field input markup.
 	 *
-	 * @since	1.6
+	 * @since	1.3
 	 */
 	protected function getInput()
 	{

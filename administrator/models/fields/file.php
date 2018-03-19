@@ -127,7 +127,6 @@ class JFormFieldFile extends JFormField
 	protected function getInput()
 	{
 		$layoutData = $this->getLayoutData();
-		$html = '';
 		$html = $this->getRenderer($this->layout)->render($layoutData);
 		$tjFieldHelper = new TjfieldsHelper;
 

@@ -222,8 +222,6 @@ trait TjfieldsFilterField
 						$form->removeField($field->fieldname);
 					}
 				}
-
-
 			}
 		}
 
@@ -400,8 +398,6 @@ trait TjfieldsFilterField
 	 */
 	public function getDataExtra($data, $id = null)
 	{
-		$input = JFactory::getApplication()->input;
-
 		if (empty($id))
 		{
 			$input = JFactory::getApplication()->input;

@@ -78,7 +78,7 @@ jQuery(document).ready(function(){
         return true;
     });
     document.formvalidator.setHandler('url', function(value) {
-        regex = /\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&#\/%?=~_|!:,.;]*[-a-z0-9+&#\/%=~_|]/i;
+        let regex = /\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&#\/%?=~_|!:,.;]*[-a-z0-9+&#\/%=~_|]/i;
         return regex.test(value);
     });
 

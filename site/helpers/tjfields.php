@@ -1648,7 +1648,7 @@ class TjfieldsHelper
 	 *
 	 * @param   int  $mb  file size in mb
 	 *
-	 * @return  int  True on success.
+	 * @return  int|bool  True on success.
 	 *
 	 * @since   3.2
 	 */

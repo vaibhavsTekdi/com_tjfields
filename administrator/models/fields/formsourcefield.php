@@ -37,6 +37,8 @@ class JFormFieldformsourcefield extends JFormField
 	 */
 	protected function getInput()
 	{
+		$options = array();
+
 		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true);
 
@@ -47,7 +49,6 @@ class JFormFieldformsourcefield extends JFormField
 		$db->setQuery($query);
 		$isSubform  = $db->loadObjectList();
 
-		$options = array();
 		$options[] = JHtml::_('select.option', '', JText::_('COM_TJFIELDS_FORM_LBL_FIELD_SELECT_SOURCE'));
 
 		foreach ($isSubform as $form)

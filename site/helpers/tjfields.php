@@ -207,12 +207,12 @@ class TjfieldsHelper
 								if ($if_edit_file_id)
 								{
 									$insert_obj_file->id = $if_edit_file_id;
-									$result = $db->updateObject('#__tjfields_fields_value', $insert_obj_file, 'id');
+									$db->updateObject('#__tjfields_fields_value', $insert_obj_file, 'id');
 								}
 								else
 								{
 									$insert_obj_file->id = '';
-									$result = $db->insertObject('#__tjfields_fields_value', $insert_obj_file, 'id');
+									$db->insertObject('#__tjfields_fields_value', $insert_obj_file, 'id');
 								}
 							}
 
@@ -274,13 +274,11 @@ class TjfieldsHelper
 							);
 
 							$query = $db->getQuery(true);
-
 							$query->delete($db->quoteName('#__tjfields_fields_value'));
 							$query->where($conditions);
-
 							$db->setQuery($query);
 
-							$result = $db->execute();
+							$db->execute();
 						}
 					}
 				}
@@ -406,30 +404,22 @@ class TjfieldsHelper
 		{
 			JTable::addIncludePath(JPATH_ADMINISTRATOR . "/components/com_tjfields/tables");
 			JModelLegacy::addIncludePath(JPATH_ADMINISTRATOR . "/components/com_tjfields/models");
-			$fieldModel = JModelLegacy::getInstance('Field','TjfieldsModel', array("ignore_request" => 1));
+			$fieldModel = JModelLegacy::getInstance('Field', 'TjfieldsModel', array("ignore_request" => 1));
 
 			$fieldId = (int) $file_field_data->id;
 			$fieldItems = $fieldModel->getItem($fieldId);
 
-			// code for file size validation
+			// Code for file size validation
 			$acceptSize = $fieldItems->params['size'];
 			$fileSize = $singleFile['size'];
 
-			if($acceptSize != "")
+			if ($acceptSize != "")
 			{
 				$filesizeInBytes = $this->formatSizeUnits($acceptSize);
-				if($fileSize > $filesizeInBytes)
-				{
-					$app->enqueueMessage('File size is greater than '. $acceptSize . 'MB' , 'warning');
 
-					return false;
-				}
-			}
-			else
-			{
-				if ($fileSize > 33554432)
+				if ($fileSize > $filesizeInBytes)
 				{
-					$app->enqueueMessage('File size is greater than 32MB', 'warning');
+					$app->enqueueMessage(JText::_('COM_TJFIELDS_FILE_ERROR_MAX_SIZE'), 'warning');
 
 					return false;
 				}
@@ -437,6 +427,7 @@ class TjfieldsHelper
 
 			// Code for file type validation
 			$acceptType = $fieldItems->params['accept'];
+
 			if (empty($acceptType))
 			{
 				$okMIMETypes    = 'pdf,PDF,doc,DOC,docx,DOCX,xls,XLS,xlsx,XLSX,jpeg,JPEG,png,PNG,jpg,JPG';
@@ -458,7 +449,7 @@ class TjfieldsHelper
 
 			if (!in_array($fileMime, $validMIMEArray))
 			{
-				$app->enqueueMessage('Invalid file type', 'warning');
+				$app->enqueueMessage(JText::_('COM_TJFIELDS_FILE_ERROR_INVALID_TYPE'), 'warning');
 
 				return false;
 			}
@@ -1641,9 +1632,10 @@ class TjfieldsHelper
 
 			// Here, fpht means file encoded path
 			$encodedPath = base64_encode($filePath);
-			$b_lk = 'index.php?option=com_tjfields&task=getMedia&fpht=';
-			$link = JUri::root() . substr(JRoute::_($b_lk . $encodedPath . $extraUrlPrams), strlen(JUri::base(true)) + 1);
-			return $link;
+			$basePathLink = 'index.php?option=com_tjfields&task=getMedia&fpht=';
+			$mediaURLlink = JUri::root() . substr(JRoute::_($basePathLink . $encodedPath . $extraUrlPrams), strlen(JUri::base(true)) + 1);
+
+			return $mediaURLlink;
 		}
 		else
 		{
@@ -1653,6 +1645,8 @@ class TjfieldsHelper
 
 	/**
 	 * Method to convert file size from MB to Bytes.
+	 *
+	 * @param   int  $mb  file size in mb
 	 *
 	 * @return  int  True on success.
 	 *
@@ -1664,6 +1658,7 @@ class TjfieldsHelper
 		{
 			// 1 Megabyte is equal to 1048576 bytes (binary)
 			$bytes = $mb * 1048576;
+
 			return $bytes;
 		}
 		else

@@ -107,7 +107,7 @@ class JFormFieldTextareacounter extends JFormFieldTextarea
 			$this->countertext = JText::_($this->countertext);
 			$this->maxlength = isset($this->element['maxlength']) ? (int) $this->element['maxlength'] : 0;
 			$this->minlength = isset($this->element['minlength']) ? (int) $this->element['minlength'] : 0;
-			$this->class .= ' charcounter';
+			$this->class .= ' tjfieldTextareacounter';
 
 			if (!empty($this->minlength))
 			{
@@ -131,12 +131,12 @@ class JFormFieldTextareacounter extends JFormFieldTextarea
 		$html = parent::getInput();
 		$html .= $this->getCounterMask();
 
-		// Using the .charcounter selector
+		// Using the .tjfieldTextareacounter selector
 		$doc = JFactory::getDocument();
 		$doc->addScriptDeclaration('
 			jQuery(document).ready(function() {
 
-				jQuery(".charcounter").each(function() {
+				jQuery(".tjfieldTextareacounter").each(function() {
 					let usedcharlength = parseInt(jQuery(this).val().length);
 					let maxlength = parseInt(jQuery(this).siblings("span").find(".charscontainer_maxlength").text());
 					let availablecharlength = maxlength - usedcharlength;
@@ -180,7 +180,7 @@ class JFormFieldTextareacounter extends JFormFieldTextarea
 	 */
 	private function getCounterMask()
 	{
-		$text = '<span class="charscontainer" id="charscontainer_' . $this->id . '">';
+		$text = '<span class="charscontainer pull-left" id="charscontainer_' . $this->id . '">';
 		$text .= $this->countertext;
 
 		$text = str_replace('{used}', '<span class="charscontainer_used" id="usedchars_' . $this->id . '">0</span>', $text);

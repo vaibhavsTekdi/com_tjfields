@@ -63,7 +63,7 @@ class TjfieldsController extends JControllerLegacy
 		$query = $db->getQuery(true);
 		$query->select('*');
 		$query->from('#__tjfields_fields_value');
-		$query->where($db->quoteName('value') . " LIKE " . $db->Quote('%' . $fileName . '%'));
+		$query->where($db->quoteName('value') . " = " . $db->Quote('%' . $fileName . '%'));
 		$db->setQuery($query);
 		$data = $db->loadObject();
 

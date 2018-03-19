@@ -1,10 +1,10 @@
 <?php
 /**
- * @package     Joomla.Platform
- * @subpackage  Form
- *
- * @copyright   Copyright (C) 2005 - 2018 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE
+ * @version    SVN: <svn_id>
+ * @package    TJ-Fields
+ * @author     Techjoomla <extensions@techjoomla.com>
+ * @copyright  Copyright (c) 2009-2018 TechJoomla. All rights reserved.
+ * @license    GNU General Public License version 2 or later.
  */
 
 defined('JPATH_PLATFORM') or die;
@@ -23,7 +23,7 @@ JLoader::register('JFormFieldTextarea', JPATH_BASE . '/libraries/joomla/form/fie
  * 		layout="joomla.form.field.subform.repeatable-table" groupByFieldset="false" component="com_example" client="site"
  * 		label="Field Label" description="Field Description" />
  *
- * @since  3.6
+ * @since  1.3
  */
 class JFormFieldUcmsubform extends JFormField
 {
@@ -76,7 +76,7 @@ class JFormFieldUcmsubform extends JFormField
 	 *
 	 * @return  mixed  The property value or null.
 	 *
-	 * @since   3.6
+	 * @since   1.3
 	 */
 	public function __get($name)
 	{
@@ -102,7 +102,7 @@ class JFormFieldUcmsubform extends JFormField
 	 *
 	 * @return  void
 	 *
-	 * @since   3.6
+	 * @since   1.3
 	 */
 	public function __set($name, $value)
 	{
@@ -186,7 +186,7 @@ class JFormFieldUcmsubform extends JFormField
 	 *
 	 * @return  boolean  True on success.
 	 *
-	 * @since   3.6
+	 * @since   1.3
 	 */
 	public function setup(SimpleXMLElement $element, $value, $group = null)
 	{
@@ -220,7 +220,7 @@ class JFormFieldUcmsubform extends JFormField
 	 *
 	 * @return  string  The field input markup.
 	 *
-	 * @since   3.6
+	 * @since   1.3
 	 */
 	protected function getInput()
 	{
@@ -311,7 +311,7 @@ class JFormFieldUcmsubform extends JFormField
 	 *
 	 * @return  string  The name to be used for the field input tag.
 	 *
-	 * @since   3.6
+	 * @since   1.3
 	 */
 	protected function getName($fieldName)
 	{

@@ -231,7 +231,7 @@ class TjfieldsHelper
 
 					if (!empty($fvalue))
 					{
-						if ($field_data->type == 'subform')
+						if ($field_data->type === 'subform' || $field_data->type === 'ucmsubform')
 						{
 							$this->saveSubformData($data, $fname, $field_data);
 						}
@@ -350,7 +350,7 @@ class TjfieldsHelper
 	 * Function to upload file
 	 *
 	 * @param   string  $singleFile       name of field
-	 * @param   string  $insert_obj_file  file object
+	 * @param   object  $insert_obj_file  file object
 	 * @param   string  $file_field_data  data
 	 *
 	 * @return  string|boolean

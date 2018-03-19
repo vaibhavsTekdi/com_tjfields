@@ -3,7 +3,7 @@
  * @version    SVN:<SVN_ID>
  * @package    TJFields
  * @author     Techjoomla <extensions@techjoomla.com>
- * @copyright  Copyright (c) 2009-2016 TechJoomla. All rights reserved
+ * @copyright  Copyright (c) 2009-2018 TechJoomla. All rights reserved
  * @license    GNU General Public License version 2, or later
  */
 

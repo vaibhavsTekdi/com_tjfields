@@ -3,7 +3,7 @@
  * @version    SVN: <svn_id>
  * @package    TJField
  * @author     Techjoomla <extensions@techjoomla.com>
- * @copyright  Copyright (c) 2014-2016 TechJoomla. All rights reserved.
+ * @copyright  Copyright (c) 2014-2018 TechJoomla. All rights reserved.
  * @license    GNU General Public License version 2 or later.
  */
 
@@ -80,7 +80,7 @@ class TjfieldsModelField extends JModelAdmin
 
 		// Check the session for previously entered form data.
 		$data = $app->getUserState('com_tjfields.edit.field.data', array());
-		$id   = $input->get('id', '0', 'INT');
+		$id = $input->get('id', '0', 'INT');
 
 		if (!empty($id))
 		{
@@ -355,7 +355,7 @@ class TjfieldsModelField extends JModelAdmin
 					foreach ($newlyAddedCats as $cat)
 					{
 						$obj = new stdClass;
-						$obj->field_id	= $id;
+						$obj->field_id = $id;
 						$obj->category_id = $cat;
 
 						if (!$this->_db->insertObject('#__tjfields_category_mapping', $obj, 'id'))

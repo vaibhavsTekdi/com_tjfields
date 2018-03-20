@@ -192,35 +192,29 @@ class TjfieldsHelper
 
 					if (!empty($singleFile))
 					{
-						$filename = $this->uploadFile($singleFile, $insert_obj_file, $file_field_data);
+						// COUNT_RECURSIVE - Counting elements in multidimensional array
 
-						if ($filename)
+						if (count($singleFile) != count($singleFile, COUNT_RECURSIVE))
 						{
-							$if_edit_file_id        = $this->checkForAlreadyexitsDetails($data, $file_field_data->id);
-
 							$client = explode('.', $insert_obj_file->client);
 
-							$insert_obj_file->value = '/media/' . $client[0] . '/' . $client[1] . '/' . $filename;
-
-							if ($insert_obj_file->value)
+							foreach ($singleFile as $singleFileName => $eachFile)
 							{
-								if ($if_edit_file_id)
+								foreach ($eachFile as $eachFileName => $OneFile)
 								{
-									$insert_obj_file->id = $if_edit_file_id;
-									$db->updateObject('#__tjfields_fields_value', $insert_obj_file, 'id');
-								}
-								else
-								{
-									$insert_obj_file->id = '';
-									$db->insertObject('#__tjfields_fields_value', $insert_obj_file, 'id');
+									$filename = $this->uploadFile($OneFile, $insert_obj_file, $file_field_data);
+									$file_name = '/media/' . $client[0] . '/' . $client[1] . '/' . $filename;
+									$data['fieldsvalue'][$file_field_data->name][$singleFileName][$eachFileName] = $file_name;
 								}
 							}
 
-							$fieldsSubmitted[] = $insert_obj_file->field_id;
+							// Save subform file data
+							$this->saveSubformData($data, $fieldName, $file_field_data);
 						}
 						else
 						{
-							return false;
+							$filename = $this->uploadFile($singleFile, $insert_obj_file, $file_field_data);
+							$fieldsSubmitted = $this->uploadedFileSaveDB($filename, $insert_obj_file, $file_field_data, $data);
 						}
 					}
 				}
@@ -803,6 +797,51 @@ class TjfieldsHelper
 		}
 
 		return $extra_options;
+	}
+
+	/**
+	 * Function to get sunsubmitted fields value
+	 *
+	 * @param   INT     $filename         name of file
+	 * @param   STRING  $insert_obj_file  object
+	 * @param   ARRAY   $file_field_data  array of fields file
+	 * @param   ARRAY   $data             array of fields submitted
+	 * @param   STRING  $type             it is subform
+	 *
+	 * @return  true
+	 */
+	public function uploadedFileSaveDB($filename, $insert_obj_file, $file_field_data, $data, $type='')
+	{
+		if ($filename)
+		{
+			$db    = JFactory::getDbo();
+			$if_edit_file_id        = $this->checkForAlreadyexitsDetails($data, $file_field_data->id);
+
+			$client = explode('.', $insert_obj_file->client);
+
+			$insert_obj_file->value = '/media/' . $client[0] . '/' . $client[1] . '/' . $filename;
+
+			if ($insert_obj_file->value)
+			{
+				if ($type != 'subform')
+				{
+					if ($if_edit_file_id)
+					{
+						$insert_obj_file->id = (int) $if_edit_file_id;
+						$result = $db->updateObject('#__tjfields_fields_value', $insert_obj_file, 'id');
+					}
+					else
+					{
+						$insert_obj_file->id = '';
+						$result = $db->insertObject('#__tjfields_fields_value', $insert_obj_file, 'id');
+					}
+
+					return $fieldsSubmitted[] = $insert_obj_file->field_id;
+				}
+			}
+		}
+
+		return false;
 	}
 
 	/**

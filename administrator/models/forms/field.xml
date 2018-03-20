@@ -42,6 +42,7 @@
 			<option value="subform">COM_TJFIELDS_SUBFORM</option>
 			<option value="textareacounter">COM_TJFIELDS_TEXTAREACOUNTER</option>
 			<option value="number">COM_TJFIELDS_NUMBER</option>
+		</field>
 		<field name="id"
 				type="text"
 				default="0"

@@ -182,11 +182,17 @@ class TjfieldsModelField extends JModelAdmin
 			$name = trim($name['0']);
 			$name = str_replace("`", "", $name);
 			$db = JFactory::getDBO();
-			$query = 'SELECT a.*' . ' FROM #__tjfields_fields AS a' .
-			' WHERE a.label LIKE ' . $db->quote($name . '%') .
-			' AND  a.client LIKE' . $db->quote($data['client']) .
-			' AND  a.group_id =' . $db->quote($data['group_id'] . '%');
 
+			// Create a new query object.
+			$query = $db->getQuery(true);
+
+			$query->select($db->quoteName('a.*'));
+			$query->from($db->quoteName('#__tjfields_fields', 'a'));
+			$query->where($db->quoteName('a.label') . ' LIKE ' . $db->quote($name . '%'));
+			$query->where($db->quoteName('a.client') . ' LIKE ' . $db->quote($data['client'] . '%'));
+			$query->where($db->quoteName('a.group_id') . ' = ' . $db->quote($data['group_id']));
+
+			// Reset the query using our newly populated query object.
 			$db->setQuery($query);
 			$posts = $db->loadAssocList();
 			$postsCount = count($posts) + 1;

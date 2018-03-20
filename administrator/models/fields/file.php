@@ -127,7 +127,7 @@ class JFormFieldFile extends JFormField
 	protected function getInput()
 	{
 		$layoutData = $this->getLayoutData();
-		$html = '';
+		$html = $this->getRenderer($this->layout)->render($layoutData);
 		$tjFieldHelper = new TjfieldsHelper;
 
 		// Load backend language file
@@ -138,31 +138,18 @@ class JFormFieldFile extends JFormField
 		{
 			$html .= '<input type="hidden" name="'
 			. $layoutData["name"] . '"' . 'id="' . $layoutData["id"] . '"' . 'value="' . $layoutData["value"] . '" />';
+			$html .= '<div class="control-group">';
 			$fileInfo = new SplFileInfo($layoutData["value"]);
 			$extension = $fileInfo->getExtension();
+
 			$mediaLink = $tjFieldHelper->getMediaUrl($layoutData["value"]);
 
 			if (!empty($mediaLink))
 			{
-				$html .= '<div class="form-group">';
-				$html .= '<div class="col-sm-3 control-label">';
-				$html .= '<label id="' . $layoutData["id"] . '-lbl" for="' . $layoutData["id"] . '">' . $layoutData["label"] . '</label>';
-				$html .= '</div>';
-				$html .= '<div class="col-sm-3 control-group">';
-				$html .= '<a href="' . $mediaLink . '">' . JText::_("COM_TJFIELDS_FILE_DOWNLOAD") . '</a>';
-				$html .= '</div>';
-				$html .= '</div>';
+				$html .= '<div><a href="' . $mediaLink
+				. '">' . JText::_("COM_TJFIELDS_FILE_DOWNLOAD") . '</a></div>';
 			}
-		}
-		else
-		{
-			$html .= '<div class="form-group">';
-			$html .= '<div class="col-sm-3 control-label">';
-			$html .= '<label id="' . $layoutData["id"] . '-lbl" for="' . $layoutData["id"] . '">' . $layoutData["label"] . '</label>';
-			$html .= '</div>';
-			$html .= '<div class="col-sm-3 control-group">';
-			$html .= '<input type="file" name="' . $layoutData["name"] . '"' . 'id="' . $layoutData["id"] . '" />';
-			$html .= '</div>';
+
 			$html .= '</div>';
 		}
 

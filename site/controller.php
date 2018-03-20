@@ -22,6 +22,14 @@ jimport('joomla.application.component.controller');
 class TjfieldsController extends JControllerLegacy
 {
 	/**
+	 * The return URL.
+	 *
+	 * @var    mixed
+	 * @since  1.4
+	 */
+	protected $returnURL;
+
+	/**
 	 * Constructor
 	 *
 	 * @since 1.4
@@ -29,6 +37,7 @@ class TjfieldsController extends JControllerLegacy
 	public function __construct()
 	{
 		require_once JPATH_SITE . '/components/com_tjfields/helpers/tjfields.php';
+		$this->returnURL = JURI::root();
 
 		parent::__construct();
 	}
@@ -42,19 +51,24 @@ class TjfieldsController extends JControllerLegacy
 	{
 		$app = JFactory::getApplication();
 		$jinput = $app->input;
-		$file_id = $jinput->get('fid', 0, 'INTEGER');
 
-		// Get Field id from file id
+		// Here, fpht means file encoded path
+		$encodedFilePath = $jinput->get('fpht', '', 'STRING');
+		$decodedPath = base64_decode($encodedFilePath);
+
+		$explodeFilePath = explode('/', $decodedPath);
+		$fileName = end($explodeFilePath);
+
 		$db = JFactory::getDbo();
 		$query = $db->getQuery(true);
 		$query->select('*');
 		$query->from('#__tjfields_fields_value');
-		$query->quoteName('id') . ' = ' . $db->quote($file_id);
+		$query->where($db->quoteName('value') . " = " . $db->Quote($fileName));
 		$db->setQuery($query);
 		$data = $db->loadObject();
 
 		$user = JFactory::getUser();
-		$canView = $user->authorise('core.field.viewfieldvalue', 'com_tjfields.field.' . $data->id);
+		$canView = $user->authorise('core.field.viewfieldvalue', 'com_tjfields.field.' . $data->field_id);
 
 		// Allow to view own data
 		if ($user->id == $data->user_id)
@@ -65,15 +79,14 @@ class TjfieldsController extends JControllerLegacy
 		if ($canView)
 		{
 			$tjfieldsHelper = new TjfieldsHelper;
-			$filepath      = $tjfieldsHelper->getMediaPathFromId($file_id);
 
 			// Download will start
-			$down_status = $tjfieldsHelper->downloadMedia($filepath, '', '', 0);
+			$down_status = $tjfieldsHelper->downloadMedia($decodedPath, '', '', 0);
 
 			if ($down_status === 2)
 			{
 				$app->enqueueMessage(JText::_('COM_TJFIELDS_FILE_NOT_FOUND'), 'error');
-				$app->redirect($uri);
+				$app->redirect($this->returnURL);
 			}
 
 			return;
@@ -81,7 +94,7 @@ class TjfieldsController extends JControllerLegacy
 		else
 		{
 			$app->enqueueMessage(JText::_('JERROR_ALERTNOAUTHOR'), 'error');
-			$app->redirect($uri);
+			$app->redirect($this->returnURL);
 		}
 
 		jexit();

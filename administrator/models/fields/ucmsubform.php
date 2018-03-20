@@ -32,5 +32,4 @@ class JFormFieldUcmsubform extends JFormFieldSubform
 	 * @var    string
 	 */
 	protected $type = 'Ucmsubform';
-
 }

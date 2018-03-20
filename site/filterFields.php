@@ -398,11 +398,10 @@ trait TjfieldsFilterField
 	 */
 	public function getDataExtra($data, $id = null)
 	{
-		$input = JFactory::getApplication()->input;
-
 		if (empty($id))
 		{
-			$id = (empty($data['content_id']))?$input->get('content_id', '', 'INT'):$data['content_id'];
+			$input = JFactory::getApplication()->input;
+			$id = $input->get('content_id', '', 'INT');
 		}
 
 		if (empty($id))

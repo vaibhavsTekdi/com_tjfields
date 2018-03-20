@@ -139,7 +139,7 @@ class TjfieldsHelper
 	 *
 	 * @param   array  $data  Post array which content (client, content_id, Fname, Fvalue, u_id)
 	 *
-	 * @return  true
+	 * @return  bool  Returns true if successful, and false otherwise.
 	 */
 	public function saveFieldsValue($data)
 	{

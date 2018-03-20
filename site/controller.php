@@ -55,9 +55,7 @@ class TjfieldsController extends JControllerLegacy
 		// Here, fpht means file encoded path
 		$encodedFilePath = $jinput->get('fpht', '', 'STRING');
 		$decodedPath = base64_decode($encodedFilePath);
-
 		$explodeFilePath = explode('/', $decodedPath);
-		$fileName = end($explodeFilePath);
 
 		$db = JFactory::getDbo();
 		$query = $db->getQuery(true);

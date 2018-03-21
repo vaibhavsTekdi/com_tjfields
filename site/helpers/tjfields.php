@@ -3,7 +3,7 @@
  * @version    SVN: <svn_id>
  * @package    Tjfields
  * @author     Techjoomla <extensions@techjoomla.com>
- * @copyright  Copyright (c) 2009-2015 TechJoomla. All rights reserved.
+ * @copyright  Copyright (c) 2009-2018 TechJoomla. All rights reserved.
  * @license    GNU General Public License version 2 or later.
  */
 
@@ -828,12 +828,12 @@ class TjfieldsHelper
 					if ($if_edit_file_id)
 					{
 						$insert_obj_file->id = (int) $if_edit_file_id;
-						$result = $db->updateObject('#__tjfields_fields_value', $insert_obj_file, 'id');
+						$db->updateObject('#__tjfields_fields_value', $insert_obj_file, 'id');
 					}
 					else
 					{
 						$insert_obj_file->id = '';
-						$result = $db->insertObject('#__tjfields_fields_value', $insert_obj_file, 'id');
+						$db->insertObject('#__tjfields_fields_value', $insert_obj_file, 'id');
 					}
 
 					return $fieldsSubmitted[] = $insert_obj_file->field_id;

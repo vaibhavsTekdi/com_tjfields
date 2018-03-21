@@ -401,7 +401,7 @@ trait TjfieldsFilterField
 		if (empty($id))
 		{
 			$input = JFactory::getApplication()->input;
-			$id = $input->get('content_id', '', 'INT');
+			$id = (empty($data['content_id'])) ? $input->get('content_id', '', 'INT') : $data['content_id'];
 		}
 
 		if (empty($id))

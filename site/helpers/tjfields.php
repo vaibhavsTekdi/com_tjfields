@@ -741,7 +741,7 @@ class TjfieldsHelper
 		$query->where($db->quoteName('content_id') . ' = ' . (int) $content_id);
 		$query->where($db->quoteName('client') . ' = ' . $db->quote($client));
 
-		if ($field_id)
+		if (!empty($field_id))
 		{
 			$query->where($db->quoteName('field_id') . ' = ' . (int) $field_id);
 		}
@@ -833,15 +833,15 @@ class TjfieldsHelper
 			{
 				if ($type != 'subform')
 				{
-					if ($existingFileId)
+					if (!empty($existingFileId))
 					{
 						$insert_obj_file->id = (int) $existingFileId;
-						$db->updateObject('#__tjfields_fields_value', $insert_obj_file, 'id');
+						$db->updateObject('#__tjfields_fields_value', $insert_obj_file, "id");
 					}
 					else
 					{
 						$insert_obj_file->id = '';
-						$db->insertObject('#__tjfields_fields_value', $insert_obj_file, 'id');
+						$db->insertObject('#__tjfields_fields_value', $insert_obj_file, "id");
 					}
 
 					return $fieldsSubmitted[] = $insert_obj_file->field_id;

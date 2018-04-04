@@ -60,7 +60,7 @@ class TjfieldsController extends JControllerLegacy
 		$query = $db->getQuery(true);
 		$query->select('*');
 		$query->from('#__tjfields_fields_value');
-		$query->where($db->quoteName('value') . " = " . $db->Quote($decodedPath));
+		$query->where($db->quoteName('value') . " = " . $db->quote($decodedPath));
 		$db->setQuery($query);
 		$data = $db->loadObject();
 

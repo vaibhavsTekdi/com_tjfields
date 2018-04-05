@@ -1,4 +1,9 @@
 jQuery(document).ready(function(){
+
+	jQuery(":input").live('blur', function() {
+		steppedFormSave(this.form.id, 'draft');
+	});
+
 	Joomla.submitbutton = function(task)
 	{
 		if (task == 'fields.delete')

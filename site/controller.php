@@ -3,7 +3,7 @@
  * @version    SVN: <svn_id>
  * @package    Tjfields
  * @author     Techjoomla <extensions@techjoomla.com>
- * @copyright  Copyright (c) 2009-2016 TechJoomla. All rights reserved.
+ * @copyright  Copyright (c) 2009-2018 TechJoomla. All rights reserved.
  * @license    GNU General Public License version 2 or later.
  */
 
@@ -56,14 +56,11 @@ class TjfieldsController extends JControllerLegacy
 		$encodedFilePath = $jinput->get('fpht', '', 'STRING');
 		$decodedPath = base64_decode($encodedFilePath);
 
-		$explodeFilePath = explode('/', $decodedPath);
-		$fileName = end($explodeFilePath);
-
 		$db = JFactory::getDbo();
 		$query = $db->getQuery(true);
 		$query->select('*');
 		$query->from('#__tjfields_fields_value');
-		$query->where($db->quoteName('value') . " = " . $db->Quote($fileName));
+		$query->where($db->quoteName('value') . " = " . $db->quote($decodedPath));
 		$db->setQuery($query);
 		$data = $db->loadObject();
 

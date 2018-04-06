@@ -1,8 +1,32 @@
 jQuery(document).ready(function(){
 
-	jQuery(":input").live('blur', function() {
-		steppedFormSave(this.form.id, 'draft');
+	/*Code for getting record id from browser URL*/
+	let paramsString = window.location.search;
+	let searchParams = new URLSearchParams(paramsString);
+	let recordId = searchParams.get("id");
+
+	/*Code for handling click & blur event to save data in draft mode*/
+	let over_click;
+	jQuery(":button").mouseenter(function () {
+		over_click = true;
+	}).mouseleave(function () {
+		over_click = false;
 	});
+
+	/*Code for auto save on blur event while adding new record*/
+	if (recordId == null)
+	{
+		jQuery(":input[type!='button']").live('blur', function() {
+			if (!over_click) {
+				steppedFormSave(this.form.id, 'draft');
+			}
+		});
+	}
+	else
+	{
+		/*Showing alert box if form changes are made and user is closing the tab or refreshing the tab without saving the content*/
+		jQuery('#item-form').areYouSure();
+	}
 
 	Joomla.submitbutton = function(task)
 	{

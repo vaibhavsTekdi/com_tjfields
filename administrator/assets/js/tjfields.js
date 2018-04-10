@@ -22,11 +22,6 @@ jQuery(document).ready(function(){
 			}
 		});
 	}
-	else
-	{
-		/*Showing alert box if form changes are made and user is closing the tab or refreshing the tab without saving the content*/
-		jQuery('#item-form').areYouSure();
-	}
 
 	Joomla.submitbutton = function(task)
 	{

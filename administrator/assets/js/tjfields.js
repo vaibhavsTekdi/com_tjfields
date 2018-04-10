@@ -1,6 +1,7 @@
 jQuery(document).ready(function(){
 
 	/*Code for getting record id from browser URL*/
+	global.URLSearchParams = URLSearchParams;
 	let paramsString = window.location.search;
 	let searchParams = new URLSearchParams(paramsString);
 	let recordId = searchParams.get("id");

@@ -3,11 +3,13 @@ $(function() {
     return;
   }
   $('a').bind('click', function(evt) {
-    var href = $(evt.target).closest('a').attr('href');
+    let href = $(evt.target).closest('a').attr('href');
+    let response = '';
+    let msg = '';
     if (href !== undefined && !(href.match(/^#/) || href.trim() == '')) {
-      var response = $(window).triggerHandler('beforeunload', response);
+      response = $(window).triggerHandler('beforeunload', response);
       if (response && response != "") {
-        var msg = response + "\n\n"
+        msg = response + "\n\n"
           + "Press OK to leave this page or Cancel to stay.";
         if (!confirm(msg)) {
           return false;
@@ -16,5 +18,6 @@ $(function() {
       window.location.href = href;
       return false;
      }
+	return true;
   });
 });

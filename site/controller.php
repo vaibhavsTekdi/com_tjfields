@@ -56,14 +56,11 @@ class TjfieldsController extends JControllerLegacy
 		$encodedFilePath = $jinput->get('fpht', '', 'STRING');
 		$decodedPath = base64_decode($encodedFilePath);
 
-		$explodeFilePath = explode('/', $decodedPath);
-		$fileName = end($explodeFilePath);
-
 		$db = JFactory::getDbo();
 		$query = $db->getQuery(true);
 		$query->select('*');
 		$query->from('#__tjfields_fields_value');
-		$query->where($db->quoteName('value') . " = " . $db->Quote($fileName));
+		$query->where($db->quoteName('value') . " = " . $db->quote($decodedPath));
 		$db->setQuery($query);
 		$data = $db->loadObject();
 
@@ -73,7 +70,7 @@ class TjfieldsController extends JControllerLegacy
 			$canView = $user->authorise('core.field.viewfieldvalue', 'com_tjfields.field.' . $data->field_id);
 
 			// Allow to view own data
-			if ($user->id == $data->user_id)
+			if ($data->user_id != null && ($user->id == $data->user_id))
 			{
 				$canView = true;
 			}

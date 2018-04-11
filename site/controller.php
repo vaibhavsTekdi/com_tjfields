@@ -3,7 +3,7 @@
  * @version    SVN: <svn_id>
  * @package    Tjfields
  * @author     Techjoomla <extensions@techjoomla.com>
- * @copyright  Copyright (c) 2009-2016 TechJoomla. All rights reserved.
+ * @copyright  Copyright (c) 2009-2018 TechJoomla. All rights reserved.
  * @license    GNU General Public License version 2 or later.
  */
 
@@ -67,29 +67,37 @@ class TjfieldsController extends JControllerLegacy
 		$db->setQuery($query);
 		$data = $db->loadObject();
 
-		$user = JFactory::getUser();
-		$canView = $user->authorise('core.field.viewfieldvalue', 'com_tjfields.field.' . $data->field_id);
-
-		// Allow to view own data
-		if ($user->id == $data->user_id)
+		if (!empty($data))
 		{
-			$canView = true;
-		}
+			$user = JFactory::getUser();
+			$canView = $user->authorise('core.field.viewfieldvalue', 'com_tjfields.field.' . $data->field_id);
 
-		if ($canView)
-		{
-			$tjfieldsHelper = new TjfieldsHelper;
-
-			// Download will start
-			$down_status = $tjfieldsHelper->downloadMedia($decodedPath, '', '', 0);
-
-			if ($down_status === 2)
+			// Allow to view own data
+			if ($user->id == $data->user_id)
 			{
-				$app->enqueueMessage(JText::_('COM_TJFIELDS_FILE_NOT_FOUND'), 'error');
-				$app->redirect($this->returnURL);
+				$canView = true;
 			}
 
-			return;
+			if ($canView)
+			{
+				$tjfieldsHelper = new TjfieldsHelper;
+
+				// Download will start
+				$down_status = $tjfieldsHelper->downloadMedia($decodedPath, '', '', 0);
+
+				if ($down_status === 2)
+				{
+					$app->enqueueMessage(JText::_('COM_TJFIELDS_FILE_NOT_FOUND'), 'error');
+					$app->redirect($this->returnURL);
+				}
+
+				return;
+			}
+			else
+			{
+				$app->enqueueMessage(JText::_('JERROR_ALERTNOAUTHOR'), 'error');
+				$app->redirect($this->returnURL);
+			}
 		}
 		else
 		{

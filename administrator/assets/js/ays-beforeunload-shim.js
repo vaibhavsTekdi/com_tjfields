@@ -1,5 +1,5 @@
 $(function() {
-  if (!navigator.userAgent.toLowerCase().match(/iphone|ipad|ipod|opera/)) {
+  if (!window.navigator.userAgent.toLowerCase().match(/iphone|ipad|ipod|opera/)) {
     return;
   }
   $('a').bind('click', function(evt) {

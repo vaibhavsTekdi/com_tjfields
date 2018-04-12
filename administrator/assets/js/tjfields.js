@@ -1,9 +1,7 @@
 jQuery(document).ready(function(){
 
 	/*Code for getting record id from browser URL*/
-	global.URLSearchParams = URLSearchParams;
-	let paramsString = window.location.search;
-	let searchParams = new URLSearchParams(paramsString);
+	let searchParams = (new URL(document.location)).searchParams;
 	let recordId = searchParams.get("id");
 
 	/*Code for handling click & blur event to save data in draft mode*/

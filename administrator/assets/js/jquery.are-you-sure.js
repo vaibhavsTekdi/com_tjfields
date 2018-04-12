@@ -38,7 +38,7 @@
           break;
         case 'select':
           val = '';
-          $field.find('option').each(function(o) {
+          $field.find('option').each(function() {
             var $option = $(this);
             if ($option.is(':selected')) {
               val += $option.val();
@@ -76,7 +76,7 @@
         return;
       }
 
-      $fields = $form.find(settings.fieldSelector);
+      var $fields = $form.find(settings.fieldSelector);
 
       if (settings.addRemoveFieldsMarksDirty) {
         // Check if field count has changed
@@ -90,7 +90,7 @@
       // Brute force - check each field
       var isDirty = false;
       $fields.each(function() {
-        $field = $(this);
+        var $field = $(this);
         if (isFieldDirty($field)) {
           isDirty = true;
           return false; // break
@@ -115,10 +115,10 @@
 
       // Fire change event if required
       if (changed) {
-        if (settings.change) settings.change.call($form, $form);
+        if (settings.change) { settings.change.call($form, $form) };
 
-        if (isDirty) $form.trigger('dirty.areYouSure', [$form]);
-        if (!isDirty) $form.trigger('clean.areYouSure', [$form]);
+        if (isDirty) { $form.trigger('dirty.areYouSure', [$form]) };
+        if (!isDirty) { $form.trigger('clean.areYouSure', [$form]) };
         $form.trigger('change.areYouSure', [$form]);
       }
     };
@@ -144,12 +144,12 @@
     if (!settings.silent && !window.aysUnloadSet) {
       window.aysUnloadSet = true;
       $(window).bind('beforeunload', function() {
-        $dirtyForms = $("form").filter('.' + settings.dirtyClass);
+        var $dirtyForms = $("form").filter('.' + settings.dirtyClass);
         if ($dirtyForms.length == 0) {
           return;
         }
         // Prevent multiple prompts - seen on Chrome and IE
-        if (navigator.userAgent.toLowerCase().match(/msie|chrome/)) {
+        if (window.navigator.userAgent.toLowerCase().match(/msie|chrome/)) {
           if (window.aysHasPrompted) {
             return;
           }
@@ -160,7 +160,7 @@
       });
     }
 
-    return this.each(function(elem) {
+    return this.each(function(	) {
       if (!$(this).is('form')) {
         return;
       }

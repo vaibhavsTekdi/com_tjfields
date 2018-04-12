@@ -466,8 +466,7 @@ class TjfieldsHelper
 			{
 				if (!JFile::upload($fileTemp, $uploadPath))
 				{
-					$errorInMovingFile = JText::sprintf('COM_TJFIELDS_FILE_ERROR_MOVE_FILE', $title);
-					$app->enqueueMessage($errorInMovingFile, 'warning');
+					$app->enqueueMessage(JText::_('COM_TJFIELDS_FILE_ERROR_MOVE_FILE'), 'warning');
 
 					return false;
 				}

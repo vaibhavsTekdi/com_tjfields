@@ -121,11 +121,11 @@ class TjfieldsHelper
 
 		if ($fname)
 		{
-			$query->where('name="' . $fname . '"');
+			$query->where($db->quoteName('name') . "=" . $db->quote($fname));
 		}
 		else
 		{
-			$query->where('id=' . $fid);
+			$query->where($db->quoteName('id') . "=" . (int) $fid);
 		}
 
 		$db->setQuery($query);
@@ -179,7 +179,7 @@ class TjfieldsHelper
 			$db    = JFactory::getDbo();
 			$query = $db->getQuery(true);
 			$query->select('* FROM #__tjfields_fields');
-			$query->where('name="' . $fname . '"');
+			$query->where($db->quoteName('name') . "=" . $db->quote($fname));
 			$db->setQuery($query);
 			$file_field_data_check = $db->loadObject();
 
@@ -269,8 +269,8 @@ class TjfieldsHelper
 							// Delete entry is field is deselected
 							$conditions = array(
 								$db->quoteName('field_id') . ' = ' . $field_data->id,
-								$db->quoteName('content_id') . ' = ' . $data['content_id'],
-								$db->quoteName('client') . " = '" . $data['client'] . "'"
+								$db->quoteName('content_id') . ' = ' . (int) $data['content_id'],
+								$db->quoteName('client') . " = " . $db->quote($data['client'])
 							);
 
 							$query = $db->getQuery(true);
@@ -297,8 +297,8 @@ class TjfieldsHelper
 			// Delete entry if field is deselected
 			$conditions = array(
 				$db->quoteName('field_id') . ' = ' . $unsubmittedField,
-				$db->quoteName('content_id') . ' = ' . $data['content_id'],
-				$db->quoteName('client') . " = '" . $data['client'] . "'"
+				$db->quoteName('content_id') . ' = ' . (int) $data['content_id'],
+				$db->quoteName('client') . " = " . $db->quote($data['client'])
 			);
 
 			$query = $db->getQuery(true);
@@ -332,8 +332,8 @@ class TjfieldsHelper
 			$query = $db->getQuery(true);
 			$query->select($db->quoteName('field_id'));
 			$query->from($db->quoteName('#__tjfields_fields_value'));
-			$query->where($db->quoteName('content_id') . " = '" . $content_id . "'");
-			$query->where($db->quoteName('client') . " = '" . $client . "'");
+			$query->where($db->quoteName('content_id') . " = '" . (int) $content_id . "'");
+			$query->where($db->quoteName('client') . " = " . $db->quote($client));
 			$db->setQuery($query);
 			$dataSavedFields = $db->loadColumn();
 
@@ -497,8 +497,8 @@ class TjfieldsHelper
 
 		$query->select("id")
 		->from("#__tjfields_options")
-		->where("field_id = " . $field_data->id)
-		->where("value = '" . $currentFieldValue . "'");
+		->where($db->quoteName('field_id') . " = " . (int) $field_data->id)
+		->where($db->quoteName('value') . " = " . $db->quote($currentFieldValue));
 		$db->setQuery($query);
 
 		$option_id = $db->loadResult();
@@ -542,9 +542,9 @@ class TjfieldsHelper
 		$query = $db->getQuery(true);
 		$query->select('*');
 		$query->from('#__tjfields_fields_value');
-		$query->where('content_id=' . $postFieldData['content_id']);
-		$query->where('field_id=' . $field_data->id);
-		$query->where('client="' . $postFieldData['client'] . '"');
+		$query->where($db->quoteName('content_id') . "=" . (int) $postFieldData['content_id']);
+		$query->where($db->quoteName('field_id') . "=" . (int) $field_data->id);
+		$query->where($db->quoteName('client') . "=" . $db->quote($postFieldData['client']));
 		$db->setQuery($query);
 		$dbFieldValue = $db->loadObjectList();
 
@@ -598,9 +598,9 @@ class TjfieldsHelper
 		$query = $db->getQuery(true);
 		$query->select('*');
 		$query->from('#__tjfields_fields_value');
-		$query->where('content_id=' . $postFieldData['content_id']);
-		$query->where('field_id=' . $field_data->id);
-		$query->where('client="' . $postFieldData['client'] . '"');
+		$query->where($db->quoteName('content_id') . "=" . (int) $postFieldData['content_id']);
+		$query->where($db->quoteName('field_id') . "=" . (int) $field_data->id);
+		$query->where($db->quoteName('client') . "=" . $db->quote($postFieldData['client']));
 		$db->setQuery($query);
 		$dbFieldValue = $db->loadObjectList("id");
 
@@ -679,8 +679,8 @@ class TjfieldsHelper
 
 			$query->select("id")
 			->from("#__tjfields_options")
-			->where("field_id = " . $insert_obj->field_id)
-			->where("value = '" . $insert_obj->value . "'");
+			->where($db->quoteName('field_id') . "=" . (int) $insert_obj->field_id)
+			->where($db->quoteName('value') . "=" . $db->quote($insert_obj->value));
 			$db->setQuery($query);
 
 			$insert_obj->option_id = $db->loadResult();
@@ -731,17 +731,17 @@ class TjfieldsHelper
 	 */
 	public function checkForAlreadyexitsDetails($data, $field_id)
 	{
-		$content_id = $data['content_id'];
+		$content_id = (int) $data['content_id'];
 		$client     = $data['client'];
 
 		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true);
 		$query->select('id FROM #__tjfields_fields_value');
-		$query->where('content_id=' . $content_id . ' AND client="' . $client . '"');
+		$query->where($db->quoteName('content_id') . "=" . $content_id . " AND " . $db->quoteName('client') . "=" . $db->quote($client));
 
 		if ($field_id)
 		{
-			$query->where('field_id=' . $field_id);
+			$query->where($db->quoteName('field_id') . "=" . (int) $field_id);
 		}
 
 		$db->setQuery($query);
@@ -765,7 +765,7 @@ class TjfieldsHelper
 			$db    = JFactory::getDbo();
 			$query = $db->getQuery(true);
 			$query->select('options,default_option,value FROM #__tjfields_options');
-			$query->where('field_id=' . $field_id);
+			$query->where('field_id=' . (int) $field_id);
 
 			$new_option_value = json_decode($option_value);
 
@@ -773,12 +773,12 @@ class TjfieldsHelper
 			{
 				if (is_array($new_option_value))
 				{
-					$option_value_string = "'" . implode("','", $new_option_value) . "'";
+					$option_value_string = implode(",", $db->quote($new_option_value));
 					$query->where('value IN (' . $option_value_string . ')');
 				}
 				else
 				{
-					$query->where('value=' . $new_option_value);
+					$query->where('value=' . $db->quote($new_option_value));
 				}
 			}
 			else
@@ -822,8 +822,8 @@ class TjfieldsHelper
 			$query = $db->getQuery(true);
 			$query->select('DISTINCT * FROM #__tjfields_fields AS f');
 			$query->where('NOT EXISTS (select * FROM #__tjfields_category_mapping AS cm where f.id=cm.field_id)');
-			$query->where('f.client="' . $client . '"');
-			$query->where('f.state=1');
+			$query->where($db->quoteName('f.client') . "=" . $db->quote($client));
+			$query->where($db->quoteName('f.state') . " = 1");
 			$db->setQuery($query);
 			$universalFields = $db->loadObjectlist();
 		}
@@ -843,8 +843,8 @@ class TjfieldsHelper
 		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true);
 		$query->select('* FROM #__categories');
-		$query->where('extension="' . $client . '"');
-		$query->where('published=1');
+		$query->where($db->quoteName('extension') . "=" . $db->quote($client));
+		$query->where($db->quoteName('published') . " = 1");
 		$db->setQuery($query);
 		$categorysList = $db->loadObjectlist();
 
@@ -872,9 +872,9 @@ class TjfieldsHelper
 			$query->JOIN('INNER', '#__tjfields_fields_value AS fv ON fv.field_id = f.id');
 			$query->JOIN('INNER', '#__tjfields_options AS fo ON fo.id = fv.option_id');
 
-			$query->where('f.client="' . $client . '"');
-			$query->where('f.filterable=1');
-			$query->where('f.state=1');
+			$query->where($db->quoteName('f.client') . "=" . $db->quote($client));
+			$query->where($db->quoteName('f.filterable') . " = 1");
+			$query->where($db->quoteName('f.state') . " = 1");
 			$query->where('fv.option_id IS NOT NULL');
 			$query->where("f.type IN ('single_select','multi_select', 'radio')");
 
@@ -899,14 +899,14 @@ class TjfieldsHelper
 				$queryCat->JOIN('INNER', '#__tjfields_fields_value AS fv ON fv.field_id = f.id');
 				$queryCat->JOIN('INNER', '#__tjfields_options AS fo ON fo.id = fv.option_id');
 
-				$queryCat->where('f.client="' . $client . '"');
-				$queryCat->where('f.filterable=1');
-				$queryCat->where('f.state=1');
+				$queryCat->where($db->quoteName('f.client') . "=" . $db->quote($client));
+				$queryCat->where($db->quoteName('f.filterable') . " = 1");
+				$queryCat->where($db->quoteName('f.state') . " = 1");
 				$queryCat->where('fv.option_id IS NOT NULL');
 				$queryCat->where("f.type IN ('single_select','multi_select', 'radio')");
 
 				$queryCat->JOIN('INNER', '#__tjfields_category_mapping AS fcm ON fcm.field_id = f.id');
-				$queryCat->where('fcm.category_id=' . $category_id);
+				$queryCat->where($db->quoteName('fcm.category_id') . " = " . $category_id);
 
 				$queryCat->order('f.ordering');
 				$db->setQuery($queryCat);

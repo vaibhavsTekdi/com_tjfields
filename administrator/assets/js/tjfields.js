@@ -1,8 +1,7 @@
 jQuery(document).ready(function(){
 
-	/*Code for getting record id from browser URL*/
-	let searchParams = (new window.URL(document.location)).searchParams;
-	let recordId = searchParams.get("id");
+	/*Code to get item state*/
+	let itemState = jQuery('#itemState').val();
 
 	/*Code for handling click & blur event to save data in draft mode*/
 	let over_click;
@@ -12,8 +11,8 @@ jQuery(document).ready(function(){
 		over_click = false;
 	});
 
-	/*Code for auto save on blur event while adding new record*/
-	if (recordId == null)
+	/*Code for auto save on blur event add new record or editing draft record only*/
+	if (itemState == '' || itemState == 0)
 	{
 		jQuery(":input[type!='button']").live('blur', function() {
 			if (!over_click) {

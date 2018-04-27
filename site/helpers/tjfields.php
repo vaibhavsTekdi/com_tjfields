@@ -272,9 +272,8 @@ class TjfieldsHelper
 							$conditions = array(
 								$db->quoteName('field_id') . ' = ' . $field_data->id,
 								$db->quoteName('content_id') . ' = ' . $data['content_id'],
-								$db->quoteName('client') . " = " . $db->quote($data['client']) . ""
+								$db->quoteName('client') . " = " . $db->quote($data['client'])
 							);
-
 							$query = $db->getQuery(true);
 							$query->delete($db->quoteName('#__tjfields_fields_value'));
 							$query->where($conditions);
@@ -298,9 +297,8 @@ class TjfieldsHelper
 			$conditions = array(
 				$db->quoteName('field_id') . ' = ' . $unsubmittedField,
 				$db->quoteName('content_id') . ' = ' . $data['content_id'],
-				$db->quoteName('client') . " = " . $db->quote($data['client']) . ""
+				$db->quoteName('client') . " = " . $db->quote($data['client'])
 			);
-
 			$query = $db->getQuery(true);
 			$query->delete($db->quoteName('#__tjfields_fields_value'));
 			$query->where($conditions);
@@ -766,6 +764,7 @@ class TjfieldsHelper
 			$query->select($db->quoteName(array('options','default_option','value')));
 			$query->from($db->quoteName('#__tjfields_options'));
 			$query->where($db->quoteName('field_id') . ' = ' . (int) $field_id);
+
 			$new_option_value = json_decode($option_value);
 
 			if ($new_option_value != '')

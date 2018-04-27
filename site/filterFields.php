@@ -279,7 +279,7 @@ trait TjfieldsFilterField
 	 * @param   array  $data  data
 	 * @param   INT    $id    Id of record
 	 *
-	 * @return  JForm    A JForm    object on success, false on failure
+	 * @return  array  data of extra form fields
 	 *
 	 * @since	1.6
 	 */

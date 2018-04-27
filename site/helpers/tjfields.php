@@ -169,6 +169,8 @@ class TjfieldsHelper
 		// Values array will contain menu fields value.
 		foreach ($data['fieldsvalue'] as $fname => $fvalue)
 		{
+			$field_data = array();
+
 			if ($fname != 'tjFieldFileField')
 			{
 				$field_data = $this->getFieldData($fname);

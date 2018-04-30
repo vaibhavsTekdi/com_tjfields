@@ -1666,4 +1666,56 @@ class TjfieldsHelper
 			return false;
 		}
 	}
+
+	/**
+	 * tjFileDelete .
+	 *
+	 * @param   string  $filePath  file path.
+	 *
+	 * @return boolean|string
+	 *
+	 * @since	1.6
+	 */
+	public function tjFileDelete($filePath)
+	{
+		$user = JFactory::getUser();
+
+		if (!$user->id)
+		{
+			return false;
+		}
+
+		JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_tjfields/tables');
+		$fields_value_table = JTable::getInstance('Fieldsvalue', 'TjfieldsTable');
+		$fields_value_table->load(array('value' => $filePath));
+
+		if (!empty($fields_value_table->user_id))
+		{
+			$canEdit = $user->authorise('core.field.editfieldvalue', 'com_tjfields.field.' . $fields_value_table->field_id);
+
+			$canEditOwn = $user->authorise('core.field.editownfieldvalue', 'com_tjfields.field.' . $fields_value_table->field_id);
+
+			if (($user->id == $fields_value_table->user_id) && ($canEdit || $canEditOwn))
+			{
+				$fileToDelete = JPATH_ROOT . $filePath;
+
+				if (JFile::exists($fileToDelete) && JFile::delete($fileToDelete))
+				{
+						$db = JFactory::getDbo();
+						$fields_obj = new stdClass;
+						$fields_obj->value = '';
+						$fields_obj->id = $fields_value_table->id;
+						$db->updateObject('#__tjfields_fields_value', $fields_obj, 'id');
+
+						return true;
+				}
+
+				return false;
+			}
+
+			return false;
+		}
+
+		return false;
+	}
 }

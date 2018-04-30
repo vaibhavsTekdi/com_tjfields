@@ -136,7 +136,7 @@ class JFormFieldFile extends JFormField
 
 		if (!empty($layoutData["value"]))
 		{
-			$html .= '<input type="hidden" name="'
+			$html .= '<input tj-file-type="' . $layoutData["id"] . '" type="hidden" name="'
 			. $layoutData["name"] . '"' . 'id="' . $layoutData["id"] . '"' . 'value="' . $layoutData["value"] . '" />';
 			$html .= '<div class="control-group">';
 			$fileInfo = new SplFileInfo($layoutData["value"]);
@@ -144,11 +144,52 @@ class JFormFieldFile extends JFormField
 
 			$mediaLink = $tjFieldHelper->getMediaUrl($layoutData["value"]);
 
-			if (!empty($mediaLink))
+			// Access based actions
+			$user = JFactory::getUser();
+
+			$db = JFactory::getDbo();
+			JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjfields/tables');
+			$tjFieldFieldTable = JTable::getInstance('field', 'TjfieldsTable', array('dbo', $db));
+
+			$tjFieldFieldTable->load(array('name' => $layoutData['field']->fieldname));
+
+			$canView = 0;
+
+			if ($user->authorise('core.field.viewfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->group_id))
+			{
+				$canView = $user->authorise('core.field.viewfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->id);
+			}
+
+			// Download file
+			if (!empty($mediaLink) && $canView)
 			{
 				$html .= '<div><a href="' . $mediaLink
-				. '">' . JText::_("COM_TJFIELDS_FILE_DOWNLOAD") . '</a></div>';
+				. '">' . JText::_("COM_TJFIELDS_FILE_DOWNLOAD") . '</a>';
 			}
+
+			$canEdit = 0;
+
+			if ($user->authorise('core.field.editfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->group_id))
+			{
+				$canEdit = $user->authorise('core.field.editfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->id);
+			}
+
+			$canEditOwn = 0;
+
+			if ($user->authorise('core.field.editownfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->group_id))
+			{
+				$canEditOwn = $user->authorise('core.field.editownfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->id);
+			}
+
+			// Delete file
+			if (!empty($mediaLink) && ($canEdit || $canEditOwn) && $layoutData['required'] == '')
+			{
+				$html .= ' | <a href="javascript:void(0);"
+					onclick="deleteTjFile(\'' . base64_encode($layoutData["value"]) . '\', \'' . $layoutData["id"] . '\');">'
+					. JText::_("COM_TJFIELDS_FILE_DELETE") . '</a>';
+			}
+
+			$html .= '</div>';
 
 			$html .= '</div>';
 		}

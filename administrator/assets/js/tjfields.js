@@ -104,9 +104,9 @@ jQuery(document).ready(function(){
         return regex.test(value);
     });
 
-	 /* It restrict the user for manual input in datepicker field */
-    jQuery('.calendar-textfield-class').focusin(function(event) {
-        event.preventDefault();
+    /* It restrict the user for manual input in datepicker field */
+    jQuery(document).delegate('.calendar-textfield-class', 'focusin', function(event) {
+    event.preventDefault();
         jQuery(this).next('button').focus().click();
     });
 

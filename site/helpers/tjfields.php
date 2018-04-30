@@ -677,7 +677,7 @@ class TjfieldsHelper
 			$query->select($db->quoteName('id'))
 			->from($db->quoteName('#__tjfields_options'))
 			->where($db->quoteName('field_id') . " = " . (int) $insert_obj->field_id)
-			->where($db->quoteName('value') . " = '" . $db->quote($insert_obj->value) . "'");
+			->where($db->quoteName('value') . " = " . $db->quote($insert_obj->value));
 			$db->setQuery($query);
 
 			$insert_obj->option_id = $db->loadResult();
@@ -773,7 +773,7 @@ class TjfieldsHelper
 			{
 				if (is_array($new_option_value))
 				{
-					$option_value_string = "'" . implode("','", $new_option_value) . "'";
+					$option_value_string = implode(",", $new_option_value);
 					$query->where($db->quoteName('value') . ' IN (' . $db->quote($option_value_string) . ')');
 				}
 				else

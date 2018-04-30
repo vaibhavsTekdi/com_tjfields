@@ -261,7 +261,7 @@ trait TjfieldsFilterField
 	 *
 	 * @param   array  $data  data
 	 *
-	 * @return  array  form for extra fields
+	 * @return  array|bool  array on success, flase on failure
 	 *
 	 * @since	1.6
 	 */

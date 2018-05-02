@@ -14,7 +14,7 @@ jQuery(document).ready(function(){
 	/*Code for auto save on blur event add new record or editing draft record only*/
 	if (itemState == '' || itemState == 0)
 	{
-		jQuery(":input[type!='button']").live('blur', function() {
+		jQuery(document).delegate(":input[type!='button']", "blur", function() {
 			if (!over_click) {
 				steppedFormSave(this.form.id, 'draft');
 			}
@@ -106,7 +106,7 @@ jQuery(document).ready(function(){
 
     /* It restrict the user for manual input in datepicker field */
     jQuery(document).delegate('.calendar-textfield-class', 'focusin', function(event) {
-    event.preventDefault();
+        event.preventDefault();
         jQuery(this).next('button').focus().click();
     });
 

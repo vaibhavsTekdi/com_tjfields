@@ -208,7 +208,7 @@ class TjfieldsHelper
 
 							if ($insert_obj_file->value)
 							{
-								if (! empty($existingFileRecordId))
+								if (!empty($existingFileRecordId))
 								{
 									$insert_obj_file->id = $existingFileRecordId;
 									$db->updateObject('#__tjfields_fields_value', $insert_obj_file, 'id');
@@ -254,7 +254,7 @@ class TjfieldsHelper
 						{
 							$insert_obj->value = $fvalue;
 
-							if (! empty($existingRecordId))
+							if (!empty($existingRecordId))
 							{
 								$insert_obj->id = $existingRecordId;
 								$db->updateObject('#__tjfields_fields_value', $insert_obj, 'id');
@@ -706,7 +706,6 @@ class TjfieldsHelper
 
 			$query = $db->getQuery(true);
 
-			// Delete all custom keys for user 1001.
 			$conditions = array(
 				$db->quoteName('id') . ' IN (' . $db->quote($fieldValueEntryId) . ') '
 			);

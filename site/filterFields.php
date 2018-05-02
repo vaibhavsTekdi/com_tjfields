@@ -135,28 +135,28 @@ trait TjfieldsFilterField
 
 				$canAdd = 0;
 
-				if ($user->authorise('core.field.addfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->group_id))
+				if ($user->authorise('core.field.addfieldvalue', 'com_tjfields.group.' . $tjFieldFieldTable->group_id))
 				{
 					$canAdd = $user->authorise('core.field.addfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->id);
 				}
 
 				$canEdit = 0;
 
-				if ($user->authorise('core.field.editfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->group_id))
+				if ($user->authorise('core.field.editfieldvalue', 'com_tjfields.group.' . $tjFieldFieldTable->group_id))
 				{
 					$canEdit = $user->authorise('core.field.editfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->id);
 				}
 
 				$canView = 0;
 
-				if ($user->authorise('core.field.viewfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->group_id))
+				if ($user->authorise('core.field.viewfieldvalue', 'com_tjfields.group.' . $tjFieldFieldTable->group_id))
 				{
 					$canView = $user->authorise('core.field.viewfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->id);
 				}
 
 				$canEditOwn = 0;
 
-				if ($user->authorise('core.field.editownfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->group_id))
+				if ($user->authorise('core.field.editownfieldvalue', 'com_tjfields.group.' . $tjFieldFieldTable->group_id))
 				{
 					$canEditOwn = $user->authorise('core.field.editownfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->id);
 				}
@@ -261,7 +261,7 @@ trait TjfieldsFilterField
 	 *
 	 * @param   array  $data  data
 	 *
-	 * @return  JForm    A JForm    object on success, false on failure
+	 * @return  array|bool  array on success, flase on failure
 	 *
 	 * @since	1.6
 	 */
@@ -279,7 +279,7 @@ trait TjfieldsFilterField
 	 * @param   array  $data  data
 	 * @param   INT    $id    Id of record
 	 *
-	 * @return  JForm    A JForm    object on success, false on failure
+	 * @return  array|bool  array on success, flase on failure
 	 *
 	 * @since	1.6
 	 */

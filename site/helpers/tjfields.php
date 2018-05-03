@@ -3,7 +3,7 @@
  * @version    SVN: <svn_id>
  * @package    Tjfields
  * @author     Techjoomla <extensions@techjoomla.com>
- * @copyright  Copyright (c) 2009-2015 TechJoomla. All rights reserved.
+ * @copyright  Copyright (c) 2009-2018 TechJoomla. All rights reserved.
  * @license    GNU General Public License version 2 or later.
  */
 
@@ -117,15 +117,16 @@ class TjfieldsHelper
 	{
 		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true);
-		$query->select('id,type,name,label FROM #__tjfields_fields');
+		$query->select($db->quoteName(array('id', 'type', 'name', 'label')));
+		$query->from($db->quoteName('#__tjfields_fields'));
 
 		if ($fname)
 		{
-			$query->where($db->quoteName('name') . "=" . $db->quote($fname));
+			$query->where($db->quoteName('name') . ' = ' . $db->quote($fname));
 		}
 		else
 		{
-			$query->where($db->quoteName('id') . "=" . (int) $fid);
+			$query->where($db->quoteName('id') . ' = ' . (int) $fid);
 		}
 
 		$db->setQuery($query);
@@ -139,7 +140,7 @@ class TjfieldsHelper
 	 *
 	 * @param   array  $data  Post array which content (client, content_id, Fname, Fvalue, u_id)
 	 *
-	 * @return  boolean  Returns true if successful, and false otherwise.
+	 * @return  bool  Returns true if successful, and false otherwise.
 	 */
 	public function saveFieldsValue($data)
 	{
@@ -161,16 +162,18 @@ class TjfieldsHelper
 		$insert_obj_file->email_id   = '';
 		$insert_obj_file->client     = $data['client'];
 
-		$singleSelectionFields = array("single_select", "radio");
-		$multipleSelectionFields = array("multi_select");
+		$singleSelectionFields = array('single_select', 'radio');
+		$multipleSelectionFields = array('multi_select');
 		$fieldsSubmitted = array();
 
 		// Values array will contain menu fields value.
 		foreach ($data['fieldsvalue'] as $fname => $fvalue)
 		{
+			$field_data = array();
+
 			if ($fname != 'tjFieldFileField')
 			{
-				$field_data           = $this->getFieldData($fname);
+				$field_data = $this->getFieldData($fname);
 				$insert_obj->field_id = $field_data->id;
 				$fieldsSubmitted[] = $insert_obj->field_id;
 			}
@@ -178,8 +181,9 @@ class TjfieldsHelper
 			// Field Data
 			$db    = JFactory::getDbo();
 			$query = $db->getQuery(true);
-			$query->select('* FROM #__tjfields_fields');
-			$query->where($db->quoteName('name') . "=" . $db->quote($fname));
+			$query->select('*');
+			$query->from($db->quoteName('#__tjfields_fields'));
+			$query->where($db->quoteName('name') . ' = ' . $db->quote($fname));
 			$db->setQuery($query);
 			$file_field_data_check = $db->loadObject();
 
@@ -196,7 +200,7 @@ class TjfieldsHelper
 
 						if ($filename)
 						{
-							$if_edit_file_id        = $this->checkForAlreadyexitsDetails($data, $file_field_data->id);
+							$existingFileRecordId = $this->checkRecordExistence($data, $file_field_data->id);
 
 							$client = explode('.', $insert_obj_file->client);
 
@@ -204,9 +208,9 @@ class TjfieldsHelper
 
 							if ($insert_obj_file->value)
 							{
-								if ($if_edit_file_id)
+								if (!empty($existingFileRecordId))
 								{
-									$insert_obj_file->id = $if_edit_file_id;
+									$insert_obj_file->id = $existingFileRecordId;
 									$db->updateObject('#__tjfields_fields_value', $insert_obj_file, 'id');
 								}
 								else
@@ -230,7 +234,7 @@ class TjfieldsHelper
 				if (empty($file_field_data_check->accept))
 				{
 					// Check for duplicate entry
-					$if_edit_id = $this->checkForAlreadyexitsDetails($data, $field_data->id);
+					$existingRecordId = $this->checkRecordExistence($data, $field_data->id);
 
 					if (!empty($fvalue))
 					{
@@ -244,15 +248,15 @@ class TjfieldsHelper
 						}
 						elseif (in_array($field_data->type, $singleSelectionFields))
 						{
-							$this->saveSingleSelectFieldValue($data, $fname, $field_data, $if_edit_id);
+							$this->saveSingleSelectFieldValue($data, $fname, $field_data, $existingRecordId);
 						}
 						else
 						{
 							$insert_obj->value = $fvalue;
 
-							if ($if_edit_id)
+							if (!empty($existingRecordId))
 							{
-								$insert_obj->id = $if_edit_id;
+								$insert_obj->id = $existingRecordId;
 								$db->updateObject('#__tjfields_fields_value', $insert_obj, 'id');
 							}
 							else
@@ -272,12 +276,10 @@ class TjfieldsHelper
 								$db->quoteName('content_id') . ' = ' . (int) $data['content_id'],
 								$db->quoteName('client') . " = " . $db->quote($data['client'])
 							);
-
 							$query = $db->getQuery(true);
 							$query->delete($db->quoteName('#__tjfields_fields_value'));
 							$query->where($conditions);
 							$db->setQuery($query);
-
 							$db->execute();
 						}
 					}
@@ -286,7 +288,6 @@ class TjfieldsHelper
 		}
 
 		$fieldsSubmitted = array_filter($fieldsSubmitted);
-
 		$unsubmittedFields = $this->getUnsubmittedFields($data['content_id'], $data['client'], $fieldsSubmitted);
 
 		// Delete Values of unsubmitted fields
@@ -300,14 +301,10 @@ class TjfieldsHelper
 				$db->quoteName('content_id') . ' = ' . (int) $data['content_id'],
 				$db->quoteName('client') . " = " . $db->quote($data['client'])
 			);
-
 			$query = $db->getQuery(true);
-
 			$query->delete($db->quoteName('#__tjfields_fields_value'));
 			$query->where($conditions);
-
 			$db->setQuery($query);
-
 			$db->execute();
 		}
 
@@ -469,7 +466,7 @@ class TjfieldsHelper
 			{
 				if (!JFile::upload($fileTemp, $uploadPath))
 				{
-					$app->enqueueMessage('Error moving file', 'warning');
+					$app->enqueueMessage(JText::_('COM_TJFIELDS_FILE_ERROR_MOVE_FILE'), 'warning');
 
 					return false;
 				}
@@ -677,10 +674,10 @@ class TjfieldsHelper
 			$db = JFactory::getDbo();
 			$query = $db->getQuery(true);
 
-			$query->select("id")
-			->from("#__tjfields_options")
-			->where($db->quoteName('field_id') . "=" . (int) $insert_obj->field_id)
-			->where($db->quoteName('value') . "=" . $db->quote($insert_obj->value));
+			$query->select($db->quoteName('id'))
+			->from($db->quoteName('#__tjfields_options'))
+			->where($db->quoteName('field_id') . " = " . (int) $insert_obj->field_id)
+			->where($db->quoteName('value') . " = " . $db->quote($insert_obj->value));
 			$db->setQuery($query);
 
 			$insert_obj->option_id = $db->loadResult();
@@ -709,9 +706,8 @@ class TjfieldsHelper
 
 			$query = $db->getQuery(true);
 
-			// Delete all custom keys for user 1001.
 			$conditions = array(
-				$db->quoteName('id') . ' IN (' . $fieldValueEntryId . ') '
+				$db->quoteName('id') . ' IN (' . $db->quote($fieldValueEntryId) . ') '
 			);
 
 			$query->delete($db->quoteName('#__tjfields_fields_value'));
@@ -729,25 +725,28 @@ class TjfieldsHelper
 	 *
 	 * @return  array
 	 */
-	public function checkForAlreadyexitsDetails($data, $field_id)
+	public function checkRecordExistence($data, $field_id)
 	{
 		$content_id = (int) $data['content_id'];
 		$client     = $data['client'];
 
 		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true);
-		$query->select('id FROM #__tjfields_fields_value');
-		$query->where($db->quoteName('content_id') . "=" . $content_id . " AND " . $db->quoteName('client') . "=" . $db->quote($client));
 
-		if ($field_id)
+		$query->select($db->quoteName('id'));
+		$query->from($db->quoteName('#__tjfields_fields_value'));
+		$query->where($db->quoteName('content_id') . ' = ' . (int) $content_id);
+		$query->where($db->quoteName('client') . ' = ' . $db->quote($client));
+
+		if (!empty($field_id))
 		{
-			$query->where($db->quoteName('field_id') . "=" . (int) $field_id);
+			$query->where($db->quoteName('field_id') . ' = ' . (int) $field_id);
 		}
 
 		$db->setQuery($query);
-		$is_edit = $db->loadresult();
+		$existingRecordId = $db->loadresult();
 
-		return $is_edit;
+		return $existingRecordId;
 	}
 
 	/**
@@ -764,8 +763,10 @@ class TjfieldsHelper
 		{
 			$db    = JFactory::getDbo();
 			$query = $db->getQuery(true);
-			$query->select('options,default_option,value FROM #__tjfields_options');
-			$query->where('field_id=' . (int) $field_id);
+
+			$query->select($db->quoteName(array('options','default_option','value')));
+			$query->from($db->quoteName('#__tjfields_options'));
+			$query->where($db->quoteName('field_id') . ' = ' . (int) $field_id);
 
 			$new_option_value = json_decode($option_value);
 
@@ -778,13 +779,13 @@ class TjfieldsHelper
 				}
 				else
 				{
-					$query->where('value=' . $db->quote($new_option_value));
+					$query->where($db->quoteName('value') . '=' . $db->quote($new_option_value));
 				}
 			}
 			else
 			{
 				// Radio.
-				$query->where('value=' . $db->quote($option_value));
+				$query->where($db->quoteName('value') . '=' . $db->quote($option_value));
 			}
 
 			$db->setQuery($query);
@@ -842,9 +843,12 @@ class TjfieldsHelper
 	{
 		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true);
-		$query->select('* FROM #__categories');
-		$query->where($db->quoteName('extension') . "=" . $db->quote($client));
-		$query->where($db->quoteName('published') . " = 1");
+
+		$query->select('*');
+		$query->from($db->quoteName('#__categories'));
+		$query->where($db->quoteName('extension') . ' = ' . $db->quote($client));
+		$query->where($db->quoteName('published') . ' = 1');
+
 		$db->setQuery($query);
 		$categorysList = $db->loadObjectlist();
 
@@ -950,7 +954,6 @@ class TjfieldsHelper
 			$fields_value_str = implode(',', $fields_value_str);
 		}
 
-		/*$data['fields_value'] =  array(19,14,17);*/
 		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true);
 

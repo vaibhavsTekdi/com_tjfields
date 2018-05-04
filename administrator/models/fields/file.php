@@ -185,7 +185,7 @@ class JFormFieldFile extends JFormField
 			if (!empty($mediaLink) && ($canEdit || $canEditOwn) && $layoutData['required'] == '')
 			{
 				$html .= ' | <a href="javascript:void(0);"
-					onclick="deleteTjFile(\'' . base64_encode($layoutData["value"]) . '\', \'' . $layoutData["id"] . '\');">'
+					onclick="deleteFile(\'' . base64_encode($layoutData["value"]) . '\', \'' . $layoutData["id"] . '\');">'
 					. JText::_("COM_TJFIELDS_FILE_DELETE") . '</a>';
 			}
 

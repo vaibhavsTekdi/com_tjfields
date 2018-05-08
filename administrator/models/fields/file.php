@@ -155,7 +155,7 @@ class JFormFieldFile extends JFormField
 
 			$canView = 0;
 
-			if ($user->authorise('core.field.viewfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->group_id))
+			if ($user->authorise('core.field.viewfieldvalue', 'com_tjfields.group.' . $tjFieldFieldTable->group_id))
 			{
 				$canView = $user->authorise('core.field.viewfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->id);
 			}
@@ -169,14 +169,14 @@ class JFormFieldFile extends JFormField
 
 			$canEdit = 0;
 
-			if ($user->authorise('core.field.editfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->group_id))
+			if ($user->authorise('core.field.editfieldvalue', 'com_tjfields.group.' . $tjFieldFieldTable->group_id))
 			{
 				$canEdit = $user->authorise('core.field.editfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->id);
 			}
 
 			$canEditOwn = 0;
 
-			if ($user->authorise('core.field.editownfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->group_id))
+			if ($user->authorise('core.field.editownfieldvalue', 'com_tjfields.group.' . $tjFieldFieldTable->group_id))
 			{
 				$canEditOwn = $user->authorise('core.field.editownfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->id);
 			}

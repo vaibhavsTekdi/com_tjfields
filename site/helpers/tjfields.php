@@ -329,7 +329,7 @@ class TjfieldsHelper
 			$query = $db->getQuery(true);
 			$query->select($db->quoteName('field_id'));
 			$query->from($db->quoteName('#__tjfields_fields_value'));
-			$query->where($db->quoteName('content_id') . " = '" . (int) $content_id . "'");
+			$query->where($db->quoteName('content_id') . " = " . (int) $content_id);
 			$query->where($db->quoteName('client') . " = " . $db->quote($client));
 			$db->setQuery($query);
 			$dataSavedFields = $db->loadColumn();
@@ -775,7 +775,7 @@ class TjfieldsHelper
 				if (is_array($new_option_value))
 				{
 					$option_value_string = implode(",", $db->quote($new_option_value));
-					$query->where('value IN (' . $option_value_string . ')');
+					$query->where($db->quoteName('value') . 'IN (' . $option_value_string . ')');
 				}
 				else
 				{

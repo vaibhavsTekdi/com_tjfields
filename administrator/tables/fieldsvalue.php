@@ -1,10 +1,11 @@
 <?php
 
 /**
- * @package    Com_Tjfields
- * @copyright  Copyright (C) 2009 -2015 Techjoomla, Tekdi Web Solutions . All rights reserved.
- * @license    GNU GPLv2 <http://www.gnu.org/licenses/old-licenses/gpl-2.0.html>
- * @link       http://www.techjoomla.com
+ * @Version SVN: <svn_id>
+ * @Package    TJ-Fields
+ * @author     Techjoomla <extensions@techjoomla.com>
+ * @copyright  Copyright (c) 2009-2018 TechJoomla. All rights reserved.
+ * @license    GNU General Public License version 2 or later.
  */
 
 // No direct access
@@ -13,7 +14,7 @@ defined('_JEXEC') or die;
 /**
  * Sections Table class
  *
- * @since  1.0
+ * @since  1.4
  *
  */
 class TjfieldsTablefieldsvalue extends JTable

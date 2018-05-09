@@ -1679,7 +1679,7 @@ class TjfieldsHelper
 	 *
 	 * @since	1.6
 	 */
-	public function tjFileDelete($filePath)
+	public function deleteFile($filePath)
 	{
 		$user = JFactory::getUser();
 
@@ -1698,7 +1698,7 @@ class TjfieldsHelper
 
 			$canEditOwn = $user->authorise('core.field.editownfieldvalue', 'com_tjfields.field.' . $fields_value_table->field_id);
 
-			if (($user->id == $fields_value_table->user_id) && ($canEdit || $canEditOwn))
+			if ($canEdit || (($user->id == $fields_value_table->user_id) && $canEditOwn))
 			{
 				$fileToDelete = JPATH_ROOT . $filePath;
 

@@ -150,8 +150,12 @@ class JFormFieldFile extends JFormField
 			$db = JFactory::getDbo();
 			JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjfields/tables');
 			$tjFieldFieldTable = JTable::getInstance('field', 'TjfieldsTable', array('dbo', $db));
-
 			$tjFieldFieldTable->load(array('name' => $layoutData['field']->fieldname));
+
+			// Get Field value details
+			JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_tjfields/tables');
+			$fields_value_table = JTable::getInstance('Fieldsvalue', 'TjfieldsTable');
+			$fields_value_table->load(array('value' => $layoutData['value']));
 
 			$canView = 0;
 
@@ -182,7 +186,7 @@ class JFormFieldFile extends JFormField
 			}
 
 			// Delete file
-			if (!empty($mediaLink) && ($canEdit || $canEditOwn) && $layoutData['required'] == '')
+			if (!empty($mediaLink) && ($canEdit || ($canEditOwn && ($user->id == $fields_value_table->user_id) )) && $layoutData['required'] == '')
 			{
 				$html .= ' <span class="btn btn-remove"> <a id="remove_' . $layoutData["id"] . '" href="javascript:void(0);"
 					onclick="deleteFile(\'' . base64_encode($layoutData["value"]) . '\', \'' . $layoutData["id"] . '\');">'

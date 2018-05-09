@@ -136,7 +136,7 @@ class JFormFieldFile extends JFormField
 
 		if (!empty($layoutData["value"]))
 		{
-			$html .= '<input tj-file-type="' . $layoutData["id"] . '" type="hidden" name="'
+			$html .= '<input fileFieldId="' . $layoutData["id"] . '" type="hidden" name="'
 			. $layoutData["name"] . '"' . 'id="' . $layoutData["id"] . '"' . 'value="' . $layoutData["value"] . '" />';
 			$html .= '<div class="control-group">';
 			$fileInfo = new SplFileInfo($layoutData["value"]);
@@ -183,10 +183,15 @@ class JFormFieldFile extends JFormField
 			if ($user->authorise('core.field.editownfieldvalue', 'com_tjfields.group.' . $tjFieldFieldTable->group_id))
 			{
 				$canEditOwn = $user->authorise('core.field.editownfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->id);
+
+				if ($canEditOwn && ($user->id != $fields_value_table->user_id))
+				{
+					$canEditOwn = 0;
+				}
 			}
 
 			// Delete file
-			if (!empty($mediaLink) && ($canEdit || ($canEditOwn && ($user->id == $fields_value_table->user_id) )) && $layoutData['required'] == '')
+			if (!empty($mediaLink) && ($canEdit || $canEditOwn) && $layoutData['required'] == '')
 			{
 				$html .= ' <span class="btn btn-remove"> <a id="remove_' . $layoutData["id"] . '" href="javascript:void(0);"
 					onclick="deleteFile(\'' . base64_encode($layoutData["value"]) . '\', \'' . $layoutData["id"] . '\');">'

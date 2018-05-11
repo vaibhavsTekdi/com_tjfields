@@ -1721,4 +1721,15 @@ class TjfieldsHelper
 
 		return false;
 	}
+
+	/**
+	 * This define the  language constant which you have use in js file.
+	 *
+	 * @since   1.0
+	 * @return   null
+	 */
+	public static function getLanguageConstantForJs()
+	{
+		JText::script('COM_TJFIELDS_FILE_DELETE_CONFIRM');
+	}
 }

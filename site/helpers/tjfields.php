@@ -1704,13 +1704,13 @@ class TjfieldsHelper
 
 				if (JFile::exists($fileToDelete) && JFile::delete($fileToDelete))
 				{
-						$db = JFactory::getDbo();
-						$fields_obj = new stdClass;
-						$fields_obj->value = '';
-						$fields_obj->id = $fields_value_table->id;
-						$db->updateObject('#__tjfields_fields_value', $fields_obj, 'id');
+					$db = JFactory::getDbo();
+					$fields_obj = new stdClass;
+					$fields_obj->value = '';
+					$fields_obj->id = $fields_value_table->id;
+					$db->updateObject('#__tjfields_fields_value', $fields_obj, 'id');
 
-						return true;
+					return true;
 				}
 
 				return false;

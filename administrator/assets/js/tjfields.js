@@ -40,6 +40,38 @@ jQuery(document).ready(function(){
 		return true;
 	}
 
+	/* This function deletes tjucm file via ajax */
+	deleteFile = function(filePath, fieldId)
+	{
+		if (!filePath)
+		{
+			return;
+		}
+
+		if(!confirm(Joomla.JText._('COM_TJFIELDS_FILE_DELETE_CONFIRM')))
+		{
+			return;
+		}
+
+		jQuery.ajax({
+			url: Joomla.getOptions('system.paths').root + "/index.php?option=com_tjfields&task=fields.deleteFile&format=json",
+			type: 'POST',
+			data:{
+							filePath: filePath
+			},
+			cache: false,
+			dataType: "json",
+			success: function (result) {
+				alert(result.message);
+				if (result.data) {
+					var element = jQuery("input[fileFieldId='" + fieldId + "']");
+					element.val('');
+					element.next().remove('div.control-group');
+				}
+			}
+		});
+	}
+
     /*Required fields valiadtion*/
     document.formvalidator.setHandler('min100', function(value) {
         value = value.trim();

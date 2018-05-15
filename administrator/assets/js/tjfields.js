@@ -3,21 +3,11 @@ jQuery(document).ready(function(){
 	/*Code to get item state*/
 	let itemState = jQuery('#itemState').val();
 
-	/*Code for handling click & blur event to save data in draft mode*/
-	let over_click;
-	jQuery(":button").mouseenter(function () {
-		over_click = true;
-	}).mouseleave(function () {
-		over_click = false;
-	});
-
 	/*Code for auto save on blur event add new record or editing draft record only*/
 	if (itemState == '' || itemState == 0)
 	{
 		jQuery(document).delegate(":input[type!='button']", "blur", function() {
-			if (!over_click) {
-				steppedFormSave(this.form.id, 'draft');
-			}
+			steppedFormSave(this.form.id, 'draft');
 		});
 	}
 
@@ -106,8 +96,8 @@ jQuery(document).ready(function(){
 
     /* It restrict the user for manual input in datepicker field */
     jQuery(document).delegate('.calendar-textfield-class', 'focusin', function(event) {
-        event.preventDefault();
-        jQuery(this).next('button').focus().click();
+       event.preventDefault();
+       jQuery(this).parent().siblings(':eq(0)').show();
     });
 
     /* Code for number field validation */

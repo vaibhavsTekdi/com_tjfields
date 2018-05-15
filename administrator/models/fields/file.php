@@ -136,7 +136,7 @@ class JFormFieldFile extends JFormField
 
 		if (!empty($layoutData["value"]))
 		{
-			$html .= '<input type="hidden" name="'
+			$html .= '<input fileFieldId="' . $layoutData["id"] . '" type="hidden" name="'
 			. $layoutData["name"] . '"' . 'id="' . $layoutData["id"] . '"' . 'value="' . $layoutData["value"] . '" />';
 			$html .= '<div class="control-group">';
 			$fileInfo = new SplFileInfo($layoutData["value"]);
@@ -144,11 +144,61 @@ class JFormFieldFile extends JFormField
 
 			$mediaLink = $tjFieldHelper->getMediaUrl($layoutData["value"]);
 
-			if (!empty($mediaLink))
+			// Access based actions
+			$user = JFactory::getUser();
+
+			$db = JFactory::getDbo();
+			JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjfields/tables');
+			$tjFieldFieldTable = JTable::getInstance('field', 'TjfieldsTable', array('dbo', $db));
+			$tjFieldFieldTable->load(array('name' => $layoutData['field']->fieldname));
+
+			// Get Field value details
+			JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_tjfields/tables');
+			$fields_value_table = JTable::getInstance('Fieldsvalue', 'TjfieldsTable');
+			$fields_value_table->load(array('value' => $layoutData['value']));
+
+			$canView = 0;
+
+			if ($user->authorise('core.field.viewfieldvalue', 'com_tjfields.group.' . $tjFieldFieldTable->group_id))
+			{
+				$canView = $user->authorise('core.field.viewfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->id);
+			}
+
+			// Download file
+			if (!empty($mediaLink) && $canView)
 			{
 				$html .= '<div><a href="' . $mediaLink
-				. '">' . JText::_("COM_TJFIELDS_FILE_DOWNLOAD") . '</a></div>';
+				. '">' . JText::_("COM_TJFIELDS_FILE_DOWNLOAD") . '</a>';
 			}
+
+			$canEdit = 0;
+
+			if ($user->authorise('core.field.editfieldvalue', 'com_tjfields.group.' . $tjFieldFieldTable->group_id))
+			{
+				$canEdit = $user->authorise('core.field.editfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->id);
+			}
+
+			$canEditOwn = 0;
+
+			if ($user->authorise('core.field.editownfieldvalue', 'com_tjfields.group.' . $tjFieldFieldTable->group_id))
+			{
+				$canEditOwn = $user->authorise('core.field.editownfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->id);
+
+				if ($canEditOwn && ($user->id != $fields_value_table->user_id))
+				{
+					$canEditOwn = 0;
+				}
+			}
+
+			// Delete file
+			if (!empty($mediaLink) && ($canEdit || $canEditOwn) && $layoutData['required'] == '')
+			{
+				$html .= ' <span class="btn btn-remove"> <a id="remove_' . $layoutData["id"] . '" href="javascript:void(0);"
+					onclick="deleteFile(\'' . base64_encode($layoutData["value"]) . '\', \'' . $layoutData["id"] . '\');">'
+					. JText::_("COM_TJFIELDS_FILE_DELETE") . '</a> </span>';
+			}
+
+			$html .= '</div>';
 
 			$html .= '</div>';
 		}

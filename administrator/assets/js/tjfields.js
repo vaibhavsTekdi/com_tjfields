@@ -1,16 +1,5 @@
 jQuery(document).ready(function(){
 
-	/*Code to get item state*/
-	let itemState = jQuery('#itemState').val();
-
-	/*Code for auto save on blur event add new record or editing draft record only*/
-	if (itemState == '' || itemState == 0)
-	{
-		jQuery(document).delegate(":input[type!='button']", "blur", function() {
-			steppedFormSave(this.form.id, 'draft');
-		});
-	}
-
 	Joomla.submitbutton = function(task)
 	{
 		if (task == 'fields.delete')

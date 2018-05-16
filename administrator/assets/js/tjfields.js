@@ -121,6 +121,10 @@ jQuery(document).ready(function(){
        jQuery(this).parent().siblings(':eq(0)').show();
     });
 
+    jQuery(document).delegate('.calendar-textfield-class', 'keydown', function(event) {
+			return false;
+    });
+
     /* Code for number field validation */
     document.formvalidator.setHandler('check_number_field', function(value, element) {
         let enteredValue = parseFloat(value);

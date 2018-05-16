@@ -115,11 +115,13 @@ jQuery(document).ready(function(){
         return regex.test(value);
     });
 
-    /* It restrict the user for manual input in datepicker field */
-    jQuery(document).delegate('.calendar-textfield-class', 'focusin', function(event) {
-       event.preventDefault();
-       jQuery(this).parent().siblings(':eq(0)').show();
-    });
+    jQuery(document).on('keydown focusin','.calendar-textfield-class', function(event){
+		event.preventDefault();
+		if (event.keyCode < 48 || event.keyCode > 57)
+			return false;
+		else
+			jQuery(this).parent().siblings(':eq(0)').show();
+	});
 
     /* Code for number field validation */
     document.formvalidator.setHandler('check_number_field', function(value, element) {

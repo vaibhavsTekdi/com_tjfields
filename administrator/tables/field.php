@@ -1,19 +1,19 @@
 <?php
 /**
- * @version    SVN: <svn_id>
  * @package    Tjfields
+ *
  * @author     Techjoomla <extensions@techjoomla.com>
- * @copyright  Copyright (c) 2009-2016 TechJoomla. All rights reserved.
- * @license    GNU General Public License version 2 or later.
+ * @copyright  Copyright (C) 2009 - 2018 Techjoomla. All rights reserved.
+ * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // No direct access
 defined('_JEXEC') or die;
 
 /**
- * field Table class
+ * Field Table class
  *
- * @since  1.0
+ * @since  1.1
  */
 class TjfieldsTablefield extends JTable
 {
@@ -180,25 +180,39 @@ class TjfieldsTablefield extends JTable
 	 * @param   MIXED  $table  JTable object
 	 * @param   MIXED  $id     id
 	 *
-	 * @return  void
+	 * @return  integer
+	 * 
+	 * @since  1.1
 	 */
 	protected function _getAssetParentId(JTable $table = null, $id = null)
 	{
-		// We will retrieve the parent-asset from the Asset-table
-		$assetParent = JTable::getInstance('Asset');
+			$assetId = null;
 
-		// Default: if no asset-parent can be found we take the global asset
-		$assetParentId = $assetParent->getRootId();
+			if ($this->group_id)
+			{
+				// Build the query to get the asset id for the parent category.
+						$query = $this->_db->getQuery(true)
+						->select($this->_db->quoteName('asset_id'))
+						->from($this->_db->quoteName('#__tjfields_groups'))
+						->where($this->_db->quoteName('id') . ' = ' . (int) $this->group_id);
 
-		// The item has the component as asset-parent
-		$assetParent->loadByName('com_tjfields');
+					// Get the asset id from the database.
+					$this->_db->setQuery($query);
 
-		// Return the found asset-parent-id
-		if ($assetParent->id)
+					if ($result = $this->_db->loadResult())
+					{
+						$assetId = (int) $result;
+					}
+			}
+
+		// Return the asset id if present else return the root
+		if ($assetId)
 		{
-			$assetParentId = $assetParent->id;
+			return $assetId;
 		}
-
-		return $assetParentId;
+		else
+		{
+			return parent::_getAssetParentId($table, $id);
+		}
 	}
 }

@@ -1,7 +1,7 @@
 <?php
 /**
- * @version    SVN: <svn_id>
  * @package    Tjfields
+ *
  * @author     Techjoomla <extensions@techjoomla.com>
  * @copyright  Copyright (c) 2009-2017 TechJoomla. All rights reserved.
  * @license    GNU General Public License version 2 or later.
@@ -13,7 +13,7 @@ defined('_JEXEC') or die;
 /**
  * Group Table class
  *
- * @since  1.0
+ * @since  1.1
  */
 class TjfieldsTablegroup extends JTable
 {
@@ -33,6 +33,8 @@ class TjfieldsTablegroup extends JTable
 	 * @param   type  $jaccessrules  an arrao of JAccessRule objects.
 	 *
 	 * @return void
+	 * 
+	 * @since  1.1
 	 */
 	private function JAccessRulestoArray($jaccessrules)
 	{
@@ -57,6 +59,8 @@ class TjfieldsTablegroup extends JTable
 	 * Overloaded check function
 	 *
 	 * @return void
+	 * 
+	 * @since  1.1
 	 */
 	public function check()
 	{
@@ -166,6 +170,8 @@ class TjfieldsTablegroup extends JTable
 	 * @return string The asset name
 	 *
 	 * @return  void
+	 * 
+	 * @since  1.1
 	 */
 	protected function _getAssetName()
 	{
@@ -180,7 +186,9 @@ class TjfieldsTablegroup extends JTable
 	 * @param   MIXED  $table  JTable object
 	 * @param   MIXED  $id     id
 	 *
-	 * @return  void
+	 * @return  integer
+	 * 
+	 * @since  1.1
 	 */
 	protected function _getAssetParentId(JTable $table = null, $id = null)
 	{

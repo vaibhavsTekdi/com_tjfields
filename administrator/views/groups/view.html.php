@@ -66,7 +66,7 @@ class TjfieldsViewGroups extends JViewLegacy
 	 */
 	protected function addToolbar()
 	{
-		$input = jFactory::getApplication()->input;
+		$input = JFactory::getApplication()->input;
 		require_once JPATH_COMPONENT . '/helpers/tjfields.php';
 		$client          = $input->get('client', '', 'STRING');
 

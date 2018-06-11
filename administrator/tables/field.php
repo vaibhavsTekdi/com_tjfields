@@ -186,7 +186,7 @@ class TjfieldsTablefield extends JTable
 	 */
 	protected function _getAssetParentId(JTable $table = null, $id = null)
 	{
-			$assetId = null;
+		$assetId = null;
 
 			if ($this->group_id)
 			{
@@ -206,7 +206,7 @@ class TjfieldsTablefield extends JTable
 			}
 
 		// Return the asset id if present else return the root
-		if ($assetId)
+		if ($assetId !== null)
 		{
 			return $assetId;
 		}

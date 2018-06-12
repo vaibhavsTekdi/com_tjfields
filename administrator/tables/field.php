@@ -186,27 +186,18 @@ class TjfieldsTablefield extends JTable
 	 */
 	protected function _getAssetParentId(JTable $table = null, $id = null)
 	{
-		$assetId = null;
+			$assetId = null;
 
 			if ($this->group_id)
 			{
-				// Build the query to get the asset id for the parent category.
-						$query = $this->_db->getQuery(true)
-						->select($this->_db->quoteName('asset_id'))
-						->from($this->_db->quoteName('#__tjfields_groups'))
-						->where($this->_db->quoteName('id') . ' = ' . (int) $this->group_id);
-
-					// Get the asset id from the database.
-					$this->_db->setQuery($query);
-
-					if ($result = $this->_db->loadResult())
-					{
-						$assetId = (int) $result;
-					}
+				JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_tjfields/tables');
+				$groupTable = JTable::getInstance('group','TjfieldsTable');
+				$groupTable->load(array('id' => $this->group_id));
+				$assetId = $groupTable->asset_id;
 			}
 
 		// Return the asset id if present else return the root
-		if ($assetId !== null)
+		if ($assetId)
 		{
 			return $assetId;
 		}

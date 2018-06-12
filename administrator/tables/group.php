@@ -3,8 +3,8 @@
  * @package    Tjfields
  *
  * @author     Techjoomla <extensions@techjoomla.com>
- * @copyright  Copyright (c) 2009-2017 TechJoomla. All rights reserved.
- * @license    GNU General Public License version 2 or later.
+ * @copyright  Copyright (C) 2009 - 2018 Techjoomla. All rights reserved.
+ * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // No direct access
@@ -177,6 +177,13 @@ class TjfieldsTablegroup extends JTable
 	{
 		$k = $this->_tbl_key;
 
+		$client = explode('.',$this->client);
+
+		if ($client[0] !== null)
+		{
+			return $client[0] . '.group.' . (int) $this->$k;
+		}
+
 		return 'com_tjfields.group.' . (int) $this->$k;
 	}
 
@@ -195,11 +202,21 @@ class TjfieldsTablegroup extends JTable
 		// We will retrieve the parent-asset from the Asset-table
 		$assetParent = JTable::getInstance('Asset');
 
+		$client = explode('.',$this->client);
+
+		if ($client[0] !== null)
+		{
+			// The item has the component as asset-parent
+			$assetParent->loadByName($client[0]);
+		}
+		else
+		{
+			// The item does not get the client
+			$assetParent->loadByName('com_tjfields');
+		}
+
 		// Default: if no asset-parent can be found we take the global asset
 		$assetParentId = $assetParent->getRootId();
-
-		// The item has the component as asset-parent
-		$assetParent->loadByName('com_tjfields');
 
 		// Return the found asset-parent-id
 		if ($assetParent->id)

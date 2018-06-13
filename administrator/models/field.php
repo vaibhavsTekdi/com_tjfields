@@ -46,7 +46,7 @@ class TjfieldsModelField extends JModelAdmin
 	 * @param   Array    $data      An optional array of data for the form to interogate.
 	 * @param   Boolean  $loadData  True if the form is to load its own data (default case), false if not.
 	 *
-	 * @return  JForm  A JForm object on success, false on failure
+	 * @return  \JForm|boolean  A \JForm object on success, false on failure
 	 *
 	 * @since  1.6
 	 */
@@ -69,7 +69,7 @@ class TjfieldsModelField extends JModelAdmin
 	/**
 	 * Method to get the data that should be injected in the form.
 	 *
-	 * @return	mixed	The data for the form.
+	 * @return  \JForm|boolean  \JForm object on success, false on error.
 	 *
 	 * @since	1.6
 	 */
@@ -158,7 +158,7 @@ class TjfieldsModelField extends JModelAdmin
 	 *
 	 * @param   Array  $post  Post
 	 *
-	 * @return  flag
+	 * @return  mixed
 	 *
 	 * @since  1.6
 	 */
@@ -396,7 +396,7 @@ class TjfieldsModelField extends JModelAdmin
 	 * @param   Array    $jsarray  JSArray
 	 * @param   Integer  $fieldid  Field Id
 	 *
-	 * @return  flag
+	 * @return  boolean
 	 *
 	 * @since  1.6
 	 */
@@ -431,7 +431,7 @@ class TjfieldsModelField extends JModelAdmin
 	 *
 	 * @param   Integer  $delete_ids  Id for delete record
 	 *
-	 * @return  flag
+	 * @return  boolean
 	 *
 	 * @since  1.6
 	 */

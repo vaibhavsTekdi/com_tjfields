@@ -10,6 +10,7 @@
 // No direct access.
 defined('_JEXEC') or die;
 
+JLoader::import('TjfieldsHelper', JPATH_ADMINISTRATOR . '/components/com_tjfields/helpers');
 jimport('joomla.application.component.controlleradmin');
 
 /**

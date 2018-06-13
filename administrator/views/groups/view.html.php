@@ -66,8 +66,8 @@ class TjfieldsViewGroups extends JViewLegacy
 	 */
 	protected function addToolbar()
 	{
-		$input = jFactory::getApplication()->input;
-		require_once JPATH_COMPONENT . '/helpers/tjfields.php';
+		$input = JFactory::getApplication()->input;
+		JLoader::import('TjfieldsHelper', JPATH_ADMINISTRATOR . '/components/com_tjfields/helpers');
 		$client          = $input->get('client', '', 'STRING');
 
 		$component_title = '';
@@ -93,7 +93,9 @@ class TjfieldsViewGroups extends JViewLegacy
 		}
 
 		$state = $this->get('State');
-		$canDo = TjfieldsHelper::getActions('com_tjucm', 'group');
+		$tjfieldsHelper = new TjfieldsHelper();
+
+		$canDo = $tjfieldsHelper->getActions($client[0], 'group');
 		JToolBarHelper::title($component_title . JText::_('COM_TJFIELDS_TITLE_GROUPS'), 'list.png');
 
 		// Check if the form exists before showing the add/edit buttons

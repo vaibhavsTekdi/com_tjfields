@@ -1,10 +1,10 @@
 <?php
 /**
- * @version    SVN: <svn_id>
  * @package    Tjfields
+ *
  * @author     Techjoomla <extensions@techjoomla.com>
- * @copyright  Copyright (c) 2009-2017 TechJoomla. All rights reserved.
- * @license    GNU General Public License version 2 or later.
+ * @copyright  Copyright (C) 2009 - 2018 Techjoomla. All rights reserved.
+ * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // No direct access
@@ -13,7 +13,7 @@ defined('_JEXEC') or die;
 /**
  * Group Table class
  *
- * @since  1.0
+ * @since  1.1
  */
 class TjfieldsTablegroup extends JTable
 {
@@ -33,6 +33,8 @@ class TjfieldsTablegroup extends JTable
 	 * @param   type  $jaccessrules  an arrao of JAccessRule objects.
 	 *
 	 * @return void
+	 * 
+	 * @since  1.1
 	 */
 	private function JAccessRulestoArray($jaccessrules)
 	{
@@ -57,6 +59,8 @@ class TjfieldsTablegroup extends JTable
 	 * Overloaded check function
 	 *
 	 * @return void
+	 * 
+	 * @since  1.1
 	 */
 	public function check()
 	{
@@ -166,10 +170,19 @@ class TjfieldsTablegroup extends JTable
 	 * @return string The asset name
 	 *
 	 * @return  void
+	 * 
+	 * @since  1.1
 	 */
 	protected function _getAssetName()
 	{
 		$k = $this->_tbl_key;
+
+		$client = explode('.', $this->client);
+
+		if (!empty($client[0]))
+		{
+			return $client[0] . '.group.' . (int) $this->$k;
+		}
 
 		return 'com_tjfields.group.' . (int) $this->$k;
 	}
@@ -180,18 +193,30 @@ class TjfieldsTablegroup extends JTable
 	 * @param   MIXED  $table  JTable object
 	 * @param   MIXED  $id     id
 	 *
-	 * @return  void
+	 * @return  integer
+	 * 
+	 * @since  1.1
 	 */
 	protected function _getAssetParentId(JTable $table = null, $id = null)
 	{
 		// We will retrieve the parent-asset from the Asset-table
 		$assetParent = JTable::getInstance('Asset');
 
+		$client = explode('.',$this->client);
+
+		if (!empty($client[0]))
+		{
+			// The item has the component as asset-parent
+			$assetParent->loadByName($client[0]);
+		}
+		else
+		{
+			// The item does not get the client
+			$assetParent->loadByName('com_tjfields');
+		}
+
 		// Default: if no asset-parent can be found we take the global asset
 		$assetParentId = $assetParent->getRootId();
-
-		// The item has the component as asset-parent
-		$assetParent->loadByName('com_tjfields');
 
 		// Return the found asset-parent-id
 		if ($assetParent->id)

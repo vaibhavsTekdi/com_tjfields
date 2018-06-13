@@ -1,7 +1,7 @@
 <?php
 /**
- * @version    SVN: <svn_id>
  * @package    Tjfields
+ *
  * @author     Techjoomla <extensions@techjoomla.com>
  * @copyright  Copyright (c) 2009-2017 TechJoomla. All rights reserved.
  * @license    GNU General Public License version 2 or later.
@@ -18,7 +18,7 @@ jimport('joomla.application.component.controller');
  *
  * @package     Tjfields
  * @subpackage  com_tjfields
- * @since       1.0
+ * @since       1.1
  */
 class Com_TjfieldsInstallerScript
 {
@@ -53,10 +53,46 @@ class Com_TjfieldsInstallerScript
 	 *
 	 * @param   JInstaller  $parent  parent
 	 *
-	 * @return  void
+	 * @return  mixed
+	 * 
+	 * @since 1.1
 	 */
 	public function postflight($type, $parent)
 	{
+		$db = JFactory::getDbo();
+
+		// Create a new query object.
+		$query = $db->getQuery(true);
+		$query->select($db->quoteName('*'));
+		$query->from($db->quoteName('#__assets'));
+		$query->where($db->quoteName('name') . ' = ' . $db->quote('com_tjfields'));
+		$db->setQuery($query);
+
+		// Get the com_tjfields asset_id which joomla adds while installing the package
+		$tjFieldsAsset = $db->loadAssoc();
+
+		$query1 = $db->getQuery(true);
+
+			// Fields to update.
+			$fields = array(
+			$db->quoteName('rules') . ' = ' . $db->quote('{"core.field.addfieldvalue":{"1":1,"9":1,"6":1,"7":1,"2":1,"3":1,"4":1,"5":1},
+			"core.field.viewfieldvalue":{"6":1,"7":1,"2":1,"4":1,"5":1},
+			"core.field.editfieldvalue":{"6":1,"7":1,"4":1,"5":1},
+			"core.field.editownfieldvalue":{"6":1,"7":1,"2":1,"3":1,"4":1,"5":1}}')
+			);
+
+			// Conditions for which records should be updated.
+			$conditions = array(
+			$db->quoteName('id') . ' = ' . (int) $tjFieldsAsset['id']
+			);
+
+			// Update the com_tjfields rules with default permissions
+			$query1->update($db->quoteName('#__assets'))->set($fields)->where($conditions);
+
+			$db->setQuery($query1);
+
+			$db->execute();
+
 		// Install subextensions
 		$status = $this->_installSubextensions($parent);
 
@@ -74,7 +110,7 @@ class Com_TjfieldsInstallerScript
 	 *
 	 * @param   JInstaller  $parent  parent
 	 *
-	 * @return  void
+	 * @return  object
 	 */
 	private function _installSubextensions($parent)
 	{
@@ -498,7 +534,7 @@ class Com_TjfieldsInstallerScript
 	/**
 	 * method to add params column
 	 *
-	 * @return void
+	 * @return boolean
 	 */
 	public function addparamsColumn()
 	{
@@ -602,7 +638,7 @@ class Com_TjfieldsInstallerScript
 	 *
 	 * @param   STRING  $parent  parent
 	 *
-	 * @return void
+	 * @return mixed
 	 */
 	public function installSqlFiles($parent)
 	{
@@ -725,7 +761,7 @@ class Com_TjfieldsInstallerScript
 	 *
 	 * @param   STRING  $table  existing name
 	 *
-	 * @return void
+	 * @return boolean
 	 */
 	public function checkTableExists($table)
 	{
@@ -766,7 +802,7 @@ class Com_TjfieldsInstallerScript
 	 *
 	 * @param   STRING  $table  existing name
 	 *
-	 * @return void
+	 * @return array
 	 */
 	public function getColumns($table)
 	{
@@ -791,7 +827,7 @@ class Com_TjfieldsInstallerScript
 	 * @param   STRING  $table     existing name
 	 * @param   STRING  $newTable  updated name
 	 *
-	 * @return void
+	 * @return boolean
 	 */
 	public function renameTable($table, $newTable)
 	{
@@ -813,7 +849,7 @@ class Com_TjfieldsInstallerScript
 	 * @param   STRING  $parent   parent
 	 * @param   STRING  $sqlfile  sql file
 	 *
-	 * @return void
+	 * @return boolean
 	 */
 	public function runSQL($parent,$sqlfile)
 	{

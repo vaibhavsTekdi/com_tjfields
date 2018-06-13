@@ -110,7 +110,7 @@ class Com_TjfieldsInstallerScript
 	 *
 	 * @param   JInstaller  $parent  parent
 	 *
-	 * @return  void
+	 * @return  object
 	 */
 	private function _installSubextensions($parent)
 	{
@@ -638,7 +638,7 @@ class Com_TjfieldsInstallerScript
 	 *
 	 * @param   STRING  $parent  parent
 	 *
-	 * @return void
+	 * @return mixed
 	 */
 	public function installSqlFiles($parent)
 	{
@@ -761,7 +761,7 @@ class Com_TjfieldsInstallerScript
 	 *
 	 * @param   STRING  $table  existing name
 	 *
-	 * @return void
+	 * @return boolean
 	 */
 	public function checkTableExists($table)
 	{
@@ -802,7 +802,7 @@ class Com_TjfieldsInstallerScript
 	 *
 	 * @param   STRING  $table  existing name
 	 *
-	 * @return void
+	 * @return array
 	 */
 	public function getColumns($table)
 	{
@@ -827,7 +827,7 @@ class Com_TjfieldsInstallerScript
 	 * @param   STRING  $table     existing name
 	 * @param   STRING  $newTable  updated name
 	 *
-	 * @return void
+	 * @return boolean
 	 */
 	public function renameTable($table, $newTable)
 	{
@@ -849,7 +849,7 @@ class Com_TjfieldsInstallerScript
 	 * @param   STRING  $parent   parent
 	 * @param   STRING  $sqlfile  sql file
 	 *
-	 * @return void
+	 * @return boolean
 	 */
 	public function runSQL($parent,$sqlfile)
 	{

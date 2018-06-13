@@ -36,7 +36,7 @@ class TjfieldsViewFields extends JViewLegacy
 	 */
 	public function display($tpl = null)
 	{
-		$input           = jFactory::getApplication()->input;
+		$input           = JFactory::getApplication()->input;
 		$client          = $input->get('client', '', 'STRING');
 
 		$this->state      = $this->get('State');

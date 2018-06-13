@@ -193,11 +193,11 @@ class TjfieldsModelFields extends JModelList
 	}
 
 	/**
-	 * Method GetItems
+	 * Method to get an array of data items.
 	 *
-	 * @return  items
+	 * @return  mixed  An array of data items on success, false on failure.
 	 *
-	 * @since  1.6
+	 * @since   1.6
 	 */
 	public function getItems()
 	{

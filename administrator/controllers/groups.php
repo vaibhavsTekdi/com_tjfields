@@ -10,6 +10,7 @@
 // No direct access.
 defined('_JEXEC') or die;
 
+JLoader::import('TjfieldsHelper', JPATH_ADMINISTRATOR . '/components/com_tjfields/helpers');
 jimport('joomla.application.component.controlleradmin');
 
 /**
@@ -188,7 +189,6 @@ class TjfieldsControllerGroups extends JControllerAdmin
 			// Remove the items.
 			if ($model->deletegroup($cid))
 			{
-				JLoader::import('TjfieldsHelper', JPATH_ADMINISTRATOR . '/components/com_tjfields/helpers');
 				$TjfieldsHelper = new TjfieldsHelper();
 				$data = array();
 				$data['client'] = $client;

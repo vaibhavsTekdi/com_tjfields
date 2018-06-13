@@ -93,7 +93,8 @@ class TjfieldsViewGroups extends JViewLegacy
 		}
 
 		$state = $this->get('State');
-		$canDo = TjfieldsHelper::getActions($client['0'], 'group');
+		$tjfieldsHelper = new TjfieldsHelper();
+		$canDo = $tjfieldsHelper->getActions($client['0'], 'group');
 		JToolBarHelper::title($component_title . JText::_('COM_TJFIELDS_TITLE_GROUPS'), 'list.png');
 
 		// Check if the form exists before showing the add/edit buttons

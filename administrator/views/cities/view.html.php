@@ -109,7 +109,6 @@ class TjfieldsViewCities extends JViewLegacy
 
 		$extention = explode('.', $client);
 
-		$state = $this->get('State');
 		$canDo = TjfieldsHelper::getActions($extention[0], 'city');
 
 		

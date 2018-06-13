@@ -93,7 +93,6 @@ class TjfieldsViewRegions extends JViewLegacy
 	{
 		require_once JPATH_COMPONENT . '/helpers/tjfields.php';
 
-		$state = $this->get('State');
 		$client = JFactory::getApplication()->input->get('client', '', 'STRING');
 		$extention = explode('.', $client);
 		$canDo = TjfieldsHelper::getActions($extention[0], 'region');

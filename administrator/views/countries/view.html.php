@@ -80,7 +80,6 @@ class TjfieldsViewCountries extends JViewLegacy
 		// Let's get the extension name
 		$client = JFactory::getApplication()->input->get('client', '', 'STRING');
 
-		$state = $this->get('State');
 		$extention = explode('.', $client);
 
 		$canDo = TjfieldsHelper::getActions($extention[0], 'country');

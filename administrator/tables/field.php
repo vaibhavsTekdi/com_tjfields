@@ -171,6 +171,13 @@ class TjfieldsTablefield extends JTable
 	{
 		$k = $this->_tbl_key;
 
+		$client = explode('.',$this->client);
+
+		if (!empty($client[0]))
+		{
+			return $client[0] . '.group.' . (int) $this->$k;
+		}
+
 		return 'com_tjfields.field.' . (int) $this->$k;
 	}
 

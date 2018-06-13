@@ -179,7 +179,7 @@ class TjfieldsTablegroup extends JTable
 
 		$client = explode('.',$this->client);
 
-		if ($client[0] !== null)
+		if (!empty($client[0]))
 		{
 			return $client[0] . '.group.' . (int) $this->$k;
 		}
@@ -204,7 +204,7 @@ class TjfieldsTablegroup extends JTable
 
 		$client = explode('.',$this->client);
 
-		if ($client[0] !== null)
+		if (!empty($client[0]))
 		{
 			// The item has the component as asset-parent
 			$assetParent->loadByName($client[0]);

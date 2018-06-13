@@ -534,7 +534,7 @@ class Com_TjfieldsInstallerScript
 	/**
 	 * method to add params column
 	 *
-	 * @return void
+	 * @return boolean
 	 */
 	public function addparamsColumn()
 	{

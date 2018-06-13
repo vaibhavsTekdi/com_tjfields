@@ -103,7 +103,9 @@ class TjfieldsViewCity extends JViewLegacy
 			$checkedOut = false;
 		}
 
-		$canDo = TjfieldsHelper::getActions('com_tjfields', 'city');
+		$extention = explode('.', $client);
+
+		$canDo = TjfieldsHelper::getActions($extention[0], 'city');
 
 		// If not checked out, can save the item.
 		if (! $checkedOut && ($canDo->get('core.edit') || ($canDo->get('core.create'))))

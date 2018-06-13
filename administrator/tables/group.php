@@ -177,7 +177,7 @@ class TjfieldsTablegroup extends JTable
 	{
 		$k = $this->_tbl_key;
 
-		$client = explode('.',$this->client);
+		$client = explode('.', $this->client);
 
 		if (!empty($client[0]))
 		{

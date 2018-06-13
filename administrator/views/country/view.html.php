@@ -103,7 +103,9 @@ class TjfieldsViewCountry extends JViewLegacy
 			$checkedOut = false;
 		}
 
-		$canDo = TjfieldsHelper::getActions('com_tjfields', 'country');
+		$extention = explode('.', $client);
+
+		$canDo = TjfieldsHelper::getActions($extention[0], 'country');
 
 		// If not checked out, can save the item.
 		if (! $checkedOut && ($canDo->get('core.edit') || ($canDo->get('core.create'))))

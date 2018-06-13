@@ -171,7 +171,7 @@ class TjfieldsTablefield extends JTable
 	{
 		$k = $this->_tbl_key;
 
-		$client = explode('.',$this->client);
+		$client = explode('.', $this->client);
 
 		if (!empty($client[0]))
 		{
@@ -193,7 +193,7 @@ class TjfieldsTablefield extends JTable
 	 */
 	protected function _getAssetParentId(JTable $table = null, $id = null)
 	{
-			$assetId = null;
+		$assetId = null;
 
 			if ($this->group_id)
 			{

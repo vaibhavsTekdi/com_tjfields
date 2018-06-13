@@ -77,11 +77,14 @@ class TjfieldsViewCountries extends JViewLegacy
 	{
 		require_once JPATH_COMPONENT . '/helpers/tjfields.php';
 
-		$state = $this->get('State');
-		$canDo = TjfieldsHelper::getActions('com_tjfields', 'country');
-
 		// Let's get the extension name
 		$client = JFactory::getApplication()->input->get('client', '', 'STRING');
+
+		$state = $this->get('State');
+		$extention = explode('.', $client);
+
+		$canDo = TjfieldsHelper::getActions($extention[0], 'country');
+
 		$extensionName = strtoupper($client);
 
 		// Need to load the menu language file as mod_menu hasn't been loaded yet.

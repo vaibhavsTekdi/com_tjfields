@@ -96,7 +96,7 @@ class TjfieldsViewFields extends JViewLegacy
 		}
 
 		$state = $this->get('State');
-		$canDo = TjfieldsHelper::getActions('com_tjfields', 'field');
+		$canDo = TjfieldsHelper::getActions($client[0], 'field');
 
 		if (JVERSION >= '3.0')
 		{

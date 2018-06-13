@@ -36,7 +36,7 @@ class TjfieldsViewFields extends JViewLegacy
 	 */
 	public function display($tpl = null)
 	{
-		$input           = jFactory::getApplication()->input;
+		$input           = JFactory::getApplication()->input;
 		$client          = $input->get('client', '', 'STRING');
 
 		$this->state      = $this->get('State');
@@ -71,7 +71,7 @@ class TjfieldsViewFields extends JViewLegacy
 	protected function addToolbar()
 	{
 		require_once JPATH_COMPONENT . '/helpers/tjfields.php';
-		$input           = jFactory::getApplication()->input;
+		$input           = JFactory::getApplication()->input;
 		$client          = $input->get('client', '', 'STRING');
 		$client          = explode('.', $client);
 		$component_title = '';
@@ -96,7 +96,7 @@ class TjfieldsViewFields extends JViewLegacy
 		}
 
 		$state = $this->get('State');
-		$canDo = TjfieldsHelper::getActions('com_tjfields', 'field');
+		$canDo = TjfieldsHelper::getActions($client[0], 'field');
 
 		if (JVERSION >= '3.0')
 		{

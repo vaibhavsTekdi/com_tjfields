@@ -175,7 +175,7 @@ class TjfieldsTablefield extends JTable
 
 		if (!empty($client[0]))
 		{
-			return $client[0] . '.group.' . (int) $this->$k;
+			return $client[0] . '.field.' . (int) $this->$k;
 		}
 
 		return 'com_tjfields.field.' . (int) $this->$k;

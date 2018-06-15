@@ -121,7 +121,7 @@ jQuery(document).ready(function(){
        jQuery(this).parent().siblings(':eq(0)').show();
     });
 
-    jQuery(document).delegate('.calendar-textfield-class', 'keydown', function(event) {
+    jQuery(document).delegate('.calendar-textfield-class', 'keydown contextmenu', function(event) {
 			return false;
     });
 

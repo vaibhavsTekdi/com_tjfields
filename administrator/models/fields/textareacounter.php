@@ -139,13 +139,12 @@ class JFormFieldTextareacounter extends JFormFieldTextarea
 				jQuery(".tjfieldTextareacounter").each(function() {
 					let usedcharlength = parseInt(jQuery(this).val().length);
 					let maxlength = parseInt(jQuery(this).siblings("span").find(".charscontainer_maxlength").text());
-					let availablecharlength = maxlength - usedcharlength;
-					jQuery(this).siblings("span").find(".charscontainer_remaining").text(availablecharlength);
+					jQuery(this).siblings("span").find(".charscontainer_filled").text(usedcharlength);
 				})
 
 				jQuery("#' . $this->id . '").on("keyup", function() {
 					jQuery("#usedchars_' . $this->id . '").text(jQuery("#' . $this->id . '").val().length);
-					jQuery("#remainingchars_' . $this->id . '").text((' . $this->maxlength . ' - jQuery("#' . $this->id . '").val().length));
+					jQuery("#filledchars_' . $this->id . '").text(jQuery("#' . $this->id . '").val().length);
 				});
 
 				document.formvalidator.setHandler("blank-space", function(value, element) {
@@ -184,8 +183,8 @@ class JFormFieldTextareacounter extends JFormFieldTextarea
 		$text .= $this->countertext;
 
 		$text = str_replace('{used}', '<span class="charscontainer_used" id="usedchars_' . $this->id . '">0</span>', $text);
-		$text = str_replace('{remaining}',
-							'<span class="charscontainer_remaining" id="remainingchars_' . $this->id . '">' . $this->maxlength . '</span>',
+		$text = str_replace('{filled}',
+							'<span class="charscontainer_filled" id="filledchars_' . $this->id . '">' . $this->maxlength . '</span>',
 							$text
 							);
 		$text = str_replace('{maxlength}',

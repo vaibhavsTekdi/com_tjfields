@@ -99,6 +99,7 @@ jQuery(document).ready(function(){
     });
 
     document.formvalidator.setHandler('filetype', function(value, element) {
+
         let file_accept = element[0].accept;
         let accept_array = file_accept.split(",");
         let uploadedfile = element[0].files[0];
@@ -109,10 +110,23 @@ jQuery(document).ready(function(){
         /* extension of file*/
         let ext = '.' + filename.split('.').pop().toLowerCase();
 
+        // Converting to bytes
+        let uploadSize = element[0].size * 1048576;
+        let filesize = element[0].files[0].size;
+        let count = accept_array.indexOf(afterDot);
+
+        if(uploadSize < filesize)
+        {
+        	alert(Joomla.JText._('COM_TJFIELDS_FILE_ERROR_MAX_SIZE'));
+
+        	return false;
+        }
+
         if(accept_array.indexOf(ext) === -1)
         {
            return false;
         }
+
         return true;
     });
     document.formvalidator.setHandler('url', function(value) {

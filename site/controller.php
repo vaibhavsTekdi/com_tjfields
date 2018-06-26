@@ -56,21 +56,17 @@ class TjfieldsController extends JControllerLegacy
 		$encodedFilePath = $jinput->get('fpht', '', 'STRING');
 		$decodedPath = base64_decode($encodedFilePath);
 
-		$db = JFactory::getDbo();
-		$query = $db->getQuery(true);
-		$query->select('*');
-		$query->from('#__tjfields_fields_value');
-		$query->where($db->quoteName('value') . " = " . $db->quote($decodedPath));
-		$db->setQuery($query);
-		$data = $db->loadObject();
+		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjfields/tables');
+		$tjFieldFieldValuesTable = JTable::getInstance('fieldsvalue', 'TjfieldsTable', array('dbo', $db));
+		$tjFieldFieldValuesTable->load(array('id' => $jinput->get('id', '', 'INT')));
 
-		if (!empty($data))
+		if ($tjFieldFieldValuesTable->id)
 		{
 			$user = JFactory::getUser();
-			$canView = $user->authorise('core.field.viewfieldvalue', 'com_tjfields.field.' . $data->field_id);
+			$canView = $user->authorise('core.field.viewfieldvalue', 'com_tjfields.field.' . $tjFieldFieldValuesTable->field_id);
 
 			// Allow to view own data
-			if ($data->user_id != null && ($user->id == $data->user_id))
+			if ($tjFieldFieldValuesTable->user_id != null && ($user->id == $tjFieldFieldValuesTable->user_id))
 			{
 				$canView = true;
 			}

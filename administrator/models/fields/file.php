@@ -130,19 +130,22 @@ class JFormFieldFile extends JFormField
 		$html = $this->getRenderer($this->layout)->render($layoutData);
 		$tjFieldHelper = new TjfieldsHelper;
 
+		$app =JFactory::getApplication();
+		$mediaPath = $app->input->get('storegePath','','string');
+		$clientForm = $app->input->get('client','','string');
+		$client = explode('.', $clientForm);
+
 		// Load backend language file
 		$lang = JFactory::getLanguage();
 		$lang->load('com_tjfields', JPATH_SITE);
 
 		if (!empty($layoutData["value"]))
 		{
-			$html .= '<input fileFieldId="' . $layoutData["id"] . '" type="hidden" name="'
-			. $layoutData["name"] . '"' . 'id="' . $layoutData["id"] . '"' . 'value="' . $layoutData["value"] . '" />';
+			$html .= '<input fileFieldId="' . $layoutData["id"] . '" type="hidden" name="'. $layoutData["name"]
+			. '"' . 'id="' . $layoutData["id"] . '"' . 'value="' . $layoutData["value"] . '" />';
 			$html .= '<div class="control-group">';
 			$fileInfo = new SplFileInfo($layoutData["value"]);
 			$extension = $fileInfo->getExtension();
-
-			$mediaLink = $tjFieldHelper->getMediaUrl($layoutData["value"]);
 
 			// Access based actions
 			$user = JFactory::getUser();
@@ -157,6 +160,12 @@ class JFormFieldFile extends JFormField
 			$fields_value_table = JTable::getInstance('Fieldsvalue', 'TjfieldsTable');
 			$fields_value_table->load(array('value' => $layoutData['value']));
 
+			$file_extension = strtolower(substr(strrchr($layoutData['value'], "."), 1));
+			$ctype = $tjFieldHelper->getMime($file_extension);
+			$type = explode('/', $ctype);
+
+			$mediaLink = $tjFieldHelper->getMediaUrl(array('id' => $fields_value_table->id, 'mediaPath' => $mediaPath . '/' . $type[0] . '/' . $layoutData["value"]));
+			
 			$canView = 0;
 
 			if ($user->authorise('core.field.viewfieldvalue', 'com_tjfields.group.' . $tjFieldFieldTable->group_id))
@@ -194,7 +203,7 @@ class JFormFieldFile extends JFormField
 			if (!empty($mediaLink) && ($canEdit || $canEditOwn) && $layoutData['required'] == '')
 			{
 				$html .= ' <span class="btn btn-remove"> <a id="remove_' . $layoutData["id"] . '" href="javascript:void(0);"
-					onclick="deleteFile(\'' . base64_encode($layoutData["value"]) . '\', \'' . $layoutData["id"] . '\');">'
+					onclick="deleteFile(\'' . base64_encode($layoutData["value"]) . '\', \'' . base64_encode($mediaPath) . '\', \'' .$layoutData["id"] . '\');">'
 					. JText::_("COM_TJFIELDS_FILE_DELETE") . '</a> </span>';
 			}
 

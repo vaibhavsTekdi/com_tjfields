@@ -8,6 +8,7 @@
  */
 
 defined('_JEXEC') or die;
+JLoader::import("/techjoomla/media/storage/local", JPATH_LIBRARIES);
 
 /**
  * Helper class for tjfields
@@ -165,6 +166,44 @@ class TjfieldsHelper
 		$singleSelectionFields = array('single_select', 'radio');
 		$multipleSelectionFields = array('multi_select');
 		$fieldsSubmitted = array();
+		
+		// Separating out the subform files data from files array
+		foreach ($data['fieldsvalue'] as $k => $v)
+		{
+			$field_data = $this->getFieldData($k);
+			
+			if ($field_data->type === 'subform' || $field_data->type === 'ucmsubform')
+			{
+
+				foreach ($data['fieldsvalue']['tjFieldFileField'] as $key => $value)
+				{
+						// Checking if the subform name is present as key of array in the files array, if present separate  the array
+						if($key === $field_data->name)
+						{
+							$fileData[$key] = $value;
+	
+							unset($data['fieldsvalue']['tjFieldFileField'][$key]);
+						}
+						else
+						{
+							$fileData[$key] = '';
+						}
+				}
+				
+				// Adding separated files array to respective subform data  by creating new variable filesData
+				foreach ($v as $key => $value)
+				{
+					if(array_key_exists($key, $fileData[$k]))
+					{
+						$data['fieldsvalue'][$field_data->name][$key]['filesData'] = $fileData[$k][$key];
+					}
+					else 
+					{
+						$data['fieldsvalue'][$field_data->name][$key]['filesData'] = '';
+					}
+				}
+			}
+		}
 
 		// Values array will contain menu fields value.
 		foreach ($data['fieldsvalue'] as $fname => $fvalue)
@@ -196,15 +235,42 @@ class TjfieldsHelper
 
 					if (!empty($singleFile))
 					{
-						$filename = $this->uploadFile($singleFile, $insert_obj_file, $file_field_data);
+						JTable::addIncludePath(JPATH_ADMINISTRATOR . "/components/com_tjfields/tables");
+						JModelLegacy::addIncludePath(JPATH_ADMINISTRATOR . "/components/com_tjfields/models");
+						$fieldModel = JModelLegacy::getInstance('Field', 'TjfieldsModel', array("ignore_request" => 1));
 
-						if ($filename)
+						$fieldId = (int) $file_field_data->id;
+						$fieldItems = $fieldModel->getItem($fieldId);
+
+						// Code for file size validation
+						$acceptSize = $fieldItems->params['size'];
+
+						// Upload path
+						$client = explode('.', $insert_obj_file->client);
+						$mimeType = explode('/', $singleFile['type']);
+						$type = $mimeType[0];
+						
+						$mediaPath = JPATH_ROOT . '/media/' . $client[0] . '/' . $client[1] . '/' . $type;
+
+						// Code for file type validation
+						$acceptType = $fieldItems->params['accept'];
+
+						// Configs for Media library
+						$config = array();
+						$config['uploadPath'] = $mediaPath;
+						$config['size'] = $acceptSize;
+						$config['saveData'] = '0';
+						$media = TJMediaStorageLocal::getInstance($config);
+
+						$returnData = $media->upload(array($singleFile));
+
+						if ($returnData[0]['source'])
 						{
 							$existingFileRecordId = $this->checkRecordExistence($data, $file_field_data->id);
 
 							$client = explode('.', $insert_obj_file->client);
 
-							$insert_obj_file->value = '/media/' . $client[0] . '/' . $client[1] . '/' . $filename;
+							$insert_obj_file->value = $returnData[0]['source'];
 
 							if ($insert_obj_file->value)
 							{
@@ -345,138 +411,6 @@ class TjfieldsHelper
 	}
 
 	/**
-	 * Function to upload file
-	 *
-	 * @param   string  $singleFile       name of field
-	 * @param   object  $insert_obj_file  file object
-	 * @param   string  $file_field_data  data
-	 *
-	 * @return  string|boolean
-	 */
-	public function uploadFile($singleFile, $insert_obj_file, $file_field_data)
-	{
-		$app      = JFactory::getApplication();
-		$user     = JFactory::getUser();
-		$username = preg_replace('/\s+/', '', $user->name);
-
-		$title = $singleFile['name'];
-		$title = preg_replace('/\s+/', '', $title);
-
-		jimport('joomla.filesystem.file');
-
-		// Check if the server found any error.
-		$fileError = $singleFile['error'];
-		$message   = '';
-
-		if ($fileError > 0 && $fileError != 4)
-		{
-			switch ($fileError)
-			{
-				case 1:
-					$message = JText::_('COM_TJFIELDS_FILE_UPLOAD_ERROR_SIZE_EXCEED');
-					break;
-				case 2:
-					$message = JText::_('COM_TJFIELDS_FILE_UPLOAD_ERROR_SIZE_EXCEED1');
-					break;
-				case 3:
-					$message = JText::_('COM_TJFIELDS_FILE_UPLOAD_ERROR_SIZE_EXCEED2');
-					break;
-			}
-
-			if ($message != '')
-			{
-				$app->enqueueMessage($message, 'warning');
-
-				return false;
-			}
-		}
-		elseif ($fileError == 4)
-		{
-			if (isset($singleFile['name']))
-			{
-				$filename = $singleFile['name'];
-			}
-		}
-		else
-		{
-			JTable::addIncludePath(JPATH_ADMINISTRATOR . "/components/com_tjfields/tables");
-			JModelLegacy::addIncludePath(JPATH_ADMINISTRATOR . "/components/com_tjfields/models");
-			$fieldModel = JModelLegacy::getInstance('Field', 'TjfieldsModel', array("ignore_request" => 1));
-
-			$fieldId = (int) $file_field_data->id;
-			$fieldItems = $fieldModel->getItem($fieldId);
-
-			// Code for file size validation
-			$acceptSize = $fieldItems->params['size'];
-			$fileSize = $singleFile['size'];
-
-			if ($acceptSize != "")
-			{
-				$filesizeInBytes = $this->formatSizeUnits($acceptSize);
-
-				if ($fileSize > $filesizeInBytes)
-				{
-					$app->enqueueMessage(JText::_('COM_TJFIELDS_FILE_ERROR_MAX_SIZE'), 'warning');
-
-					return false;
-				}
-			}
-
-			// Code for file type validation
-			$acceptType = $fieldItems->params['accept'];
-
-			if (empty($acceptType))
-			{
-				$okMIMETypes    = 'pdf,PDF,doc,DOC,docx,DOCX,xls,XLS,xlsx,XLSX,jpeg,JPEG,png,PNG,jpg,JPG';
-			}
-			else
-			{
-				$okMIMETypes = $acceptType;
-				$okMIMETypes = str_ireplace('.', '', $okMIMETypes);
-			}
-
-			$validMIMEArray = explode(',', $okMIMETypes);
-			$client = explode('.', $insert_obj_file->client);
-
-			$filename  = JFile::stripExt($singleFile['name']);
-			$extension = JFile::getExt($singleFile['name']);
-
-			jimport('joomla.filesystem.file');
-			$fileMime = JFile::getExt($singleFile['name']);
-
-			if (!in_array($fileMime, $validMIMEArray))
-			{
-				$app->enqueueMessage(JText::_('COM_TJFIELDS_FILE_ERROR_INVALID_TYPE'), 'warning');
-
-				return false;
-			}
-
-			// Replace any special characters in the filename
-
-			$random_string = rand();
-			$filename = $client[1] . "_" . $username . "_" . $random_string;
-
-			$filename = $filename . '.' . $extension;
-
-			$uploadPath = JPATH_ROOT . '/media/' . $client[0] . '/' . $client[1] . '/' . $filename;
-
-			$fileTemp = $singleFile['tmp_name'];
-
-			if (!JFile::exists($uploadPath))
-			{
-				if (!JFile::upload($fileTemp, $uploadPath))
-				{
-					$app->enqueueMessage(JText::_('COM_TJFIELDS_FILE_ERROR_MOVE_FILE'), 'warning');
-
-					return false;
-				}
-			}
-
-			return $filename;
-		}
-	}
-
-	/**
 	 * check if the fields values are already store. so it means we need to edit the entry
 	 *
 	 * @param   array  $postFieldData  Post array which content (client, content_id, Fname, Fvalue, u_id)
@@ -547,6 +481,49 @@ class TjfieldsHelper
 
 		$newFields = $postFieldData['fieldsvalue'];
 		$subformField = $newFields[$subformFname];
+
+		foreach ($subformField as $key => $value)
+		{
+		if(!empty($value['filesData']))
+			{
+				foreach ($value['filesData'] as $k => $v)
+				{
+				
+				$file_field_data = $this->getFieldData($k);
+
+				
+				JModelLegacy::addIncludePath(JPATH_ADMINISTRATOR . "/components/com_tjfields/models");
+				$fieldModel = JModelLegacy::getInstance('Field', 'TjfieldsModel', array("ignore_request" => 1));
+				
+				$fieldId = (int) $file_field_data->id;
+				$fieldItems = $fieldModel->getItem($fieldId);
+				
+				// Code for file size validation
+				$acceptSize = $fieldItems->params['size'];
+				
+				// Upload path
+				$client = explode('.', $postFieldData['client']);
+				$mimeType = explode('/', $v['type']);
+				$type = $mimeType[0];
+				$mediaPath = JPATH_ROOT . '/media/' . $client[0] . '/' . $client[1] . '/' . $type;
+				
+				// Code for file type validation
+				$acceptType = $fieldItems->params['accept'];
+				
+				// Configs for Media library
+				$config = array();
+				$config['uploadPath'] = $mediaPath;
+				$config['size'] = $acceptSize;
+				$config['saveData'] = '0';
+				$media = TJMediaStorageLocal::getInstance($config);
+				
+				$returnData = $media->upload(array($v));
+				$subformField[$key][$k] = $returnData[0]['source'];
+
+				unset($subformField[$key]['filesData']);
+				}
+			}
+		}
 
 		if (!empty($dbFieldValue))
 		{
@@ -1634,8 +1611,8 @@ class TjfieldsHelper
 			}
 
 			// Here, fpht means file encoded path
-			$encodedPath = base64_encode($filePath);
-			$basePathLink = 'index.php?option=com_tjfields&task=getMedia&fpht=';
+			$encodedPath = base64_encode($filePath['mediaPath']);
+			$basePathLink = 'index.php?option=com_tjfields&task=getMedia&id='. $filePath['id'] .'&fpht=';
 			$mediaURLlink = JUri::root() . substr(JRoute::_($basePathLink . $encodedPath . $extraUrlPrams), strlen(JUri::base(true)) + 1);
 
 			return $mediaURLlink;
@@ -1673,13 +1650,13 @@ class TjfieldsHelper
 	/**
 	 * tjFileDelete .
 	 *
-	 * @param   string  $filePath  file path.
+	 * @param   Array  $data  file path.
 	 *
 	 * @return boolean|string
 	 *
 	 * @since	1.6
 	 */
-	public function deleteFile($filePath)
+	public function deleteFile($data)
 	{
 		$user = JFactory::getUser();
 
@@ -1690,7 +1667,10 @@ class TjfieldsHelper
 
 		JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_tjfields/tables');
 		$fields_value_table = JTable::getInstance('Fieldsvalue', 'TjfieldsTable');
-		$fields_value_table->load(array('value' => $filePath));
+		$fields_value_table->load(array('value' => $data['filePath']));
+
+		$file_extension = strtolower(substr(strrchr($data['filePath'], "."), 1));
+		$ctype = $this->getMime($file_extension);
 
 		if (!empty($fields_value_table->user_id))
 		{
@@ -1700,9 +1680,38 @@ class TjfieldsHelper
 
 			if ($canEdit || (($user->id == $fields_value_table->user_id) && $canEditOwn))
 			{
-				$fileToDelete = JPATH_ROOT . $filePath;
+				$type = explode('/', $ctype);
+				
+				if ($type[0] === 'image')
+				{
+					$deleteData = array();
+					$deleteData[] = JPATH_ROOT . $data['storagePath'] . '/' . $type[0] . '/' . $data['filePath'];
+					
+					$deleteData[] = JPATH_ROOT . $data['storagePath'] . '/' . $type[0] . '/S_' . $data['filePath'];
+					$deleteData[] = JPATH_ROOT . $data['storagePath'] . '/' . $type[0] . '/M_' . $data['filePath'];
+					$deleteData[] = JPATH_ROOT . $data['storagePath'] . '/' . $type[0] . '/L_' . $data['filePath'];
+					
+					foreach ($deleteData as $image)
+					{
+						if (JFile::exists($image))
+						{
+							JFile::delete($image);
+						}
+					}
+					
+					$deleted = 1;
+				}
+				else
+				{
+					if (!JFile::delete(JPATH_ROOT . $data['storagePath'] . '/' . $type[0] . '/' . $data['filePath']))
+					{
+						return false;
+					}
+					
+					$deleted = 1;
+				}
 
-				if (JFile::exists($fileToDelete) && JFile::delete($fileToDelete))
+				if ($deleted == 1)
 				{
 					$db = JFactory::getDbo();
 					$fields_obj = new stdClass;

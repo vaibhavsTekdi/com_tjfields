@@ -37,13 +37,12 @@ class TjfieldsControllerFields extends JControllerForm
 		$jinput = $app->input;
 
 		// Here, fpht means file encoded path
-		$filePath = $jinput->get('filePath', '', 'BASE64');
+		$data['storagePath'] = base64_decode($jinput->get('storagePath', '', 'BASE64'));
+		$data['filePath'] = base64_decode($jinput->get('filePath', '', 'BASE64'));
 		require_once JPATH_SITE . '/components/com_tjfields/helpers/tjfields.php';
 
 		$tjFieldsHelper = new TjfieldsHelper;
-		$filePath = base64_decode($filePath);
-
-		$returnValue = $tjFieldsHelper->deleteFile($filePath);
+		$returnValue = $tjFieldsHelper->deleteFile($data);
 		$msg = $returnValue ? JText::_('COM_TJFIELDS_FILE_DELETE_SUCCESS') : JText::_('COM_TJFIELDS_FILE_DELETE_ERROR');
 
 		echo new JResponseJson($returnValue, $msg);

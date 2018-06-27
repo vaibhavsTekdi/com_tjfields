@@ -259,7 +259,6 @@ class TjfieldsHelper
 
 						foreach ($validMIMEArray as $mimeType)
 						{
-
 							$validtype[] = $this->getMime(strtolower(str_ireplace('.', '', $mimeType)));
 						}
 
@@ -1757,5 +1756,6 @@ class TjfieldsHelper
 	public static function getLanguageConstantForJs()
 	{
 		JText::script('COM_TJFIELDS_FILE_DELETE_CONFIRM');
+		JText::script('COM_TJFIELDS_FILE_ERROR_MAX_SIZE');
 	}
 }

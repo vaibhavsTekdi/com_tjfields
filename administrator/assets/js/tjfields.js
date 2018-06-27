@@ -113,7 +113,6 @@ jQuery(document).ready(function(){
         // Converting to bytes
         let uploadSize = element[0].size * 1048576;
         let filesize = element[0].files[0].size;
-        let count = accept_array.indexOf(afterDot);
 
         if(uploadSize < filesize)
         {

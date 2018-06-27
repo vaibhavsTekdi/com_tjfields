@@ -255,11 +255,20 @@ class TjfieldsHelper
 						// Code for file type validation
 						$acceptType = $fieldItems->params['accept'];
 
+						$validMIMEArray = explode(',', $acceptType);
+
+						foreach ($validMIMEArray as $mimeType)
+						{
+
+							$validtype[] = $this->getMime(strtolower(str_ireplace('.', '', $mimeType)));
+						}
+
 						// Configs for Media library
 						$config = array();
 						$config['uploadPath'] = $mediaPath;
 						$config['size'] = $acceptSize;
 						$config['saveData'] = '0';
+						$config['type'] = $validtype;
 						$media = TJMediaStorageLocal::getInstance($config);
 
 						$returnData = $media->upload(array($singleFile));
@@ -509,12 +518,20 @@ class TjfieldsHelper
 				
 				// Code for file type validation
 				$acceptType = $fieldItems->params['accept'];
+
+				$validMIMEArray = explode(',', $acceptType);
 				
+				foreach ($validMIMEArray as $mimeType)
+				{
+					$validtype[] = $this->getMime(strtolower(str_ireplace('.', '', $mimeType)));
+				}
+
 				// Configs for Media library
 				$config = array();
 				$config['uploadPath'] = $mediaPath;
 				$config['size'] = $acceptSize;
 				$config['saveData'] = '0';
+				$config['type'] = $validtype;
 				$media = TJMediaStorageLocal::getInstance($config);
 				
 				$returnData = $media->upload(array($v));

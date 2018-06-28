@@ -36,6 +36,8 @@ class TjfieldsControllerFields extends JControllerForm
 		$app = JFactory::getApplication();
 		$jinput = $app->input;
 
+		$data = array();
+
 		// Here, fpht means file encoded path
 		$data['storagePath'] = base64_decode($jinput->get('storagePath', '', 'BASE64'));
 		$data['filePath'] = base64_decode($jinput->get('filePath', '', 'BASE64'));

@@ -164,7 +164,7 @@ class JFormFieldFile extends JFormField
 			$ctype = $tjFieldHelper->getMime($file_extension);
 			$type = explode('/', $ctype);
 
-			$mediaLink = $tjFieldHelper->getMediaUrl(array('id' => $fields_value_table->id, 'mediaPath' => $mediaPath . '/' . $type[0] . '/' . $layoutData["value"]));
+			$mediaLink = $tjFieldHelper->getMediaUrl($mediaPath . '/' . $type[0] . '/' . $layoutData["value"], 'id=' .$fields_value_table->id);
 			
 			$canView = 0;
 

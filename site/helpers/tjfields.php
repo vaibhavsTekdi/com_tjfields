@@ -166,7 +166,7 @@ class TjfieldsHelper
 		$singleSelectionFields = array('single_select', 'radio');
 		$multipleSelectionFields = array('multi_select');
 		$fieldsSubmitted = array();
-		
+
 		// Separating out the subform files data from files array
 		foreach ($data['fieldsvalue'] as $k => $v)
 		{
@@ -535,7 +535,6 @@ class TjfieldsHelper
 
 					$config['type'] = $validtype;
 				}
-
 
 				$config['uploadPath'] = $mediaPath;
 				$config['size'] = $acceptSize;
@@ -1619,7 +1618,7 @@ class TjfieldsHelper
 	/**
 	 * Method to get media URL.
 	 *
-	 * @param   STRING  $filePath       media file path
+	 * @param   STRING   $filePath       media file path
 	 * @param   STRING  $extraUrlPrams  extra url params
 	 *
 	 * @return  string|boolean  True on success.
@@ -1637,8 +1636,8 @@ class TjfieldsHelper
 			}
 
 			// Here, fpht means file encoded path
-			$encodedPath = base64_encode($filePath['mediaPath']);
-			$basePathLink = 'index.php?option=com_tjfields&task=getMedia&id='. $filePath['id'] .'&fpht=';
+			$encodedPath = base64_encode($filePath);
+			$basePathLink = 'index.php?option=com_tjfields&task=getMedia&fpht=';
 			$mediaURLlink = JUri::root() . substr(JRoute::_($basePathLink . $encodedPath . $extraUrlPrams), strlen(JUri::base(true)) + 1);
 
 			return $mediaURLlink;

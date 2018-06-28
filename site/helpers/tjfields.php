@@ -255,19 +255,24 @@ class TjfieldsHelper
 						// Code for file type validation
 						$acceptType = $fieldItems->params['accept'];
 
-						$validMIMEArray = explode(',', $acceptType);
-
-						foreach ($validMIMEArray as $mimeType)
-						{
-							$validtype[] = $this->getMime(strtolower(str_ireplace('.', '', $mimeType)));
-						}
-
 						// Configs for Media library
 						$config = array();
+						
+						if(!empty($acceptType))
+						{
+							$validMIMEArray = explode(',', $acceptType);
+							
+							foreach ($validMIMEArray as $mimeType)
+							{
+								$validtype[] = $this->getMime(strtolower(str_ireplace('.', '', $mimeType)));
+							}
+							
+							$config['type'] = $validtype;
+						}
+
 						$config['uploadPath'] = $mediaPath;
 						$config['size'] = $acceptSize;
 						$config['saveData'] = '0';
-						$config['type'] = $validtype;
 						$media = TJMediaStorageLocal::getInstance($config);
 
 						$returnData = $media->upload(array($singleFile));
@@ -496,10 +501,8 @@ class TjfieldsHelper
 			{
 				foreach ($value['filesData'] as $k => $v)
 				{
-				
 				$file_field_data = $this->getFieldData($k);
 
-				
 				JModelLegacy::addIncludePath(JPATH_ADMINISTRATOR . "/components/com_tjfields/models");
 				$fieldModel = JModelLegacy::getInstance('Field', 'TjfieldsModel', array("ignore_request" => 1));
 				
@@ -514,25 +517,32 @@ class TjfieldsHelper
 				$mimeType = explode('/', $v['type']);
 				$type = $mimeType[0];
 				$mediaPath = JPATH_ROOT . '/media/' . $client[0] . '/' . $client[1] . '/' . $type;
-				
+
 				// Code for file type validation
 				$acceptType = $fieldItems->params['accept'];
 
-				$validMIMEArray = explode(',', $acceptType);
-				
-				foreach ($validMIMEArray as $mimeType)
-				{
-					$validtype[] = $this->getMime(strtolower(str_ireplace('.', '', $mimeType)));
-				}
-
 				// Configs for Media library
 				$config = array();
+				
+				if(!empty($acceptType))
+				{
+					$validMIMEArray = explode(',', $acceptType);
+
+					foreach ($validMIMEArray as $mimeType)
+					{
+						$validtype[] = $this->getMime(strtolower(str_ireplace('.', '', $mimeType)));
+					}
+
+					$config['type'] = $validtype;
+				}
+
+
 				$config['uploadPath'] = $mediaPath;
 				$config['size'] = $acceptSize;
 				$config['saveData'] = '0';
-				$config['type'] = $validtype;
+
 				$media = TJMediaStorageLocal::getInstance($config);
-				
+
 				$returnData = $media->upload(array($v));
 				$subformField[$key][$k] = $returnData[0]['source'];
 

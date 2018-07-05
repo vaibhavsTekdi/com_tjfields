@@ -189,7 +189,7 @@ class TjfieldsHelper
 							$fileData[$key] = '';
 						}
 				}
-				
+
 				// Adding separated files array to respective subform data  by creating new variable filesData
 				foreach ($v as $key => $value)
 				{
@@ -233,8 +233,12 @@ class TjfieldsHelper
 					$file_field_data = $this->getFieldData($fieldName);
 					$insert_obj_file->field_id = $file_field_data->id;
 
+					if($file_field_data->id)
+					{
 					if (!empty($singleFile))
 					{
+						if($singleFile['error'] != 4)
+						{
 						JTable::addIncludePath(JPATH_ADMINISTRATOR . "/components/com_tjfields/tables");
 						JModelLegacy::addIncludePath(JPATH_ADMINISTRATOR . "/components/com_tjfields/models");
 						$fieldModel = JModelLegacy::getInstance('Field', 'TjfieldsModel', array("ignore_request" => 1));
@@ -257,14 +261,16 @@ class TjfieldsHelper
 
 						// Configs for Media library
 						$config = array();
-						
+
 						if(!empty($acceptType))
 						{
+							$localMime = TJMediaStorageLocal::getInstance();
+
 							$validMIMEArray = explode(',', $acceptType);
 							
 							foreach ($validMIMEArray as $mimeType)
 							{
-								$validtype[] = $this->getMime(strtolower(str_ireplace('.', '', $mimeType)));
+								$validtype[] = $localMime->getMime(strtolower(str_ireplace('.', '', $mimeType)));
 							}
 							
 							$config['type'] = $validtype;
@@ -305,6 +311,8 @@ class TjfieldsHelper
 						{
 							return false;
 						}
+						}
+					}
 					}
 				}
 			}
@@ -498,17 +506,25 @@ class TjfieldsHelper
 		foreach ($subformField as $key => $value)
 		{
 		if(!empty($value['filesData']))
-			{
+		{
 				foreach ($value['filesData'] as $k => $v)
+				{
+				if(!empty($v['name']))
 				{
 				$file_field_data = $this->getFieldData($k);
 
-				JModelLegacy::addIncludePath(JPATH_ADMINISTRATOR . "/components/com_tjfields/models");
-				$fieldModel = JModelLegacy::getInstance('Field', 'TjfieldsModel', array("ignore_request" => 1));
-				
-				$fieldId = (int) $file_field_data->id;
-				$fieldItems = $fieldModel->getItem($fieldId);
-				
+				if(!empty($file_field_data))
+				{
+					JModelLegacy::addIncludePath(JPATH_ADMINISTRATOR . "/components/com_tjfields/models");
+					$fieldModel = JModelLegacy::getInstance('Field', 'TjfieldsModel', array("ignore_request" => 1));
+
+					$fieldId = (int) $file_field_data->id;
+					$fieldItems = $fieldModel->getItem($fieldId);
+
+					// Code for file type validation
+					$acceptType = $fieldItems->params['accept'];
+				}
+
 				// Code for file size validation
 				$acceptSize = $fieldItems->params['size'];
 				
@@ -517,9 +533,6 @@ class TjfieldsHelper
 				$mimeType = explode('/', $v['type']);
 				$type = $mimeType[0];
 				$mediaPath = JPATH_ROOT . '/media/' . $client[0] . '/' . $client[1] . '/' . $type;
-
-				// Code for file type validation
-				$acceptType = $fieldItems->params['accept'];
 
 				// Configs for Media library
 				$config = array();
@@ -530,7 +543,8 @@ class TjfieldsHelper
 
 					foreach ($validMIMEArray as $mimeType)
 					{
-						$validtype[] = $this->getMime(strtolower(str_ireplace('.', '', $mimeType)));
+						$localGetMime = TJMediaStorageLocal::getInstance();
+						$validtype[] = $localGetMime->getMime(strtolower(str_ireplace('.', '', $mimeType)));
 					}
 
 					$config['type'] = $validtype;
@@ -546,6 +560,7 @@ class TjfieldsHelper
 				$subformField[$key][$k] = $returnData[0]['source'];
 
 				unset($subformField[$key]['filesData']);
+				}
 				}
 			}
 		}
@@ -1182,440 +1197,6 @@ class TjfieldsHelper
 	}
 
 	/**
-	 * download the file
-	 *
-	 * @param   STRING  $file             - file path eg /var/www/j30/media/com_quick2cart/qtc_pack.zip
-	 * @param   STRING  $filename_direct  - for direct download it will be file path like http://
-	 * localhost/j30/media/com_quick2cart/qtc_pack.zip  -- for FUTURE SCOPE
-	 * @param   STRING  $extern           - for direct download it will be file path like http://
-	 * @param   STRING  $exitHere         - for direct download it will be file path like http://
-	 *
-	 * @return  integer
-	 */
-	public function downloadMedia($file, $filename_direct = '', $extern = '', $exitHere = 1)
-	{
-		jimport('joomla.filesystem.file');
-		$file = substr($file, 1);
-
-		clearstatcache();
-
-		//  Existiert file - wenn nicht error
-		if (!$extern)
-		{
-			if (!JFile::exists($file))
-			{
-				return 2;
-			}
-			else
-			{
-				$len = filesize($file);
-			}
-		}
-		else
-		{
-			$len = urlfilesize($file);
-		}
-
-		$filename       = basename($file);
-
-		$file_extension = strtolower(substr(strrchr($filename, "."), 1));
-		$ctype = $this->getMime($file_extension);
-
-		ob_end_clean();
-
-		//  Needed for MS IE - otherwise content disposition is not used?
-		if (ini_get('zlib.output_compression'))
-		{
-			ini_set('zlib.output_compression', 'Off');
-		}
-
-		header("Cache-Control: public, must-revalidate");
-		header('Cache-Control: pre-check=0, post-check=0, max-age=0');
-		header("Expires: 0");
-		header("Content-Description: File Transfer");
-		header("Content-Type: " . $ctype);
-		header("Content-Length: " . (string) $len);
-		header('Content-Disposition: attachment; filename="' . $filename . '"');
-
-		//  set_time_limit doesn't work in safe mode
-		if (!ini_get('safe_mode'))
-		{
-			@set_time_limit(0);
-		}
-
-		@readfile($file);
-
-		if ($exitHere == 1)
-		{
-			exit;
-		}
-	}
-
-	/**
-	 * getMime
-	 *
-	 * @param   STRING  $filetype  filetype
-	 *
-	 * @return  string
-	 */
-	public function getMime($filetype)
-	{
-		switch ($filetype)
-		{
-			case "ez":
-				$mime = "application/andrew-inset";
-				break;
-			case "hqx":
-				$mime = "application/mac-binhex40";
-				break;
-			case "cpt":
-				$mime = "application/mac-compactpro";
-				break;
-			case "doc":
-				$mime = "application/msword";
-				break;
-			case "bin":
-				$mime = "application/octet-stream";
-				break;
-			case "dms":
-				$mime = "application/octet-stream";
-				break;
-			case "lha":
-				$mime = "application/octet-stream";
-				break;
-			case "lzh":
-				$mime = "application/octet-stream";
-				break;
-			case "exe":
-				$mime = "application/octet-stream";
-				break;
-			case "class":
-				$mime = "application/octet-stream";
-				break;
-			case "dll":
-				$mime = "application/octet-stream";
-				break;
-			case "oda":
-				$mime = "application/oda";
-				break;
-			case "pdf":
-				$mime = "application/pdf";
-				break;
-			case "ai":
-				$mime = "application/postscript";
-				break;
-			case "eps":
-				$mime = "application/postscript";
-				break;
-			case "ps":
-				$mime = "application/postscript";
-				break;
-			case "xls":
-				$mime = "application/vnd.ms-excel";
-				break;
-			case "ppt":
-				$mime = "application/vnd.ms-powerpoint";
-				break;
-			case "wbxml":
-				$mime = "application/vnd.wap.wbxml";
-				break;
-			case "wmlc":
-				$mime = "application/vnd.wap.wmlc";
-				break;
-			case "wmlsc":
-				$mime = "application/vnd.wap.wmlscriptc";
-				break;
-			case "vcd":
-				$mime = "application/x-cdlink";
-				break;
-			case "pgn":
-				$mime = "application/x-chess-pgn";
-				break;
-			case "csh":
-				$mime = "application/x-csh";
-				break;
-			case "dvi":
-				$mime = "application/x-dvi";
-				break;
-			case "spl":
-				$mime = "application/x-futuresplash";
-				break;
-			case "gtar":
-				$mime = "application/x-gtar";
-				break;
-			case "hdf":
-				$mime = "application/x-hdf";
-				break;
-			case "js":
-				$mime = "application/x-javascript";
-				break;
-			case "nc":
-				$mime = "application/x-netcdf";
-				break;
-			case "cdf":
-				$mime = "application/x-netcdf";
-				break;
-			case "swf":
-				$mime = "application/x-shockwave-flash";
-				break;
-			case "tar":
-				$mime = "application/x-tar";
-				break;
-			case "tcl":
-				$mime = "application/x-tcl";
-				break;
-			case "tex":
-				$mime = "application/x-tex";
-				break;
-			case "texinfo":
-				$mime = "application/x-texinfo";
-				break;
-			case "texi":
-				$mime = "application/x-texinfo";
-				break;
-			case "t":
-				$mime = "application/x-troff";
-				break;
-			case "tr":
-				$mime = "application/x-troff";
-				break;
-			case "roff":
-				$mime = "application/x-troff";
-				break;
-			case "man":
-				$mime = "application/x-troff-man";
-				break;
-			case "me":
-				$mime = "application/x-troff-me";
-				break;
-			case "ms":
-				$mime = "application/x-troff-ms";
-				break;
-			case "ustar":
-				$mime = "application/x-ustar";
-				break;
-			case "src":
-				$mime = "application/x-wais-source";
-				break;
-			case "zip":
-				$mime = "application/x-zip";
-				break;
-			case "au":
-				$mime = "audio/basic";
-				break;
-			case "snd":
-				$mime = "audio/basic";
-				break;
-			case "mid":
-				$mime = "audio/midi";
-				break;
-			case "midi":
-				$mime = "audio/midi";
-				break;
-			case "kar":
-				$mime = "audio/midi";
-				break;
-			case "mpga":
-				$mime = "audio/mpeg";
-				break;
-			case "mp2":
-				$mime = "audio/mpeg";
-				break;
-			case "mp3":
-				$mime = "audio/mpeg";
-				break;
-			case "aif":
-				$mime = "audio/x-aiff";
-				break;
-			case "aiff":
-				$mime = "audio/x-aiff";
-				break;
-			case "aifc":
-				$mime = "audio/x-aiff";
-				break;
-			case "m3u":
-				$mime = "audio/x-mpegurl";
-				break;
-			case "ram":
-				$mime = "audio/x-pn-realaudio";
-				break;
-			case "rm":
-				$mime = "audio/x-pn-realaudio";
-				break;
-			case "rpm":
-				$mime = "audio/x-pn-realaudio-plugin";
-				break;
-			case "ra":
-				$mime = "audio/x-realaudio";
-				break;
-			case "wav":
-				$mime = "audio/x-wav";
-				break;
-			case "pdb":
-				$mime = "chemical/x-pdb";
-				break;
-			case "xyz":
-				$mime = "chemical/x-xyz";
-				break;
-			case "bmp":
-				$mime = "image/bmp";
-				break;
-			case "gif":
-				$mime = "image/gif";
-				break;
-			case "ief":
-				$mime = "image/ief";
-				break;
-			case "jpeg":
-				$mime = "image/jpeg";
-				break;
-			case "jpg":
-				$mime = "image/jpeg";
-				break;
-			case "jpe":
-				$mime = "image/jpeg";
-				break;
-			case "png":
-				$mime = "image/png";
-				break;
-			case "tiff":
-				$mime = "image/tiff";
-				break;
-			case "tif":
-				$mime = "image/tiff";
-				break;
-			case "wbmp":
-				$mime = "image/vnd.wap.wbmp";
-				break;
-			case "ras":
-				$mime = "image/x-cmu-raster";
-				break;
-			case "pnm":
-				$mime = "image/x-portable-anymap";
-				break;
-			case "pbm":
-				$mime = "image/x-portable-bitmap";
-				break;
-			case "pgm":
-				$mime = "image/x-portable-graymap";
-				break;
-			case "ppm":
-				$mime = "image/x-portable-pixmap";
-				break;
-			case "rgb":
-				$mime = "image/x-rgb";
-				break;
-			case "xbm":
-				$mime = "image/x-xbitmap";
-				break;
-			case "xpm":
-				$mime = "image/x-xpixmap";
-				break;
-			case "xwd":
-				$mime = "image/x-xwindowdump";
-				break;
-			case "msh":
-				$mime = "model/mesh";
-				break;
-			case "mesh":
-				$mime = "model/mesh";
-				break;
-			case "silo":
-				$mime = "model/mesh";
-				break;
-			case "wrl":
-				$mime = "model/vrml";
-				break;
-			case "vrml":
-				$mime = "model/vrml";
-				break;
-			case "css":
-				$mime = "text/css";
-				break;
-			case "asc":
-				$mime = "text/plain";
-				break;
-			case "txt":
-				$mime = "text/plain";
-				break;
-			case "gpg":
-				$mime = "text/plain";
-				break;
-			case "rtx":
-				$mime = "text/richtext";
-				break;
-			case "rtf":
-				$mime = "text/rtf";
-				break;
-			case "wml":
-				$mime = "text/vnd.wap.wml";
-				break;
-			case "wmls":
-				$mime = "text/vnd.wap.wmlscript";
-				break;
-			case "etx":
-				$mime = "text/x-setext";
-				break;
-			case "xsl":
-				$mime = "text/xml";
-				break;
-			case "flv":
-				$mime = "video/x-flv";
-				break;
-			case "mpeg":
-				$mime = "video/mpeg";
-				break;
-			case "mpg":
-				$mime = "video/mpeg";
-				break;
-			case "mpe":
-				$mime = "video/mpeg";
-				break;
-			case "qt":
-				$mime = "video/quicktime";
-				break;
-			case "mov":
-				$mime = "video/quicktime";
-				break;
-			case "mxu":
-				$mime = "video/vnd.mpegurl";
-				break;
-			case "avi":
-				$mime = "video/x-msvideo";
-				break;
-			case "movie":
-				$mime = "video/x-sgi-movie";
-				break;
-			case "asf":
-				$mime = "video/x-ms-asf";
-				break;
-			case "asx":
-				$mime = "video/x-ms-asf";
-				break;
-			case "wm":
-				$mime = "video/x-ms-wm";
-				break;
-			case "wmv":
-				$mime = "video/x-ms-wmv";
-				break;
-			case "wvx":
-				$mime = "video/x-ms-wvx";
-				break;
-			case "ice":
-				$mime = "x-conference/x-cooltalk";
-				break;
-			case "rar":
-				$mime = "application/x-rar";
-				break;
-			default:
-				$mime = "application/octet-stream";
-				break;
-		}
-
-		return $mime;
-	}
-
-	/**
 	 * Method to get media URL.
 	 *
 	 * @param   STRING   $filePath       media file path
@@ -1692,21 +1273,57 @@ class TjfieldsHelper
 
 		JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_tjfields/tables');
 		$fields_value_table = JTable::getInstance('Fieldsvalue', 'TjfieldsTable');
-		$fields_value_table->load(array('value' => $data['filePath']));
+
+		$fields_value_table->load(array('id' => $data['valueId']));
+
+		if($data['isSubfromField'] == 1)
+		{
+			$subData = json_decode($fields_value_table->value);
+
+			foreach ($subData as $value)
+			{
+				$subformData = (array) $value;
+
+				if(in_array($data['filePath'], $subformData))
+				{
+					$fileUser = $fields_value_table->user_id;
+				}
+			}
+
+			// Check for file field is of subform or ucmsubform
+			if ($data['subfromFileFieldId'])
+			{
+				$fieldId = $data['subfromFileFieldId'];
+			}
+			else
+			{
+				$fieldId = $fields_value_table->field_id;
+			}
+		}
+		else
+		{
+			if ($data['filePath'] === $fields_value_table->value)
+			{
+				$fileUser = $fields_value_table->user_id;
+				$fieldId = $fields_value_table->field_id;
+			}
+		}
 
 		$file_extension = strtolower(substr(strrchr($data['filePath'], "."), 1));
-		$ctype = $this->getMime($file_extension);
+		$localGetMime = TJMediaStorageLocal::getInstance();
 
-		if (!empty($fields_value_table->user_id))
+		$ctype = $localGetMime->getMime($file_extension);
+
+		if (!empty($fileUser))
 		{
-			$canEdit = $user->authorise('core.field.editfieldvalue', 'com_tjfields.field.' . $fields_value_table->field_id);
+			$canEdit = $user->authorise('core.field.editfieldvalue', 'com_tjfields.field.' . $fieldId);
 
-			$canEditOwn = $user->authorise('core.field.editownfieldvalue', 'com_tjfields.field.' . $fields_value_table->field_id);
+			$canEditOwn = $user->authorise('core.field.editownfieldvalue', 'com_tjfields.field.' . $fieldId);
 
-			if ($canEdit || (($user->id == $fields_value_table->user_id) && $canEditOwn))
+			if ($canEdit || (($user->id == $fileUser) && $canEditOwn))
 			{
 				$type = explode('/', $ctype);
-				
+
 				if ($type[0] === 'image')
 				{
 					$deleteData = array();
@@ -1740,7 +1357,29 @@ class TjfieldsHelper
 				{
 					$db = JFactory::getDbo();
 					$fields_obj = new stdClass;
-					$fields_obj->value = '';
+
+					// Making value object if the field is under subform form subfrom
+					if($data['isSubfromField'] == 1)
+					{
+						foreach ($subData as $subformName => $value)
+						{
+							foreach ($value as $k => $v)
+							{
+								// Finding the particular index and making it null
+								if ($v === $data['filePath'])
+								{
+									$subData->$subformName->$k = '';
+								}
+							}
+						}
+
+						$fields_obj->value = json_encode($subData);
+					}
+					else
+					{
+						$fields_obj->value = '';
+					}
+
 					$fields_obj->id = $fields_value_table->id;
 					$db->updateObject('#__tjfields_fields_value', $fields_obj, 'id');
 

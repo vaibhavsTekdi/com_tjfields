@@ -11,6 +11,7 @@
 defined('_JEXEC') or die;
 
 jimport('joomla.application.component.controller');
+JLoader::import("/techjoomla/media/storage/local", JPATH_LIBRARIES);
 
 /**
  * TJField Controller class
@@ -60,10 +61,21 @@ class TjfieldsController extends JControllerLegacy
 		$tjFieldFieldValuesTable = JTable::getInstance('fieldsvalue', 'TjfieldsTable', array('dbo', $db));
 		$tjFieldFieldValuesTable->load(array('id' => $jinput->get('id', '', 'INT')));
 
+		// Subform File field Id for checking autherization for specific field under subform 
+		$subformFileFieldId = $jinput->get('subFormFileFieldId', '', 'INT');
+
 		if ($tjFieldFieldValuesTable->id)
 		{
 			$user = JFactory::getUser();
-			$canView = $user->authorise('core.field.viewfieldvalue', 'com_tjfields.field.' . $tjFieldFieldValuesTable->field_id);
+
+			if ($subformFileFieldId)
+			{
+				$canView = $user->authorise('core.field.viewfieldvalue', 'com_tjfields.field.' . $subformFileFieldId);
+			}
+			else
+			{
+				$canView = $user->authorise('core.field.viewfieldvalue', 'com_tjfields.field.' . $tjFieldFieldValuesTable->field_id);
+			}
 
 			// Allow to view own data
 			if ($tjFieldFieldValuesTable->user_id != null && ($user->id == $tjFieldFieldValuesTable->user_id))
@@ -73,11 +85,10 @@ class TjfieldsController extends JControllerLegacy
 
 			if ($canView)
 			{
-				$tjfieldsHelper = new TjfieldsHelper;
-
-				// Download will start
-				$down_status = $tjfieldsHelper->downloadMedia($decodedPath, '', '', 0);
-
+				$mediaLocal = TJMediaStorageLocal::getInstance();
+				
+				$down_status = $mediaLocal->downloadMedia($decodedPath, '', '', 0);
+				
 				if ($down_status === 2)
 				{
 					$app->enqueueMessage(JText::_('COM_TJFIELDS_FILE_NOT_FOUND'), 'error');

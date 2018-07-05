@@ -44,7 +44,7 @@ class TjfieldsControllerFields extends JControllerForm
 		$data['filePath'] = base64_decode($jinput->get('filePath', '', 'BASE64'));
 		$data['subfromFileFieldId'] = $jinput->get('subfromFileFieldId');
 		$data['isSubfromField'] = $jinput->get('isSubfromField');
-		require_once JPATH_SITE . '/components/com_tjfields/helpers/tjfields.php';
+		require_once JPATH_ADMINISTRATOR . '/components/com_tjfields/helpers/tjfields.php';
 
 		$tjFieldsHelper = new TjfieldsHelper;
 		$returnValue = $tjFieldsHelper->deleteFile($data);

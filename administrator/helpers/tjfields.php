@@ -6,6 +6,8 @@
  * @copyright  Copyright (c) 2009-2016 TechJoomla. All rights reserved.
  * @license    GNU General Public License version 2 or later.
  */
+JLoader::import("/techjoomla/media/storage/local", JPATH_LIBRARIES);
+
 
 // No direct access
 defined('_JEXEC') or die;
@@ -486,5 +488,147 @@ class TjfieldsHelper extends JHelperContent
 	public static function getLanguageConstant()
 	{
 		JText::script('COM_TJFIELDS_LABEL_WHITESPACES_NOT_ALLOWED');
+	}
+
+	/**
+	 * tjFileDelete .
+	 *
+	 * @param   Array  $data  file path.
+	 *
+	 * @return boolean|string
+	 *
+	 * @since	1.6
+	 */
+	public function deleteFile($data)
+	{
+		$user = JFactory::getUser();
+
+		if (!$user->id)
+		{
+			return false;
+		}
+
+		JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_tjfields/tables');
+		$fields_value_table = JTable::getInstance('Fieldsvalue', 'TjfieldsTable');
+
+		$fields_value_table->load(array('id' => $data['valueId']));
+
+		if($data['isSubfromField'] == 1)
+		{
+			$subData = json_decode($fields_value_table->value);
+
+			foreach ($subData as $value)
+			{
+				$subformData = (array) $value;
+
+				if(in_array($data['filePath'], $subformData))
+				{
+					$fileUser = $fields_value_table->user_id;
+				}
+			}
+
+			// Check for file field is of subform or ucmsubform
+			if ($data['subfromFileFieldId'])
+			{
+				$fieldId = $data['subfromFileFieldId'];
+			}
+			else
+			{
+				$fieldId = $fields_value_table->field_id;
+			}
+		}
+		else
+		{
+			if ($data['filePath'] === $fields_value_table->value)
+			{
+				$fileUser = $fields_value_table->user_id;
+				$fieldId = $fields_value_table->field_id;
+			}
+		}
+
+		$file_extension = strtolower(substr(strrchr($data['filePath'], "."), 1));
+		$localGetMime = TJMediaStorageLocal::getInstance();
+		
+		$ctype = $localGetMime->getMime($file_extension);
+
+		if (!empty($fileUser))
+		{
+			$canEdit = $user->authorise('core.field.editfieldvalue', 'com_tjfields.field.' . $fieldId);
+
+			$canEditOwn = $user->authorise('core.field.editownfieldvalue', 'com_tjfields.field.' . $fieldId);
+
+			if ($canEdit || (($user->id == $fileUser) && $canEditOwn))
+			{
+				$type = explode('/', $ctype);
+
+				if ($type[0] === 'image')
+				{
+					$deleteData = array();
+					$deleteData[] = JPATH_ROOT . $data['storagePath'] . '/' . $type[0] . '/' . $data['filePath'];
+					
+					$deleteData[] = JPATH_ROOT . $data['storagePath'] . '/' . $type[0] . '/S_' . $data['filePath'];
+					$deleteData[] = JPATH_ROOT . $data['storagePath'] . '/' . $type[0] . '/M_' . $data['filePath'];
+					$deleteData[] = JPATH_ROOT . $data['storagePath'] . '/' . $type[0] . '/L_' . $data['filePath'];
+					
+					foreach ($deleteData as $image)
+					{
+						if (JFile::exists($image))
+						{
+							JFile::delete($image);
+						}
+					}
+					
+					$deleted = 1;
+				}
+				else
+				{
+					if (!JFile::delete(JPATH_ROOT . $data['storagePath'] . '/' . $type[0] . '/' . $data['filePath']))
+					{
+						return false;
+					}
+					
+					$deleted = 1;
+				}
+
+				if ($deleted == 1)
+				{
+					$db = JFactory::getDbo();
+					$fields_obj = new stdClass;
+
+					// Making value object if the field is under subform form subfrom
+					if($data['isSubfromField'] == 1)
+					{
+						foreach ($subData as $subformName => $value)
+						{
+							foreach ($value as $k => $v)
+							{
+								// Finding the particular index and making it null
+								if ($v === $data['filePath'])
+								{
+									$subData->$subformName->$k = '';
+								}
+							}
+						}
+
+						$fields_obj->value = json_encode($subData);
+					}
+					else
+					{
+						$fields_obj->value = '';
+					}
+
+					$fields_obj->id = $fields_value_table->id;
+					$db->updateObject('#__tjfields_fields_value', $fields_obj, 'id');
+
+					return true;
+				}
+
+				return false;
+			}
+
+			return false;
+		}
+
+		return false;
 	}
 }

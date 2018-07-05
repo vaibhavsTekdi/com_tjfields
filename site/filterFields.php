@@ -14,6 +14,9 @@ jimport('joomla.application.component.modellist');
 jimport('joomla.filesystem.file');
 jimport('joomla.database.table');
 
+$lang = JFactory::getLanguage();
+$lang->load('com_tjfields', JPATH_SITE);
+
 /**
  * Methods supporting a list of regions records.
  *
@@ -479,5 +482,18 @@ trait TjfieldsFilterField
 		$result = $db->execute();
 
 		return $result;
+	}
+
+	/**
+	 * This define the  language constant which you have use in js file.
+	 *
+	 * @since   1.0
+	 * @return   null
+	 */
+	public static function getLanguage()
+	{
+		JText::script('COM_TJFIELDS_FILE_DELETE_CONFIRM');
+		JText::script('COM_TJFIELDS_FILE_ERROR_MAX_SIZE');
+		JText::script('COM_TJFIELDS_FILE_DELETE_SUCCESS');
 	}
 }

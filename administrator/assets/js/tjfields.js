@@ -20,7 +20,7 @@ jQuery(document).ready(function(){
 	}
 
 	/* This function deletes tjucm file via ajax */
-	deleteFile = function(filePath, storagePath , fieldId)
+	deleteFile = function(filePath, storagePath , fieldId, valueId, subfromFileFieldId, isSubfromField)
 	{
 		if (!filePath)
 		{
@@ -33,11 +33,14 @@ jQuery(document).ready(function(){
 		}
 
 		jQuery.ajax({
-			url: Joomla.getOptions('system.paths').root + "/index.php?option=com_tjfields&task=fields.deleteFile&format=json",
+			url: window.location.pathname + "?option=com_tjfields&task=fields.deleteFile&format=json",
 			type: 'POST',
 			data:{
 							filePath: filePath,
-							storagePath: storagePath
+							storagePath: storagePath,
+							valueId: valueId,
+							subfromFileFieldId:subfromFileFieldId,
+							isSubfromField:isSubfromField
 			},
 			cache: false,
 			dataType: "json",

@@ -242,14 +242,28 @@ trait TjfieldsFilterField
 	 * @param   Array    $data      An optional array of data for the form to interogate.
 	 * @param   Boolean  $loadData  True if the form is to load its own data (default case), false if not.
 	 *
-	 * @return  boolean|array    A JForm    object on success, false on failure
+	 * @return  JForm    A JForm    object on success, false on failure
 	 *
 	 * @since	1.6
 	 */
 	public function getFormExtra($data = array(), $loadData = false)
 	{
+		$formExtra = array();
 		$form = new stdclass;
 
+		// Call to extra fields
+		if (!empty($data['category']))
+		{
+			$form = $this->getFormObject($data, $loadData);
+
+			if(!$form)
+			{
+				unset($data['category']);
+			}
+		}
+
+		$form = new stdclass;
+		
 		// Call to global extra fields
 		$form = $this->getFormObject($data, $loadData);
 

@@ -82,6 +82,11 @@ class TjGeoHelper
 	 */
 	public function getCountryNameFromId($countryId)
 	{
+		if (empty($countryId))
+		{
+			return false;
+		}
+
 		$query = $this->_db->getQuery(true);
 		$query->select('country, country_jtext');
 		$query->from('#__tj_country');
@@ -245,6 +250,11 @@ class TjGeoHelper
 	 */
 	public function getRegionNameFromId($regionId)
 	{
+		if (empty($regionId))
+		{
+			return false;
+		}
+
 		$query = $this->_db->getQuery(true);
 		$query->select('region, region_jtext');
 		$query->from('#__tj_region');

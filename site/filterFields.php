@@ -256,14 +256,14 @@ trait TjfieldsFilterField
 		{
 			$form = $this->getFormObject($data, $loadData);
 
-			if(!$form)
+			if (!$form)
 			{
 				unset($data['category']);
 			}
 		}
 
 		$form = new stdclass;
-		
+
 		// Call to global extra fields
 		$form = $this->getFormObject($data, $loadData);
 

@@ -63,7 +63,7 @@ class Com_TjfieldsInstallerScript
 
 		// Create a new query object.
 		$query = $db->getQuery(true);
-		$query->select($db->quoteName('*'));
+		$query->select('*');
 		$query->from($db->quoteName('#__assets'));
 		$query->where($db->quoteName('name') . ' = ' . $db->quote('com_tjfields'));
 		$db->setQuery($query);

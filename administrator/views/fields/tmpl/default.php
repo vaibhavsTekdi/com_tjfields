@@ -19,6 +19,8 @@ if(JVERSION >= '3.0')
 	JHtml::_('behavior.multiselect');
 }
 
+JHtml::_('behavior.formvalidator');
+
 JHtml::_('behavior.multiselect');
 
 JText::script('COM_TJFIELD_CONFIRM_DELETE_FIELD', true);

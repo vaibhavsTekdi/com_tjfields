@@ -5,6 +5,7 @@
 			<field name="default" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_DEFAULT" description="COM_TJFIELDS_FORM_DESC_FIELD_DEFAULT"/>
 			<field name="size" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_SIZE" description="COM_TJFIELDS_FORM_DESC_FIELD_SIZE"/>
 			<field name="maxlength" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_MAXLENGTH" description="COM_TJFIELDS_FORM_DESC_FIELD_SIZE"/>
+			<field name="hint" type="text" label="COM_TJFIELDS_FORM_LBL_TEXT_FIELD_PLACEHOLDER" description="COM_TJFIELDS_FORM_DESC_TEXT_FIELD_PLACEHOLDER"/>
 		</fieldset>
 	</fields>
 </form>

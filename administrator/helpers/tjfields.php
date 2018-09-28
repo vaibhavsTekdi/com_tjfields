@@ -11,6 +11,7 @@ JLoader::import("/techjoomla/media/storage/local", JPATH_LIBRARIES);
 
 // No direct access
 defined('_JEXEC') or die;
+use Joomla\String\StringHelper;
 
 /**
  * helper class for tjfields
@@ -509,13 +510,13 @@ class TjfieldsHelper extends JHelperContent
 		}
 
 		JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_tjfields/tables');
-		$fields_value_table = JTable::getInstance('Fieldsvalue', 'TjfieldsTable');
+		$fieldsValueTable = JTable::getInstance('Fieldsvalue', 'TjfieldsTable');
 
-		$fields_value_table->load(array('id' => $data['valueId']));
+		$fieldsValueTable->load(array('id' => $data['valueId']));
 
 		if($data['isSubfromField'] == 1)
 		{
-			$subData = json_decode($fields_value_table->value);
+			$subData = json_decode($fieldsValueTable->value);
 
 			foreach ($subData as $value)
 			{
@@ -523,7 +524,7 @@ class TjfieldsHelper extends JHelperContent
 
 				if(in_array($data['filePath'], $subformData))
 				{
-					$fileUser = $fields_value_table->user_id;
+					$fileUser = $fieldsValueTable->user_id;
 				}
 			}
 
@@ -534,22 +535,22 @@ class TjfieldsHelper extends JHelperContent
 			}
 			else
 			{
-				$fieldId = $fields_value_table->field_id;
+				$fieldId = $fieldsValueTable->field_id;
 			}
 		}
 		else
 		{
-			if ($data['filePath'] === $fields_value_table->value)
+			if ($data['filePath'] === $fieldsValueTable->value)
 			{
-				$fileUser = $fields_value_table->user_id;
-				$fieldId = $fields_value_table->field_id;
+				$fileUser = $fieldsValueTable->user_id;
+				$fieldId = $fieldsValueTable->field_id;
 			}
 		}
 
-		$file_extension = strtolower(substr(strrchr($data['filePath'], "."), 1));
+		$fileExtension = StringHelper::strtolower(StringHelper::substr(strrchr($data['filePath'], "."), 1));
 		$localGetMime = TJMediaStorageLocal::getInstance();
 		
-		$ctype = $localGetMime->getMime($file_extension);
+		$ctype = $localGetMime->getMime($fileExtension);
 
 		if (!empty($fileUser))
 		{
@@ -617,7 +618,7 @@ class TjfieldsHelper extends JHelperContent
 						$fields_obj->value = '';
 					}
 
-					$fields_obj->id = $fields_value_table->id;
+					$fields_obj->id = $fieldsValueTable->id;
 					$db->updateObject('#__tjfields_fields_value', $fields_obj, 'id');
 
 					return true;

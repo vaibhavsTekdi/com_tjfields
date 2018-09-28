@@ -7,6 +7,7 @@
 			<field name="countertext" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_COUNTERTEXT" description="COM_TJFIELDS_FORM_DESC_FIELD_COUNTERTEXT" default="{filled}/{maxlength}"/>
 			<field name="maxlength" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_MAXLENGHT" description="COM_TJFIELDS_FORM_DESC_FIELD_MAXLENGHT"/>
 			<field name="minlength" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_MINLENGHT" description="COM_TJFIELDS_FORM_DESC_FIELD_MINLENGHT"/>
+			<field name="hint" type="textarea" label="COM_TJFIELDS_FORM_LBL_TEXTAREACOUNTER_FIELD_PLACEHOLDER" description="COM_TJFIELDS_FORM_DESC_TEXTAREACOUNTER_FIELD_PLACEHOLDER"/>
 			<field name="addfieldpath" type="hidden" default="/administrator/components/com_tjfields/models/fields"/>
 		</fieldset>
 	</fields>

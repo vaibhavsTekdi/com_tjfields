@@ -33,7 +33,7 @@ jQuery(document).ready(function(){
 		}
 
 		jQuery.ajax({
-			url: window.location.pathname + "?option=com_tjfields&task=fields.deleteFile&format=json",
+			url: Joomla.getOptions('system.paths').base + "/index.php?option=com_tjfields&task=fields.deleteFile&format=json",
 			type: 'POST',
 			data:{
 							filePath: filePath,

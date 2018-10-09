@@ -171,17 +171,16 @@ class TjfieldsHelper
 		foreach ($data['fieldsvalue'] as $k => $v)
 		{
 			$field_data = $this->getFieldData($k);
-			
+
 			if ($field_data->type === 'subform' || $field_data->type === 'ucmsubform')
 			{
-
 				foreach ($data['fieldsvalue']['tjFieldFileField'] as $key => $value)
 				{
 						// Checking if the subform name is present as key of array in the files array, if present separate  the array
-						if($key === $field_data->name)
+						if ($key === $field_data->name)
 						{
 							$fileData[$key] = $value;
-	
+
 							unset($data['fieldsvalue']['tjFieldFileField'][$key]);
 						}
 						else
@@ -193,11 +192,11 @@ class TjfieldsHelper
 				// Adding separated files array to respective subform data  by creating new variable filesData
 				foreach ($v as $key => $value)
 				{
-					if(array_key_exists($key, $fileData[$k]))
+					if (array_key_exists($key, $fileData[$k]))
 					{
 						$data['fieldsvalue'][$field_data->name][$key]['filesData'] = $fileData[$k][$key];
 					}
-					else 
+					else
 					{
 						$data['fieldsvalue'][$field_data->name][$key]['filesData'] = '';
 					}
@@ -233,11 +232,11 @@ class TjfieldsHelper
 					$file_field_data = $this->getFieldData($fieldName);
 					$insert_obj_file->field_id = $file_field_data->id;
 
-					if($file_field_data->id)
+					if ($file_field_data->id)
 					{
 					if (!empty($singleFile))
 					{
-						if($singleFile['error'] != 4)
+						if ($singleFile['error'] != 4)
 						{
 						JTable::addIncludePath(JPATH_ADMINISTRATOR . "/components/com_tjfields/tables");
 						JModelLegacy::addIncludePath(JPATH_ADMINISTRATOR . "/components/com_tjfields/models");
@@ -253,7 +252,7 @@ class TjfieldsHelper
 						$client = explode('.', $insert_obj_file->client);
 						$mimeType = explode('/', $singleFile['type']);
 						$type = $mimeType[0];
-						
+
 						$mediaPath = JPATH_ROOT . '/media/' . $client[0] . '/' . $client[1] . '/' . $type;
 
 						// Code for file type validation
@@ -262,17 +261,17 @@ class TjfieldsHelper
 						// Configs for Media library
 						$config = array();
 
-						if(!empty($acceptType))
+						if (!empty($acceptType))
 						{
 							$localMime = TJMediaStorageLocal::getInstance();
 
 							$validMIMEArray = explode(',', $acceptType);
-							
+
 							foreach ($validMIMEArray as $mimeType)
 							{
 								$validtype[] = $localMime->getMime(strtolower(str_ireplace('.', '', $mimeType)));
 							}
-							
+
 							$config['type'] = $validtype;
 						}
 
@@ -505,15 +504,15 @@ class TjfieldsHelper
 
 		foreach ($subformField as $key => $value)
 		{
-		if(!empty($value['filesData']))
+		if (!empty($value['filesData']))
 		{
 				foreach ($value['filesData'] as $k => $v)
 				{
-				if(!empty($v['name']))
+				if (!empty($v['name']))
 				{
 				$file_field_data = $this->getFieldData($k);
 
-				if(!empty($file_field_data))
+				if (!empty($file_field_data))
 				{
 					JModelLegacy::addIncludePath(JPATH_ADMINISTRATOR . "/components/com_tjfields/models");
 					$fieldModel = JModelLegacy::getInstance('Field', 'TjfieldsModel', array("ignore_request" => 1));
@@ -527,7 +526,7 @@ class TjfieldsHelper
 
 				// Code for file size validation
 				$acceptSize = $fieldItems->params['size'];
-				
+
 				// Upload path
 				$client = explode('.', $postFieldData['client']);
 				$mimeType = explode('/', $v['type']);
@@ -536,8 +535,8 @@ class TjfieldsHelper
 
 				// Configs for Media library
 				$config = array();
-				
-				if(!empty($acceptType))
+
+				if (!empty($acceptType))
 				{
 					$validMIMEArray = explode(',', $acceptType);
 
@@ -562,7 +561,7 @@ class TjfieldsHelper
 				unset($subformField[$key]['filesData']);
 				}
 				}
-			}
+		}
 		}
 
 		if (!empty($dbFieldValue))
@@ -1199,7 +1198,7 @@ class TjfieldsHelper
 	/**
 	 * Method to get media URL.
 	 *
-	 * @param   STRING   $filePath       media file path
+	 * @param   STRING  $filePath       media file path
 	 * @param   STRING  $extraUrlPrams  extra url params
 	 *
 	 * @return  string|boolean  True on success.
@@ -1276,7 +1275,7 @@ class TjfieldsHelper
 
 		$fields_value_table->load(array('id' => $data['valueId']));
 
-		if($data['isSubfromField'] == 1)
+		if ($data['isSubfromField'] == 1)
 		{
 			$subData = json_decode($fields_value_table->value);
 
@@ -1284,7 +1283,7 @@ class TjfieldsHelper
 			{
 				$subformData = (array) $value;
 
-				if(in_array($data['filePath'], $subformData))
+				if (in_array($data['filePath'], $subformData))
 				{
 					$fileUser = $fields_value_table->user_id;
 				}
@@ -1328,7 +1327,7 @@ class TjfieldsHelper
 				{
 					$deleteData = array();
 					$deleteData[] = JPATH_ROOT . $data['storagePath'] . '/' . $type[0] . '/' . $data['filePath'];
-					
+
 					$deleteData[] = JPATH_ROOT . $data['storagePath'] . '/' . $type[0] . '/S_' . $data['filePath'];
 					$deleteData[] = JPATH_ROOT . $data['storagePath'] . '/' . $type[0] . '/M_' . $data['filePath'];
 					$deleteData[] = JPATH_ROOT . $data['storagePath'] . '/' . $type[0] . '/L_' . $data['filePath'];
@@ -1349,7 +1348,7 @@ class TjfieldsHelper
 					{
 						return false;
 					}
-					
+
 					$deleted = 1;
 				}
 
@@ -1359,7 +1358,7 @@ class TjfieldsHelper
 					$fields_obj = new stdClass;
 
 					// Making value object if the field is under subform form subfrom
-					if($data['isSubfromField'] == 1)
+					if ($data['isSubfromField'] == 1)
 					{
 						foreach ($subData as $subformName => $value)
 						{

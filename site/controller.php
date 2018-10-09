@@ -62,11 +62,11 @@ class TjfieldsController extends JControllerLegacy
 		$client = explode('.', $client);
 
 		$file_extension = strtolower(substr(strrchr($decodedFileName, "."), 1));
-		
+
 		$mediaLocal = TJMediaStorageLocal::getInstance();
 
 		$ctype = $mediaLocal->getMime($file_extension);
-		
+
 		$type = explode('/', $ctype);
 
 		$decodedPath = 'media/' . $client[0] . '/' . $client[1] . '/' . $type[0] . '/' . $decodedFileName;
@@ -75,7 +75,7 @@ class TjfieldsController extends JControllerLegacy
 		$tjFieldFieldValuesTable = JTable::getInstance('fieldsvalue', 'TjfieldsTable', array('dbo', $db));
 		$tjFieldFieldValuesTable->load(array('id' => $jinput->get('id', '', 'INT')));
 
-		// Subform File field Id for checking autherization for specific field under subform 
+		// Subform File field Id for checking autherization for specific field under subform
 		$subformFileFieldId = $jinput->get('subFormFileFieldId', '', 'INT');
 
 		if ($tjFieldFieldValuesTable->id)

@@ -132,10 +132,11 @@ class JFormFieldFile extends JFormField
 		$html = $this->getRenderer($this->layout)->render($layoutData);
 		$tjFieldHelper = new TjfieldsHelper;
 
-		$app =JFactory::getApplication();
-		$clientForm = $app->input->get('client','','string');
+		$app = JFactory::getApplication();
+		$clientForm = $app->input->get('client', '', 'string');
 		$client = explode('.', $clientForm);
 		$mediaPath = '/media/' . $client[0] . '/' . $client[1];
+
 		// Load backend language file
 		$lang = JFactory::getLanguage();
 		$lang->load('com_tjfields', JPATH_SITE);
@@ -144,7 +145,7 @@ class JFormFieldFile extends JFormField
 		{
 			// Checking the field is from subfrom or not
 			$formName = explode('.', $this->form->getName());
-			$formValueId = $app->input->get('id','','INT');
+			$formValueId = $app->input->get('id', '', 'INT');
 
 			$isSubformField = 0;
 
@@ -152,7 +153,7 @@ class JFormFieldFile extends JFormField
 			{
 				$isSubformField = 1;
 
-				$formData =$tjFieldHelper->getFieldData(substr($formName[1], 0, -1));
+				$formData = $tjFieldHelper->getFieldData(substr($formName[1], 0, -1));
 
 				// Subform Id
 				$subformId = $formData->id;
@@ -163,7 +164,7 @@ class JFormFieldFile extends JFormField
 				$subFormFileFieldId = $fileFieldData->id;
 			}
 
-			$html .= '<input fileFieldId="' . $layoutData["id"] . '" type="hidden" name="'. $layoutData["name"]
+			$html .= '<input fileFieldId="' . $layoutData["id"] . '" type="hidden" name="' . $layoutData["name"]
 			. '"' . 'id="' . $layoutData["id"] . '"' . 'value="' . $layoutData["value"] . '" />';
 			$html .= '<div class="control-group">';
 			$fileInfo = new SplFileInfo($layoutData["value"]);
@@ -194,15 +195,17 @@ class JFormFieldFile extends JFormField
 			$file_extension = strtolower(substr(strrchr($layoutData['value'], "."), 1));
 
 			$localGetMime = TJMediaStorageLocal::getInstance();
-			
+
 			$ctype = $localGetMime->getMime($file_extension);
 
 			$type = explode('/', $ctype);
 
 			// Creating media link by check subform or not
-			if($isSubformField)
+			if ($isSubformField)
 			{
-				$mediaLink = $tjFieldHelper->getMediaUrl($layoutData["value"], '&id=' . $fields_value_table->id . '&client=' . $clientForm .  '&subFormFileFieldId=' . $subFormFileFieldId);
+				$mediaLink = $tjFieldHelper->getMediaUrl(
+				$layoutData["value"], '&id=' . $fields_value_table->id . '&client=' . $clientForm . '&subFormFileFieldId=' . $subFormFileFieldId
+				);
 			}
 			else
 			{
@@ -215,8 +218,9 @@ class JFormFieldFile extends JFormField
 			{
 				$canView = $user->authorise('core.field.viewfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->id);
 			}
-			
+
 			$html .= '<div>';
+
 			// Download file
 			if (!empty($mediaLink) && $canView && $fields_value_table->id)
 			{

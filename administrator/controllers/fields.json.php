@@ -53,9 +53,9 @@ class TjfieldsControllerFields extends FormController
 		$mediaLocal = TJMediaStorageLocal::getInstance();
 
 		$ctype = $mediaLocal->getMime($file_extension);
-		
+
 		$type = explode('/', $ctype);
-		
+
 		$data['storagePath'] = '/media/' . $client[0] . '/' . $client[1];
 		require_once JPATH_ADMINISTRATOR . '/components/com_tjfields/helpers/tjfields.php';
 

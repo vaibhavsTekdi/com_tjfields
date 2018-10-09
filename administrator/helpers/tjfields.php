@@ -514,7 +514,7 @@ class TjfieldsHelper extends JHelperContent
 
 		$fieldsValueTable->load(array('id' => $data['valueId']));
 
-		if($data['isSubfromField'] == 1)
+		if ($data['isSubfromField'] == 1)
 		{
 			$subData = json_decode($fieldsValueTable->value);
 
@@ -522,7 +522,7 @@ class TjfieldsHelper extends JHelperContent
 			{
 				$subformData = (array) $value;
 
-				if(in_array($data['filePath'], $subformData))
+				if (in_array($data['filePath'], $subformData))
 				{
 					$fileUser = $fieldsValueTable->user_id;
 				}
@@ -549,7 +549,7 @@ class TjfieldsHelper extends JHelperContent
 
 		$fileExtension = StringHelper::strtolower(StringHelper::substr(strrchr($data['filePath'], "."), 1));
 		$localGetMime = TJMediaStorageLocal::getInstance();
-		
+
 		$ctype = $localGetMime->getMime($fileExtension);
 
 		if (!empty($fileUser))
@@ -566,11 +566,11 @@ class TjfieldsHelper extends JHelperContent
 				{
 					$deleteData = array();
 					$deleteData[] = JPATH_ROOT . $data['storagePath'] . '/' . $type[0] . '/' . $data['filePath'];
-					
+
 					$deleteData[] = JPATH_ROOT . $data['storagePath'] . '/' . $type[0] . '/S_' . $data['filePath'];
 					$deleteData[] = JPATH_ROOT . $data['storagePath'] . '/' . $type[0] . '/M_' . $data['filePath'];
 					$deleteData[] = JPATH_ROOT . $data['storagePath'] . '/' . $type[0] . '/L_' . $data['filePath'];
-					
+
 					foreach ($deleteData as $image)
 					{
 						if (JFile::exists($image))
@@ -578,7 +578,7 @@ class TjfieldsHelper extends JHelperContent
 							JFile::delete($image);
 						}
 					}
-					
+
 					$deleted = 1;
 				}
 				else
@@ -587,7 +587,7 @@ class TjfieldsHelper extends JHelperContent
 					{
 						return false;
 					}
-					
+
 					$deleted = 1;
 				}
 
@@ -597,7 +597,7 @@ class TjfieldsHelper extends JHelperContent
 					$fields_obj = new stdClass;
 
 					// Making value object if the field is under subform form subfrom
-					if($data['isSubfromField'] == 1)
+					if ($data['isSubfromField'] == 1)
 					{
 						foreach ($subData as $subformName => $value)
 						{

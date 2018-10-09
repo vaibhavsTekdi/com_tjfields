@@ -14,7 +14,7 @@ defined('_JEXEC') or die;
 use Joomla\String\StringHelper;
 
 /**
- * helper class for tjfields
+ * Helper class for tjfields
  *
  * @package     Tjfields
  * @subpackage  com_tjfields

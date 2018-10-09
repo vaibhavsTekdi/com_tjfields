@@ -54,8 +54,22 @@ class TjfieldsController extends JControllerLegacy
 		$jinput = $app->input;
 
 		// Here, fpht means file encoded path
-		$encodedFilePath = $jinput->get('fpht', '', 'STRING');
-		$decodedPath = base64_decode($encodedFilePath);
+		$encodedFileName = $jinput->get('fpht', '', 'STRING');
+		$decodedFileName = base64_decode($encodedFileName);
+
+		$client = $jinput->get('client', '', 'STRING');
+
+		$client = explode('.', $client);
+
+		$file_extension = strtolower(substr(strrchr($decodedFileName, "."), 1));
+		
+		$mediaLocal = TJMediaStorageLocal::getInstance();
+
+		$ctype = $mediaLocal->getMime($file_extension);
+		
+		$type = explode('/', $ctype);
+
+		$decodedPath = 'media/' . $client[0] . '/' . $client[1] . '/' . $type[0] . '/' . $decodedFileName;
 
 		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjfields/tables');
 		$tjFieldFieldValuesTable = JTable::getInstance('fieldsvalue', 'TjfieldsTable', array('dbo', $db));
@@ -85,10 +99,8 @@ class TjfieldsController extends JControllerLegacy
 
 			if ($canView)
 			{
-				$mediaLocal = TJMediaStorageLocal::getInstance();
-				
 				$down_status = $mediaLocal->downloadMedia($decodedPath, '', '', 0);
-				
+
 				if ($down_status === 2)
 				{
 					$app->enqueueMessage(JText::_('COM_TJFIELDS_FILE_NOT_FOUND'), 'error');

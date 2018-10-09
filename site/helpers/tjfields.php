@@ -1332,7 +1332,7 @@ class TjfieldsHelper
 					$deleteData[] = JPATH_ROOT . $data['storagePath'] . '/' . $type[0] . '/S_' . $data['filePath'];
 					$deleteData[] = JPATH_ROOT . $data['storagePath'] . '/' . $type[0] . '/M_' . $data['filePath'];
 					$deleteData[] = JPATH_ROOT . $data['storagePath'] . '/' . $type[0] . '/L_' . $data['filePath'];
-					
+
 					foreach ($deleteData as $image)
 					{
 						if (JFile::exists($image))
@@ -1340,7 +1340,7 @@ class TjfieldsHelper
 							JFile::delete($image);
 						}
 					}
-					
+
 					$deleted = 1;
 				}
 				else

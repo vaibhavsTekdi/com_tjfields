@@ -202,11 +202,11 @@ class JFormFieldFile extends JFormField
 			// Creating media link by check subform or not
 			if($isSubformField)
 			{
-				$mediaLink = $tjFieldHelper->getMediaUrl($mediaPath . '/' . $type[0] . '/' . $layoutData["value"], 'id=' . $fields_value_table->id . '&subFormFileFieldId=' . $subFormFileFieldId);
+				$mediaLink = $tjFieldHelper->getMediaUrl($layoutData["value"], '&id=' . $fields_value_table->id . '&client=' . $clientForm .  '&subFormFileFieldId=' . $subFormFileFieldId);
 			}
 			else
 			{
-				$mediaLink = $tjFieldHelper->getMediaUrl($mediaPath . '/' . $type[0] . '/' . $layoutData["value"], 'id=' . $fields_value_table->id);
+				$mediaLink = $tjFieldHelper->getMediaUrl($layoutData["value"], '&id=' . $fields_value_table->id . '&client=' . $clientForm);
 			}
 
 			$canView = 0;
@@ -247,9 +247,9 @@ class JFormFieldFile extends JFormField
 			if (!empty($mediaLink) && ($canEdit || $canEditOwn) && $layoutData['required'] == '' && $fields_value_table->id)
 			{
 				$html .= ' <span class="btn btn-remove"> <a id="remove_' . $layoutData["id"] . '" href="javascript:void(0);"
-					onclick="deleteFile(\'' . base64_encode($layoutData["value"]) . '\', \'' . base64_encode($mediaPath) . '\',
+					onclick="deleteFile(\'' . base64_encode($layoutData["value"]) . '\',
 					 \'' . $layoutData["id"] . '\', \'' . base64_encode($fields_value_table->id) . '\',
-					  \'' . $subFormFileFieldId . '\',\'' . $isSubformField . '\');">'
+					  \'' . $subFormFileFieldId . '\',\'' . $isSubformField . '\',\'' . $clientForm . '\');">'
 					. JText::_("COM_TJFIELDS_FILE_DELETE") . '</a> </span>';
 			}
 

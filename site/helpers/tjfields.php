@@ -174,6 +174,8 @@ class TjfieldsHelper
 
 			if ($field_data->type === 'subform' || $field_data->type === 'ucmsubform')
 			{
+				$fileData = array();
+
 				foreach ($data['fieldsvalue']['tjFieldFileField'] as $key => $value)
 				{
 						// Checking if the subform name is present as key of array in the files array, if present separate  the array

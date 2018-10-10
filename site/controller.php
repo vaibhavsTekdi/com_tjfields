@@ -11,6 +11,7 @@
 defined('_JEXEC') or die;
 
 jimport('joomla.application.component.controller');
+JLoader::import("/techjoomla/media/storage/local", JPATH_LIBRARIES);
 
 /**
  * TJField Controller class
@@ -53,34 +54,52 @@ class TjfieldsController extends JControllerLegacy
 		$jinput = $app->input;
 
 		// Here, fpht means file encoded path
-		$encodedFilePath = $jinput->get('fpht', '', 'STRING');
-		$decodedPath = base64_decode($encodedFilePath);
+		$encodedFileName = $jinput->get('fpht', '', 'STRING');
+		$decodedFileName = base64_decode($encodedFileName);
 
-		$db = JFactory::getDbo();
-		$query = $db->getQuery(true);
-		$query->select('*');
-		$query->from('#__tjfields_fields_value');
-		$query->where($db->quoteName('value') . " = " . $db->quote($decodedPath));
-		$db->setQuery($query);
-		$data = $db->loadObject();
+		$client = $jinput->get('client', '', 'STRING');
 
-		if (!empty($data))
+		$client = explode('.', $client);
+
+		$file_extension = strtolower(substr(strrchr($decodedFileName, "."), 1));
+
+		$mediaLocal = TJMediaStorageLocal::getInstance();
+
+		$ctype = $mediaLocal->getMime($file_extension);
+
+		$type = explode('/', $ctype);
+
+		$decodedPath = 'media/' . $client[0] . '/' . $client[1] . '/' . $type[0] . '/' . $decodedFileName;
+
+		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjfields/tables');
+		$tjFieldFieldValuesTable = JTable::getInstance('fieldsvalue', 'TjfieldsTable');
+		$tjFieldFieldValuesTable->load(array('id' => $jinput->get('id', '', 'INT')));
+
+		// Subform File field Id for checking autherization for specific field under subform
+		$subformFileFieldId = $jinput->get('subFormFileFieldId', '', 'INT');
+
+		if ($tjFieldFieldValuesTable->id)
 		{
 			$user = JFactory::getUser();
-			$canView = $user->authorise('core.field.viewfieldvalue', 'com_tjfields.field.' . $data->field_id);
+
+			if ($subformFileFieldId)
+			{
+				$canView = $user->authorise('core.field.viewfieldvalue', 'com_tjfields.field.' . $subformFileFieldId);
+			}
+			else
+			{
+				$canView = $user->authorise('core.field.viewfieldvalue', 'com_tjfields.field.' . $tjFieldFieldValuesTable->field_id);
+			}
 
 			// Allow to view own data
-			if ($data->user_id != null && ($user->id == $data->user_id))
+			if ($tjFieldFieldValuesTable->user_id != null && ($user->id == $tjFieldFieldValuesTable->user_id))
 			{
 				$canView = true;
 			}
 
 			if ($canView)
 			{
-				$tjfieldsHelper = new TjfieldsHelper;
-
-				// Download will start
-				$down_status = $tjfieldsHelper->downloadMedia($decodedPath, '', '', 0);
+				$down_status = $mediaLocal->downloadMedia($decodedPath, '', '', 0);
 
 				if ($down_status === 2)
 				{

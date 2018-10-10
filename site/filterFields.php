@@ -14,6 +14,9 @@ jimport('joomla.application.component.modellist');
 jimport('joomla.filesystem.file');
 jimport('joomla.database.table');
 
+$lang = JFactory::getLanguage();
+$lang->load('com_tjfields', JPATH_SITE);
+
 /**
  * Methods supporting a list of regions records.
  *
@@ -239,12 +242,25 @@ trait TjfieldsFilterField
 	 * @param   Array    $data      An optional array of data for the form to interogate.
 	 * @param   Boolean  $loadData  True if the form is to load its own data (default case), false if not.
 	 *
-	 * @return  boolean|array    A JForm    object on success, false on failure
+	 * @return  JForm    A JForm    object on success, false on failure
 	 *
 	 * @since	1.6
 	 */
 	public function getFormExtra($data = array(), $loadData = false)
 	{
+		$form = new stdclass;
+
+		// Call to extra fields
+		if (!empty($data['category']))
+		{
+			$form = $this->getFormObject($data, $loadData);
+
+			if (!$form)
+			{
+				unset($data['category']);
+			}
+		}
+
 		$form = new stdclass;
 
 		// Call to global extra fields
@@ -479,5 +495,18 @@ trait TjfieldsFilterField
 		$result = $db->execute();
 
 		return $result;
+	}
+
+	/**
+	 * This define the  language constant which you have use in js file.
+	 *
+	 * @since   1.0
+	 * @return   null
+	 */
+	public static function getLanguage()
+	{
+		JText::script('COM_TJFIELDS_FILE_DELETE_CONFIRM');
+		JText::script('COM_TJFIELDS_FILE_ERROR_MAX_SIZE');
+		JText::script('COM_TJFIELDS_FILE_DELETE_SUCCESS');
 	}
 }

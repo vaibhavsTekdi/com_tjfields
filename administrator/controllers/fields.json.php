@@ -1,9 +1,8 @@
 <?php
 /**
- * @version    SVN: <svn_id>
  * @package    Com_Tjfields
  * @author     Techjoomla <extensions@techjoomla.com>
- * @copyright  Copyright (c) 2009-2017 TechJoomla. All rights reserved.
+ * @copyright  Copyright (c) 2009-2018 TechJoomla. All rights reserved.
  * @license    GNU General Public License version 2 or later.
  */
 
@@ -12,14 +11,15 @@ defined('_JEXEC') or die;
 
 jimport('joomla.filesystem.file');
 
-require_once JPATH_SITE . "/components/com_tjfields/filterFields.php";
+JLoader::import('filterFields', JPATH_SITE . '/components/com_tjfields');
+use Joomla\CMS\MVC\Controller\FormController;
 
 /**
  * Item controller class.
  *
  * @since  1.4
  */
-class TjfieldsControllerFields extends JControllerForm
+class TjfieldsControllerFields extends FormController
 {
 	/**
 	 * Delete File .
@@ -48,8 +48,7 @@ class TjfieldsControllerFields extends JControllerForm
 		$client = explode('.', $data['client']);
 
 		$data['storagePath'] = '/media/' . $client[0] . '/' . $client[1];
-
-		require_once JPATH_SITE . '/components/com_tjfields/helpers/tjfields.php';
+		require_once JPATH_ADMINISTRATOR . '/components/com_tjfields/helpers/tjfields.php';
 
 		$tjFieldsHelper = new TjfieldsHelper;
 		$returnValue = $tjFieldsHelper->deleteFile($data);

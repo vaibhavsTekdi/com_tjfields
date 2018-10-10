@@ -20,7 +20,7 @@ jQuery(document).ready(function(){
 	}
 
 	/* This function deletes tjucm file via ajax */
-	deleteFile = function(filePath, fieldId)
+	deleteFile = function(filePath, fieldId, valueId, subformFileFieldId, isSubformField, client)
 	{
 		if (!filePath)
 		{
@@ -33,10 +33,14 @@ jQuery(document).ready(function(){
 		}
 
 		jQuery.ajax({
-			url: Joomla.getOptions('system.paths').root + "/index.php?option=com_tjfields&task=fields.deleteFile&format=json",
+			url: Joomla.getOptions('system.paths').base + "/index.php?option=com_tjfields&task=fields.deleteFile&format=json",
 			type: 'POST',
 			data:{
-							filePath: filePath
+							filePath: filePath,
+							valueId: valueId,
+							subformFileFieldId:subformFileFieldId,
+							isSubformField:isSubformField,
+							client:client
 			},
 			cache: false,
 			dataType: "json",
@@ -98,6 +102,7 @@ jQuery(document).ready(function(){
     });
 
     document.formvalidator.setHandler('filetype', function(value, element) {
+
         let file_accept = element[0].accept;
         let accept_array = file_accept.split(",");
         let uploadedfile = element[0].files[0];
@@ -108,10 +113,22 @@ jQuery(document).ready(function(){
         /* extension of file*/
         let ext = '.' + filename.split('.').pop().toLowerCase();
 
+        // Converting to bytes
+        let uploadSize = element[0].size * 1048576;
+        let filesize = element[0].files[0].size;
+
+        if(uploadSize < filesize)
+        {
+        	alert(Joomla.JText._('COM_TJFIELDS_FILE_ERROR_MAX_SIZE'));
+
+        	return false;
+        }
+
         if(accept_array.indexOf(ext) === -1)
         {
            return false;
         }
+
         return true;
     });
     document.formvalidator.setHandler('url', function(value) {

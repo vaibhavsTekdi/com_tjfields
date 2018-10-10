@@ -248,7 +248,6 @@ trait TjfieldsFilterField
 	 */
 	public function getFormExtra($data = array(), $loadData = false)
 	{
-		$formExtra = array();
 		$form = new stdclass;
 
 		// Call to extra fields

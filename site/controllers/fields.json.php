@@ -33,7 +33,6 @@ class TjfieldsControllerFields extends JControllerForm
 	{
 		// Check for request forgeries.
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
-		JLoader::import("/techjoomla/media/storage/local", JPATH_LIBRARIES);
 		$app = JFactory::getApplication();
 		$jinput = $app->input;
 
@@ -49,12 +48,6 @@ class TjfieldsControllerFields extends JControllerForm
 		$client = explode('.', $data['client']);
 
 		$file_extension = strtolower(substr(strrchr($data['fileName'], "."), 1));
-
-		$mediaLocal = TJMediaStorageLocal::getInstance();
-
-		$ctype = $mediaLocal->getMime($file_extension);
-
-		$type = explode('/', $ctype);
 
 		$data['storagePath'] = '/media/' . $client[0] . '/' . $client[1];
 

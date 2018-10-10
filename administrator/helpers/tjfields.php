@@ -514,6 +514,9 @@ class TjfieldsHelper extends JHelperContent
 
 		$fieldsValueTable->load(array('id' => $data['valueId']));
 
+		$subData = new stdClass();
+		$fieldId = 0;
+
 		if ($data['isSubformField'] == 1)
 		{
 			$subData = json_decode($fieldsValueTable->value);

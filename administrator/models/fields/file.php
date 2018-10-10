@@ -135,7 +135,6 @@ class JFormFieldFile extends JFormField
 		$app = JFactory::getApplication();
 		$clientForm = $app->input->get('client', '', 'string');
 		$client = explode('.', $clientForm);
-		$mediaPath = '/media/' . $client[0] . '/' . $client[1];
 
 		// Load backend language file
 		$lang = JFactory::getLanguage();
@@ -148,6 +147,7 @@ class JFormFieldFile extends JFormField
 			$formValueId = $app->input->get('id', '', 'INT');
 
 			$isSubformField = 0;
+			$subformId = 0;
 
 			if ($formName[0] === 'subform')
 			{

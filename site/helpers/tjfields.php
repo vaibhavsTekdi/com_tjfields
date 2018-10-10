@@ -1275,7 +1275,7 @@ class TjfieldsHelper
 
 		$fields_value_table->load(array('id' => $data['valueId']));
 
-		if ($data['isSubfromField'] == 1)
+		if ($data['isSubformField'] == 1)
 		{
 			$subData = json_decode($fields_value_table->value);
 
@@ -1290,9 +1290,9 @@ class TjfieldsHelper
 			}
 
 			// Check for file field is of subform or ucmsubform
-			if ($data['subfromFileFieldId'])
+			if ($data['subformFileFieldId'])
 			{
-				$fieldId = $data['subfromFileFieldId'];
+				$fieldId = $data['subformFileFieldId'];
 			}
 			else
 			{
@@ -1358,7 +1358,7 @@ class TjfieldsHelper
 					$fields_obj = new stdClass;
 
 					// Making value object if the field is under subform form subfrom
-					if ($data['isSubfromField'] == 1)
+					if ($data['isSubformField'] == 1)
 					{
 						foreach ($subData as $subformName => $value)
 						{

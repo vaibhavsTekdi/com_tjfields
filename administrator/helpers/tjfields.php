@@ -514,7 +514,7 @@ class TjfieldsHelper extends JHelperContent
 
 		$fieldsValueTable->load(array('id' => $data['valueId']));
 
-		if ($data['isSubfromField'] == 1)
+		if ($data['isSubformField'] == 1)
 		{
 			$subData = json_decode($fieldsValueTable->value);
 
@@ -529,9 +529,9 @@ class TjfieldsHelper extends JHelperContent
 			}
 
 			// Check for file field is of subform or ucmsubform
-			if ($data['subfromFileFieldId'])
+			if ($data['subformFileFieldId'])
 			{
-				$fieldId = $data['subfromFileFieldId'];
+				$fieldId = $data['subformFileFieldId'];
 			}
 			else
 			{
@@ -597,7 +597,7 @@ class TjfieldsHelper extends JHelperContent
 					$fields_obj = new stdClass;
 
 					// Making value object if the field is under subform form subfrom
-					if ($data['isSubfromField'] == 1)
+					if ($data['isSubformField'] == 1)
 					{
 						foreach ($subData as $subformName => $value)
 						{

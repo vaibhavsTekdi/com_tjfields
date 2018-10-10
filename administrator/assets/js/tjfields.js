@@ -20,7 +20,7 @@ jQuery(document).ready(function(){
 	}
 
 	/* This function deletes tjucm file via ajax */
-	deleteFile = function(filePath, fieldId, valueId, subfromFileFieldId, isSubfromField, client)
+	deleteFile = function(filePath, fieldId, valueId, subformFileFieldId, isSubformField, client)
 	{
 		if (!filePath)
 		{
@@ -38,8 +38,8 @@ jQuery(document).ready(function(){
 			data:{
 							filePath: filePath,
 							valueId: valueId,
-							subfromFileFieldId:subfromFileFieldId,
-							isSubfromField:isSubfromField,
+							subformFileFieldId:subformFileFieldId,
+							isSubformField:isSubformField,
 							client:client
 			},
 			cache: false,

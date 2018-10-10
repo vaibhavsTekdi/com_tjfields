@@ -42,8 +42,8 @@ class TjfieldsControllerFields extends FormController
 		// Here, fpht means file encoded path
 		$data['filePath'] = base64_decode($jinput->get('filePath', '', 'BASE64'));
 		$data['valueId'] = base64_decode($jinput->get('valueId', '', 'BASE64'));
-		$data['subfromFileFieldId'] = $jinput->get('subfromFileFieldId');
-		$data['isSubfromField'] = $jinput->get('isSubfromField');
+		$data['subformFileFieldId'] = $jinput->get('subformFileFieldId');
+		$data['isSubformField'] = $jinput->get('isSubformField');
 		$data['client'] = $jinput->get('client', '', 'STRING');
 
 		$client = explode('.', $data['client']);

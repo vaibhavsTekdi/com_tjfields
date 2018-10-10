@@ -590,8 +590,10 @@ class TjfieldsHelper extends JHelperContent
 					{
 						return false;
 					}
-
-					$deleted = 1;
+					else
+					{
+						$deleted = 1;
+					}
 				}
 
 				if ($deleted == 1)

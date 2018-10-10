@@ -47,8 +47,6 @@ class TjfieldsControllerFields extends JControllerForm
 
 		$client = explode('.', $data['client']);
 
-		$file_extension = strtolower(substr(strrchr($data['fileName'], "."), 1));
-
 		$data['storagePath'] = '/media/' . $client[0] . '/' . $client[1];
 
 		require_once JPATH_SITE . '/components/com_tjfields/helpers/tjfields.php';

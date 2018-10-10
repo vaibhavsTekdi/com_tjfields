@@ -286,8 +286,6 @@ class TjfieldsHelper
 						{
 							$existingFileRecordId = $this->checkRecordExistence($data, $file_field_data->id);
 
-							$client = explode('.', $insert_obj_file->client);
-
 							$insert_obj_file->value = $returnData[0]['source'];
 
 							if ($insert_obj_file->value)
@@ -1274,6 +1272,9 @@ class TjfieldsHelper
 		$fields_value_table = JTable::getInstance('Fieldsvalue', 'TjfieldsTable');
 
 		$fields_value_table->load(array('id' => $data['valueId']));
+
+		$subData = new stdClass();
+		$fieldId = 0;
 
 		if ($data['isSubformField'] == 1)
 		{

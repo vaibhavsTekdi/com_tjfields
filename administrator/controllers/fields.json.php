@@ -50,7 +50,7 @@ class TjfieldsControllerFields extends FormController
 		$file_extension = strtolower(substr(strrchr($data['fileName'], "."), 1));
 
 		$data['storagePath'] = '/media/' . $client[0] . '/' . $client[1];
-		require_once JPATH_ADMINISTRATOR .m '/components/com_tjfields/helpers/tjfields.php';
+		require_once JPATH_ADMINISTRATOR . '/components/com_tjfields/helpers/tjfields.php';
 
 		$tjFieldsHelper = new TjfieldsHelper;
 		$returnValue = $tjFieldsHelper->deleteFile($data);

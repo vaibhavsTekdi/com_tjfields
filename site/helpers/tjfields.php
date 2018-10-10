@@ -269,6 +269,8 @@ class TjfieldsHelper
 
 							$validMIMEArray = explode(',', $acceptType);
 
+							$validtype = array();
+
 							foreach ($validMIMEArray as $mimeType)
 							{
 								$validtype[] = $localMime->getMime(strtolower(str_ireplace('.', '', $mimeType)));
@@ -539,6 +541,8 @@ class TjfieldsHelper
 				if (!empty($acceptType))
 				{
 					$validMIMEArray = explode(',', $acceptType);
+
+					$validtype = array();
 
 					foreach ($validMIMEArray as $mimeType)
 					{

@@ -134,7 +134,6 @@ class JFormFieldFile extends JFormField
 
 		$app = JFactory::getApplication();
 		$clientForm = $app->input->get('client', '', 'string');
-		$client = explode('.', $clientForm);
 
 		// Load backend language file
 		$lang = JFactory::getLanguage();
@@ -146,6 +145,7 @@ class JFormFieldFile extends JFormField
 			$formName = explode('.', $this->form->getName());
 			$formValueId = $app->input->get('id', '', 'INT');
 
+			$subFormFileFieldId = 0;
 			$isSubformField = 0;
 			$subformId = 0;
 
@@ -191,14 +191,6 @@ class JFormFieldFile extends JFormField
 			{
 				$fields_value_table->load(array('value' => $layoutData['value']));
 			}
-
-			$file_extension = strtolower(substr(strrchr($layoutData['value'], "."), 1));
-
-			$localGetMime = TJMediaStorageLocal::getInstance();
-
-			$ctype = $localGetMime->getMime($file_extension);
-
-			$type = explode('/', $ctype);
 
 			// Creating media link by check subform or not
 			if ($isSubformField)

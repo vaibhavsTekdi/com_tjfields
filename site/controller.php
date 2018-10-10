@@ -72,7 +72,7 @@ class TjfieldsController extends JControllerLegacy
 		$decodedPath = 'media/' . $client[0] . '/' . $client[1] . '/' . $type[0] . '/' . $decodedFileName;
 
 		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjfields/tables');
-		$tjFieldFieldValuesTable = JTable::getInstance('fieldsvalue', 'TjfieldsTable', array('dbo', $db));
+		$tjFieldFieldValuesTable = JTable::getInstance('fieldsvalue', 'TjfieldsTable');
 		$tjFieldFieldValuesTable->load(array('id' => $jinput->get('id', '', 'INT')));
 
 		// Subform File field Id for checking autherization for specific field under subform

@@ -1,73 +1,192 @@
 <?xml version="1.0" encoding="utf-8"?>
 <form>
 	<fieldset addfieldpath="/administrator/components/com_tjfields/models/fields">
-		<field name="id" type="text" default="0" label="COM_TJFIELDS_FORM_LBL_FIELD_ID" readonly="true" class="readonly" description="JGLOBAL_FIELD_ID_DESC" />
-		<field name="group_id" type="customfield" label="COM_TJFIELDS_FORM_LBL_FIELD_GROUP_NAME" description="COM_TJFIELDS_FORM_DESC_FIELD_GROUP_NAME" required="true" multiple="false" />
-		<field name="label" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_LABEL" description="COM_TJFIELDS_FORM_DESC_FIELD_LABEL" required="true" filter="raw" />
-		<field name="name" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_NAME" description="COM_TJFIELDS_FORM_DESC_FIELD_NAME" required="true" />
-		<field name="type" type="list" onchange="show_option_div(this.value)" label="COM_TJFIELDS_FORM_LBL_FIELD_FIELD_TYPE" description="COM_TJFIELDS_FORM_DESC_FIELD_FIELD_TYPE" required="true" multiple="false">
-			<option value="text">COM_TJFIELDS_TEXT</option>
-			<option value="radio">COM_TJFIELDS_RADIO</option>
-			<option value="checkbox">COM_TJFIELDS_CHECKBOX</option>
-			<option value="single_select">COM_TJFIELDS_SINGLE_SELECT</option>
-			<option value="multi_select">COM_TJFIELDS_MULTI_SELECT</option>
-			<option value="sql">COM_TJFIELDS_SQL</option>
-			<option value="textarea">COM_TJFIELDS_TEXTAREA</option>
-			<option value="calendar">COM_TJFIELDS_CALENDAR</option>
-			<option value="editor">COM_TJFIELDS_EDITOR</option>
-			<option value="email">COM_TJFIELDS_EMAIL</option>
-			<option value="user">COM_TJFIELDS_USERS</option>
-			<option value="file">COM_TJFIELDS_FILE</option>
-			<option value="spacer">COM_TJFIELDS_SPACER</option>
-			<option value="subform">COM_TJFIELDS_SUBFORM</option>
-			<option value="number">COM_TJFIELDS_NUMBER</option>
+		<field name="id"
+				type="text"
+				default="0"
+				label="COM_TJFIELDS_FORM_LBL_FIELD_ID"
+				readonly="true"
+				class="readonly"
+				description="JGLOBAL_FIELD_ID_DESC" />
+
+		<field name="group_id"
+				type="customfield"
+				label="COM_TJFIELDS_FORM_LBL_FIELD_GROUP_NAME"
+				description="COM_TJFIELDS_FORM_DESC_FIELD_GROUP_NAME"
+				required="true"
+				multiple="false" />
+
+		<field name="title"
+				type="hidden"
+				label="COM_TJFIELDS_FORM_LBL_FIELD_TITLE"
+				description="COM_TJFIELDS_FORM_DESC_FIELD_TITLE" />
+
+		<field name="label"
+				type="text"
+				label="COM_TJFIELDS_FORM_LBL_FIELD_LABEL"
+				description="COM_TJFIELDS_FORM_DESC_FIELD_LABEL"
+				required="true"
+				filter="raw" />
+
+		<field name="name"
+				type="text"
+				label="COM_TJFIELDS_FORM_LBL_FIELD_NAME"
+				description="COM_TJFIELDS_FORM_DESC_FIELD_NAME"
+				required="true" />
+
+		<field name="type"
+				type="tjfieldfields"
+				label="COM_TJFIELDS_FORM_LBL_FIELD_FIELD_TYPE"
+				description="COM_TJFIELDS_FORM_DESC_FIELD_FIELD_TYPE"
+				required="true"
+				multiple="false"/>
+
+		<field name="fieldoption"
+				type="fieldoption"
+				label="COM_TJFIELDS_FORM_LBL_FIELD_OPTION"
+				description="COM_TJFIELDS_FORM_DESC_FIELD_OPTION"
+				required="true" />
+
+		<field name="filter_field_type"
+				type="list"
+				onchange="this.form.submit();">
+				<option value="">COM_TJFIELDS_FIELDS_FIELD_TYPE_FILTER</option>
+				<option value="text">COM_TJFIELDS_TEXT</option>
+				<option value="radio">COM_TJFIELDS_RADIO</option>
+				<option value="checkbox">COM_TJFIELDS_CHECKBOX</option>
+				<option value="single_select">COM_TJFIELDS_SINGLE_SELECT</option>
+				<option value="multi_select">COM_TJFIELDS_MULTI_SELECT</option>
+				<option value="sql">COM_TJFIELDS_SQL</option>
+				<option value="textarea">COM_TJFIELDS_TEXTAREA</option>
+				<option value="calendar">COM_TJFIELDS_CALENDAR</option>
+				<option value="editor">COM_TJFIELDS_EDITOR</option>
+				<option value="email">COM_TJFIELDS_EMAIL</option>
+				<option value="user">COM_TJFIELDS_USERS</option>
+				<option value="file">COM_TJFIELDS_FILE</option>
+				<option value="subform">COM_TJFIELDS_SUBFORM</option>
+				<option value="ucmsubform">COM_TJFIELDS_UCMSUBFORM</option>
+				<option value="number">COM_TJFIELDS_NUMBER</option>
 		</field>
-		<field name="fieldoption" type="fieldoption" label="COM_TJFIELDS_FORM_LBL_FIELD_OPTION" description="COM_TJFIELDS_FORM_DESC_FIELD_OPTION" required="false" />
-		<field name="filter_field_type" type="list" onchange="this.form.submit();">
-			<option value="">COM_TJFIELDS_FIELDS_FIELD_TYPE_FILTER</option>
-			<option value="text">COM_TJFIELDS_TEXT</option>
-			<option value="radio">COM_TJFIELDS_RADIO</option>
-			<option value="checkbox">COM_TJFIELDS_CHECKBOX</option>
-			<option value="single_select">COM_TJFIELDS_SINGLE_SELECT</option>
-			<option value="multi_select">COM_TJFIELDS_MULTI_SELECT</option>
-			<option value="sql">COM_TJFIELDS_SQL</option>
-			<option value="textarea">COM_TJFIELDS_TEXTAREA</option>
-			<option value="calendar">COM_TJFIELDS_CALENDAR</option>
-			<option value="editor">COM_TJFIELDS_EDITOR</option>
-			<option value="email">COM_TJFIELDS_EMAIL</option>
-			<option value="user">COM_TJFIELDS_USERS</option>
-			<option value="file">COM_TJFIELDS_FILE</option>
-			<option value="subform">COM_TJFIELDS_SUBFORM</option>
-			<option value="number">COM_TJFIELDS_NUMBER</option>
+
+		<field name="required"
+				type="radio"
+				label="COM_TJFIELDS_FORM_LBL_FIELD_REQUIRED"
+				description="COM_TJFIELDS_FORM_DESC_FIELD_REQUIRED"
+				default="0"
+				required="true"
+				class="btn-group">
+				<option value="1">COM_TJFIELDS_YES</option>
+				<option value="0">COM_TJFIELDS_NO</option>
 		</field>
-		<field name="required" type="radio" label="COM_TJFIELDS_FORM_LBL_FIELD_REQUIRED" description="COM_TJFIELDS_FORM_DESC_FIELD_REQUIRED" default="0" required="true" class="btn-group">
-			<option value="1">COM_TJFIELDS_YES</option>
-			<option value="0">COM_TJFIELDS_NO</option>
+
+		<field name="readonly"
+				type="radio"
+				label="COM_TJFIELDS_FORM_LBL_FIELD_READONLY"
+				description="COM_TJFIELDS_FORM_DESC_FIELD_READONLY"
+				default="0"
+				required="true"
+				class="btn-group">
+				<option value="1">COM_TJFIELDS_YES</option>
+				<option value="0">COM_TJFIELDS_NO</option>
 		</field>
-		<field name="readonly" type="radio" label="COM_TJFIELDS_FORM_LBL_FIELD_READONLY" description="COM_TJFIELDS_FORM_DESC_FIELD_READONLY" default="0" required="true" class="btn-group">
-			<option value="1">COM_TJFIELDS_YES</option>
-			<option value="0">COM_TJFIELDS_NO</option>
-		</field>
-		<field name="placeholder" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_PLACEHOLDER" description="COM_TJFIELDS_FORM_DESC_FIELD_PLACEHOLDER" />
-		<field name="created_by" type="createdby" default="" label="COM_TJFIELDS_FORM_LBL_FIELD_CREATED_BY" description="COM_TJFIELDS_FORM_DESC_FIELD_CREATED_BY" />
-		<field name="description" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_TOOLTIP" description="COM_TJFIELDS_FORM_DESC_FIELD_TOOLTIP" />
-		<field name="js_function" type="jsfunction" label="COM_TJFIELDS_FORM_LBL_FIELD_JS_FUNCTION" description="COM_TJFIELDS_FORM_DESC_FIELD_VALIDATION_CLASS" required="false" />
-		<field name="validation_class" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_VALIDATION_CLASS" description="COM_TJFIELDS_FORM_DESC_FIELD_VALIDATION_CLASS" cols="100" rows="8" />
-		<field name="client" type="text" size="40" class="inputbox" label="COM_TJFIELDS_FORM_LBL_FIELD_CLIENT" description="COM_TJFIELDS_FORM_DESC_FIELD_CLIENT" default="1" filter="safehtml" />
-		<field name="client_type" type="text" size="40" class="inputbox" label="COM_TJFIELDS_FORM_LBL_FIELD_CLIENT_TYPE" description="COM_TJFIELDS_FORM_DESC_FIELD_CLIENT_TYPE" filter="safehtml" />
-		<field name="group_id" type="text" size="40" class="inputbox" label="COM_TJFIELDS_FORM_LBL_FIELD_GROUP_ID" description="COM_TJFIELDS_FORM_DESC_FIELD_GROUP_ID" filter="safehtml" />
-		<field name="state" type="list" label="JSTATUS" description="JFIELD_PUBLISHED_DESC" class="inputbox" size="1" default="1">
+
+		<field name="placeholder"
+				type="text"
+				label="COM_TJFIELDS_FORM_LBL_FIELD_PLACEHOLDER"
+				description="COM_TJFIELDS_FORM_DESC_FIELD_PLACEHOLDER" />
+
+		<field name="created_by"
+				type="createdby"
+				default=""
+				label="COM_TJFIELDS_FORM_LBL_FIELD_CREATED_BY"
+				description="COM_TJFIELDS_FORM_DESC_FIELD_CREATED_BY" />
+
+		<field name="description"
+				type="text"
+				label="COM_TJFIELDS_FORM_LBL_FIELD_TOOLTIP"
+				description="COM_TJFIELDS_FORM_DESC_FIELD_TOOLTIP" />
+
+		<field name="js_function"
+				type="jsfunction"
+				label="COM_TJFIELDS_FORM_LBL_FIELD_JS_FUNCTION"
+				description="COM_TJFIELDS_FORM_DESC_FIELD_VALIDATION_CLASS"
+				required="false" />
+
+		<field name="validation_class"
+				type="text"
+				label="COM_TJFIELDS_FORM_LBL_FIELD_VALIDATION_CLASS"
+				description="COM_TJFIELDS_FORM_DESC_FIELD_VALIDATION_CLASS"
+				cols="100"
+				rows="8" />
+
+		<field name="client"
+				type="text"
+				size="40"
+				class="inputbox"
+				label="COM_TJFIELDS_FORM_LBL_FIELD_CLIENT"
+				description="COM_TJFIELDS_FORM_DESC_FIELD_CLIENT"
+				default="1"
+				filter="safehtml" />
+
+		<field name="client_type"
+				type="text"
+				size="40"
+				class="inputbox"
+				label="COM_TJFIELDS_FORM_LBL_FIELD_CLIENT_TYPE"
+				description="COM_TJFIELDS_FORM_DESC_FIELD_CLIENT_TYPE"
+				filter="safehtml" />
+
+		<field name="group_id"
+				type="text"
+				size="40"
+				class="inputbox"
+				label="COM_TJFIELDS_FORM_LBL_FIELD_GROUP_ID"
+				description="COM_TJFIELDS_FORM_DESC_FIELD_GROUP_ID"
+				filter="safehtml" />
+
+		<field name="state"
+				type="list"
+				label="JSTATUS"
+				description="JFIELD_PUBLISHED_DESC"
+				class="inputbox"
+				size="1"
+				default="1">
 			<option value="1">JPUBLISHED</option>
 			<option value="0">JUNPUBLISHED</option>
 		</field>
-		<field name="filterable" type="radio" label="COM_TJFIELDS_FORM_LBL_FIELD_FILTERABLE" description="COM_TJFIELDS_FORM_DESC_FIELD_FILTERABLE" default="0" required="true" class="btn-group">
+
+		<field name="filterable"
+				type="radio"
+				label="COM_TJFIELDS_FORM_LBL_FIELD_FILTERABLE"
+				description="COM_TJFIELDS_FORM_DESC_FIELD_FILTERABLE"
+				default="0"
+				required="true"
+				class="btn-group">
 			<option value="1">COM_TJFIELDS_YES</option>
 			<option value="0">COM_TJFIELDS_NO</option>
 		</field>
-		<field name="category" type="fieldcategory" multiple="multiple" label="COM_TJFIELDS_FORM_LBL_FIELD_CATEGORY" class="category" description="COM_TJFIELDS_FORM_FIELD_CATEGORY_DESC" />
-		<field type="radio" name="showonlist" label="COM_TJFIELDS_FORM_LBL_FIELD_SHOW_IN_LIST_VIEW" description="COM_TJFIELDS_FORM_DESC_FIELD_SHOW_IN_LIST_VIEW" default="0" required="true" class="btn-group">
+
+		<field name="category"
+				type="fieldcategory"
+				multiple="multiple"
+				label="COM_TJFIELDS_FORM_LBL_FIELD_CATEGORY"
+				class="category"
+				description="COM_TJFIELDS_FORM_FIELD_CATEGORY_DESC" />
+
+		<field type="radio"
+				name="showonlist"
+				label="COM_TJFIELDS_FORM_LBL_FIELD_SHOW_IN_LIST_VIEW"
+				description="COM_TJFIELDS_FORM_DESC_FIELD_SHOW_IN_LIST_VIEW"
+				default="0"
+				required="true"
+				class="btn-group">
 			<option value="1">COM_TJFIELDS_YES</option>
 			<option value="0">COM_TJFIELDS_NO</option>
 		</field>
+	</fieldset>
+
+	<fieldset name="accesscontrol">
+	<field name="asset_id" type="hidden" filter="unset"/>
+		<field name="rules" type="rules" label="JFIELD_RULES_LABEL" translate_label="false" filter="rules" validate="rules" class="inputbox" component="com_tjfields" section="field"/>
 	</fieldset>
 </form>

@@ -59,7 +59,8 @@ class TjfieldsViewField extends JViewLegacy
 	 */
 	protected function addToolbar()
 	{
-		JFactory::getApplication()->input->set('hidemainmenu', true);
+		$input           = JFactory::getApplication()->input;
+		$input->set('hidemainmenu', true);
 		$user  = JFactory::getUser();
 		$isNew = ($this->item->id == 0);
 
@@ -72,9 +73,9 @@ class TjfieldsViewField extends JViewLegacy
 			$checkedOut = false;
 		}
 
-		$canDo           = TjfieldsHelper::getActions();
-		$input           = JFactory::getApplication()->input;
 		$client          = $input->get('client');
+		$extention = explode('.', $client);
+		$canDo           = TjfieldsHelper::getActions($extention[0], 'field');
 		$component_title = JText::_('COM_TJFIELDS_TITLE_COMPONENT');
 
 		if ($isNew)

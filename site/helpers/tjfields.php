@@ -3,13 +3,15 @@
  * @version    SVN: <svn_id>
  * @package    Tjfields
  * @author     Techjoomla <extensions@techjoomla.com>
- * @copyright  Copyright (c) 2009-2015 TechJoomla. All rights reserved.
+ * @copyright  Copyright (c) 2009-2018 TechJoomla. All rights reserved.
  * @license    GNU General Public License version 2 or later.
  */
 
 defined('_JEXEC') or die;
+JLoader::import("/techjoomla/media/storage/local", JPATH_LIBRARIES);
+
 /**
- * helper class for tjfields
+ * Helper class for tjfields
  *
  * @package     Tjfields
  * @subpackage  com_tjfields
@@ -20,7 +22,7 @@ class TjfieldsHelper
 	/**
 	 * My function
 	 *
-	 * @return  void
+	 * @return  string
 	 *
 	 * @since   1.6
 	 */
@@ -36,7 +38,7 @@ class TjfieldsHelper
 	 *
 	 * @param   array  $data  get data
 	 *
-	 * @return  void
+	 * @return  array
 	 */
 	public function FetchDatavalue($data)
 	{
@@ -46,7 +48,7 @@ class TjfieldsHelper
 
 		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true);
-		$query->select('#__tjfields_fields_value.field_id,#__tjfields_fields.type,value FROM #__tjfields_fields_value ');
+		$query->select('#__tjfields_fields_value.field_id, #__tjfields_fields_value.user_id, #__tjfields_fields.type,value FROM #__tjfields_fields_value ');
 		$query->join('INNER', $db->qn('#__tjfields_fields') . ' ON (' .
 		$db->qn('#__tjfields_fields.id') . ' = ' . $db->qn('#__tjfields_fields_value.field_id') . ')');
 
@@ -61,16 +63,25 @@ class TjfieldsHelper
 
 		foreach ($field_data_value as $k => $data)
 		{
-			if ($data->type == "radio" || $data->type == "single_select" || $data->type == "multi_select")
+			if ($data->type == "radio" || $data->type == "single_select")
+			{
+				$fieldDataValue[$data->field_id] = new stdclass;
+				$fieldDataValue[$data->field_id]->value[] = $data->value;
+				$fieldDataValue[$data->field_id]->field_id = $data->field_id;
+			}
+			elseif ($data->type == "multi_select")
 			{
 				$fieldDataValue[$data->field_id]->value[] = $data->value;
 				$fieldDataValue[$data->field_id]->field_id = $data->field_id;
 			}
 			else
 			{
+				$fieldDataValue[$data->field_id] = new stdclass;
 				$fieldDataValue[$data->field_id]->value = $data->value;
 				$fieldDataValue[$data->field_id]->field_id = $data->field_id;
 			}
+
+			$fieldDataValue[$data->field_id]->user_id = $data->user_id;
 		}
 
 		// Check if the field type is list or radio (fields which have option)
@@ -107,15 +118,16 @@ class TjfieldsHelper
 	{
 		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true);
-		$query->select('id,type,name,label FROM #__tjfields_fields');
+		$query->select($db->quoteName(array('id', 'type', 'name', 'label')));
+		$query->from($db->quoteName('#__tjfields_fields'));
 
 		if ($fname)
 		{
-			$query->where('name="' . $fname . '"');
+			$query->where($db->quoteName('name') . ' = ' . $db->quote($fname));
 		}
 		else
 		{
-			$query->where('id=' . $fid);
+			$query->where($db->quoteName('id') . ' = ' . (int) $fid);
 		}
 
 		$db->setQuery($query);
@@ -129,7 +141,7 @@ class TjfieldsHelper
 	 *
 	 * @param   array  $data  Post array which content (client, content_id, Fname, Fvalue, u_id)
 	 *
-	 * @return  true
+	 * @return  bool  Returns true if successful, and false otherwise.
 	 */
 	public function saveFieldsValue($data)
 	{
@@ -139,7 +151,6 @@ class TjfieldsHelper
 		}
 
 		// Get field Id and field type.
-		$db         = JFactory::getDbo();
 		$insert_obj = new stdClass;
 		$insert_obj->content_id = $data['content_id'];
 		$insert_obj->user_id    = $data['user_id'];
@@ -152,23 +163,67 @@ class TjfieldsHelper
 		$insert_obj_file->email_id   = '';
 		$insert_obj_file->client     = $data['client'];
 
-		$singleSelectionFields = array("single_select", "radio");
-		$multipleSelectionFields = array("multi_select");
+		$singleSelectionFields = array('single_select', 'radio');
+		$multipleSelectionFields = array('multi_select');
 		$fieldsSubmitted = array();
+
+		// Separating out the subform files data from files array
+		foreach ($data['fieldsvalue'] as $k => $v)
+		{
+			$field_data = $this->getFieldData($k);
+
+			if ($field_data->type === 'subform' || $field_data->type === 'ucmsubform')
+			{
+				$fileData = array();
+
+				foreach ($data['fieldsvalue']['tjFieldFileField'] as $key => $value)
+				{
+						// Checking if the subform name is present as key of array in the files array, if present separate  the array
+						if ($key === $field_data->name)
+						{
+							$fileData[$key] = $value;
+
+							unset($data['fieldsvalue']['tjFieldFileField'][$key]);
+						}
+						else
+						{
+							$fileData[$key] = '';
+						}
+				}
+
+				// Adding separated files array to respective subform data  by creating new variable filesData
+				foreach ($v as $key => $value)
+				{
+					if (array_key_exists($key, $fileData[$k]))
+					{
+						$data['fieldsvalue'][$field_data->name][$key]['filesData'] = $fileData[$k][$key];
+					}
+					else
+					{
+						$data['fieldsvalue'][$field_data->name][$key]['filesData'] = '';
+					}
+				}
+			}
+		}
 
 		// Values array will contain menu fields value.
 		foreach ($data['fieldsvalue'] as $fname => $fvalue)
 		{
-			$field_data           = $this->getFieldData($fname);
-			$insert_obj->field_id = $field_data->id;
-			$fieldsSubmitted[] = $insert_obj->field_id;
+			$field_data = array();
 
-			// Added By KOMAL TEMP
+			if ($fname != 'tjFieldFileField')
+			{
+				$field_data = $this->getFieldData($fname);
+				$insert_obj->field_id = $field_data->id;
+				$fieldsSubmitted[] = $insert_obj->field_id;
+			}
+
 			// Field Data
 			$db    = JFactory::getDbo();
 			$query = $db->getQuery(true);
-			$query->select('* FROM #__tjfields_fields');
-			$query->where('name="' . $fname . '"');
+			$query->select('*');
+			$query->from($db->quoteName('#__tjfields_fields'));
+			$query->where($db->quoteName('name') . ' = ' . $db->quote($fname));
 			$db->setQuery($query);
 			$file_field_data_check = $db->loadObject();
 
@@ -176,44 +231,89 @@ class TjfieldsHelper
 			{
 				foreach ($fvalue as $fieldName => $singleFile)
 				{
-					// Field Data
-					$db    = JFactory::getDbo();
-					$query = $db->getQuery(true);
-					$query->select('* FROM #__tjfields_fields');
-					$query->where('name="' . $fieldName . '"');
-					$db->setQuery($query);
-					$file_field_data = $db->loadObject();
-
+					$file_field_data = $this->getFieldData($fieldName);
 					$insert_obj_file->field_id = $file_field_data->id;
 
+					if ($file_field_data->id)
+					{
 					if (!empty($singleFile))
 					{
-						$filename = $this->uploadFile($singleFile, $insert_obj_file, $file_field_data);
-
-						if ($filename)
+						if ($singleFile['error'] != 4)
 						{
-							$if_edit_file_id        = $this->checkForAlreadyexitsDetails($data, $file_field_data->id);
+						JTable::addIncludePath(JPATH_ADMINISTRATOR . "/components/com_tjfields/tables");
+						JModelLegacy::addIncludePath(JPATH_ADMINISTRATOR . "/components/com_tjfields/models");
+						$fieldModel = JModelLegacy::getInstance('Field', 'TjfieldsModel', array("ignore_request" => 1));
 
-							$client = explode('.', $insert_obj_file->client);
+						$fieldId = (int) $file_field_data->id;
+						$fieldItems = $fieldModel->getItem($fieldId);
 
-							$insert_obj_file->value = '/media/' . $client[0] . '/' . $client[1] . '/' . $filename;
+						// Code for file size validation
+						$acceptSize = $fieldItems->params['size'];
+
+						// Upload path
+						$client = explode('.', $insert_obj_file->client);
+						$mimeType = explode('/', $singleFile['type']);
+						$type = $mimeType[0];
+
+						$mediaPath = JPATH_ROOT . '/media/' . $client[0] . '/' . $client[1] . '/' . $type;
+
+						// Code for file type validation
+						$acceptType = $fieldItems->params['accept'];
+
+						// Configs for Media library
+						$config = array();
+
+						if (!empty($acceptType))
+						{
+							$localMime = TJMediaStorageLocal::getInstance();
+
+							$validMIMEArray = explode(',', $acceptType);
+
+							$validtype = array();
+
+							foreach ($validMIMEArray as $mimeType)
+							{
+								$validtype[] = $localMime->getMime(strtolower(str_ireplace('.', '', $mimeType)));
+							}
+
+							$config['type'] = $validtype;
+						}
+
+						$config['uploadPath'] = $mediaPath;
+						$config['size'] = $acceptSize;
+						$config['saveData'] = '0';
+						$media = TJMediaStorageLocal::getInstance($config);
+
+						$returnData = $media->upload(array($singleFile));
+
+						if ($returnData[0]['source'])
+						{
+							$existingFileRecordId = $this->checkRecordExistence($data, $file_field_data->id);
+
+							$insert_obj_file->value = $returnData[0]['source'];
 
 							if ($insert_obj_file->value)
 							{
-								if ($if_edit_file_id)
+								if (!empty($existingFileRecordId))
 								{
-									$insert_obj_file->id = $if_edit_file_id;
-									$result = $db->updateObject('#__tjfields_fields_value', $insert_obj_file, 'id');
+									$insert_obj_file->id = $existingFileRecordId;
+									$db->updateObject('#__tjfields_fields_value', $insert_obj_file, 'id');
 								}
 								else
 								{
 									$insert_obj_file->id = '';
-									$result = $db->insertObject('#__tjfields_fields_value', $insert_obj_file, 'id');
+									$db->insertObject('#__tjfields_fields_value', $insert_obj_file, 'id');
 								}
 							}
 
 							$fieldsSubmitted[] = $insert_obj_file->field_id;
 						}
+						else
+						{
+							return false;
+						}
+						}
+					}
 					}
 				}
 			}
@@ -222,11 +322,11 @@ class TjfieldsHelper
 				if (empty($file_field_data_check->accept))
 				{
 					// Check for duplicate entry
-					$if_edit_id = $this->checkForAlreadyexitsDetails($data, $field_data->id);
+					$existingRecordId = $this->checkRecordExistence($data, $field_data->id);
 
 					if (!empty($fvalue))
 					{
-						if ($field_data->type == 'subform')
+						if ($field_data->type === 'subform' || $field_data->type === 'ucmsubform')
 						{
 							$this->saveSubformData($data, $fname, $field_data);
 						}
@@ -236,15 +336,15 @@ class TjfieldsHelper
 						}
 						elseif (in_array($field_data->type, $singleSelectionFields))
 						{
-							$this->saveSingleSelectFieldValue($data, $fname, $field_data, $if_edit_id);
+							$this->saveSingleSelectFieldValue($data, $fname, $field_data, $existingRecordId);
 						}
 						else
 						{
 							$insert_obj->value = $fvalue;
 
-							if ($if_edit_id)
+							if (!empty($existingRecordId))
 							{
-								$insert_obj->id = $if_edit_id;
+								$insert_obj->id = $existingRecordId;
 								$db->updateObject('#__tjfields_fields_value', $insert_obj, 'id');
 							}
 							else
@@ -261,18 +361,14 @@ class TjfieldsHelper
 							// Delete entry is field is deselected
 							$conditions = array(
 								$db->quoteName('field_id') . ' = ' . $field_data->id,
-								$db->quoteName('content_id') . ' = ' . $data['content_id'],
-								$db->quoteName('client') . " = '" . $data['client'] . "'"
+								$db->quoteName('content_id') . ' = ' . (int) $data['content_id'],
+								$db->quoteName('client') . " = " . $db->quote($data['client'])
 							);
-
 							$query = $db->getQuery(true);
-
 							$query->delete($db->quoteName('#__tjfields_fields_value'));
 							$query->where($conditions);
-
 							$db->setQuery($query);
-
-							$result = $db->execute();
+							$db->execute();
 						}
 					}
 				}
@@ -280,7 +376,6 @@ class TjfieldsHelper
 		}
 
 		$fieldsSubmitted = array_filter($fieldsSubmitted);
-
 		$unsubmittedFields = $this->getUnsubmittedFields($data['content_id'], $data['client'], $fieldsSubmitted);
 
 		// Delete Values of unsubmitted fields
@@ -291,17 +386,13 @@ class TjfieldsHelper
 			// Delete entry if field is deselected
 			$conditions = array(
 				$db->quoteName('field_id') . ' = ' . $unsubmittedField,
-				$db->quoteName('content_id') . ' = ' . $data['content_id'],
-				$db->quoteName('client') . " = '" . $data['client'] . "'"
+				$db->quoteName('content_id') . ' = ' . (int) $data['content_id'],
+				$db->quoteName('client') . " = " . $db->quote($data['client'])
 			);
-
 			$query = $db->getQuery(true);
-
 			$query->delete($db->quoteName('#__tjfields_fields_value'));
 			$query->where($conditions);
-
 			$db->setQuery($query);
-
 			$db->execute();
 		}
 
@@ -315,7 +406,7 @@ class TjfieldsHelper
 	 * @param   STRING  $client           client
 	 * @param   ARRAY   $fieldsSubmitted  array of fields submitted
 	 *
-	 * @return  true
+	 * @return  ARRAY|boolean
 	 */
 	public function getUnsubmittedFields($content_id, $client, $fieldsSubmitted)
 	{
@@ -326,8 +417,8 @@ class TjfieldsHelper
 			$query = $db->getQuery(true);
 			$query->select($db->quoteName('field_id'));
 			$query->from($db->quoteName('#__tjfields_fields_value'));
-			$query->where($db->quoteName('content_id') . " = '" . $content_id . "'");
-			$query->where($db->quoteName('client') . " = '" . $client . "'");
+			$query->where($db->quoteName('content_id') . " = " . (int) $content_id);
+			$query->where($db->quoteName('client') . " = " . $db->quote($client));
 			$db->setQuery($query);
 			$dataSavedFields = $db->loadColumn();
 
@@ -338,115 +429,6 @@ class TjfieldsHelper
 		else
 		{
 			return false;
-		}
-	}
-
-	/**
-	 * Function to upload file
-	 *
-	 * @param   string  $singleFile       name of field
-	 * @param   string  $insert_obj_file  file object
-	 * @param   string  $file_field_data  data
-	 *
-	 * @return  object
-	 */
-	public function uploadFile($singleFile, $insert_obj_file, $file_field_data)
-	{
-		$app             = JFactory::getApplication();
-		$user = JFactory::getUser();
-		$user_id = $user->id;
-		$username = $string = preg_replace('/\s+/', '', $user->name);
-
-		$title = $singleFile['name'];
-		$title = $string = preg_replace('/\s+/', '', $title);
-
-		jimport('joomla.filesystem.file');
-
-		// Check if the server found any error.
-		$fileError = $singleFile['error'];
-		$message   = '';
-
-		if ($fileError > 0 && $fileError != 4)
-		{
-			switch ($fileError)
-			{
-				case 1:
-					$message = JText::_('COM_TJFIELDS_FILE_UPLOAD_ERROR_SIZE_EXCEED');
-					break;
-				case 2:
-					$message = JText::_('COM_TJFIELDS_FILE_UPLOAD_ERROR_SIZE_EXCEED1');
-					break;
-				case 3:
-					$message = JText::_('COM_TJFIELDS_FILE_UPLOAD_ERROR_SIZE_EXCEED2');
-					break;
-			}
-
-			if ($message != '')
-			{
-				$app->enqueueMessage($message, 'warning');
-
-				return false;
-			}
-		}
-		elseif ($fileError == 4)
-		{
-			if (isset($singleFile['name']))
-			{
-				$filename = $singleFile['name'];
-			}
-		}
-		else
-		{
-			// Check for filesize
-			$fileSize = $singleFile['size'];
-
-			if ($fileSize > 15728640)
-			{
-				$app->enqueueMessage('This <strong>' . $title . '</strong> file size is greater than 15MB', 'warning');
-
-				return false;
-			}
-
-			$okMIMETypes    = 'pdf,PDF,doc,DOC,docx,DOCX,xls,XLS,xlsx,XLSX,jpeg,JPEG,png,PNG,jpg,JPG';
-			$validMIMEArray = explode(',', $okMIMETypes);
-
-			$client = explode('.', $insert_obj_file->client);
-
-			$filename  = JFile::stripExt($singleFile['name']);
-			$extension = JFile::getExt($singleFile['name']);
-
-			jimport('joomla.filesystem.file');
-			$fileMime = JFile::getExt($singleFile['name']);
-
-			if (!in_array($fileMime, $validMIMEArray))
-			{
-				$app->enqueueMessage('This <strong>' . $title . '</strong> file type is not allowed for file ' . $filename . '.' . $extension, 'warning');
-
-				return false;
-			}
-
-			// Replace any special characters in the filename
-
-			$random_string = rand();
-			$filename = $client[1] . "_" . $username . "_" . $random_string;
-
-			$filename = $filename . '.' . $extension;
-
-			$uploadPath = JPATH_ROOT . '/media/' . $client[0] . '/' . $client[1] . '/' . $filename;
-
-			$fileTemp = $singleFile['tmp_name'];
-
-			if (!JFile::exists($uploadPath))
-			{
-				if (!JFile::upload($fileTemp, $uploadPath))
-				{
-					$app->enqueueMessage('Error moving file', 'warning');
-
-					return false;
-				}
-			}
-
-			return $filename;
 		}
 	}
 
@@ -463,14 +445,13 @@ class TjfieldsHelper
 	public function saveSingleSelectFieldValue($postFieldData, $fieldName, $field_data, $updateId = 0)
 	{
 		$currentFieldValue = $postFieldData['fieldsvalue'][$fieldName];
-		$db = JFactory::getDbo();
+		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true);
-		$conditions = array($db->quoteName('id') . ' IN (' . $fieldValueEntryId . ') ');
 
 		$query->select("id")
 		->from("#__tjfields_options")
-		->where("field_id = " . $field_data->id)
-		->where("value = '" . $currentFieldValue . "'");
+		->where($db->quoteName('field_id') . " = " . (int) $field_data->id)
+		->where($db->quoteName('value') . " = " . $db->quote($currentFieldValue));
 		$db->setQuery($query);
 
 		$option_id = $db->loadResult();
@@ -505,7 +486,7 @@ class TjfieldsHelper
 	 * @param   array  $subformFname   Current subform field name
 	 * @param   array  $field_data     field data
 	 *
-	 * @return  array
+	 * @return  true
 	 */
 	public function saveSubformData($postFieldData, $subformFname, $field_data)
 	{
@@ -514,14 +495,78 @@ class TjfieldsHelper
 		$query = $db->getQuery(true);
 		$query->select('*');
 		$query->from('#__tjfields_fields_value');
-		$query->where('content_id=' . $postFieldData['content_id']);
-		$query->where('field_id=' . $field_data->id);
-		$query->where('client="' . $postFieldData['client'] . '"');
+		$query->where($db->quoteName('content_id') . "=" . (int) $postFieldData['content_id']);
+		$query->where($db->quoteName('field_id') . "=" . (int) $field_data->id);
+		$query->where($db->quoteName('client') . "=" . $db->quote($postFieldData['client']));
 		$db->setQuery($query);
 		$dbFieldValue = $db->loadObjectList();
 
 		$newFields = $postFieldData['fieldsvalue'];
 		$subformField = $newFields[$subformFname];
+
+		foreach ($subformField as $key => $value)
+		{
+		if (!empty($value['filesData']))
+		{
+				foreach ($value['filesData'] as $k => $v)
+				{
+				if (!empty($v['name']))
+				{
+				$file_field_data = $this->getFieldData($k);
+
+				if (!empty($file_field_data))
+				{
+					JModelLegacy::addIncludePath(JPATH_ADMINISTRATOR . "/components/com_tjfields/models");
+					$fieldModel = JModelLegacy::getInstance('Field', 'TjfieldsModel', array("ignore_request" => 1));
+
+					$fieldId = (int) $file_field_data->id;
+					$fieldItems = $fieldModel->getItem($fieldId);
+
+					// Code for file type validation
+					$acceptType = $fieldItems->params['accept'];
+				}
+
+				// Code for file size validation
+				$acceptSize = $fieldItems->params['size'];
+
+				// Upload path
+				$client = explode('.', $postFieldData['client']);
+				$mimeType = explode('/', $v['type']);
+				$type = $mimeType[0];
+				$mediaPath = JPATH_ROOT . '/media/' . $client[0] . '/' . $client[1] . '/' . $type;
+
+				// Configs for Media library
+				$config = array();
+
+				if (!empty($acceptType))
+				{
+					$validMIMEArray = explode(',', $acceptType);
+
+					$validtype = array();
+
+					foreach ($validMIMEArray as $mimeType)
+					{
+						$localGetMime = TJMediaStorageLocal::getInstance();
+						$validtype[] = $localGetMime->getMime(strtolower(str_ireplace('.', '', $mimeType)));
+					}
+
+					$config['type'] = $validtype;
+				}
+
+				$config['uploadPath'] = $mediaPath;
+				$config['size'] = $acceptSize;
+				$config['saveData'] = '0';
+
+				$media = TJMediaStorageLocal::getInstance($config);
+
+				$returnData = $media->upload(array($v));
+				$subformField[$key][$k] = $returnData[0]['source'];
+
+				unset($subformField[$key]['filesData']);
+				}
+				}
+		}
+		}
 
 		if (!empty($dbFieldValue))
 		{
@@ -561,7 +606,7 @@ class TjfieldsHelper
 	 * @param   array  $multiselectFname  Current multiselect field name
 	 * @param   array  $field_data        field data
 	 *
-	 * @return  array
+	 * @return  true
 	 */
 	public function saveMultiselectOptions($postFieldData, $multiselectFname, $field_data)
 	{
@@ -570,9 +615,9 @@ class TjfieldsHelper
 		$query = $db->getQuery(true);
 		$query->select('*');
 		$query->from('#__tjfields_fields_value');
-		$query->where('content_id=' . $postFieldData['content_id']);
-		$query->where('field_id=' . $field_data->id);
-		$query->where('client="' . $postFieldData['client'] . '"');
+		$query->where($db->quoteName('content_id') . "=" . (int) $postFieldData['content_id']);
+		$query->where($db->quoteName('field_id') . "=" . (int) $field_data->id);
+		$query->where($db->quoteName('client') . "=" . $db->quote($postFieldData['client']));
 		$db->setQuery($query);
 		$dbFieldValue = $db->loadObjectList("id");
 
@@ -648,12 +693,11 @@ class TjfieldsHelper
 		{
 			$db = JFactory::getDbo();
 			$query = $db->getQuery(true);
-			$conditions = array($db->quoteName('id') . ' IN (' . $fieldValueEntryId . ') ');
 
-			$query->select("id")
-			->from("#__tjfields_options")
-			->where("field_id = " . $insert_obj->field_id)
-			->where("value = '" . $insert_obj->value . "'");
+			$query->select($db->quoteName('id'))
+			->from($db->quoteName('#__tjfields_options'))
+			->where($db->quoteName('field_id') . " = " . (int) $insert_obj->field_id)
+			->where($db->quoteName('value') . " = " . $db->quote($insert_obj->value));
 			$db->setQuery($query);
 
 			$insert_obj->option_id = $db->loadResult();
@@ -682,15 +726,14 @@ class TjfieldsHelper
 
 			$query = $db->getQuery(true);
 
-			// Delete all custom keys for user 1001.
 			$conditions = array(
-				$db->quoteName('id') . ' IN (' . $fieldValueEntryId . ') '
+				$db->quoteName('id') . ' IN (' . $db->quote($fieldValueEntryId) . ') '
 			);
 
 			$query->delete($db->quoteName('#__tjfields_fields_value'));
 			$query->where($conditions);
 			$db->setQuery($query);
-			$result = $db->execute();
+			$db->execute();
 		}
 	}
 
@@ -702,32 +745,35 @@ class TjfieldsHelper
 	 *
 	 * @return  array
 	 */
-	public function checkForAlreadyexitsDetails($data, $field_id)
+	public function checkRecordExistence($data, $field_id)
 	{
-		$content_id = $data['content_id'];
+		$content_id = (int) $data['content_id'];
 		$client     = $data['client'];
-		$user_id    = $data['user_id'];
+
 		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true);
-		$query->select('id FROM #__tjfields_fields_value');
-		$query->where('content_id=' . $content_id . ' AND client="' . $client . '"');
 
-		if ($field_id)
+		$query->select($db->quoteName('id'));
+		$query->from($db->quoteName('#__tjfields_fields_value'));
+		$query->where($db->quoteName('content_id') . ' = ' . (int) $content_id);
+		$query->where($db->quoteName('client') . ' = ' . $db->quote($client));
+
+		if (!empty($field_id))
 		{
-			$query->where('field_id=' . $field_id);
+			$query->where($db->quoteName('field_id') . ' = ' . (int) $field_id);
 		}
 
 		$db->setQuery($query);
-		$is_edit = $db->loadresult();
+		$existingRecordId = $db->loadresult();
 
-		return $is_edit;
+		return $existingRecordId;
 	}
 
 	/**
 	 * Get option which are stored in field option table.
 	 *
-	 * @param   array  $field_id      field if
-	 * @param   array  $option_value  option value
+	 * @param   string  $field_id      field if
+	 * @param   string  $option_value  option value
 	 *
 	 * @return array Option for the particular field
 	 */
@@ -737,8 +783,10 @@ class TjfieldsHelper
 		{
 			$db    = JFactory::getDbo();
 			$query = $db->getQuery(true);
-			$query->select('options,default_option,value FROM #__tjfields_options');
-			$query->where('field_id=' . $field_id);
+
+			$query->select($db->quoteName(array('options','default_option','value')));
+			$query->from($db->quoteName('#__tjfields_options'));
+			$query->where($db->quoteName('field_id') . ' = ' . (int) $field_id);
 
 			$new_option_value = json_decode($option_value);
 
@@ -746,18 +794,18 @@ class TjfieldsHelper
 			{
 				if (is_array($new_option_value))
 				{
-					$option_value_string = "'" . implode("','", $new_option_value) . "'";
-					$query->where('value IN (' . $option_value_string . ')');
+					$option_value_string = implode(",", $db->quote($new_option_value));
+					$query->where($db->quoteName('value') . 'IN (' . $option_value_string . ')');
 				}
 				else
 				{
-					$query->where('value=' . $new_option_value);
+					$query->where($db->quoteName('value') . '=' . $db->quote($new_option_value));
 				}
 			}
 			else
 			{
 				// Radio.
-				$query->where('value=' . $db->quote($option_value));
+				$query->where($db->quoteName('value') . '=' . $db->quote($option_value));
 			}
 
 			$db->setQuery($query);
@@ -781,9 +829,9 @@ class TjfieldsHelper
 	/**
 	 * Get option which are stored in field option table.
 	 *
-	 * @param   array  $client  Get all fields based on client
+	 * @param   string  $client  Get all fields based on client
 	 *
-	 * @return object
+	 * @return array|string
 	 */
 	public function getUniversalFields($client)
 	{
@@ -795,8 +843,8 @@ class TjfieldsHelper
 			$query = $db->getQuery(true);
 			$query->select('DISTINCT * FROM #__tjfields_fields AS f');
 			$query->where('NOT EXISTS (select * FROM #__tjfields_category_mapping AS cm where f.id=cm.field_id)');
-			$query->where('f.client="' . $client . '"');
-			$query->where('f.state=1');
+			$query->where($db->quoteName('f.client') . "=" . $db->quote($client));
+			$query->where($db->quoteName('f.state') . " = 1");
 			$db->setQuery($query);
 			$universalFields = $db->loadObjectlist();
 		}
@@ -804,12 +852,10 @@ class TjfieldsHelper
 		return $universalFields;
 	}
 
-	// Added by ankush
-
 	/**
 	 * Get option which are stored in field option table.
 	 *
-	 * @param   array  $client  Get all fields based on client
+	 * @param   string  $client  Get all fields based on client
 	 *
 	 * @return object
 	 */
@@ -817,9 +863,12 @@ class TjfieldsHelper
 	{
 		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true);
-		$query->select('* FROM #__categories');
-		$query->where('extension="' . $client . '"');
-		$query->where('published=1');
+
+		$query->select('*');
+		$query->from($db->quoteName('#__categories'));
+		$query->where($db->quoteName('extension') . ' = ' . $db->quote($client));
+		$query->where($db->quoteName('published') . ' = 1');
+
 		$db->setQuery($query);
 		$categorysList = $db->loadObjectlist();
 
@@ -829,8 +878,8 @@ class TjfieldsHelper
 	/**
 	 * Get option which are stored in field option table.
 	 *
-	 * @param   array  $client       Get all fields based on client
-	 * @param   array  $category_id  Get all fields for selected category
+	 * @param   string  $client       Get all fields based on client
+	 * @param   string  $category_id  Get all fields for selected category
 	 *
 	 * @return object
 	 */
@@ -847,9 +896,9 @@ class TjfieldsHelper
 			$query->JOIN('INNER', '#__tjfields_fields_value AS fv ON fv.field_id = f.id');
 			$query->JOIN('INNER', '#__tjfields_options AS fo ON fo.id = fv.option_id');
 
-			$query->where('f.client="' . $client . '"');
-			$query->where('f.filterable=1');
-			$query->where('f.state=1');
+			$query->where($db->quoteName('f.client') . "=" . $db->quote($client));
+			$query->where($db->quoteName('f.filterable') . " = 1");
+			$query->where($db->quoteName('f.state') . " = 1");
 			$query->where('fv.option_id IS NOT NULL');
 			$query->where("f.type IN ('single_select','multi_select', 'radio')");
 
@@ -874,14 +923,14 @@ class TjfieldsHelper
 				$queryCat->JOIN('INNER', '#__tjfields_fields_value AS fv ON fv.field_id = f.id');
 				$queryCat->JOIN('INNER', '#__tjfields_options AS fo ON fo.id = fv.option_id');
 
-				$queryCat->where('f.client="' . $client . '"');
-				$queryCat->where('f.filterable=1');
-				$queryCat->where('f.state=1');
+				$queryCat->where($db->quoteName('f.client') . "=" . $db->quote($client));
+				$queryCat->where($db->quoteName('f.filterable') . " = 1");
+				$queryCat->where($db->quoteName('f.state') . " = 1");
 				$queryCat->where('fv.option_id IS NOT NULL');
 				$queryCat->where("f.type IN ('single_select','multi_select', 'radio')");
 
 				$queryCat->JOIN('INNER', '#__tjfields_category_mapping AS fcm ON fcm.field_id = f.id');
-				$queryCat->where('fcm.category_id=' . $category_id);
+				$queryCat->where($db->quoteName('fcm.category_id') . " = " . $category_id);
 
 				$queryCat->order('f.ordering');
 				$db->setQuery($queryCat);
@@ -916,19 +965,15 @@ class TjfieldsHelper
 		$client = $jinput->get("client");
 
 		// Get parameter name in which you are sending category id
-		$tj_mod_filter_cat = $jinput->get("tj_mod_filter_cat", "prod_cat");
-		$category_id = $jinput->get($tj_mod_filter_cat);
 		$fields_value_str = $jinput->get("tj_fields_value", '', "RAW");
-		$fieldOptions = array();
 
 		if ($fields_value_str)
 		{
 			$fields_value_str = explode(',', $fields_value_str);
-			$fieldOptions = $fields_value_str = array_filter($fields_value_str, 'trim');
+			$fields_value_str = array_filter($fields_value_str, 'trim');
 			$fields_value_str = implode(',', $fields_value_str);
 		}
 
-		/*$data['fields_value'] =  array(19,14,17);*/
 		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true);
 
@@ -1050,8 +1095,6 @@ class TjfieldsHelper
 
 		// Function will return -1 when no content found according to selected fields in filter
 		$tjfieldIitem_ids = "-1";
-		$tj_mod_filter_cat = $jinput->get("ModFilterCat", "prod_cat");
-		$category_id = $jinput->get($tj_mod_filter_cat);
 		$fields_value_str = $jinput->get("tj_fields_value", '', "RAW");
 
 		if (!empty($fields_value_str))
@@ -1080,7 +1123,7 @@ class TjfieldsHelper
 	 *
 	 * @param   STRING  $client  client
 	 *
-	 * @return object
+	 * @return array|boolean
 	 */
 	public function getClientFields($client)
 	{
@@ -1100,5 +1143,273 @@ class TjfieldsHelper
 		{
 			return false;
 		}
+	}
+
+	/**
+	 * Fuction to get field id from file path
+	 *
+	 * @param   STRING  $filePath  media file path
+	 *
+	 * @return string|boolean
+	 */
+	public function getFileIdFromFilePath($filePath)
+	{
+		if (!empty($filePath))
+		{
+			$db    = JFactory::getDbo();
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName('id'));
+			$query->from($db->quoteName('#__tjfields_fields_value'));
+			$query->where($db->quoteName('value') . "=" . $db->quote($filePath));
+			$db->setQuery($query);
+			$mediaId = $db->loadResult();
+
+			return $mediaId;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	/**
+	 * Fuction to get file path from id
+	 *
+	 * @param   STRING  $mediaId  media id
+	 *
+	 * @return string|boolean
+	 */
+	public function getMediaPathFromId($mediaId)
+	{
+		if (!empty($mediaId))
+		{
+			$db = JFactory::getDbo();
+			$query = $db->getQuery(true);
+			$query->select($db->quoteName('value'));
+			$query->from($db->quoteName('#__tjfields_fields_value'));
+			$query->where($db->quoteName('id') . "=" . (INT) $mediaId);
+			$db->setQuery($query);
+			$mediaPath = $db->loadResult();
+
+			return $mediaPath;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	/**
+	 * Method to get media URL.
+	 *
+	 * @param   STRING  $filePath       media file path
+	 * @param   STRING  $extraUrlPrams  extra url params
+	 *
+	 * @return  string|boolean  True on success.
+	 *
+	 * @since   3.2
+	 */
+	public function getMediaUrl($filePath, $extraUrlPrams = '')
+	{
+		if (!empty($filePath))
+		{
+			// If url extra param is present
+			if (!empty($extraUrlPrams))
+			{
+				$extraUrlPrams = '&' . $extraUrlPrams;
+			}
+
+			// Here, fpht means file encoded path
+			$encodedPath = base64_encode($filePath);
+			$basePathLink = 'index.php?option=com_tjfields&task=getMedia&fpht=';
+			$mediaURLlink = JUri::root() . substr(JRoute::_($basePathLink . $encodedPath . $extraUrlPrams), strlen(JUri::base(true)) + 1);
+
+			return $mediaURLlink;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	/**
+	 * Method to convert file size from MB to Bytes.
+	 *
+	 * @param   int  $mb  file size in mb
+	 *
+	 * @return  int|bool  True on success.
+	 *
+	 * @since   3.2
+	 */
+	public function formatSizeUnits($mb)
+	{
+		if (!empty($mb))
+		{
+			// 1 Megabyte is equal to 1048576 bytes (binary)
+			$bytes = $mb * 1048576;
+
+			return $bytes;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	/**
+	 * tjFileDelete .
+	 *
+	 * @param   Array  $data  file path.
+	 *
+	 * @return boolean|string
+	 *
+	 * @since	1.6
+	 */
+	public function deleteFile($data)
+	{
+		$user = JFactory::getUser();
+
+		if (!$user->id)
+		{
+			return false;
+		}
+
+		JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_tjfields/tables');
+		$fields_value_table = JTable::getInstance('Fieldsvalue', 'TjfieldsTable');
+
+		$fields_value_table->load(array('id' => $data['valueId']));
+
+		$subData = new stdClass();
+		$fieldId = 0;
+
+		if ($data['isSubformField'] == 1)
+		{
+			$subData = json_decode($fields_value_table->value);
+
+			foreach ($subData as $value)
+			{
+				$subformData = (array) $value;
+
+				if (in_array($data['filePath'], $subformData))
+				{
+					$fileUser = $fields_value_table->user_id;
+				}
+			}
+
+			// Check for file field is of subform or ucmsubform
+			if ($data['subformFileFieldId'])
+			{
+				$fieldId = $data['subformFileFieldId'];
+			}
+			else
+			{
+				$fieldId = $fields_value_table->field_id;
+			}
+		}
+		else
+		{
+			if ($data['filePath'] === $fields_value_table->value)
+			{
+				$fileUser = $fields_value_table->user_id;
+				$fieldId = $fields_value_table->field_id;
+			}
+		}
+
+		$file_extension = strtolower(substr(strrchr($data['filePath'], "."), 1));
+		$localGetMime = TJMediaStorageLocal::getInstance();
+
+		$ctype = $localGetMime->getMime($file_extension);
+
+		if (!empty($fileUser))
+		{
+			$canEdit = $user->authorise('core.field.editfieldvalue', 'com_tjfields.field.' . $fieldId);
+
+			$canEditOwn = $user->authorise('core.field.editownfieldvalue', 'com_tjfields.field.' . $fieldId);
+
+			if ($canEdit || (($user->id == $fileUser) && $canEditOwn))
+			{
+				$type = explode('/', $ctype);
+
+				if ($type[0] === 'image')
+				{
+					$deleteData = array();
+					$deleteData[] = JPATH_ROOT . $data['storagePath'] . '/' . $type[0] . '/' . $data['filePath'];
+
+					$deleteData[] = JPATH_ROOT . $data['storagePath'] . '/' . $type[0] . '/S_' . $data['filePath'];
+					$deleteData[] = JPATH_ROOT . $data['storagePath'] . '/' . $type[0] . '/M_' . $data['filePath'];
+					$deleteData[] = JPATH_ROOT . $data['storagePath'] . '/' . $type[0] . '/L_' . $data['filePath'];
+
+					foreach ($deleteData as $image)
+					{
+						if (JFile::exists($image))
+						{
+							JFile::delete($image);
+						}
+					}
+
+					$deleted = 1;
+				}
+				else
+				{
+					if (!JFile::delete(JPATH_ROOT . $data['storagePath'] . '/' . $type[0] . '/' . $data['filePath']))
+					{
+						return false;
+					}
+
+					$deleted = 1;
+				}
+
+				if ($deleted == 1)
+				{
+					$db = JFactory::getDbo();
+					$fields_obj = new stdClass;
+
+					// Making value object if the field is under subform form subfrom
+					if ($data['isSubformField'] == 1)
+					{
+						foreach ($subData as $subformName => $value)
+						{
+							foreach ($value as $k => $v)
+							{
+								// Finding the particular index and making it null
+								if ($v === $data['filePath'])
+								{
+									$subData->$subformName->$k = '';
+								}
+							}
+						}
+
+						$fields_obj->value = json_encode($subData);
+					}
+					else
+					{
+						$fields_obj->value = '';
+					}
+
+					$fields_obj->id = $fields_value_table->id;
+					$db->updateObject('#__tjfields_fields_value', $fields_obj, 'id');
+
+					return true;
+				}
+
+				return false;
+			}
+
+			return false;
+		}
+
+		return false;
+	}
+
+	/**
+	 * This define the  language constant which you have use in js file.
+	 *
+	 * @since   1.0
+	 * @return   null
+	 */
+	public static function getLanguageConstantForJs()
+	{
+		JText::script('COM_TJFIELDS_FILE_DELETE_CONFIRM');
+		JText::script('COM_TJFIELDS_FILE_ERROR_MAX_SIZE');
 	}
 }

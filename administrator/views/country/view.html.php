@@ -59,13 +59,12 @@ class TjfieldsViewCountry extends JViewLegacy
 	 *
 	 * @since   1.6
 	 */
-	protected function addToolbar ()
+	protected function addToolbar()
 	{
 		JFactory::getApplication()->input->set('hidemainmenu', true);
 
 		$user = JFactory::getUser();
 		$isNew = ($this->item->id == 0);
-
 
 		// Let's get the extension name
 		$client = JFactory::getApplication()->input->get('client', '', 'STRING');
@@ -104,7 +103,9 @@ class TjfieldsViewCountry extends JViewLegacy
 			$checkedOut = false;
 		}
 
-		$canDo = TjfieldsHelper::getActions();
+		$extention = explode('.', $client);
+
+		$canDo = TjfieldsHelper::getActions($extention[0], 'country');
 
 		// If not checked out, can save the item.
 		if (! $checkedOut && ($canDo->get('core.edit') || ($canDo->get('core.create'))))

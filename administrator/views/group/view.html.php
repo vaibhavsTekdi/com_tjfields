@@ -58,7 +58,10 @@ class TjfieldsViewGroup extends JViewLegacy
 	 */
 	protected function addToolbar()
 	{
-		JFactory::getApplication()->input->set('hidemainmenu', true);
+		$input           = JFactory::getApplication()->input;
+		$client          = $input->get('client', '', 'STRING');
+
+		$input->set('hidemainmenu', true);
 
 		$user  = JFactory::getUser();
 		$isNew = ($this->item->id == 0);
@@ -72,9 +75,6 @@ class TjfieldsViewGroup extends JViewLegacy
 			$checkedOut = false;
 		}
 
-		$canDo           = TjfieldsHelper::getActions();
-		$input           = JFactory::getApplication()->input;
-		$client          = $input->get('client', '', 'STRING');
 		$component_title = JText::_('COM_TJFIELDS_TITLE_COMPONENT');
 
 		if (!empty($client))
@@ -86,6 +86,8 @@ class TjfieldsViewGroup extends JViewLegacy
 				$component_title = JText::_('COM_JTICKETING_COMPONENT');
 			}
 		}
+
+		$canDo           = TjfieldsHelper::getActions($client['0'], 'group');
 
 		if ($isNew)
 		{

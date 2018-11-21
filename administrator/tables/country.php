@@ -266,6 +266,13 @@ class TjfieldsTablecountry extends JTable
 	{
 		$k = $this->_tbl_key;
 
+// 		$client = explode('.', $this->client);
+
+// 		if (!empty($client[0]))
+// 		{
+// 			return $client[0] . '.country.' . (int) $this->$k;
+// 		}
+
 		return 'com_tjfields.country.' . (int) $this->$k;
 	}
 
@@ -291,8 +298,18 @@ class TjfieldsTablecountry extends JTable
 		// Default: if no asset-parent can be found we take the global asset
 		$assetParentId = $assetParent->getRootId();
 
-		// The item has the component as asset-parent
-		$assetParent->loadByName('com_tjfields');
+// 		$client = explode('.',$this->client);
+
+// 		if (!empty($client[0]))
+// 		{
+// 			// The item has the component as asset-parent
+// 			$assetParent->loadByName($client[0]);
+// 		}
+// 		else
+// 		{
+			// The item does not get the client
+			$assetParent->loadByName('com_tjfields');
+// 		}
 
 		// Return the found asset-parent-id
 		if ($assetParent->id)

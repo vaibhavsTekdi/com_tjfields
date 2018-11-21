@@ -10,6 +10,7 @@
 // No direct access.
 defined('_JEXEC') or die;
 
+JLoader::import('TjfieldsHelper', JPATH_ADMINISTRATOR . '/components/com_tjfields/helpers');
 jimport('joomla.application.component.controlleradmin');
 
 /**
@@ -139,7 +140,7 @@ class TjfieldsControllerFields extends JControllerAdmin
 			}
 		}
 
-		$this->setRedirect('index.php?option=com_tjfields&view=fields&client=' . $client . '&extension=' . $input->get('extension', '', 'STRING'), $msg);
+		$this->setRedirect('index.php?option=com_tjfields&view=fields&client=' . $client, $msg);
 	}
 
 	/**
@@ -195,6 +196,6 @@ class TjfieldsControllerFields extends JControllerAdmin
 		}
 
 		$this->setMessage(JText::plural($ntext, count($cid)));
-		$this->setRedirect('index.php?option=com_tjfields&view=fields&client=' . $client . '&extension=' . $input->get('extension', '', 'STRING'), false);
+		$this->setRedirect('index.php?option=com_tjfields&view=fields&client=' . $client, false);
 	}
 }

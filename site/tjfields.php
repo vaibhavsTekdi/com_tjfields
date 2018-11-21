@@ -9,6 +9,10 @@
 
 defined('_JEXEC') or die;
 
+JLoader::register('TjfieldsHelper', JPATH_SITE . '/components/com_tjfields/helpers/tjfields.php');
+JLoader::load('TjfieldsHelper');
+TjfieldsHelper::getLanguageConstantForJs();
+
 // Include dependancies
 jimport('joomla.application.component.controller');
 

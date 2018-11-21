@@ -8,14 +8,13 @@
 				<option value="1">JYES</option>
 				<option value="0">JNO</option>
 			</field>
-			<field name="hide" type="text" default="pagebreak,readmore"
+			<field name="hide" type="text" default=""
 				 label="COM_TJFIELDS_FORM_LBL_SHOW_BUTTONS_HIDE"
 				description="COM_TJFIELDS_FORM_DESC_SHOW_BUTTONS_HIDE" />
-
-			<field name="width" type="text" default="100%"
+			<field name="width" type="text" default=""
 				label="COM_TJFIELDS_FORM_LBL_EDITOR_WIDTH" description="COM_TJFIELDS_FORM_DESC_EDITOR_WIDTH"
 				size="5"/>
-			<field name="height" type="text" default="250px"
+			<field name="height" type="text" default=""
 				label="COM_TJFIELDS_FORM_LBL_EDITOR_HEIGHT" description="COM_TJFIELDS_FORM_DESC_EDITOR_HEIGHT"
 				size="5" />
 			<field name="rows" type="text" default=""

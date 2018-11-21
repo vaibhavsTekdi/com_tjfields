@@ -229,6 +229,12 @@ class TjfieldsTableCity extends JTable
 	protected function _getAssetName ()
 	{
 		$k = $this->_tbl_key;
+// 		$client = explode('.', $this->client);
+
+// 		if (!empty($client[0]))
+// 		{
+// 			return $client[0] . '.city.' . (int) $this->$k;
+// 		}
 
 		return 'com_tjfields.city.' . (int) $this->$k;
 	}
@@ -255,8 +261,18 @@ class TjfieldsTableCity extends JTable
 		// Default: if no asset-parent can be found we take the global asset
 		$assetParentId = $assetParent->getRootId();
 
-		// The item has the component as asset-parent
-		$assetParent->loadByName('com_tjfields');
+// 		$client = explode('.',$this->client);
+
+// 		if (!empty($client[0]))
+// 		{
+// 			// The item has the component as asset-parent
+// 			$assetParent->loadByName($client[0]);
+// 		}
+// 		else
+// 		{
+			// The item does not get the client
+			$assetParent->loadByName('com_tjfields');
+// 		}
 
 		// Return the found asset-parent-id
 		if ($assetParent->id)

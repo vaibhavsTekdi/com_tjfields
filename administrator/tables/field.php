@@ -1,19 +1,19 @@
 <?php
 /**
- * @version    SVN: <svn_id>
  * @package    Tjfields
+ *
  * @author     Techjoomla <extensions@techjoomla.com>
- * @copyright  Copyright (c) 2009-2016 TechJoomla. All rights reserved.
- * @license    GNU General Public License version 2 or later.
+ * @copyright  Copyright (C) 2009 - 2018 Techjoomla. All rights reserved.
+ * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 // No direct access
 defined('_JEXEC') or die;
 
 /**
- * field Table class
+ * Field Table class
  *
- * @since  1.0
+ * @since  1.1
  */
 class TjfieldsTablefield extends JTable
 {
@@ -25,63 +25,6 @@ class TjfieldsTablefield extends JTable
 	public function __construct(&$db)
 	{
 		parent::__construct('#__tjfields_fields', 'id', $db);
-	}
-
-	/**
-	 * Overloaded bind function to pre-process the params.
-	 *
-	 * @param   ARRAY   $array   Named array
-	 * @param   STRING  $ignore  ignore
-	 *
-	 * @return  boolean
-	 *
-	 * @since	1.5
-	 */
-	public function bind($array, $ignore = '')
-	{
-		$input = JFactory::getApplication()->input;
-		$task = $input->getString('task', '');
-
-		if (($task == 'save' || $task == 'apply') && (!JFactory::getUser()->authorise('core.edit.state', 'com_tjfields') && $array['state'] == 1))
-		{
-			$array['state'] = 0;
-		}
-
-		if (isset($array['params']) && is_array($array['params']))
-		{
-			$registry = new JRegistry;
-			$registry->loadArray($array['params']);
-			$array['params'] = (string) $registry;
-		}
-
-		if (isset($array['metadata']) && is_array($array['metadata']))
-		{
-			$registry = new JRegistry;
-			$registry->loadArray($array['metadata']);
-			$array['metadata'] = (string) $registry;
-		}
-
-		if (!JFactory::getUser()->authorise('core.admin', 'com_tjfields.field.' . $array['id']))
-		{
-			$actions = JFactory::getACL()->getActions('com_tjfields', 'field');
-			$default_actions = JFactory::getACL()->getAssetRules('com_tjfields.field.' . $array['id'])->getData();
-			$array_jaccess = array();
-
-			foreach ($actions as $action)
-			{
-				$array_jaccess[$action->name] = $default_actions[$action->name];
-			}
-
-			$array['rules'] = $this->JAccessRulestoArray($array_jaccess);
-		}
-
-		// Bind the rules for ACL where supported.
-		if (isset($array['rules']) && is_array($array['rules']))
-		{
-			$this->setRules($array['rules']);
-		}
-
-		return parent::bind($array, $ignore);
 	}
 
 	/**
@@ -237,25 +180,30 @@ class TjfieldsTablefield extends JTable
 	 * @param   MIXED  $table  JTable object
 	 * @param   MIXED  $id     id
 	 *
-	 * @return  void
+	 * @return  integer
+	 * 
+	 * @since  1.1
 	 */
 	protected function _getAssetParentId(JTable $table = null, $id = null)
 	{
-		// We will retrieve the parent-asset from the Asset-table
-		$assetParent = JTable::getInstance('Asset');
+		$assetId = null;
 
-		// Default: if no asset-parent can be found we take the global asset
-		$assetParentId = $assetParent->getRootId();
+			if ($this->group_id)
+			{
+				JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_tjfields/tables');
+				$groupTable = JTable::getInstance('group','TjfieldsTable');
+				$groupTable->load(array('id' => $this->group_id));
+				$assetId = $groupTable->asset_id;
+			}
 
-		// The item has the component as asset-parent
-		$assetParent->loadByName('com_tjfields');
-
-		// Return the found asset-parent-id
-		if ($assetParent->id)
+		// Return the asset id if present else return the root
+		if ($assetId)
 		{
-			$assetParentId = $assetParent->id;
+			return $assetId;
 		}
-
-		return $assetParentId;
+		else
+		{
+			return parent::_getAssetParentId($table, $id);
+		}
 	}
 }

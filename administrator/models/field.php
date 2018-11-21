@@ -3,13 +3,12 @@
  * @version    SVN: <svn_id>
  * @package    TJField
  * @author     Techjoomla <extensions@techjoomla.com>
- * @copyright  Copyright (c) 2014-2016 TechJoomla. All rights reserved.
+ * @copyright  Copyright (c) 2014-2018 TechJoomla. All rights reserved.
  * @license    GNU General Public License version 2 or later.
  */
 
 // No direct access.
 defined('_JEXEC') or die;
-
 jimport('joomla.application.component.modeladmin');
 
 /**
@@ -47,7 +46,7 @@ class TjfieldsModelField extends JModelAdmin
 	 * @param   Array    $data      An optional array of data for the form to interogate.
 	 * @param   Boolean  $loadData  True if the form is to load its own data (default case), false if not.
 	 *
-	 * @return  JForm  A JForm object on success, false on failure
+	 * @return  \JForm|boolean  A \JForm object on success, false on failure
 	 *
 	 * @since  1.6
 	 */
@@ -57,11 +56,7 @@ class TjfieldsModelField extends JModelAdmin
 		$app = JFactory::getApplication();
 
 		// Get the form.
-		$form = $this->loadForm('com_tjfields.field', 'field', array(
-			'control' => 'jform',
-			'load_data' => $loadData
-		)
-		);
+		$form = $this->loadForm('com_tjfields.field', 'field', array('control' => 'jform','load_data' => $loadData));
 
 		if (empty($form))
 		{
@@ -74,14 +69,13 @@ class TjfieldsModelField extends JModelAdmin
 	/**
 	 * Method to get the data that should be injected in the form.
 	 *
-	 * @return	mixed	The data for the form.
+	 * @return  \JForm|boolean  \JForm object on success, false on error.
 	 *
 	 * @since	1.6
 	 */
 	protected function loadFormData()
 	{
 		$app = JFactory::getApplication();
-
 		$input = $app->input;
 
 		// Check the session for previously entered form data.
@@ -116,7 +110,7 @@ class TjfieldsModelField extends JModelAdmin
 			// Do any procesing on fields here if needed
 			if ($input->get('id', '', 'INT'))
 			{
-				$db    = JFactory::getDbo();
+				$db = JFactory::getDbo();
 				$query = $db->getQuery(true);
 				$query->select('opt.id,opt.options,opt.value,opt.default_option FROM #__tjfields_options as opt');
 				$query->where('opt.field_id=' . $input->get('id', '', 'INT'));
@@ -153,7 +147,7 @@ class TjfieldsModelField extends JModelAdmin
 			{
 				$db = JFactory::getDbo();
 				$db->setQuery('SELECT MAX(ordering) FROM #__tjfields_fields');
-				$max             = $db->loadResult();
+				$max = $db->loadResult();
 				$table->ordering = $max + 1;
 			}
 		}
@@ -164,7 +158,7 @@ class TjfieldsModelField extends JModelAdmin
 	 *
 	 * @param   Array  $post  Post
 	 *
-	 * @return  flag
+	 * @return  mixed
 	 *
 	 * @since  1.6
 	 */
@@ -174,29 +168,40 @@ class TjfieldsModelField extends JModelAdmin
 		$data  = $post->get('jform', '', 'ARRAY');
 		$input = JFactory::getApplication()->input;
 
+		// Set field title as field label
+		if (!empty($data['label']))
+		{
+			$data['title'] = $data['label'];
+		}
+
 		if ($input->get('task') == 'save2copy')
 		{
 			unset($data['id']);
 			$data['label'] = trim($data['label']);
-			$name          = explode("(", $data['label']);
-			$name          = trim($name['0']);
-			$name          = str_replace("`", "", $name);
-			$db            = JFactory::getDBO();
-			$query         = 'SELECT a.*' . ' FROM #__tjfields_fields AS a' . ' WHERE a.label LIKE ' .
-			$db->quote($name . '%') . ' AND  a.client LIKE' .
-			$db->quote($data['client']) . ' AND  a.group_id =' .
-			$db->quote($data['group_id'] . '%');
+			$name = explode("(", $data['label']);
+			$name = trim($name['0']);
+			$name = str_replace("`", "", $name);
+			$db = JFactory::getDBO();
 
+			// Create a new query object.
+			$query = $db->getQuery(true);
+
+			$query->select($db->quoteName('a.*'));
+			$query->from($db->quoteName('#__tjfields_fields', 'a'));
+			$query->where($db->quoteName('a.label') . ' LIKE ' . $db->quote($name . '%'));
+			$query->where($db->quoteName('a.client') . ' LIKE ' . $db->quote($data['client'] . '%'));
+			$query->where($db->quoteName('a.group_id') . ' = ' . $db->quote($data['group_id']));
+
+			// Reset the query using our newly populated query object.
 			$db->setQuery($query);
-			$posts              = $db->loadAssocList();
-			$postsCount         = count($posts) + 1;
-			$data['label']      = $name . ' (' . $postsCount . ")";
+			$posts = $db->loadAssocList();
+			$postsCount = count($posts) + 1;
+			$data['label'] = $name . ' (' . $postsCount . ")";
 			$data['created_by'] = JFactory::getUser()->id;
 		}
 
 		// Add clint type in data as it is not present in jform
 		$data['client_type'] = $post->get('client_type', '', 'STRING');
-
 		$data['saveOption'] = 0;
 
 		if ($data['type'] == "radio" || $data['type'] == "single_select" || $data['type'] == "multi_select")
@@ -216,7 +221,9 @@ class TjfieldsModelField extends JModelAdmin
 		}
 
 		// Remove extra value which are not needed to save in the fields table
-		$TjfieldsHelper      = new TjfieldsHelper;
+		$TjfieldsHelper = new TjfieldsHelper;
+		$data['params']['accept'] = preg_replace('/\s+/', '', $data['params']['accept']);
+		$data['params'] = json_encode($data['params']);
 
 		if ($table->save($data) === true)
 		{
@@ -244,8 +251,7 @@ class TjfieldsModelField extends JModelAdmin
 		if ($id)
 		{
 			$options = $post->get('tjfields', '', 'ARRAY');
-
-			$jformData = $post->get('jform', '', 'ARRAY');
+			$jformData   = $post->get('jform', '', 'ARRAY');
 			$optionsData = json_decode($jformData['params']['options']);
 
 			if ($data['saveOption'] == 1)
@@ -293,11 +299,11 @@ class TjfieldsModelField extends JModelAdmin
 							$option['hiddenoption'] = 0;
 						}
 
-						$obj                 = new stdClass;
-						$obj->options        = $option['optionname'];
-						$obj->value          = $option['optionvalue'];
+						$obj = new stdClass;
+						$obj->options = $option['optionname'];
+						$obj->value = $option['optionvalue'];
 						$obj->default_option = $option['hiddenoption'];
-						$obj->field_id       = $id;
+						$obj->field_id = $id;
 
 						// If edit options
 						if (isset($option['hiddenoptionid']) && !empty($option['hiddenoptionid']))
@@ -336,12 +342,12 @@ class TjfieldsModelField extends JModelAdmin
 			$selectedCategories = !empty($data['category']) ? $data['category'] : array();
 
 			// 1 Fetch cat mapping for field from DB
-			$DBcat_maping   = $TjfieldsHelper->getFieldCategoryMapping($id);
+			$DBcat_maping = $TjfieldsHelper->getFieldCategoryMapping($id);
 
 			if ($selectedCategories)
 			{
 				$newlyAddedCats = array_diff($selectedCategories, $DBcat_maping);
-				$deletedCats    = array_diff($DBcat_maping, $selectedCategories);
+				$deletedCats = array_diff($DBcat_maping, $selectedCategories);
 
 				if (!empty($deletedCats))
 				{
@@ -354,8 +360,8 @@ class TjfieldsModelField extends JModelAdmin
 					// Add newly added  category mapping
 					foreach ($newlyAddedCats as $cat)
 					{
-						$obj              = new stdClass;
-						$obj->field_id    = $id;
+						$obj = new stdClass;
+						$obj->field_id = $id;
 						$obj->category_id = $cat;
 
 						if (!$this->_db->insertObject('#__tjfields_category_mapping', $obj, 'id'))
@@ -390,13 +396,13 @@ class TjfieldsModelField extends JModelAdmin
 	 * @param   Array    $jsarray  JSArray
 	 * @param   Integer  $fieldid  Field Id
 	 *
-	 * @return  flag
+	 * @return  boolean
 	 *
 	 * @since  1.6
 	 */
 	public function jsfunctionSave($jsarray, $fieldid)
 	{
-		$obj              = new stdClass;
+		$obj = new stdClass;
 		$obj->js_function = '';
 
 		foreach ($jsarray as $js)
@@ -425,7 +431,7 @@ class TjfieldsModelField extends JModelAdmin
 	 *
 	 * @param   Integer  $delete_ids  Id for delete record
 	 *
-	 * @return  flag
+	 * @return  boolean
 	 *
 	 * @since  1.6
 	 */
@@ -435,8 +441,7 @@ class TjfieldsModelField extends JModelAdmin
 
 		foreach ($delete_ids as $key => $value)
 		{
-			$query = 'DELETE FROM #__tjfields_options
-				WHERE id = "' . $value . '"';
+			$query = 'DELETE FROM #__tjfields_options WHERE id = "' . $value . '"';
 			$db->setQuery($query);
 
 			if (!$db->execute())
@@ -464,13 +469,11 @@ class TjfieldsModelField extends JModelAdmin
 
 		try
 		{
-			$query      = $db->getQuery(true);
+			$query = $db->getQuery(true);
 
 			if (!empty($field_id))
 			{
-				$conditions = array(
-					$db->quoteName('field_id') . ' IN (' . implode(",", $field_id) . ")"
-				);
+				$conditions = array($db->quoteName('field_id') . ' IN (' . implode(",", $field_id) . ")");
 
 				if (!empty($cats))
 				{
@@ -480,7 +483,6 @@ class TjfieldsModelField extends JModelAdmin
 				$query->delete($db->quoteName('#__tjfields_category_mapping'));
 				$query->where($conditions);
 				$db->setQuery($query);
-
 				$result = $db->execute();
 			}
 		}
@@ -520,7 +522,6 @@ class TjfieldsModelField extends JModelAdmin
 		if (isset($dataObject->type))
 		{
 			$path = JPATH_ADMINISTRATOR . '/components/com_tjfields/models/forms/types/forms/' . $dataObject->type . '.xml';
-
 			$form->loadFile($path, true, '/form/*');
 		}
 

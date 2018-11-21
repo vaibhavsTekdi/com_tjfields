@@ -2,7 +2,7 @@
 <form>
 	<fields name="params">
 		<fieldset name="params">
-			<field name="formsource" required="true" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_FORM_SOURCE" description="COM_TJFIELDS_FORM_DESC_FIELD_FORM_SOURCE" />
+			<field name="formsource" required="true" type="formsourcefield" label="COM_TJFIELDS_FORM_LBL_FIELD_FORM_SOURCE" description="COM_TJFIELDS_FORM_DESC_FIELD_FORM_SOURCE" />
 			<field name="layout" required="true" type="layoutfield" label="COM_TJFIELDS_FORM_LBL_FIELD_FORM_LAYOUT" description="COM_TJFIELDS_FORM_DESC_FIELD_FORM_LAYOUT" />
 			<field name="groupbysubform" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_FORM_GROUP_BY_SUB_FORM" description="COM_TJFIELDS_FORM_DESC_FIELD_FORM_GROUP_BY_SUB_FORM" />
 			<field name="buttons" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_FORM_BUTTONS" description="COM_TJFIELDS_FORM_DESC_FIELD_FORM_BUTTONS" />
@@ -12,6 +12,7 @@
 			</field>
 			<field name="min" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_FORM_MIN" description="COM_TJFIELDS_FORM_DESC_FIELD_FORM_MIN" default="0" />
 			<field name="max" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_FORM_MAX" description="COM_TJFIELDS_FORM_DESC_FIELD_FORM_MAX" default="1000" />
+			<field name="addfieldpath" type="hidden" default="/administrator/components/com_tjfields/models/fields"/>
 		</fieldset>
 	</fields>
 </form>

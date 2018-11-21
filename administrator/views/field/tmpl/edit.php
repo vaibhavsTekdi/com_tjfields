@@ -21,10 +21,10 @@ if(JVERSION >= '3.0')
 
 // Import CSS
 $document = JFactory::getDocument();
-
 $document->addStyleSheet('components/com_tjfields/assets/css/tjfields.css');
 $document->addScript(JUri::root() . 'administrator/components/com_tjfields/assets/js/field.js');
-$input = JFactory::getApplication()->input;
+$app = JFactory::getApplication();
+$input = $app->input;
 
 $fullClient = $input->get('client','','STRING');
 $fullClient =  explode('.',$fullClient);
@@ -38,6 +38,10 @@ $link = JRoute::_('index.php?option=com_tjfields&view=field&layout=edit&id=0&cli
 JLoader::import('TjfieldsHelper', JUri::root().'administrator/components/com_tjfields/helpers/tjfields.php');
 // Call helper function
 TjfieldsHelper::getLanguageConstant();
+
+// Get field data
+$dataArray = $app->getUserStateFromRequest('com_tjfields.edit.field.data');
+$fieldType = empty($this->item->id) ? $dataArray['type'] : $this->item->type;
 ?>
 <script type="text/javascript">
 	techjoomla.jQuery( document ).ready(function(){
@@ -283,7 +287,22 @@ TjfieldsHelper::getLanguageConstant();
 							<div class="control-group">
 								<div class="control-label"><?php echo $this->form->getLabel('validation_class'); ?></div>
 								<div class="controls">
-									<?php echo $this->form->getInput('validation_class'); ?>
+									<?php
+									switch ($fieldType) {
+										case "calendar":
+											$validationClassValue = "calendar-textfield-class";
+											break;
+										case "file":
+											$validationClassValue = "validate-filetype";
+											break;
+										case "number":
+											$validationClassValue = "validate-check_number_field";
+											break;
+										default:
+											$validationClassValue = "";
+									}
+									echo $this->form->getInput('validation_class', '', $validationClassValue);
+									?>
 									<div style="clear:both" ></div>
 									<span class="alert alert-info alert-help-inline span9 alert_no_margin">
 									<?php echo JText::_('COM_TJFIELDS_VALIDATION_CLASS_NOTE'); ?>

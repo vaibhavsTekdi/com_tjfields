@@ -66,6 +66,7 @@
 				<option value="subform">COM_TJFIELDS_SUBFORM</option>
 				<option value="ucmsubform">COM_TJFIELDS_UCMSUBFORM</option>
 				<option value="number">COM_TJFIELDS_NUMBER</option>
+				<option value="image">COM_TJFIELDS_IMAGE</option>
 		</field>
 
 		<field name="required"

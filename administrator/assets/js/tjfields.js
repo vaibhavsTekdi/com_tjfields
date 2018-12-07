@@ -146,6 +146,10 @@ jQuery(document).ready(function(){
 			return false;
     });
 
+    jQuery(document).delegate('.tjfields-input-image', 'change', function(event) {
+		jQuery(this).closest('div').find('.control-group').hide();
+    });
+
     /* Code for number field validation */
     document.formvalidator.setHandler('check_number_field', function(value, element) {
         let enteredValue = parseFloat(value);

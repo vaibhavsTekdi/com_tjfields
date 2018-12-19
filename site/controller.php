@@ -53,23 +53,14 @@ class TjfieldsController extends JControllerLegacy
 		$app = JFactory::getApplication();
 		$jinput = $app->input;
 
-		// Here, fpht means file encoded path
+		// Here, fpht means file encoded name
 		$encodedFileName = $jinput->get('fpht', '', 'STRING');
 		$decodedFileName = base64_decode($encodedFileName);
 
-		$client = $jinput->get('client', '', 'STRING');
-
-		$client = explode('.', $client);
-
 		$file_extension = strtolower(substr(strrchr($decodedFileName, "."), 1));
-
 		$mediaLocal = TJMediaStorageLocal::getInstance();
-
 		$ctype = $mediaLocal->getMime($file_extension);
-
 		$type = explode('/', $ctype);
-
-		$decodedPath = 'media/' . $client[0] . '/' . $client[1] . '/' . $type[0] . '/' . $decodedFileName;
 
 		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjfields/tables');
 		$tjFieldFieldValuesTable = JTable::getInstance('fieldsvalue', 'TjfieldsTable');
@@ -77,6 +68,23 @@ class TjfieldsController extends JControllerLegacy
 
 		// Subform File field Id for checking autherization for specific field under subform
 		$subformFileFieldId = $jinput->get('subFormFileFieldId', '', 'INT');
+
+		// Get storage path to download file & add extraURL params which are needed to download the media
+		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjfields/tables');
+		$data->tjFieldFieldTable = JTable::getInstance('field', 'TjfieldsTable');
+
+		if ($subformFileFieldId)
+		{
+			$data->tjFieldFieldTable->load(array('id' => $subformFileFieldId));
+		}
+		else
+		{
+			$data->tjFieldFieldTable->load(array('id' => $tjFieldFieldValuesTable->field_id));
+		}
+
+		$extraFieldParams = json_decode($data->tjFieldFieldTable->params);
+		$storagePath = $extraFieldParams->uploadpath;
+		$decodedPath = $storagePath . '/' . $decodedFileName;
 
 		if ($tjFieldFieldValuesTable->id)
 		{
@@ -94,10 +102,10 @@ class TjfieldsController extends JControllerLegacy
 			// Allow to view own data
 			if ($tjFieldFieldValuesTable->user_id != null && ($user->id == $tjFieldFieldValuesTable->user_id))
 			{
-				$canView = true;
+				$canDownload = true;
 			}
 
-			if ($canView)
+			if ($canView || $canDownload)
 			{
 				$down_status = $mediaLocal->downloadMedia($decodedPath, '', '', 0);
 

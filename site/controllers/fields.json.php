@@ -39,15 +39,14 @@ class TjfieldsControllerFields extends JControllerForm
 		$data = array();
 
 		// Here, fpht means file encoded path
-		$data['filePath'] = base64_decode($jinput->get('filePath', '', 'BASE64'));
+		$data['fileName'] = base64_decode($jinput->get('fileName', '', 'BASE64'));
+		$data['storagePath'] = base64_decode($jinput->get('storagePath', '', 'BASE64'));
 		$data['valueId'] = base64_decode($jinput->get('valueId', '', 'BASE64'));
 		$data['subformFileFieldId'] = $jinput->get('subformFileFieldId');
 		$data['isSubformField'] = $jinput->get('isSubformField');
 		$data['client'] = $jinput->get('client', '', 'STRING');
 
 		$client = explode('.', $data['client']);
-
-		$data['storagePath'] = '/media/' . $client[0] . '/' . $client[1];
 
 		require_once JPATH_SITE . '/components/com_tjfields/helpers/tjfields.php';
 

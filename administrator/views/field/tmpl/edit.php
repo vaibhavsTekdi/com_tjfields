@@ -38,6 +38,9 @@ $link = JRoute::_('index.php?option=com_tjfields&view=field&layout=edit&id=0&cli
 JLoader::import('TjfieldsHelper', JUri::root().'administrator/components/com_tjfields/helpers/tjfields.php');
 // Call helper function
 TjfieldsHelper::getLanguageConstant();
+
+// Default path for file upload field
+$fileUploadDefaultPath = JPATH_SITE."/media/";
 ?>
 <script type="text/javascript">
 	techjoomla.jQuery( document ).ready(function(){
@@ -59,6 +62,30 @@ TjfieldsHelper::getLanguageConstant();
 			techjoomla.jQuery('#jform_name').attr('readonly',true);
 		}
 
+		// show the default path for file upload & attach the folder name with respect to name entered for file field
+		if (field_type == 'file')
+		{
+			// folder name should contain only alpahnumeric characters & also remove the underscores and spaces
+			if(field_id==0)
+			{
+				techjoomla.jQuery('#jform_params_uploadpath').val('<?php echo $fileUploadDefaultPath.$client.'/';?>');
+				techjoomla.jQuery("#jform_name").keyup(function(){
+					techjoomla.jQuery('#jform_params_uploadpath').val('<?php echo $fileUploadDefaultPath.$client."_".$clientType."_";?>'+techjoomla.jQuery("#jform_name").val().replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, '')+"/");
+				});
+			}
+			else
+			{
+				if (techjoomla.jQuery('#jform_params_uploadpath').val()=="")
+				{
+					techjoomla.jQuery('#jform_params_uploadpath').val('<?php echo $fileUploadDefaultPath.$client."/".$clientType;?>'+"/");
+				}
+
+				// Show current file upload path & notice to admin user in case if he is going to custmozie the file upload path
+				techjoomla.jQuery('#currentUploadPath').html(techjoomla.jQuery('#jform_params_uploadpath').val());
+				var fileUploadhtml = techjoomla.jQuery('.fileUploadAlert').html();
+				techjoomla.jQuery('#jform_params_uploadpath').parent('div').append(fileUploadhtml);
+			}
+		}
 	});
 
 	Joomla.submitbutton = function(task)
@@ -207,7 +234,6 @@ TjfieldsHelper::getLanguageConstant();
 											echo $field->renderField();
 										}
 									}
-
 									echo $this->form->getInput('options');
 									?>
 							</div>
@@ -216,6 +242,13 @@ TjfieldsHelper::getLanguageConstant();
 								<div class="controls"><?php echo $this->form->getInput('fieldoption'); ?></div>
 							</div>
 						</fieldset>
+						<div class="fileUploadAlert hide">
+							<span class="alert alert-info alert-help-inline span9 alert_no_margin">
+								<?php
+									echo JText::_('COM_TJFIELDS_FORM_LBL_FILE_UPLOAD_PATH_NOTICE');
+								?>
+							</span>
+						</div>
 						<input type="hidden" name="jform[client]" value="<?php echo $input->get('client','','STRING'); ?>" />
 					</div>
 					<div class="span5 form-horizontal">
@@ -295,16 +328,12 @@ TjfieldsHelper::getLanguageConstant();
 				</div>
 				<!--</fieldset>-->
 			</div>
-
-
 			<?php echo JHtml::_('bootstrap.endTab'); ?>
-
 			<?php if (JFactory::getUser()->authorise('core.admin','com_tjfields')) : ?>
 				<?php echo JHtml::_('bootstrap.addTab', 'myTab', 'permissions', JText::_('JGLOBAL_ACTION_PERMISSIONS_LABEL', true)); ?>
 				<?php echo $this->form->getInput('rules'); ?>
 				<?php echo JHtml::_('bootstrap.endTab'); ?>
 			<?php endif; ?>
-
 		<?php echo JHtml::_('bootstrap.endTabSet'); ?>
 			<input type="hidden" name="client_type" value="<?php echo $clientType;?>" />
 			<input type="hidden" name="task" value="" />

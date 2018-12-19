@@ -2,8 +2,8 @@
 <form>
 	<fields name="params" label="COM_TJFIELDS_FIELD_BASIC_LABEL">
 		<fieldset name="params">
-			<field name="size" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_SIZE" description="COM_TJFIELDS_FORM_DESC_FIELD_SIZE" required="true" default="32"/>
-			<field name="default" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_DEFAULT" description="COM_TJFIELDS_FORM_DESC_FIELD_DEFAULT"/>
+			<field name="uploadpath" type="textarea" label="COM_TJFIELDS_FORM_LBL_FILE_UPLOAD_PATH" description="COM_TJFIELDS_FORM_DESC_FILE_UPLOAD_PATH" required="true" rows="5"/>
+			<field name="size" type="text" label="COM_TJFIELDS_FORM_LBL_FILE_FIELD_SIZE" description="COM_TJFIELDS_FORM_DESC_FILE_FIELD_SIZE" required="true" default="32"/>
 			<field name="accept" type="text" label="COM_TJFIELDS_FORM_LBL_FIELD_ACCEPT" description="COM_TJFIELDS_FORM_DESC_FIELD_ACCEPT"/>
 			<field name="addfieldpath" type="hidden" default="/administrator/components/com_tjfields/models/fields"/>
 		</fieldset>

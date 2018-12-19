@@ -150,13 +150,6 @@ trait TjfieldsFilterField
 					$canEdit = $user->authorise('core.field.editfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->id);
 				}
 
-				$canView = 0;
-
-				if ($user->authorise('core.field.viewfieldvalue', 'com_tjfields.group.' . $tjFieldFieldTable->group_id))
-				{
-					$canView = $user->authorise('core.field.viewfieldvalue', 'com_tjfields.field.' . $tjFieldFieldTable->id);
-				}
-
 				$canEditOwn = 0;
 
 				if ($user->authorise('core.field.editownfieldvalue', 'com_tjfields.group.' . $tjFieldFieldTable->group_id))
@@ -208,6 +201,7 @@ trait TjfieldsFilterField
 				else
 				{
 					$userId = 0;
+					$canView = 0;
 
 					if (!empty($extraData[$tjFieldFieldTable->id]))
 					{

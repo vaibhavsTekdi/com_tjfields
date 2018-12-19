@@ -58,9 +58,7 @@ class TjfieldsController extends JControllerLegacy
 		$encodedFileName = $jinput->get('fpht', '', 'STRING');
 		$decodedFileName = base64_decode($encodedFileName);
 
-		$file_extension = strtolower(substr(strrchr($decodedFileName, "."), 1));
 		$mediaLocal = TJMediaStorageLocal::getInstance();
-		$ctype = $mediaLocal->getMime($file_extension);
 
 		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjfields/tables');
 		$tjFieldFieldValuesTable = JTable::getInstance('fieldsvalue', 'TjfieldsTable');

@@ -542,7 +542,6 @@ class TjfieldsHelper
 						$acceptSize = $fieldItems->params['size'];
 
 						// Upload path
-						$mimeType = explode('/', $v['type']);
 						$mediaPath = $fieldItems->params['uploadpath'];
 
 						// Configs for Media library

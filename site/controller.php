@@ -52,6 +52,7 @@ class TjfieldsController extends JControllerLegacy
 	{
 		$app = JFactory::getApplication();
 		$jinput = $app->input;
+		$data = new stdClass;
 
 		// Here, fpht means file encoded name
 		$encodedFileName = $jinput->get('fpht', '', 'STRING');
@@ -60,7 +61,6 @@ class TjfieldsController extends JControllerLegacy
 		$file_extension = strtolower(substr(strrchr($decodedFileName, "."), 1));
 		$mediaLocal = TJMediaStorageLocal::getInstance();
 		$ctype = $mediaLocal->getMime($file_extension);
-		$type = explode('/', $ctype);
 
 		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjfields/tables');
 		$tjFieldFieldValuesTable = JTable::getInstance('fieldsvalue', 'TjfieldsTable');
@@ -99,6 +99,7 @@ class TjfieldsController extends JControllerLegacy
 				$canView = $user->authorise('core.field.viewfieldvalue', 'com_tjfields.field.' . $tjFieldFieldValuesTable->field_id);
 			}
 
+			$canDownload = 0;
 			// Allow to view own data
 			if ($tjFieldFieldValuesTable->user_id != null && ($user->id == $tjFieldFieldValuesTable->user_id))
 			{

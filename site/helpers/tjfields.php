@@ -542,9 +542,7 @@ class TjfieldsHelper
 						$acceptSize = $fieldItems->params['size'];
 
 						// Upload path
-						$client = explode('.', $postFieldData['client']);
 						$mimeType = explode('/', $v['type']);
-						$type = $mimeType[0];
 						$mediaPath = $fieldItems->params['uploadpath'];
 
 						// Configs for Media library
@@ -1231,7 +1229,7 @@ class TjfieldsHelper
 	 * Method to get media URL.
 	 *
 	 * @param   STRING  $fileName            media file path
-	 * @param   STRING  $extraUrlPramsArray  extra url params
+	 * @param   ARRAY  $extraUrlPramsArray  extra url params
 	 *
 	 * @return  string|boolean  True on success.
 	 *
@@ -1241,6 +1239,7 @@ class TjfieldsHelper
 	{
 		if (!empty($fileName))
 		{
+			$extraUrlParams = '';
 			// If url extra param is present
 			if (!empty($extraUrlPramsArray))
 			{

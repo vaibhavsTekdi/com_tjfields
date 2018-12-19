@@ -46,8 +46,6 @@ class TjfieldsControllerFields extends FormController
 		$data['isSubformField'] = $jinput->get('isSubformField');
 		$data['client'] = $jinput->get('client', '', 'STRING');
 
-		$client = explode('.', $data['client']);
-
 		require_once JPATH_ADMINISTRATOR . '/components/com_tjfields/helpers/tjfields.php';
 
 		$tjFieldsHelper = new TjfieldsHelper;

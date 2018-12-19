@@ -268,6 +268,7 @@ class JFormFieldFile extends JFormField
 	protected function canDownloadFile($data,$layoutData)
 	{
 		$canView = 0;
+		$canDownload = 0;
 		$user = JFactory::getUser();
 
 		if ($data->user->authorise('core.field.viewfieldvalue', 'com_tjfields.group.' . $data->tjFieldFieldTable->group_id))

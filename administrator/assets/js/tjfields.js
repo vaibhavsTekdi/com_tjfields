@@ -4,12 +4,12 @@ jQuery(document).ready(function(){
 	{
 		if (task == 'fields.delete')
 		{
-			if (confirm(Joomla.JText._('COM_TJFIELD_CONFIRM_DELETE_FIELD')) == false)
+			if (confirm(Joomla.JText._('COM_TJFIELD_CONFIRM_DELETE_FIELD')) === false)
 			{
 				return false;
 			}
 
-			if (confirm(Joomla.JText._('COM_TJFIELD_CONFIRM_DELETE_REFRENCE_DATA')) == false)
+			if (confirm(Joomla.JText._('COM_TJFIELD_CONFIRM_DELETE_REFRENCE_DATA')) === false)
 			{
 				return false;
 			}
@@ -143,11 +143,11 @@ jQuery(document).ready(function(){
        jQuery(this).parent().siblings(':eq(0)').show();
     });
 
-    jQuery(document).delegate('.calendar-textfield-class', 'keydown contextmenu', function(event) {
+    jQuery(document).delegate('.calendar-textfield-class', 'keydown contextmenu', function() {
 			return false;
     });
 
-    jQuery(document).delegate('.tjfields-input-image', 'change', function(event) {
+    jQuery(document).delegate('.tjfields-input-image', 'change', function() {
 		jQuery(this).closest('div').find('.control-group').hide();
     });
 

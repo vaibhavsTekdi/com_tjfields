@@ -21,18 +21,15 @@ JLoader::import("/techjoomla/media/storage/local", JPATH_LIBRARIES);
 class TjfieldsHelper
 {
 	/**
-	 * My function
+	 * htaccess file content (used to restrict direct access of media file)
 	 *
-	 * @return  string
-	 *
-	 * @since   1.6
+	 * @var    mixed
+	 * @since  1.4
 	 */
-	public static function myFunction()
-	{
-		$result = 'Something';
-
-		return $result;
-	}
+	protected $htaccessFileContent = '<FilesMatch ".*">
+    Order Allow,Deny
+    Deny from All
+</FilesMatch>';
 
 	/**
 	 * Function used for renderring. fetching value
@@ -292,11 +289,7 @@ class TjfieldsHelper
 						{
 							jimport('joomla.filesystem.folder');
 							JFolder::create(dirname($file));
-							$message = '<FilesMatch ".*">
-    Order Allow,Deny
-    Deny from All
-</FilesMatch>';
-							JFile::write($file, $message);
+							JFile::write($file, $this->htaccessFileContent);
 						}
 
 						if ($returnData[0]['source'])
@@ -580,11 +573,7 @@ class TjfieldsHelper
 						{
 							jimport('joomla.filesystem.folder');
 							JFolder::create(dirname($file));
-							$message = '<FilesMatch ".*">
-    Order Allow,Deny
-    Deny from All
-</FilesMatch>';
-							JFile::write($file, $message);
+							JFile::write($file, $this->htaccessFileContent);
 						}
 
 						unset($subformField[$key]['filesData']);

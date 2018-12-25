@@ -35,16 +35,37 @@ class TjfieldsControllerFields extends JControllerForm
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 		$app = JFactory::getApplication();
 		$jinput = $app->input;
+		$fieldData = new stdClass;
 
 		$data = array();
 
 		// Here, fpht means file encoded path
 		$data['fileName'] = base64_decode($jinput->get('fileName', '', 'BASE64'));
-		$data['storagePath'] = base64_decode($jinput->get('storagePath', '', 'BASE64'));
 		$data['valueId'] = base64_decode($jinput->get('valueId', '', 'BASE64'));
 		$data['subformFileFieldId'] = $jinput->get('subformFileFieldId');
 		$data['isSubformField'] = $jinput->get('isSubformField');
-		$data['client'] = $jinput->get('client', '', 'STRING');
+
+		// Get storage path to delete the file
+		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjfields/tables');
+		$tjFieldFieldValuesTable = JTable::getInstance('fieldsvalue', 'TjfieldsTable');
+		$tjFieldFieldValuesTable->load(array('id' => $data['valueId']));
+
+		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjfields/tables');
+		$fieldData->tjFieldFieldTable = JTable::getInstance('field', 'TjfieldsTable');
+
+		if ($data['isSubformField'])
+		{
+			$fieldData->tjFieldFieldTable->load(array('id' => $data['subformFileFieldId']));
+		}
+		else
+		{
+			$fieldData->tjFieldFieldTable->load(array('id' => $tjFieldFieldValuesTable->field_id));
+		}
+
+		$tjFieldFieldTableParamData = json_decode($fieldData->tjFieldFieldTable->params);
+
+		$data['storagePath'] = $tjFieldFieldTableParamData->uploadpath;
+		$data['client'] = $fieldData->tjFieldFieldTable->client;
 
 		require_once JPATH_SITE . '/components/com_tjfields/helpers/tjfields.php';
 

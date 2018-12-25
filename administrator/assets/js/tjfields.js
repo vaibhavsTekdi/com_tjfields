@@ -20,7 +20,7 @@ jQuery(document).ready(function(){
 	}
 
 	/* This function deletes tjucm file via ajax */
-	deleteFile = function(fileName, storagePath, fieldId, valueId, subformFileFieldId, isSubformField, client)
+	deleteFile = function(fileName, fieldId, valueId, subformFileFieldId, isSubformField)
 	{
 		if (!fileName)
 		{
@@ -37,11 +37,9 @@ jQuery(document).ready(function(){
 			type: 'POST',
 			data:{
 							fileName: fileName,
-							storagePath: storagePath,
 							valueId: valueId,
 							subformFileFieldId:subformFileFieldId,
-							isSubformField:isSubformField,
-							client:client
+							isSubformField:isSubformField
 			},
 			cache: false,
 			dataType: "json",

@@ -334,9 +334,9 @@ class JFormFieldFile extends JFormField
 		if (!empty($data->mediaLink) && ($canEdit || $canEditOwn) && $layoutData['required'] == '' && $data->fields_value_table->id)
 		{
 			$deleteFiledata .= ' <span class="btn btn-remove"> <a id="remove_' . $layoutData["id"] . '" href="javascript:void(0);"
-				onclick="deleteFile(\'' . base64_encode($layoutData["value"]) . '\',\'' . base64_encode($layoutData["field"]->getAttribute("uploadpath")) . '\',
+				onclick="deleteFile(\'' . base64_encode($layoutData["value"]) . '\',
 				 \'' . $layoutData["id"] . '\', \'' . base64_encode($data->fields_value_table->id) . '\',
-				  \'' . $data->subFormFileFieldId . '\',\'' . $data->isSubformField . '\',\'' . $data->clientForm . '\');">'
+				  \'' . $data->subFormFileFieldId . '\',\'' . $data->isSubformField . '\');">'
 				. JText::_("COM_TJFIELDS_FILE_DELETE") . '</a> </span>';
 		}
 

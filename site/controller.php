@@ -53,38 +53,25 @@ class TjfieldsController extends JControllerLegacy
 		$app = JFactory::getApplication();
 		$jinput = $app->input;
 		$data = new stdClass;
+		$mediaLocal = TJMediaStorageLocal::getInstance();
 
 		// Here, fpht means file encoded name
 		$encodedFileName = $jinput->get('fpht', '', 'STRING');
 		$decodedFileName = base64_decode($encodedFileName);
 
-		$mediaLocal = TJMediaStorageLocal::getInstance();
-
-		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjfields/tables');
-		$tjFieldFieldValuesTable = JTable::getInstance('fieldsvalue', 'TjfieldsTable');
-		$tjFieldFieldValuesTable->load(array('id' => $jinput->get('id', '', 'INT')));
-
 		// Subform File field Id for checking autherization for specific field under subform
 		$subformFileFieldId = $jinput->get('subFormFileFieldId', '', 'INT');
 
-		// Get storage path to download file & add extraURL params which are needed to download the media
-		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjfields/tables');
-		$data->tjFieldFieldTable = JTable::getInstance('field', 'TjfieldsTable');
-
-		if ($subformFileFieldId)
-		{
-			$data->tjFieldFieldTable->load(array('id' => $subformFileFieldId));
-		}
-		else
-		{
-			$data->tjFieldFieldTable->load(array('id' => $tjFieldFieldValuesTable->field_id));
-		}
+		// Get media storage path
+		JLoader::import('components.com_tjfields.models.fields', JPATH_SITE);
+		$fieldsModel     = JModelLegacy::getInstance('Fields', 'TjfieldsModel', array('ignore_request' => true));
+		$data = $fieldsModel->getMediaStoragePath($jinput->get('id', '', 'INT'), $subformFileFieldId);
 
 		$extraFieldParams = json_decode($data->tjFieldFieldTable->params);
 		$storagePath = $extraFieldParams->uploadpath;
 		$decodedPath = $storagePath . '/' . $decodedFileName;
 
-		if ($tjFieldFieldValuesTable->id)
+		if ($data->tjFieldFieldTable->fieldValueId)
 		{
 			$user = JFactory::getUser();
 
@@ -94,12 +81,13 @@ class TjfieldsController extends JControllerLegacy
 			}
 			else
 			{
-				$canView = $user->authorise('core.field.viewfieldvalue', 'com_tjfields.field.' . $tjFieldFieldValuesTable->field_id);
+				$canView = $user->authorise('core.field.viewfieldvalue', 'com_tjfields.field.' . $data->tjFieldFieldTable->field_id);
 			}
 
 			$canDownload = 0;
+
 			// Allow to view own data
-			if ($tjFieldFieldValuesTable->user_id != null && ($user->id == $tjFieldFieldValuesTable->user_id))
+			if ($data->tjFieldFieldTable->user_id != null && ($user->id == $data->tjFieldFieldTable->user_id))
 			{
 				$canDownload = true;
 			}

@@ -38,32 +38,17 @@ class TjfieldsControllerFields extends JControllerForm
 		$fieldData = new stdClass;
 
 		$data = array();
-
-		// Here, fpht means file encoded path
 		$data['fileName'] = base64_decode($jinput->get('fileName', '', 'BASE64'));
 		$data['valueId'] = base64_decode($jinput->get('valueId', '', 'BASE64'));
 		$data['subformFileFieldId'] = $jinput->get('subformFileFieldId');
 		$data['isSubformField'] = $jinput->get('isSubformField');
 
-		// Get storage path to delete the file
-		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjfields/tables');
-		$tjFieldFieldValuesTable = JTable::getInstance('fieldsvalue', 'TjfieldsTable');
-		$tjFieldFieldValuesTable->load(array('id' => $data['valueId']));
-
-		JTable::addIncludePath(JPATH_ROOT . '/administrator/components/com_tjfields/tables');
-		$fieldData->tjFieldFieldTable = JTable::getInstance('field', 'TjfieldsTable');
-
-		if ($data['isSubformField'])
-		{
-			$fieldData->tjFieldFieldTable->load(array('id' => $data['subformFileFieldId']));
-		}
-		else
-		{
-			$fieldData->tjFieldFieldTable->load(array('id' => $tjFieldFieldValuesTable->field_id));
-		}
+		// Get media storage path
+		JLoader::import('components.com_tjfields.models.fields', JPATH_SITE);
+		$fieldsModel     = JModelLegacy::getInstance('Fields', 'TjfieldsModel', array('ignore_request' => true));
+		$fieldData = $fieldsModel->getMediaStoragePath($data['valueId'], $data['subformFileFieldId']);
 
 		$tjFieldFieldTableParamData = json_decode($fieldData->tjFieldFieldTable->params);
-
 		$data['storagePath'] = $tjFieldFieldTableParamData->uploadpath;
 		$data['client'] = $fieldData->tjFieldFieldTable->client;
 

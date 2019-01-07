@@ -19,13 +19,7 @@ if(JVERSION >= '3.0')
 	JHtml::_('formbehavior.chosen', 'select');
 }
 
-// Import CSS
-$document = JFactory::getDocument();
-
-$document->addStyleSheet('components/com_tjfields/assets/css/tjfields.css');
-$document->addScript(JUri::root() . 'administrator/components/com_tjfields/assets/js/field.js');
 $input = JFactory::getApplication()->input;
-
 $fullClient = $input->get('client','','STRING');
 $fullClient =  explode('.',$fullClient);
 
@@ -41,137 +35,19 @@ TjfieldsHelper::getLanguageConstant();
 
 // Default path for file upload field
 $fileUploadDefaultPath = JPATH_SITE."/media/";
+
+// Import CSS
+$document = JFactory::getDocument();
+$document->addStyleSheet('components/com_tjfields/assets/css/tjfields.css');
 ?>
 <script type="text/javascript">
-	techjoomla.jQuery( document ).ready(function(){
-		var field_type = techjoomla.jQuery('#jform_type').val();
-
-		techjoomla.jQuery('#jform_filterable').parent().parent().hide();
-
-		if (field_type == 'radio' || field_type == 'single_select' || field_type == 'multi_select' || field_type == 'list')
-		{
-			techjoomla.jQuery('#jform_filterable').parent().parent().show();
-			techjoomla.jQuery('#option_div').show();
-		}
-
-		//if edit ..make name field readonly
-		var field_id=techjoomla.jQuery('#jform_id').val();
-
-		if(field_id!=0)
-		{
-			techjoomla.jQuery('#jform_name').attr('readonly',true);
-		}
-
-		// show the default path for file upload & attach the folder name with respect to name entered for file field
-		if (field_type == 'file')
-		{
-			// folder name should contain only alpahnumeric characters & also remove the underscores and spaces
-			if(field_id==0)
-			{
-				techjoomla.jQuery('#jform_params_uploadpath').val('<?php echo $fileUploadDefaultPath.$client.'/';?>');
-				techjoomla.jQuery("#jform_name").keyup(function(){
-					techjoomla.jQuery('#jform_params_uploadpath').val('<?php echo $fileUploadDefaultPath.$client."_".$clientType."_";?>'+techjoomla.jQuery("#jform_name").val().replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, '')+"/");
-				});
-			}
-			else
-			{
-				if (techjoomla.jQuery('#jform_params_uploadpath').val()=="")
-				{
-					techjoomla.jQuery('#jform_params_uploadpath').val('<?php echo $fileUploadDefaultPath.$client."/".$clientType;?>'+"/");
-				}
-
-				// Show current file upload path & notice to admin user in case if he is going to custmozie the file upload path
-				techjoomla.jQuery('#currentUploadPath').html(techjoomla.jQuery('#jform_params_uploadpath').val());
-				var fileUploadhtml = techjoomla.jQuery('.fileUploadAlert').html();
-				techjoomla.jQuery('#jform_params_uploadpath').parent('div').append(fileUploadhtml);
-			}
-		}
-	});
-
-	Joomla.submitbutton = function(task)
-	{
-		// Remove disable attribute from category select so that the selected category can be saved
-		if (task == 'field.apply' || task == 'field.save' || task == 'field.newsave' || task == 'field.save2copy')
-		{
-			techjoomla.jQuery('#jformcategory').attr("disabled", false);
-		}
-
-		whitespaces_not_llowed = Joomla.JText._('COM_TJFIELDS_LABEL_WHITESPACES_NOT_ALLOWED');
-
-		if (task == 'field.cancel')
-		{
-			Joomla.submitform(task, document.getElementById('field-form'));
-		}
-		else
-		{
-			if (task != 'field.cancel' && document.formvalidator.isValid(document.id('field-form')))
-			{
-				var isrequired = techjoomla.jQuery('input[name="jform[required]"]:checked', '#field-form').val();
-				var isreadonly = techjoomla.jQuery('input[name="jform[readonly]"]:checked', '#field-form').val();
-				var field_type = techjoomla.jQuery('#jform_type').val();
-
-				switch(field_type)
-				{
-					case 'multi_select':
-					case 'single_select':
-					case 'radio':
-						if(isrequired == 1)
-						{
-							if(techjoomla.jQuery('.tjfields_optionname').val().trim() == '' && techjoomla.jQuery('.tjfields_optionvalue').val().trim() == '')
-							{
-								techjoomla.jQuery('.tjfields_optionname').val('');
-								techjoomla.jQuery('.tjfields_optionname').attr('required', 'required');
-								techjoomla.jQuery('.tjfields_optionvalue').attr('required', 'required');
-								techjoomla.jQuery('.tjfields_optionname').focus();
-								return false;
-							}
-						}
-						break;
-					case 'text':
-					case 'textarea':
-					case 'calendar':
-					case 'email_field':
-						break;
-				}
-
-				if (techjoomla.jQuery('#jform_label').val().trim() == '')
-				{
-					alert(whitespaces_not_llowed);
-					techjoomla.jQuery('#jform_label').val('');
-					techjoomla.jQuery('#jform_label').focus();
-					return false;
-				}
-
-				if (techjoomla.jQuery('#jform_name').val().trim() == '')
-				{
-					alert(whitespaces_not_llowed);
-					techjoomla.jQuery('#jform_name').val('');
-					techjoomla.jQuery('#jform_name').focus();
-					return false;
-				}
-
-				Joomla.submitform(task, document.getElementById('field-form'));
-			}
-			else
-			{
-				alert('<?php echo $this->escape(JText::_('COM_TJFIELDS_INVALID_FORM')); ?>');
-			}
-		}
-	}
-
-	function show_option_div(field_value)
-	{
-		techjoomla.jQuery('input[name=task]').val('field.saveFormState');
-		document.forms.adminForm.action='<?php echo $link;?>';
-		document.forms.adminForm.submit();
-	}
-
-	function showOptions()
-	{
-		techjoomla.jQuery('#option_div').show();
-		techjoomla.jQuery('.textarea_inputs').children().removeAttr('required');
-	}
+	var fileUploadDefaultPath = '<?php echo $fileUploadDefaultPath;?>';
+	var client = '<?php echo $client;?>';
+	var clientType = '<?php echo $clientType;?>';
+	var invalidFormErrorMsg = '<?php echo $this->escape(JText::_('COM_TJFIELDS_INVALID_FORM')); ?>';
+	var editFormlink = '<?php echo $link;?>';
 </script>
+<?php $document->addScript(JUri::root() . 'administrator/components/com_tjfields/assets/js/field.js'); ?>
 <div class="techjoomla-bootstrap">
 	<form action="<?php echo JRoute::_('index.php?option=com_tjfields&layout=edit&id='.(int) $this->item->id).'&client='.$input->get('client','','STRING'); ?>" method="post" enctype="multipart/form-data" name="adminForm" id="field-form" class="form-validate">
 		<div class="techjoomla-bootstrap">

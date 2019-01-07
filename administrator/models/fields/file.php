@@ -245,12 +245,9 @@ class JFormFieldFile extends JFormField
 		if ($data->isSubformField)
 		{
 			$extraParamArray['subFormFileFieldId'] = $data->subFormFileFieldId;
-			$data->mediaLink = $tjFieldHelper->getMediaUrl($layoutData["value"], $extraParamArray);
 		}
-		else
-		{
-			$data->mediaLink = $tjFieldHelper->getMediaUrl($layoutData["value"], $extraParamArray);
-		}
+
+		$data->mediaLink = $tjFieldHelper->getMediaUrl($layoutData["value"], $extraParamArray);
 
 		return $data;
 	}

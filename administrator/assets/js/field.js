@@ -132,7 +132,6 @@ Joomla.submitbutton = function(task)
 		if (task != 'field.cancel' && document.formvalidator.isValid(document.id('field-form')))
 		{
 			var isrequired = techjoomla.jQuery('input[name="jform[required]"]:checked', '#field-form').val();
-			var isreadonly = techjoomla.jQuery('input[name="jform[readonly]"]:checked', '#field-form').val();
 			var field_type = techjoomla.jQuery('#jform_type').val();
 
 			switch(field_type)
@@ -140,7 +139,7 @@ Joomla.submitbutton = function(task)
 				case 'multi_select':
 				case 'single_select':
 				case 'radio':
-					if(isrequired == 1)
+					if(isrequired === 1)
 					{
 						if(techjoomla.jQuery('.tjfields_optionname').val().trim() == '' && techjoomla.jQuery('.tjfields_optionvalue').val().trim() == '')
 						{
@@ -184,7 +183,7 @@ Joomla.submitbutton = function(task)
 	}
 }
 
-function show_option_div(field_value)
+function show_option_div()
 {
 	techjoomla.jQuery('input[name=task]').val('field.saveFormState');
 	document.forms.adminForm.action= editFormlink;

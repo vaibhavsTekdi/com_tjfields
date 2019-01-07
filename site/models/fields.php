@@ -24,7 +24,7 @@ class TjfieldsModelFields extends JModelList
 	 *
 	 * @param   integer  $subformFileFieldId  subform file field id
 	 *
-	 * @return  array
+	 * @return  object
 	 */
 	public function getMediaStoragePath($fieldValueId, $subformFileFieldId='0')
 	{

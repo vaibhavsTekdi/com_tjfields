@@ -11,7 +11,6 @@
 defined('_JEXEC') or die;
 
 jimport('joomla.application.component.controller');
-JLoader::import("/techjoomla/media/storage/local", JPATH_LIBRARIES);
 
 /**
  * TJField Controller class
@@ -50,9 +49,9 @@ class TjfieldsController extends JControllerLegacy
 	 */
 	public function getMedia()
 	{
+		JLoader::import("/techjoomla/media/storage/local", JPATH_LIBRARIES);
 		$app = JFactory::getApplication();
 		$jinput = $app->input;
-		$data = new stdClass;
 		$mediaLocal = TJMediaStorageLocal::getInstance();
 
 		// Here, fpht means file encoded name

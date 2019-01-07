@@ -35,7 +35,6 @@ class TjfieldsControllerFields extends JControllerForm
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 		$app = JFactory::getApplication();
 		$jinput = $app->input;
-		$fieldData = new stdClass;
 
 		$data = array();
 		$data['fileName'] = base64_decode($jinput->get('fileName', '', 'BASE64'));

@@ -44,6 +44,6 @@ else
 	$mediaLink = $TjfieldsHelper->getMediaUrl($fieldValue, $extraParamArray);
 }
 ?>
-<a href="<?php if(!empty($mediaLink)) echo $mediaLink else echo 'javascript:void(0);';?>">
+<a href="<?php if(!empty($mediaLink)) { echo $mediaLink; } else { echo 'javascript:void(0);'; }?>">
 	<?php echo JText::_("COM_TJFIELDS_FILE_DOWNLOAD");?>
 </a>

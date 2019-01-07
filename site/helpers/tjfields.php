@@ -31,6 +31,8 @@ class TjfieldsHelper
     Deny from All
 </FilesMatch>';
 
+	protected $htaccess = '.htaccess';
+
 	/**
 	 * Function used for renderring. fetching value
 	 *
@@ -280,16 +282,16 @@ class TjfieldsHelper
 
 						$returnData = $media->upload(array($singleFile));
 
-						$file = $mediaPath . '/.htaccess';
+						$htaccessFile = $mediaPath . '/' . $this->htaccess;
 
 						// If the destination directory doesn't exist we need to create it
 						jimport('joomla.filesystem.file');
 
-						if (!JFile::exists($file))
+						if (!JFile::exists($htaccessFile))
 						{
 							jimport('joomla.filesystem.folder');
-							JFolder::create(dirname($file));
-							JFile::write($file, $this->htaccessFileContent);
+							JFolder::create(dirname($htaccessFile));
+							JFile::write($htaccessFile, $this->htaccessFileContent);
 						}
 
 						if ($returnData[0]['source'])
@@ -564,16 +566,16 @@ class TjfieldsHelper
 						$returnData = $media->upload(array($v));
 						$subformField[$key][$k] = $returnData[0]['source'];
 
-						$file = $mediaPath . '/.htaccess';
+						$htaccessFile = $mediaPath . '/' . $this->htaccess;
 
 						// If the destination directory doesn't exist we need to create it
 						jimport('joomla.filesystem.file');
 
-						if (!JFile::exists($file))
+						if (!JFile::exists($htaccessFile))
 						{
 							jimport('joomla.filesystem.folder');
-							JFolder::create(dirname($file));
-							JFile::write($file, $this->htaccessFileContent);
+							JFolder::create(dirname($htaccessFile));
+							JFile::write($htaccessFile, $this->htaccessFileContent);
 						}
 
 						unset($subformField[$key]['filesData']);
@@ -1217,7 +1219,7 @@ class TjfieldsHelper
 	 * Method to get media URL.
 	 *
 	 * @param   STRING  $fileName            media file path
-	 * @param   ARRAY  $extraUrlPramsArray  extra url params
+	 * @param   ARRAY   $extraUrlPramsArray  extra url params
 	 *
 	 * @return  string|boolean  True on success.
 	 *
@@ -1228,6 +1230,7 @@ class TjfieldsHelper
 		if (!empty($fileName))
 		{
 			$extraUrlParams = '';
+
 			// If url extra param is present
 			if (!empty($extraUrlPramsArray))
 			{
